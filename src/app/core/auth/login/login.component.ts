@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
@@ -23,8 +22,7 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private formBuilder: FormBuilder,
-    private snackBar: MatSnackBar
+    private formBuilder: FormBuilder
   ) { }
 
   ngOnInit() {
@@ -46,15 +44,14 @@ export class LoginComponent {
 
       this.authService.login(username, password).subscribe(
         () => {
-          this.snackBar.open('Login successful', 'Close', { duration: 5000 });
-          this.router.navigate(['/c/user-profile']);
+          console.log('Login successful');
         },
         () => {
-          this.snackBar.open('Invalid credentials. Please try again.', 'Close', { duration: 5000 });
+          console.log('Login failed');
         }
       );
     } else {
-      this.snackBar.open('Please fill in all fields correctly.', 'Close', { duration: 5000 });
+      console.log('Invalid form');
     }
   }
 }
