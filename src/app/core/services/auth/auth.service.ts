@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { UserStorageService } from '../user-storage/user-storage.service';
 
 const BASIC_URL = "http://localhost:8080/api/v1/";
@@ -12,9 +12,9 @@ export class AuthService {
 
   constructor(private http: HttpClient, private userStorageService: UserStorageService) { }
   
-  // register(signupRequest: any) : Observable<any> {
-  //   return this.http.post(BASIC_URL + 'signup', signupRequest);
-  // }
+  register(signupRequest: any) : Observable<any> {
+    return this.http.post(BASIC_URL + 'auth/register', signupRequest);
+  }
 
   login(username: string, password: string) : any {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
