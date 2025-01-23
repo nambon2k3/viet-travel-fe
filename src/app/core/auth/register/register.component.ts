@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -16,14 +16,38 @@ import { AuthService } from '../../services/auth/auth.service';
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css'],
 })
-export class RegisterConponent {
+export class RegisterComponent implements OnInit {
     signupForm!: FormGroup;
     hidePassword = true;
     errorMessage: string | null = null;
+    activeField: string | null = null;
 
-    constructor(private fb: FormBuilder,
-        private router: Router,
-        private authService: AuthService) { }
+    passwordCriteria = {
+        minLength: false,
+        uppercase: false,
+        lowercase: false,
+        specialChar: false,
+    };
+
+
+    usernameCriteria = {
+        minLength: false,
+        maxLength: false,
+        pattern: false,
+    };
+
+    fullNameCriteria = {
+        pattern: false,
+    };
+
+    emailCriteria = {
+        validFormat: false,
+    };
+
+    confirmPasswordMismatch = false;
+
+
+    constructor(private fb: FormBuilder, private router: Router, private authService: AuthService) { }
 
     ngOnInit(): void {
         this.signupForm = this.fb.group(
@@ -32,8 +56,8 @@ export class RegisterConponent {
                     null,
                     [
                         Validators.required,
-                        Validators.minLength(6),
-                        Validators.maxLength(12),
+                        Validators.minLength(8),
+                        Validators.maxLength(30),
                         Validators.pattern('^[a-zA-Z0-9]*$'),
                     ],
                 ],
@@ -42,78 +66,102 @@ export class RegisterConponent {
                     [
                         Validators.required,
                         Validators.minLength(8),
-                        Validators.pattern(
-                            '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$' // At least 1 lowercase, 1 uppercase, 1 special char
-                        ),
+                        Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*$'),
                     ],
                 ],
                 fullName: [
                     null,
                     [
                         Validators.required,
-                        Validators.pattern('^[a-zA-Z ]*$'), // Allows alphabets and spaces
+                        Validators.pattern('^[a-zA-Z ]*$'),
                     ],
                 ],
                 email: [null, [Validators.required, Validators.email]],
-                confirmPassword: [null, [Validators.required]],
+                rePassword: [null, [Validators.required]],
             },
             {
                 validators: this.passwordMatchValidator,
             }
         );
+
+        // Username validation criteria
+        this.signupForm.get('username')?.valueChanges.subscribe((value) => {
+            this.usernameCriteria.minLength = value.length >= 8;
+            this.usernameCriteria.maxLength = value.length <= 30;
+            this.usernameCriteria.pattern = /^[a-zA-Z0-9]*$/.test(value);
+        });
+
+        // Full name validation criteria
+        this.signupForm.get('fullName')?.valueChanges.subscribe((value) => {
+            this.fullNameCriteria.pattern = /^[a-zA-Z ]*$/.test(value);
+        });
+
+        // Email validation criteria
+        this.signupForm.get('email')?.valueChanges.subscribe((value) => {
+            this.emailCriteria.validFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        });
+
+        // Confirm password validation
+        this.signupForm.get('rePassword')?.valueChanges.subscribe((value) => {
+            this.confirmPasswordMismatch =
+                value !== this.signupForm.get('password')?.value;
+        });
+
+        // Listen to password changes for validation criteria
+        this.signupForm.get('password')?.valueChanges.subscribe((value) => {
+            this.validatePasswordCriteria(value);
+        });
     }
 
-    // Custom validator to check if password and confirmPassword match
+    // Validate password criteria
+    validatePasswordCriteria(password: string): void {
+        this.passwordCriteria.minLength = password.length >= 8;
+        this.passwordCriteria.uppercase = /[A-Z]/.test(password);
+        this.passwordCriteria.lowercase = /[a-z]/.test(password);
+        this.passwordCriteria.specialChar = /[\W_]/.test(password);
+    }
+
+    // Custom validator for matching passwords
     passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
         const password = group.get('password')?.value;
-        const confirmPassword = group.get('confirmPassword')?.value;
-        return password === confirmPassword ? null : { mismatch: true };
+        const rePassword = group.get('rePassword')?.value;
+        return password === rePassword ? null : { mismatch: true };
     }
 
-    togglePasswordVisibility() {
+    togglePasswordVisibility(): void {
         this.hidePassword = !this.hidePassword;
+    }
+
+    onFocus(field: string): void {
+        this.activeField = field;
+    }
+
+    onBlur(): void {
+        this.activeField = null;
     }
 
     onSubmit(): void {
         this.errorMessage = null;
     
-        if (this.signupForm.invalid) {
-            this.setErrorMessage();
-            return;
-        }
-    
-        const { confirmPassword, ...formData } = this.signupForm.value;
-    
-        this.authService.register(formData).pipe(
-            catchError((error) => {
-                this.errorMessage = 'An error occurred during registration. Please try again.';
-                console.error('Error during signup:', error);
-                return of(null);
-            })
-        ).subscribe(
-            (response: any) => {
-                console.log('Signup successful:', response);
-                this.router.navigateByUrl('/login');
-            }
-        );
-    }    
-
-    // Set error messages based on form validation
-    private setErrorMessage() {
-        const controls = this.signupForm.controls;
-
-        if (controls['username'].invalid) {
-            this.errorMessage =
-                'Username must be 6-12 characters long and contain only alphanumeric characters.';
-        } else if (controls['email'].invalid) {
-            this.errorMessage = 'Please enter a valid email address.';
-        } else if (controls['fullName'].invalid) {
-            this.errorMessage = 'Full name must contain only alphabetic characters.';
-        } else if (controls['password'].invalid) {
-            this.errorMessage =
-                'Password must be at least 8 characters long, with 1 uppercase, 1 lowercase, and 1 special character.';
-        } else if (this.signupForm.hasError('mismatch')) {
-            this.errorMessage = 'Passwords do not match.';
-        }
+        this.authService
+            .register(this.signupForm.value)
+            .pipe(
+                catchError((error) => {
+                    // Extract error message from the server's response
+                    const apiError = error?.error?.message || 'An error occurred during registration.';
+                    this.errorMessage = apiError;
+                    return of(null);
+                })
+            )
+            .subscribe((response: any) => {
+                if (response?.success) {
+                    alert(response.message); // Display success message
+                    this.router.navigateByUrl('/login');
+                } else if (!response) {
+                    // If the error is already handled in catchError, do nothing here
+                } else {
+                    this.errorMessage = response?.message || 'An error occurred during registration.';
+                }
+            });
     }
 }

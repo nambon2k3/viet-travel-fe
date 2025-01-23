@@ -29,7 +29,6 @@ export class AuthService {
           this.userStorageService.saveUser(user);
           return true;
         }
-    
         return false;
       })
     );    
