@@ -27,9 +27,10 @@ export class AuthService {
         if (token && user) {
           this.userStorageService.saveToken(token);
           this.userStorageService.saveUser(user);
-          return true;
+          return response;
         }
-        return false;
+    
+        return null;
       })
     );    
   }
