@@ -21,6 +21,7 @@ export class RegisterComponent implements OnInit {
     hidePassword = true;
     errorMessage: string | null = null;
     activeField: string | null = null;
+    isLoading = false;
 
     passwordCriteria = {
         minLength: false,
@@ -141,6 +142,7 @@ export class RegisterComponent implements OnInit {
     }
 
     onSubmit(): void {
+        this.isLoading = true;
         this.errorMessage = null;
     
         this.authService
@@ -150,16 +152,20 @@ export class RegisterComponent implements OnInit {
                     // Extract error message from the server's response
                     const apiError = error?.error?.message || 'An error occurred during registration.';
                     this.errorMessage = apiError;
+                    this.isLoading = false;
                     return of(null);
                 })
             )
             .subscribe((response: any) => {
                 if (response?.success) {
                     alert(response.message); // Display success message
+                    this.isLoading = false;
                     this.router.navigateByUrl('/login');
                 } else if (!response) {
+                    this.isLoading = false;
                     // If the error is already handled in catchError, do nothing here
                 } else {
+                    this.isLoading = false;
                     this.errorMessage = response?.message || 'An error occurred during registration.';
                 }
             });
