@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { log } from 'console';
 
 const TOKEN = "vietravel-token";
 const USER = "vietravel-user";
@@ -38,11 +37,20 @@ export class UserStorageService {
   }
 
   public saveToken(token: string): void {
-    this.setCookie(TOKEN, token, 7); 
+    this.setCookie(TOKEN, token, 1); 
+  }
+
+  public saveTokenRemembered(token: string): void {
+    this.setCookie(TOKEN, token, 30); 
   }
 
   public saveUser(user: any): void {
-    this.setCookie(USER, JSON.stringify(user), 7);
+    this.setCookie(USER, JSON.stringify(user), 1);
+  }
+  
+
+  public saveUserRemembered(user: any): void {
+    this.setCookie(USER, JSON.stringify(user), 30); 
   }
 
   static getToken(): string | null {
@@ -61,7 +69,6 @@ export class UserStorageService {
     }
     return null;
   }
-  
 
   static getUserId(): string {
     const user = this.getUser();
