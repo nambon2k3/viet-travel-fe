@@ -45,6 +45,18 @@ export class RegisterComponent implements OnInit {
         validFormat: false,
     };
 
+    phoneCriteria = {
+        validFormat: false,
+    };
+
+    addressCriteria = {
+        validFormat: false,
+    };
+
+    gendersCriteria = {
+        validFormat: false,
+    };
+
     confirmPasswordMismatch = false;
 
 
@@ -78,6 +90,9 @@ export class RegisterComponent implements OnInit {
                     ],
                 ],
                 email: [null, [Validators.required, Validators.email]],
+                phone: [null, [Validators.required], Validators.pattern('^[0-9]*$')],
+                gender: ["Select Gender", [Validators.required]],
+                address: [null, [Validators.required], Validators.pattern('^[a-zA-Z0-9 ]*$')],
                 rePassword: [null, [Validators.required]],
             },
             {
