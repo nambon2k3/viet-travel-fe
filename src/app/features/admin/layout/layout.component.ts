@@ -1,0 +1,36 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { AdminHeaderComponent } from '../../../shared/components/admin-header/admin-header.component';
+import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
+import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { AngularSvgIconModule } from 'angular-svg-icon';
+
+@Component({
+  selector: 'app-layout',
+  imports: [
+    CommonModule, 
+    RouterOutlet, 
+    AdminHeaderComponent, 
+    AdminSidebarComponent
+  ],
+  templateUrl: './layout.component.html',
+  styleUrl: './layout.component.css'
+})
+export class LayoutComponent {
+  private mainContent: HTMLElement | null = null;
+
+  constructor(private router: Router) {
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationEnd) {
+        if (this.mainContent) {
+          this.mainContent!.scrollTop = 0;
+        }
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.mainContent = document.getElementById('main-content');
+  }
+}
+
