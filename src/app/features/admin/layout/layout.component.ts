@@ -1,17 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { AdminHeaderComponent } from '../../../shared/components/admin-header/admin-header.component';
-import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
 import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { AngularSvgIconModule } from 'angular-svg-icon';
+import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
+import { AdminHeaderComponent } from '../../../shared/components/admin-header/admin-header.component';
 
 @Component({
   selector: 'app-layout',
   imports: [
     CommonModule, 
     RouterOutlet, 
-    AdminHeaderComponent, 
-    AdminSidebarComponent
+    AdminSidebarComponent,
+    AdminHeaderComponent
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'

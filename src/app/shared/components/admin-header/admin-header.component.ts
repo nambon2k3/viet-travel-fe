@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-admin-header',
@@ -6,6 +6,9 @@ import { Component } from '@angular/core';
   templateUrl: './admin-header.component.html',
   styleUrl: './admin-header.component.css'
 })
-export class AdminHeaderComponent {
+export class AdminHeaderComponent implements OnInit {
+  constructor() {}
+
+  ngOnInit(): void {}
 
 }
