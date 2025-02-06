@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 const TOKEN = "vietravel-token";
 const USER = "vietravel-user";
@@ -7,9 +8,9 @@ const USER = "vietravel-user";
   providedIn: 'root'
 })
 export class UserStorageService {
+  constructor() {}
 
-  constructor() { }
-
+  // Set a cookie with optional expiration in days
   private setCookie(name: string, value: string, days?: number): void {
     let expires = "";
     if (days) {
@@ -20,6 +21,7 @@ export class UserStorageService {
     document.cookie = `${name}=${value}${expires}; path=/`;
   }
 
+  // Retrieve a cookie by name
   private getCookie(name: string): string | null {
     const nameEQ = name + "=";
     const cookies = document.cookie.split(';');
@@ -32,6 +34,7 @@ export class UserStorageService {
     return null;
   }
 
+  // Delete a cookie by setting its expiration to a past date
   private deleteCookie(name: string): void {
     document.cookie = `${name}=; Max-Age=-99999999; path=/`;
   }
@@ -53,34 +56,36 @@ export class UserStorageService {
     this.setCookie(USER, JSON.stringify(user), 30); 
   }
 
-  static getToken(): string | null {
-    if (typeof window !== "undefined") {
-      return new UserStorageService().getCookie(TOKEN);
-    }
-    return null;
-  }
-  
-  static getUser(): any {
-    if (typeof window !== "undefined") {
-      const userJson = new UserStorageService().getCookie(USER);
-      if (userJson) {
-        return JSON.parse(userJson);
-      }
-    }
-    return null;
+  // Retrieve the authentication token
+  public getToken(): string | null {
+    return this.getCookie(TOKEN);
   }
 
-  static getUserId(): string {
+  // Retrieve the authentication token as an Observable
+  public getTokenAsync(): Observable<string | null> {
+    return of(this.getToken());
+  }
+
+  // Retrieve the user object
+  public getUser(): any {
+    const userJson = this.getCookie(USER);
+    return userJson ? JSON.parse(userJson) : null;
+  }
+
+  // Retrieve the user ID
+  public getUserId(): string {
     const user = this.getUser();
     return user?.userId || '';
   }
 
-  static getUserRole(): string {
+  // Retrieve the user role
+  public getUserRole(): string {
     const user = this.getUser();
     return user?.role || '';
   }
 
-  static isAdminLoggedIn(): boolean {
+  // Check if the admin is logged in
+  public isAdminLoggedIn(): boolean {
     const token = this.getToken();
     if (!token) {
       return false;
@@ -89,7 +94,8 @@ export class UserStorageService {
     return role === 'ADMIN';
   }
 
-  static isCustomerLoggedIn(): boolean {
+  // Check if the customer is logged in
+  public isCustomerLoggedIn(): boolean {
     const token = this.getToken();
     if (!token) {
       return false;
@@ -98,7 +104,8 @@ export class UserStorageService {
     return role === 'CUSTOMER';
   }
 
-  static signOut(): void {
+  // Clear all authentication-related cookies
+  public static signOut(): void {
     const storage = new UserStorageService();
     storage.deleteCookie(TOKEN);
     storage.deleteCookie(USER);
