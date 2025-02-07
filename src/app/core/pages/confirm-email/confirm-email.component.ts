@@ -41,12 +41,12 @@ export class ConfirmEmailComponent implements OnInit {
   confirmEmail(): void {
     this.confirmEmailService.confirmEmail(this.token!).subscribe({
       next: (response) => {
-        this.successMessage = 'Your email has been successfully confirmed!';
+        this.successMessage = 'Your email has been successfully confirmed! You will be redirected to the login page in 5 seconds.';
         this.isLoading = false;
-        // Optionally redirect after a few seconds
+        // Optionally redirect after a 5 seconds
         setTimeout(() => {
           this.router.navigate(['/login']);
-        }, 3000);
+        }, 5000);
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || 'Failed to confirm email.';
