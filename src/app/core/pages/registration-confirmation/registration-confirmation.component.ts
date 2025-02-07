@@ -12,20 +12,35 @@ import { Router } from '@angular/router';
   styleUrls: ['./registration-confirmation.component.css']
 })
 export class RegistrationConfirmationComponent implements OnInit {
-  errorMessage = "";
-  isLoading = false;
+  errorMessage: string | null = null;
+  isLoading = true;
 
-  constructor(private route: ActivatedRoute,
-    private router: Router
-  ) { }
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.isLoading = true;
-    setTimeout(() => {
-      this.route.queryParams.subscribe(params => {
-        this.errorMessage = params['error'] || null;
-        this.isLoading = false;
-      });
-    }, 3000);
+      // Subscribe to query parameters immediately
+      // this.route.queryParams.subscribe(params => {
+      //     const encodedError = params['error'];
+      //     if (encodedError) {
+      //         // Decode the error message
+      //         this.errorMessage = decodeURIComponent(encodedError);
+      //     } else {
+      //         this.errorMessage = null; // No error message provided
+      //     }
+      //     this.isLoading = false; // Stop loading once data is processed
+      // });
+
+      setTimeout(() => {
+        this.route.queryParams.subscribe(params => {
+          const encodedError = params['error'];
+          if (encodedError) {
+              // Decode the error message
+              this.errorMessage = decodeURIComponent(encodedError);
+          } else {
+              this.errorMessage = null; // No error message provided
+          }
+          this.isLoading = false;
+        });
+      }, 3000);
   }
 }

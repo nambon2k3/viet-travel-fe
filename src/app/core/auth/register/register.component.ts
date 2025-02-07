@@ -167,29 +167,25 @@ export class RegisterComponent implements OnInit {
     }
 
     onSubmit(): void {
-        this.errorMessage = null;
-
-        // Chuyển ngay sang trang /regis-confirm để người dùng không phải đợi
-        this.router.navigate(['/regis-confirm']);
-
         this.authService
             .register(this.signupForm.value)
             .pipe(
-                catchError((error) => {
-                    // Lấy thông báo lỗi từ phản hồi server
-                    const apiError = error?.error?.message || 'An error occurred during registration.';
-
-                    // Chuyển hướng lại với thông báo lỗi nếu có
-                    this.router.navigate(['/regis-confirm'], { queryParams: { error: apiError } });
-
-                    return of(null);
+                catchError((err) => {
+                    const apiError = err?.error?.message || "An error occurred during registration.";
+                    const encodedError = encodeURIComponent(apiError);
+                    this.router.navigate(['/regis-confirm'], { queryParams: { error: encodedError } });
+                    return of(null); // Ensure the stream continues
                 })
             )
             .subscribe((response: any) => {
-                // Nếu đăng ký thành công, đảm bảo không có lỗi hiển thị
                 if (response?.code === 201) {
                     this.router.navigate(['/regis-confirm']);
+                } else if (response) {
+                    const errorMessage = response?.message || "An unexpected error occurred.";
+                    const encodedError = encodeURIComponent(errorMessage);
+                    this.router.navigate(['/regis-confirm'], { queryParams: { error: encodedError } });
                 }
             });
     }
+    
 }
