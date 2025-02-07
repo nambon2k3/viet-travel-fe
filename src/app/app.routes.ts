@@ -18,7 +18,7 @@ export const routes: Routes = [
         path: 'c',
         loadChildren: () => import('./features/customer/customer.routes').then(m => m.CUSTOMER_ROUTES),
         canActivate: [AuthGuard]
-    }
+    },
     {
         path: 'register',
         component: RegisterComponent
