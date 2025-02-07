@@ -60,6 +60,10 @@ export class UserProfileManagementComponent implements OnInit {
     });
   }
 
+  goToHome(): void {
+    this.router.navigate(['/homepage']);
+  }
+
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
