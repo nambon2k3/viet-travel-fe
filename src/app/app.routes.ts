@@ -26,5 +26,9 @@ export const routes: Routes = [
         path: 'c',
         loadChildren: () => import('./features/customer/customer.routes').then(m => m.CUSTOMER_ROUTES),
         canActivate: [AuthGuard]
+    },
+    {
+        path: 'ceo',
+        loadChildren: () => import('./features/admin/ceo/ceo.routes').then(m => m.CEO_ROUTES),
     }
 ];
