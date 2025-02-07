@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <div class="relative flex items-center mt-6">
+            <div class="relative flex items-center mt-4">
                 <input type="text" formControlName="fullName" placeholder="Fullname" required
                     (focus)="onFocus('fullName')" (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
@@ -46,7 +46,7 @@
                 </div>
             </div>
 
-            <div class="relative flex items-center mt-6">
+            <div class="relative flex items-center mt-4">
                 <input type="email" formControlName="email" placeholder="Email" required (focus)="onFocus('email')"
                     (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
@@ -64,7 +64,56 @@
                 </div>
             </div>
 
-            <div class="relative flex items-center mt-6">
+            <!-- Gender Field -->
+            <div class="relative flex items-center mt-4">
+                <select required formControlName="gender" (focus)="onFocus('gender')" (blur)="onBlur()"
+                  class="bg-transparent w-full text-sm border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none text-gray-800">
+                  <option value="" disabled selected>Select Gender</option>
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                </select>
+                <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
+                  *ngIf="activeField === 'gender'">
+                  <p class="m-0 text-xs" [class.valid]="gendersCriteria.validFormat">✔ Must select a gender</p>
+                </div>
+              </div>
+
+              <!-- Phone Number Field -->
+            <div class="relative flex items-center mt-4">
+                <input type="tel" formControlName="phone" placeholder="Phone Number" required (focus)="onFocus('phone')"
+                    (blur)="onBlur()"
+                    class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333"
+                    class="w-[18px] h-[18px] absolute right-2 top-2" viewBox="0 0 24 24">
+                    <path fill="none" stroke="currentColor" stroke-width="2"
+                        d="M6.62 10.79a15.91 15.91 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.11-.21 11.36 11.36 0 0 0 3.58.57 1 1 0 0 1 1 1v3.54a1 1 0 0 1-1 1A17 17 0 0 1 3 5a1 1 0 0 1 1-1h3.54a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.58 1 1 0 0 1-.21 1.11z" />
+                </svg>
+                <!-- Phone Criteria Popup -->
+                <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
+                    *ngIf="activeField === 'phone'">
+                    <p class="m-0 text-xs" [class.valid]="phoneCriteria.validFormat">✔ Must be a valid phone</p>
+                </div>
+            </div>
+
+            <!-- Address Field -->
+            <div class="relative flex items-center mt-4">
+                <input formControlName="address" placeholder="Address" required (focus)="onFocus('address')" type="text"
+                    (blur)="onBlur()"
+                    class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333"
+                    class="w-[18px] h-[18px] absolute right-2 top-2" viewBox="0 0 24 24">
+                    <path fill="none" stroke="currentColor" stroke-width="2"
+                        d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z" />
+                </svg>
+                <!-- Address Criteria Popup -->
+                <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
+                    *ngIf="activeField === 'address'">
+                    <p class="m-0 text-xs" [class.valid]="addressCriteria.validFormat">✔ Must be a valid address</p>
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="relative flex items-center mt-4">
                 <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" placeholder="Password"
                     required (focus)="onFocus('password')" (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
@@ -86,7 +135,7 @@
             </div>
 
 
-            <div class="relative flex items-center mt-6">
+            <div class="relative flex items-center mt-4">
                 <input [type]="hidePassword ? 'password' : 'text'" formControlName="rePassword"
                     placeholder="Confirm Password" required (focus)="onFocus('rePassword')" (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
@@ -103,18 +152,18 @@
                 </div>
             </div>
 
-            <div class="mt-10">
+            <div class="mt-8">
                 <button type="submit" (click)="onSubmit()"
                     class="w-full py-2.5 px-4 text-sm font-semibold tracking-wider rounded text-white bg-gray-800 hover:bg-[#222] focus:outline-none">
                     Sign up
                 </button>
-                <p class="text-gray-800 text-sm text-center mt-6">Have an account <a href="/login"
+                <p class="text-gray-800 text-sm text-center mt-4">Have an account <a href="/login"
                         class="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Sign in
                         here</a></p>
             </div>
 
             <!-- Error Message -->
-            <div *ngIf="errorMessage" class="global-error text-red-500 bg-white opacity-100 mt-6">
+            <div *ngIf="errorMessage" class="global-error text-red-500 bg-white opacity-100 mt-4">
                 {{ errorMessage }}
             </div>
         </form>
