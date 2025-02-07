@@ -122,8 +122,8 @@ export class LoginComponent implements OnInit {
           const token = response.body.data.token;
           const user = response.body.data.username;
           if (rememberMe) {
-            this.userStorageService.saveTokenRemembered(token); // Save for 30 days
-            this.userStorageService.saveUserRemembered(user); // Save for 30 days
+            this.userStorageService.saveToken(token); // Save for 30 days
+            this.userStorageService.saveUser(user); // Save for 30 days
             localStorage.setItem('rememberedUser', username);
           }
           this.router.navigateByUrl('/');
