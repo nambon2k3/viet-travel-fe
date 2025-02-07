@@ -25,8 +25,4 @@ export class CustomerService {
   updateUserProfile(userId: string, profileData: any): Observable<any> {
     return this.http.post(`${BASIC_URL + 'user-profile/update'}/${userId}`, profileData);
   }
-
-  changePassword(passwordData: any): Observable<any> {
-    return this.http.post(BASIC_URL + 'user-profile/change-password', passwordData);
-  }
 }

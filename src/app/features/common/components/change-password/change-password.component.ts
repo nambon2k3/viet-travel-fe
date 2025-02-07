@@ -4,6 +4,7 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validatio
 import { catchError, of } from 'rxjs';
 import { CustomerService } from '../../../customer/services/customer.service';
 import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-change-password',
@@ -33,7 +34,7 @@ export class ChangePasswordComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private customerService: CustomerService,
+    private commonService: CommonService,
     private userStorageService: UserStorageService
   ) { }
 
@@ -103,7 +104,7 @@ export class ChangePasswordComponent implements OnInit {
       return;
     }
 
-    this.customerService.changePassword(formData)
+    this.commonService.changePassword(formData)
       .pipe(
         catchError((error) => {
           const apiError = error || 'An unexpected error occurred. Please try again later.';
