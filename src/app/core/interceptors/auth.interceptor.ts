@@ -7,15 +7,12 @@ import { UserStorageService } from '../services/user-storage/user-storage.servic
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
-  // Bỏ qua interceptor cho route /confirm-email
   if (req.url.includes('/confirm-email')) {
     return next(req);
   }
 
-  // Lấy token từ cookie thông qua UserStorageService
   const token = inject(UserStorageService).getToken();
 
-  // Nếu có token, thêm vào header Authorization
   const clonedRequest = token
     ? req.clone({
         setHeaders: {
@@ -24,17 +21,26 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       })
     : req;
 
-  // Xử lý lỗi
   return next(clonedRequest).pipe(
     catchError((error) => {
+      let errorMessage = 'An unexpected error occurred. Please try again later.';
+
+      if (error.error && typeof error.error === 'object') {
+        errorMessage = error.error.message || error.error.data || errorMessage;
+      } else if (error.error && typeof error.error === 'string') {
+        errorMessage = error.error;
+      }
+
       if (error.status === 401) {
-        // Xóa token và chuyển hướng đến trang đăng nhập nếu bị lỗi 401
         UserStorageService.signOut();
         router.navigate(['/login']);
       } else if (error.status === 403) {
-        console.error('Access denied:', error.message);
+        console.error('Access denied:', errorMessage);
+      } else if (error.status === 500) {
+        console.error('Server error:', errorMessage);
       }
-      return throwError(() => new Error(error.message));
+
+      return throwError(() => new Error(errorMessage));
     })
   );
 };

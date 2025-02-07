@@ -1,7 +1,7 @@
 <div class="bg-gray-100 min-h-screen p-4">
     <div class="flex justify-end h-[200px] mb-4">
         <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Background Image"
-            class="w-full h-full object-cover rounded-lg">  
+            class="w-full h-full object-cover rounded-lg">
     </div>
 
     <div class="bg-white rounded shadow p-4">
@@ -30,15 +30,52 @@
                 </div>
             </div>
 
-            <div class="ml-auto">
-                <button (click)="openEditModal()" class="bg-white border rounded px-2 py-1 flex items-center">
+            <div class="ml-auto relative flex items-center bg-white border rounded">
+                <!-- Edit Profile Button -->
+                <button (click)="openEditModal()" class="  px-2 py-1 flex items-center">
                     Edit Profile
-                    <svg class="w-6 h-6 ml-2 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="2"
-                        d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </button>
+            
+                <!-- SVG Icon with Dropdown -->
+                <div class="relative inline-block">
+                    <svg 
+                        (click)="toggleDropdown()" 
+                        class="w-6 h-6 ml-2 text-gray-800 cursor-pointer" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24"
+                    >
+                        <path 
+                            stroke="currentColor" 
+                            stroke-linecap="square" 
+                            stroke-linejoin="round" 
+                            stroke-width="2"
+                            d="M10 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h2m10 1a3 3 0 0 1-3 3m3-3a3 3 0 0 0-3-3m3 3h1m-4 3a3 3 0 0 1-3-3m3 3v1m-3-4a3 3 0 0 1 3-3m-3 3h-1m4-3v-1m-2.121 1.879-.707-.707m5.656 5.656-.707-.707m-4.242 0-.707.707m5.656-5.656-.707.707M12 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" 
+                        />
                     </svg>
-                  </button>
-              </div>
+            
+                    <!-- Dropdown Menu -->
+                    <div 
+                        *ngIf="isDropdownOpen" 
+                        class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg z-10"
+                    >
+                        <ul class="py-1">
+                            <li 
+                                class="px-4 py-2 hover:bg-gray-100 cursor-pointer" 
+                                (click)="onChangePassword()"
+                            >
+                                Change Password
+                            </li>
+                            <li 
+                                class="px-4 py-2 hover:bg-gray-100 cursor-pointer" 
+                                (click)="onChangeAvatar()"
+                            >
+                                Change Avatar
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <nav class="mt-4">
@@ -155,4 +192,10 @@
 </div>
 
 <!-- Edit Profile Modal -->
-<app-edit-profile-modal *ngIf="showEditModal" [userProfile]="userProfile" (closeModal)="closeEditModal()"></app-edit-profile-modal>
+<app-edit-profile-modal *ngIf="showEditModal" [userProfile]="userProfile"
+    (closeModal)="closeEditModal()"></app-edit-profile-modal>
+
+<!-- Change Password Modal -->
+ <app-change-password *ngIf="showChangePasswordModal" (closeModal)="closeChangePasswordModal()"></app-change-password>
+
+<!-- Change Avatar Modal -->
