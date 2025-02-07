@@ -37,6 +37,19 @@ export class Menu {
       ],
     },
     {
+      group: 'Marketing',
+      separator: true,
+      items: [
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Blog',
+          children: [
+            { label: 'List Blog', route: '/m/create-blog' }
+          ],
+        },
+      ],
+    },
+    {
       group: 'System',
       separator: true,
       items: [

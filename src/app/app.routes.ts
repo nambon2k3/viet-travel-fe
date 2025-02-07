@@ -30,5 +30,9 @@ export const routes: Routes = [
     {
         path: 'ceo',
         loadChildren: () => import('./features/admin/ceo/ceo.routes').then(m => m.CEO_ROUTES),
+    },
+    {
+        path: 'm',
+        loadChildren: () => import('./features/admin/marketer/marketer.routes').then(m => m.MARKETER_ROUTES),
     }
 ];
