@@ -90,9 +90,9 @@ export class RegisterComponent implements OnInit {
                     ],
                 ],
                 email: [null, [Validators.required, Validators.email]],
-                phone: [null, [Validators.required], Validators.pattern('^[0-9]*$')],
-                gender: ["Select Gender", [Validators.required]],
-                address: [null, [Validators.required], Validators.pattern('^[a-zA-Z0-9 ]*$')],
+                phone: [null, [Validators.required]],
+                gender: ["", [Validators.required]],
+                address: [null, [Validators.required]],
                 rePassword: [null, [Validators.required]],
             },
             {
@@ -110,6 +110,16 @@ export class RegisterComponent implements OnInit {
         // Full name validation criteria
         this.signupForm.get('fullName')?.valueChanges.subscribe((value) => {
             this.fullNameCriteria.pattern = /^[a-zA-Z ]*$/.test(value);
+        });
+
+        // Address validation criteria
+        this.signupForm.get('address')?.valueChanges.subscribe((value) => {
+            this.addressCriteria.validFormat = /^[a-zA-Z0-9 ]*$/.test(value);
+        });
+
+        // Phone validation criteria
+        this.signupForm.get('phone')?.valueChanges.subscribe((value) => {
+            this.phoneCriteria.validFormat = /^[0-9]{10}$/.test(value);
         });
 
         // Email validation criteria
@@ -157,31 +167,28 @@ export class RegisterComponent implements OnInit {
     }
 
     onSubmit(): void {
-        this.isLoading = true;
         this.errorMessage = null;
-    
+
+        // Chuyển ngay sang trang /regis-confirm để người dùng không phải đợi
+        this.router.navigate(['/regis-confirm']);
+
         this.authService
             .register(this.signupForm.value)
             .pipe(
                 catchError((error) => {
-                    // Extract error message from the server's response
+                    // Lấy thông báo lỗi từ phản hồi server
                     const apiError = error?.error?.message || 'An error occurred during registration.';
-                    this.errorMessage = apiError;
-                    this.isLoading = false;
+
+                    // Chuyển hướng lại với thông báo lỗi nếu có
+                    this.router.navigate(['/regis-confirm'], { queryParams: { error: apiError } });
+
                     return of(null);
                 })
             )
             .subscribe((response: any) => {
-                if (response?.success) {
-                    alert(response.message); // Display success message
-                    this.isLoading = false;
-                    this.router.navigateByUrl('/login');
-                } else if (!response) {
-                    this.isLoading = false;
-                    // If the error is already handled in catchError, do nothing here
-                } else {
-                    this.isLoading = false;
-                    this.errorMessage = response?.message || 'An error occurred during registration.';
+                // Nếu đăng ký thành công, đảm bảo không có lỗi hiển thị
+                if (response?.code === 201) {
+                    this.router.navigate(['/regis-confirm']);
                 }
             });
     }
