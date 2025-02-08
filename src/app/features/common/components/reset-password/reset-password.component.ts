@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 
 @Component({
@@ -15,6 +15,7 @@ import { CommonService } from '../../services/common.service';
   styleUrl: './reset-password.component.css'
 })
 export class ResetPasswordComponent {
+  token: string | null = null;
   resetPasswordForm!: FormGroup;
   hidePassword = true;
   successMessage: string | null = null;
@@ -31,7 +32,8 @@ export class ResetPasswordComponent {
 
   confirmPasswordMismatch = false;
 
-  constructor(private fb: FormBuilder, private router: Router, private commonService: CommonService) { }
+  constructor(private fb: FormBuilder,
+    private route: ActivatedRoute, private router: Router, private commonService: CommonService) { }
 
   ngOnInit() {
     this.resetPasswordForm = this.fb.group(
@@ -60,6 +62,9 @@ export class ResetPasswordComponent {
     this.resetPasswordForm.get('password')?.valueChanges.subscribe((value) => {
       this.validatePasswordCriteria(value);
     });
+
+    // Extract the token from the URL
+    this.token = this.route.snapshot.queryParamMap.get('token');
   }
 
   // Validate password criteria
@@ -99,20 +104,26 @@ export class ResetPasswordComponent {
     this.errorMessage = null;
 
     const savedEmail = this.getCookie('email');
+    if (this.token) {
+      this.commonService.resetPassword(this.token, savedEmail!, this.resetPasswordForm.value).subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          this.successMessage = response.message || 'Password reset successfully. Redirecting to login...';
 
-    this.commonService.resetPassword("", savedEmail!, this.resetPasswordForm.value.password).subscribe(
-      (response: any) => {
-        this.isLoading = false;
-        this.successMessage = response.message || 'Password reset successfully. Redirecting to login...';
+          setTimeout(() => {
+            this.router.navigateByUrl('/login');
+          }, 3000);
+        },
+        error: (error: any) => {
+          this.isLoading = false;
+          this.errorMessage = error.message || 'An error occurred. Please try again.';
+        }
+      });
+    }
+    else {
+      this.errorMessage = 'Invalid token or URL.';
+      this.isLoading = false;
+    }
 
-        setTimeout(() => {
-          this.router.navigateByUrl('/login');
-        }, 2000);
-      },
-      (error: any) => {
-        this.isLoading = false;
-        this.errorMessage = error.error.message || 'An error occurred. Please try again.';
-      }
-    );
   }
 }

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 const BASIC_URL = "http://localhost:8080/api/v1/";
 
@@ -10,11 +11,11 @@ export class CommonService {
 
   constructor(private http: HttpClient) { }
 
-  forgotPassword(email: string) {
-    return this.http.post(`${BASIC_URL}forgot-password`, { email });
+  forgotPassword(email: any): Observable<any> {
+    return this.http.post(BASIC_URL + 'forgot-password', email);
   }
 
-  resetPassword(token: string, email: string, password: string) {
-    return this.http.post(`${BASIC_URL}reset-password`, { token, email, password });
+  resetPassword(token: string, email: string, password: any) {
+    return this.http.put(`${BASIC_URL}reset-password?token=${token}&email=${email}`, password);
   }
 }

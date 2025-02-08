@@ -43,12 +43,9 @@ export class ForgotPasswordComponent {
     this.isLoading = true;
     this.errorMessage = null;
     const email = this.forgotPasswordForm.value.email;
-    const expiryDate = new Date();
-    expiryDate.setTime(expiryDate.getTime() + 10 * 60 * 1000);
-    document.cookie = `email=${email}; expires=${expiryDate.toUTCString()}; path=/`;
 
-    this.commonService.forgotPassword(email).subscribe(
-      (response: any) => {
+    this.commonService.forgotPassword(this.forgotPasswordForm.value).subscribe({
+      next: (response: any) => {
         this.isLoading = false;
         this.successMessage = response.message || 'Password reset link sent. Please check your email.';
 
@@ -57,10 +54,10 @@ export class ForgotPasswordComponent {
         expiryDate.setTime(expiryDate.getTime() + 10 * 60 * 1000);
         document.cookie = `email=${email}; expires=${expiryDate.toUTCString()}; path=/`;
       },
-      (error: any) => {
+      error: (error: any) => {
         this.isLoading = false;
-        this.errorMessage = error.error.message || 'An error occurred. Please try again.';
+        this.errorMessage = error?.error?.message || 'An error occurred. Please try again.';
       }
-    );
+    });
   }
 }
