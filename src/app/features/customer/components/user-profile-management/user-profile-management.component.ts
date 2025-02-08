@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CustomerService } from '../../services/customer.service';
 import { EditProfileModalComponent } from '../edit-profile/edit-profile.component';
 import { UserProfileService } from '../../services/user-profile.service';
@@ -20,44 +21,58 @@ import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
   templateUrl: 'user-profile-management.component.html',
   styleUrls: ['user-profile-management.component.css'],
 })
-export class UserProfileManagementComponent implements OnInit {
+export class UserProfileManagementComponent implements OnInit, OnDestroy {
   userProfile: any;
   currentRoute: string = '';
   showEditModal = false;
   showChangePasswordModal = false;
   showChangeAvatarModal = false;
   isDropdownOpen: boolean = false;
-  userId: any;
+  userId: string | null = null;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(
     private customerService: CustomerService,
     private userProfileService: UserProfileService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.loadUserProfile();
 
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.currentRoute = event.urlAfterRedirects;
-      }
-    });
+    // Lắng nghe sự kiện thay đổi route
+    this.subscriptions.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.currentRoute = event.urlAfterRedirects;
+        }
+      })
+    );
 
-    // Listen for updates from the profile service
-    this.userProfileService.userProfile$.subscribe((profile) => {
-      if (profile) {
-        this.userProfile = profile;
-      }
-    });
+    // Lắng nghe thay đổi từ profile service
+    this.subscriptions.add(
+      this.userProfileService.userProfile$.subscribe((profile) => {
+        if (profile) {
+          this.userProfile = profile;
+          this.userId = profile.id;
+        }
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   loadUserProfile(): void {
     this.customerService.getUserProfile().subscribe({
       next: (data) => {
-        this.userProfile = data.data;
-        this.userProfileService.setUserProfile(data.data);
-        this.userId = this.userProfile.id;
+        if (data?.data) {
+          this.userProfile = data.data;
+          this.userProfileService.setUserProfile(data.data);
+          this.userProfileService.setUserAvatar(data.data.avatarImg);
+          this.userId = data.data.id;
+        }
       },
       error: (err) => {
         console.error('Error loading user profile', err);
@@ -73,16 +88,17 @@ export class UserProfileManagementComponent implements OnInit {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  // Function to handle "Change Password" action
+  // Hàm mở/đóng modal đổi mật khẩu
   onChangePassword(): void {
     this.isDropdownOpen = false;
-    this.showChangePasswordModal = true
+    this.showChangePasswordModal = true;
   }
 
   closeChangePasswordModal(): void {
     this.showChangePasswordModal = false;
   }
 
+  // Hàm mở/đóng modal đổi avatar
   onChangeAvatar(): void {
     this.isDropdownOpen = false;
     this.showChangeAvatarModal = true;
@@ -92,6 +108,7 @@ export class UserProfileManagementComponent implements OnInit {
     this.showChangeAvatarModal = false;
   }
 
+  // Hàm mở/đóng modal chỉnh sửa thông tin
   openEditModal(): void {
     this.showEditModal = true;
   }
@@ -107,5 +124,6 @@ export class UserProfileManagementComponent implements OnInit {
   logout(): void {
     localStorage.clear();
     sessionStorage.clear();
+    this.router.navigate(['/login']);
   }
 }

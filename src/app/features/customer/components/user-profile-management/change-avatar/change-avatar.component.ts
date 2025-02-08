@@ -56,18 +56,27 @@ export class ChangeAvatarComponent {
 
   uploadAvatar(): void {
     if (!this.selectedFile) return;
-
+  
     const formData = new FormData();
     formData.append('avatar', this.selectedFile);
-
+  
+    console.log(this.userId, formData);
     this.customerService.changeAvatar(this.userId, formData).subscribe({
       next: (response) => {
         this.successMessage = response.message;
-        this.userProfileService.setUserAvatar(response?.data);
+  
+        // Cập nhật avatar trong service (giả sử response.data.avatar chứa URL ảnh)
+        if (response?.data?.avatar) {
+          this.userProfileService.setUserAvatar(response.data.avatar);
+        }
+  
         this.errorMessage = null;
       },
-      error: (err) => this.errorMessage = 'Lỗi: ' + err.message
+      error: (err) => {
+        this.errorMessage = 'Error: ' + err.message;
+      }
     });
   }
+  
 
 }

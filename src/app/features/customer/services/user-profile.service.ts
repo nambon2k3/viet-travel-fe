@@ -12,7 +12,11 @@ export class UserProfileService {
     this.userProfileSubject.next(profileData);
   }
 
-  setUserAvatar(profileData: any) {
-    this.userProfileSubject.value.avatar = profileData;
+  setUserAvatar(avatarUrl: string) {
+    const currentProfile = this.userProfileSubject.value;
+    if (currentProfile) {
+      const updatedProfile = { ...currentProfile, avatar: avatarUrl };
+      this.userProfileSubject.next(updatedProfile);
+    }
   }
 }
