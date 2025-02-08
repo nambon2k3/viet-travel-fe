@@ -11,4 +11,8 @@ export class UserProfileService {
   setUserProfile(profileData: any) {
     this.userProfileSubject.next(profileData);
   }
+
+  setUserAvatar(profileData: any) {
+    this.userProfileSubject.value.avatar = profileData;
+  }
 }

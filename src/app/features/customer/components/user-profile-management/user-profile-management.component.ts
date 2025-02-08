@@ -5,15 +5,17 @@ import { CustomerService } from '../../services/customer.service';
 import { EditProfileModalComponent } from '../edit-profile/edit-profile.component';
 import { UserProfileService } from '../../services/user-profile.service';
 import { ChangePasswordComponent } from '../../../common/components/change-password/change-password.component';
+import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink, 
+    RouterLink,
     EditProfileModalComponent,
-    ChangePasswordComponent
+    ChangePasswordComponent,
+    ChangeAvatarComponent
   ],
   templateUrl: 'user-profile-management.component.html',
   styleUrls: ['user-profile-management.component.css'],
@@ -23,13 +25,15 @@ export class UserProfileManagementComponent implements OnInit {
   currentRoute: string = '';
   showEditModal = false;
   showChangePasswordModal = false;
+  showChangeAvatarModal = false;
   isDropdownOpen: boolean = false;
+  userId: any;
 
   constructor(
     private customerService: CustomerService,
     private userProfileService: UserProfileService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadUserProfile();
@@ -53,6 +57,7 @@ export class UserProfileManagementComponent implements OnInit {
       next: (data) => {
         this.userProfile = data.data;
         this.userProfileService.setUserProfile(data.data);
+        this.userId = this.userProfile.id;
       },
       error: (err) => {
         console.error('Error loading user profile', err);
@@ -74,9 +79,13 @@ export class UserProfileManagementComponent implements OnInit {
     this.showChangePasswordModal = false;
   }
 
-  // Function to handle "Change Avatar" action
   onChangeAvatar(): void {
     this.isDropdownOpen = false;
+    this.showChangeAvatarModal = true;
+  }
+
+  closeChangeAvatarModal(): void {
+    this.showChangeAvatarModal = false;
   }
 
   openEditModal(): void {

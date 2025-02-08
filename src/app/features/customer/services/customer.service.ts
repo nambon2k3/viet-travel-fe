@@ -25,4 +25,8 @@ export class CustomerService {
   updateUserProfile(userId: string, profileData: any): Observable<any> {
     return this.http.post(`${BASIC_URL + 'user-profile/update'}/${userId}`, profileData);
   }
+
+  changeAvatar(userId: string | null, avatar: FormData): Observable<any> {
+    return this.http.post(`${BASIC_URL}user-profile/avatar/${userId}`, avatar);
+  }
 }
