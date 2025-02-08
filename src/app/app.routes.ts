@@ -41,9 +41,5 @@ export const routes: Routes = [
     {
         path: 'regis-confirm',
         component: RegistrationConfirmationComponent
-    },
-    {
-        path: 'confirm-email',
-        component: ConfirmEmailComponent
     }
 ];
