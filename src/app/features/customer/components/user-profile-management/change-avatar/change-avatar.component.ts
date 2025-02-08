@@ -5,15 +5,15 @@ import { UserProfileService } from '../../../services/user-profile.service';
 
 @Component({
   selector: 'app-change-avatar',
-  imports: [
-    CommonModule
-  ],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './change-avatar.component.html',
-  styleUrl: './change-avatar.component.css'
+  styleUrls: ['./change-avatar.component.css'],
 })
 export class ChangeAvatarComponent {
   @Output() closeModal = new EventEmitter<void>();
   @Input() userId: string | null = null;
+
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
   errorMessage: string | null = null;
@@ -22,8 +22,9 @@ export class ChangeAvatarComponent {
   constructor(
     private customerService: CustomerService,
     private userProfileService: UserProfileService
-  ) { }
+  ) {}
 
+  // Handle file selection
   onFileSelected(event: any): void {
     if (event.target.files.length > 0) {
       this.selectedFile = event.target.files[0];
@@ -39,14 +40,14 @@ export class ChangeAvatarComponent {
     }
   }
 
+  // Close the modal
   close(): void {
     this.closeModal.emit();
   }
 
+  // Remove the selected file
   removeSelectedFile(): void {
     this.selectedFile = null;
-
-    // Tạo một input mới để reset giá trị của input file
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -54,29 +55,25 @@ export class ChangeAvatarComponent {
     }
   }
 
+  // Upload the selected avatar
   uploadAvatar(): void {
     if (!this.selectedFile) return;
-  
+
     const formData = new FormData();
     formData.append('avatar', this.selectedFile);
-  
-    console.log(this.userId, formData);
+
     this.customerService.changeAvatar(this.userId, formData).subscribe({
       next: (response) => {
         this.successMessage = response.message;
-  
-        // Cập nhật avatar trong service (giả sử response.data.avatar chứa URL ảnh)
-        if (response?.data?.avatar) {
-          this.userProfileService.setUserAvatar(response.data.avatar);
+        if (response?.data) {
+          // Use the avatar URL from the response to update the profile
+          this.userProfileService.setUserAvatar(response.data);
         }
-  
         this.errorMessage = null;
       },
       error: (err) => {
         this.errorMessage = 'Error: ' + err.message;
-      }
+      },
     });
   }
-  
-
 }

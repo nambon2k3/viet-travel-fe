@@ -16,7 +16,7 @@ import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
     RouterLink,
     EditProfileModalComponent,
     ChangePasswordComponent,
-    ChangeAvatarComponent
+    ChangeAvatarComponent,
   ],
   templateUrl: 'user-profile-management.component.html',
   styleUrls: ['user-profile-management.component.css'],
@@ -40,7 +40,7 @@ export class UserProfileManagementComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadUserProfile();
 
-    // Lắng nghe sự kiện thay đổi route
+    // Listen for route changes
     this.subscriptions.add(
       this.router.events.subscribe((event) => {
         if (event instanceof NavigationEnd) {
@@ -49,7 +49,7 @@ export class UserProfileManagementComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Lắng nghe thay đổi từ profile service
+    // Listen for profile changes
     this.subscriptions.add(
       this.userProfileService.userProfile$.subscribe((profile) => {
         if (profile) {
@@ -88,7 +88,6 @@ export class UserProfileManagementComponent implements OnInit, OnDestroy {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  // Hàm mở/đóng modal đổi mật khẩu
   onChangePassword(): void {
     this.isDropdownOpen = false;
     this.showChangePasswordModal = true;
@@ -98,7 +97,6 @@ export class UserProfileManagementComponent implements OnInit, OnDestroy {
     this.showChangePasswordModal = false;
   }
 
-  // Hàm mở/đóng modal đổi avatar
   onChangeAvatar(): void {
     this.isDropdownOpen = false;
     this.showChangeAvatarModal = true;
@@ -108,7 +106,6 @@ export class UserProfileManagementComponent implements OnInit, OnDestroy {
     this.showChangeAvatarModal = false;
   }
 
-  // Hàm mở/đóng modal chỉnh sửa thông tin
   openEditModal(): void {
     this.showEditModal = true;
   }
