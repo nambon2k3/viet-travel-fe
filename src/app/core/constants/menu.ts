@@ -16,7 +16,7 @@ export class Menu {
           ],
         },
         {
-          icon: 'assets/icons/heroicons/outline/cube.svg',
+          icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Components',
           route: '/components',
         },
@@ -26,6 +26,14 @@ export class Menu {
       group: 'Operations',
       separator: true,
       items: [
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Operations',
+          children: [
+            { label: 'Change Tour', route: '/ceo/staff' },
+            { label: 'Booking', route: '/ceo/customer' },
+          ],
+        },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Operations',

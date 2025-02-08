@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminSidebarSubMenuComponent } from '../admin-sidebar-sub-menu/admin-sidebar-sub-menu.component';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { layoutService } from '../../../../features/admin/layout/services/layout.service';
 import { SubMenuItem } from '../../../../core/models/menu.model';
 import { AngularSvgIconModule } from 'angular-svg-icon';
@@ -19,7 +19,13 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
   styleUrl: './admin-sidebar-menu.component.css'
 })
 export class AdminSidebarMenuComponent implements OnInit {
-  constructor(public layoutService: layoutService) {}
+  constructor(public layoutService: layoutService, private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.setActiveMenu(this.layoutService.pagesMenu, event.urlAfterRedirects);
+      }
+    });
+  }
 
   public toggleMenu(subMenu: SubMenuItem) {
     this.layoutService.toggleMenu(subMenu);
@@ -27,4 +33,15 @@ export class AdminSidebarMenuComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  setActiveMenu(subMenu: any[], currentRoute: string) {
+    subMenu.forEach(menu => {
+      menu.items.forEach((item: any) => {
+        item.active = currentRoute === item.route; // Mark the active item
+        if (item.children) {
+          item.expanded = item.children.some((child: any) => currentRoute === child.route); // Expand parent if child is active
+          this.setActiveMenu([item], currentRoute); // Recursively check children
+        }
+      });
+    });
+  }
 }
