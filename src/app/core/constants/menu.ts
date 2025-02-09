@@ -52,7 +52,7 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Blog',
           children: [
-            { label: 'List Blog', route: '/m/create-blog' }
+            { label: 'List Blog', route: '/m/blog' }
           ],
         },
       ],
