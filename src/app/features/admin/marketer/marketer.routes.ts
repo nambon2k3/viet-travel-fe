@@ -8,7 +8,7 @@ export const MARKETER_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       {
-        path: '',
+        path: 'blog',
         component: ListBlogComponent
       }]
   },

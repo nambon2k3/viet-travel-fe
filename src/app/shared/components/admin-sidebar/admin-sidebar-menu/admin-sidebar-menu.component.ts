@@ -20,28 +20,9 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 })
 export class AdminSidebarMenuComponent implements OnInit {
   constructor(public layoutService: layoutService, private router: Router) {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.setActiveMenu(this.layoutService.pagesMenu, event.urlAfterRedirects);
-      }
-    });
   }
-
   public toggleMenu(subMenu: SubMenuItem) {
     this.layoutService.toggleMenu(subMenu);
   }
-
   ngOnInit(): void {}
-
-  setActiveMenu(subMenu: any[], currentRoute: string) {
-    subMenu.forEach(menu => {
-      menu.items.forEach((item: any) => {
-        item.active = currentRoute === item.route; // Mark the active item
-        if (item.children) {
-          item.expanded = item.children.some((child: any) => currentRoute === child.route); // Expand parent if child is active
-          this.setActiveMenu([item], currentRoute); // Recursively check children
-        }
-      });
-    });
-  }
 }
