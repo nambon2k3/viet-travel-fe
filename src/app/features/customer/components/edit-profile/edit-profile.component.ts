@@ -59,7 +59,7 @@ export class EditProfileModalComponent implements OnInit {
 
     const formData = this.editProfileForm.value;
 
-    this.customerService.updateUserProfile(userId, formData, token)
+    this.customerService.updateUserProfile(userId, formData)
       .pipe(
         catchError((error) => {
           const apiError = error?.error?.message || 'An error occurred while updating profile.';
