@@ -6,11 +6,12 @@ import { ConfirmEmailComponent } from './core/pages/confirm-email/confirm-email.
 import { ResetPasswordComponent } from './features/common/components/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './features/common/components/forgot-password/forgot-password.component';
 import { RegistrationConfirmationComponent } from './core/pages/registration-confirmation/registration-confirmation.component';
+import { HomepageComponent } from './features/public/components/homepage/homepage.component';
 
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'login',
+        redirectTo: 'homepage',
         pathMatch: 'full'
     },
     {
@@ -50,5 +51,10 @@ export const routes: Routes = [
         path: 'm',
         loadChildren: () => import('./features/admin/marketer/marketer.routes').then(m => m.MARKETER_ROUTES),
 
-    }
+    },
+    {
+        path: '',
+        loadChildren: () => import('./features/public/public.routes').then(m => m.PUBLIC_ROUTES),
+    },
+    
 ];
