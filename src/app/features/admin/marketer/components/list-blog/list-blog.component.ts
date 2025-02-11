@@ -1,14 +1,15 @@
 import { Component, computed, signal } from '@angular/core';
-import { TableActionComponent } from '../../../../../shared/components/table/table-action/table-action.component';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { HttpClient } from '@angular/common/http';
 import { Blog } from '../../../../../core/models/blog.model';
 import { BlogService } from '../services/blog.service';
+import { TableRowComponent } from './table-row/table-row.component';
+import { TableActionComponent } from './table-action/table-action.component';
 
 @Component({
   selector: 'app-list-blog',
-  imports: [TableActionComponent, TableFooterComponent,  TableHeaderComponent],
+  imports: [TableActionComponent, TableFooterComponent,  TableHeaderComponent, TableRowComponent],
   templateUrl: './list-blog.component.html',
   styleUrl: './list-blog.component.css'
 })
@@ -28,7 +29,7 @@ export class ListBlogComponent {
   loadBlogs(): void {
     this.blogService.getBlogByPage(this.page, this.size).subscribe({
       next: (response) => {
-        this.blogs = response.data.items;
+        this.blogs.set(response.data.items);
         this.totalItems = response.data.total;
         this.page = response.data.page;
         this.size = response.data.size;
@@ -40,13 +41,17 @@ export class ListBlogComponent {
   }
   
 
-  public toggleUsers(isChecked: boolean): void {
-
+  public toggleBlogs(checked: boolean): void {
+    this.blogs.update((blogs) => {
+      return blogs.map((blog) => {
+        return { ...blog, selected: checked };
+      });
+    });
     
   }
 
 
-  filteredUsers = computed(() => {
+  filteredBlogs = computed(() => {
     return this.blogs();
   });
 

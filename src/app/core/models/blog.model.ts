@@ -1,9 +1,12 @@
 export interface Blog {
     id: number;
+    thumbnailImageUrl: string;
     title: string;
     description: string;
     content: string;
-    authorId: number;
-    tagIds: number[];
-    isDeleted: boolean;
+    author: {id: number; fullName: string};
+    tags: { id: number; name: string }[];
+    deleted: boolean;
+    selected: boolean;
+    createdAt: Date;
 }

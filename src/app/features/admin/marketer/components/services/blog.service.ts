@@ -10,6 +10,12 @@ const BASIC_URL = "http://localhost:8080/api/v1/marketing/blog";
 })
 
 export class BlogService {
+    getTagsByBlogId(id: number) {
+      throw new Error('Method not implemented.');
+    }
+    getAuthorById(authorId: number) {
+      throw new Error('Method not implemented.');
+    }
 
     constructor(private http: HttpClient, private userStorageService: UserStorageService) { }
 
@@ -33,6 +39,17 @@ export class BlogService {
         }
 
         return this.http.get(`${BASIC_URL}/list`, { params });
+    }
+
+
+    updateBlogStatus(id: number, isDeleted: boolean): Observable<any> {
+        const token = this.userStorageService.getToken();
+
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        return this.http.post(`${BASIC_URL}/change-status/${id}`,  isDeleted);
     }
 
 }
