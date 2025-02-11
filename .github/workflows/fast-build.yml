@@ -28,8 +28,8 @@ jobs:
 
     - name: Deploy
       if: success()
-      uses: peaceiris/actions-fast-build@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: dist/viet-travel-be
+        publish_dir: dist/viet-travel-fe
         enable_jekyll: true
