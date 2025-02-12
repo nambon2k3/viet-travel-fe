@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { UserStorageService } from '../user-storage/user-storage.service';
 
-const BASIC_URL = "http://localhost:8080/api/v1/";
+const BASIC_URL = "https://croakorder.store/api/v1/";
 
 @Injectable({
   providedIn: 'root',
