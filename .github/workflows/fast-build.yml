@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - release/*
-    branches-ignore:
-      - main
 
 permissions:
   contents: read
@@ -32,7 +30,7 @@ jobs:
     env:
       NODE_ENV: production_build
       BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
-      DEPLOY_PATH: /var/www/viet-travel-fe
+      DEPLOY_PATH: /var/www/viet-travel-fe/
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
