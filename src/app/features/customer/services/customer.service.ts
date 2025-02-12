@@ -10,16 +10,10 @@ const BASIC_URL = "http://localhost:8080/api/v1/";
 })
 export class CustomerService {
 
-  constructor(private http: HttpClient, private userStorageService: UserStorageService) { }
+  constructor(private http: HttpClient) { }
 
   getUserProfile(): Observable<any> {
-    const token = this.userStorageService.getToken();
-
-    if (!token) {
-      throw new Error('No authentication token found');
-    }
-
-    return this.http.post<any>(BASIC_URL + 'user-profile', token);
+    return this.http.get<any>(BASIC_URL + 'user-profile');
   }
 
   updateUserProfile(userId: string, profileData: any): Observable<any> {
