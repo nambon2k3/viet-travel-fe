@@ -15,7 +15,7 @@ jobs:
       - name: Clean up temporary files
         run: |
           echo "Started cleaning up temporary files..."
-          rm -rf viet-travel-fe/*
+          rm -rf /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe/*
 
   build:
     runs-on: self-hosted
@@ -62,6 +62,10 @@ jobs:
 
       - name: Deploy to server
         run: |
+          pwd
+          cd ~
+          cd /home/ubuntu/fe
+          ls
           echo "Deploying to $DEPLOY_PATH"
           sshpass -p "$REMOTE_PW" scp -r -o StrictHostKeyChecking=no viet-travel-fe/stub/* root@"$REMOTE_HOST":"$DEPLOY_PATH"
         env:
