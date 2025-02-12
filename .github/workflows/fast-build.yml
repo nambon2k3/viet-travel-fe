@@ -1,18 +1,18 @@
 name: Viet travel - CICD
 run-name: Deploy ${{ github.ref_name }} to ${{ github.event.inputs.env }}
 
-permissions:
-  contents: read
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 on:
   push:
     branches:
       - release/*
     branches-ignore:
       - main
+
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   cleanup:
