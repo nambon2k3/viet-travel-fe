@@ -43,10 +43,10 @@ jobs:
           CI=false npm run build
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build
-          path: viet-travel-fe/build/
+          path: viet-travel-fe/stub/
 
   deploy:
     runs-on: self-hosted
@@ -65,7 +65,7 @@ jobs:
       - name: Deploy to server
         run: |
           echo "Deploying to $DEPLOY_PATH"
-          sshpass -p "$REMOTE_PW" scp -r -o StrictHostKeyChecking=no viet-travel-fe/build/* root@"$REMOTE_HOST":"$DEPLOY_PATH"
+          sshpass -p "$REMOTE_PW" scp -r -o StrictHostKeyChecking=no viet-travel-fe/stub/* root@"$REMOTE_HOST":"$DEPLOY_PATH"
         env:
           REMOTE_PW: ${{ secrets.REMOTE_PW }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
