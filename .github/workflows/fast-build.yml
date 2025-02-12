@@ -24,13 +24,11 @@ jobs:
           echo "Started cleaning up temporary files..."
           rm -rf /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe/*
 
-  build-to-target:
+  build:
     runs-on: self-hosted
     needs: cleanup
     env:
-      NODE_ENV: production_build
       BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
-      DEPLOY_PATH: /var/www/viet-travel-fe/
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -49,6 +47,16 @@ jobs:
           export NODE_OPTIONS=--max-old-space-size=4096
           npm run build
 
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    env:
+      BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
+      DEPLOY_PATH: "/var/www/viet-travel-fe"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+    
       - name: Verify build folder
         run: |
           echo "Listing files in build directory:"
@@ -56,12 +64,12 @@ jobs:
 
       - name: Create build folder
         run: |
-          mkdir -p $DEPLOY_PATH
-          cp -r $BUILD_FOLDER* $DEPLOY_PATH
+          sudo mkdir -p $DEPLOY_PATH
+          cp -r $BUILD_FOLDER/* $DEPLOY_PATH
 
       - name: Verify copied files
         run: |
-          echo "Listing files in /home/ubuntu/fe:"
+          echo "Listing files in $DEPLOY_PATH:"
           ls -la $DEPLOY_PATH
 
       - name: Upload build artifacts
@@ -75,25 +83,3 @@ jobs:
           include-hidden-files: false
         env:
           NODE_ENV: production_build
-
-  deploy-temp:
-    runs-on: self-hosted
-    needs: build-to-target
-    env:
-      DEPLOY_PATH: "/var/www/viet-travel-fe"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install SSH client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
-
-      - name: Deploy to server
-        run: |
-          echo "Deploying to $DEPLOY_PATH"
-          # sshpass -p "$REMOTE_PW" scp -r -o StrictHostKeyChecking=no viet-travel-fe/stub/* root@"$REMOTE_HOST":"$DEPLOY_PATH"
-        env:
-          REMOTE_PW: ${{ secrets.REMOTE_PW }}
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
