@@ -71,7 +71,7 @@ jobs:
 
   deploy-temp:
     runs-on: self-hosted
-    needs: build
+    needs: build-to-target
     if: ${{ always() }} # Temponary skip this step
     env:
       DEPLOY_PATH: "/var/www/viet-travel-fe"
