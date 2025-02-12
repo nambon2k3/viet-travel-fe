@@ -1,35 +1,71 @@
-name: GitHub Pages Sample
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-    - release/*
+      - release/*
 
 jobs:
-  deploy:
+  cleanup:
     runs-on: self-hosted
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Clean up temporary files
+        run: |
+          echo "Started cleaning up temporary files..."
+          rm -rf viet-travel-fe/*
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
+  build:
+    runs-on: self-hosted
+    needs: cleanup
+    env:
+      NODE_ENV: production_build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: |
+          cd pharmacy-management-ui
+          npm install
+          npm install --save-dev @babel/plugin-proposal-private-property-in-object
 
-    - name: Install dependencies
-      run: npm install
+      - name: Build the project
+        run: |
+          export NODE_OPTIONS=--max-old-space-size=4096
+          CI=false npm run build
 
-    # - name: Run tests
-    #   run: npm run test
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: viet-travel-fe/build/
 
-    - name: Build
-      run: npm run build:prod
+  deploy:
+    runs-on: self-hosted
+    needs: build
+    env:
+      DEPLOY_PATH: "/var/www/viet-travel-fe"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Deploy
-      if: success()
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: dist/viet-travel-fe
-        enable_jekyll: true
+      - name: Install SSH client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sshpass
+
+      - name: Deploy to server
+        run: |
+          echo "Deploying to $DEPLOY_PATH"
+          sshpass -p "$REMOTE_PW" scp -r -o StrictHostKeyChecking=no viet-travel-fe/build/* root@"$REMOTE_HOST":"$DEPLOY_PATH"
+        env:
+          REMOTE_PW: ${{ secrets.REMOTE_PW }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
