@@ -31,11 +31,9 @@ jobs:
         with:
           node-version: '20'
           
-      - name: Install dependencies
+      - name: Install dependencies needed
         run: |
-          cd pharmacy-management-ui
           npm install
-          npm install --save-dev @babel/plugin-proposal-private-property-in-object
 
       - name: Build the project
         run: |
