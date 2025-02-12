@@ -1,9 +1,18 @@
 name: Viet travel - CICD
+run-name: Deploy ${{ github.ref_name }} to ${{ github.event.inputs.env }}
+
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
     branches:
       - release/*
+    branches-ignore:
+      - main
 
 jobs:
   cleanup:
@@ -49,19 +58,19 @@ jobs:
 
       - name: Create build folder
         run: |
-          mkdir -p /home/ubuntu/fe
-          cp -r $BUILD_FOLDER* /home/ubuntu/fe/
+          mkdir -p $DEPLOY_PATH
+          cp -r $BUILD_FOLDER* $DEPLOY_PATH
 
       - name: Verify copied files
         run: |
           echo "Listing files in /home/ubuntu/fe:"
-          ls -la /home/ubuntu/fe/
+          ls -la $DEPLOY_PATH
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build
-          path: /home/ubuntu/fe
+          path: $DEPLOY_PATH
           if-no-files-found: warn
           compression-level: 6
           overwrite: false
@@ -72,7 +81,6 @@ jobs:
   deploy-temp:
     runs-on: self-hosted
     needs: build-to-target
-    if: ${{ always() }} # Temponary skip this step
     env:
       DEPLOY_PATH: "/var/www/viet-travel-fe"
     steps:
@@ -87,7 +95,7 @@ jobs:
       - name: Deploy to server
         run: |
           echo "Deploying to $DEPLOY_PATH"
-          sshpass -p "$REMOTE_PW" scp -r -o StrictHostKeyChecking=no viet-travel-fe/stub/* root@"$REMOTE_HOST":"$DEPLOY_PATH"
+          # sshpass -p "$REMOTE_PW" scp -r -o StrictHostKeyChecking=no viet-travel-fe/stub/* root@"$REMOTE_HOST":"$DEPLOY_PATH"
         env:
           REMOTE_PW: ${{ secrets.REMOTE_PW }}
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
