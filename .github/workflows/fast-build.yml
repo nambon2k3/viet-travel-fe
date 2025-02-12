@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Viet travel - CICD
 
 on:
   push:
@@ -17,12 +17,13 @@ jobs:
           echo "Started cleaning up temporary files..."
           rm -rf /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe/*
 
-  build:
+  build-to-target:
     runs-on: self-hosted
     needs: cleanup
     env:
       NODE_ENV: production_build
       BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
+      DEPLOY_PATH: /var/www/viet-travel-fe
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -68,9 +69,10 @@ jobs:
         env:
           NODE_ENV: production_build
 
-  deploy:
+  deploy-temp:
     runs-on: self-hosted
     needs: build
+    if: ${{ always() }} # Temponary skip this step
     env:
       DEPLOY_PATH: "/var/www/viet-travel-fe"
     steps:
@@ -84,10 +86,6 @@ jobs:
 
       - name: Deploy to server
         run: |
-          pwd
-          cd ~
-          cd /home/ubuntu/fe
-          ls
           echo "Deploying to $DEPLOY_PATH"
           sshpass -p "$REMOTE_PW" scp -r -o StrictHostKeyChecking=no viet-travel-fe/stub/* root@"$REMOTE_HOST":"$DEPLOY_PATH"
         env:
