@@ -22,6 +22,7 @@ jobs:
     needs: cleanup
     env:
       NODE_ENV: production_build
+      BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -40,11 +41,32 @@ jobs:
           export NODE_OPTIONS=--max-old-space-size=4096
           npm run build
 
+      - name: Verify build folder
+        run: |
+          echo "Listing files in build directory:"
+          ls -la $BUILD_FOLDER
+
+      - name: Create build folder
+        run: |
+          mkdir -p /home/ubuntu/fe
+          cp -r $BUILD_FOLDER* /home/ubuntu/fe/
+
+      - name: Verify copied files
+        run: |
+          echo "Listing files in /home/ubuntu/fe:"
+          ls -la /home/ubuntu/fe/
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build
           path: /home/ubuntu/fe
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+        env:
+          NODE_ENV: production_build
 
   deploy:
     runs-on: self-hosted
