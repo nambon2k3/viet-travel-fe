@@ -29,6 +29,7 @@ jobs:
     needs: cleanup
     env:
       BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
+      DEPLOY_PATH: /var/www/viet-travel-fe
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -47,16 +48,6 @@ jobs:
           export NODE_OPTIONS=--max-old-space-size=4096
           npm run build
 
-  deploy:
-    runs-on: self-hosted
-    needs: build
-    env:
-      BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
-      DEPLOY_PATH: "/var/www/viet-travel-fe"
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-    
       - name: Verify build folder
         run: |
           echo "Listing files in build directory:"
