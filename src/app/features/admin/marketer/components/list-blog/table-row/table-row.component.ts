@@ -3,8 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Blog } from '../../../../../../core/models/blog.model';
 import { BlogService } from '../../services/blog.service';
-import { DatePipe } from '@angular/common';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 @Component({
   selector: '[app-table-row]',
@@ -23,18 +22,9 @@ export class TableRowComponent {
     private router: Router
   ) { }
 
-
-  showEditModal = false;
-
-
   openDetail(): void {
     this.router.navigate(['/m/blog-details'], { state: { blog: this.blog } });
   }
-
-  closeEditModal(): void {
-    this.showEditModal = false;
-  }
-
 
   hideBlog(): void {
     this.blogService.updateBlogStatus(this.blog.id, true).subscribe({

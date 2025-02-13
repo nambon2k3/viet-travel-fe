@@ -19,13 +19,6 @@ export class BlogService {
     constructor(private http: HttpClient, private userStorageService: UserStorageService) { }
 
     getBlogByPage(page: number = 0, size: number = 10, keyword?: string, isDeleted?: boolean): Observable<any> {
-        const token = this.userStorageService.getToken();
-
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-
-
         let params = new HttpParams()
             .set('page', page)
             .set('size', size);
@@ -42,12 +35,6 @@ export class BlogService {
 
 
     updateBlogStatus(id: number, isDeleted: boolean): Observable<any> {
-        const token = this.userStorageService.getToken();
-
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-
         return this.http.post(`${environment.apiUrl}/marketing/blog/change-status/${id}`,  isDeleted);
     }
 
@@ -58,5 +45,4 @@ export class BlogService {
     update(formData: any): Observable<any> {
         return this.http.post(`${environment.apiUrl}/marketing/blog/update`, formData);
     }
-
 }
