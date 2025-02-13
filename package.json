@@ -10,7 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "serve:ssr:viet-travel-fe": "node dist/viet-travel-fe/server/server.mjs"
+    "serve:ssr:viet-travel-fe": "node dist/viet-travel-fe/server/server.mjs",
+    "test:headless": "ng test --watch=false --browsers=ChromeHeadless"
   },
   "private": true,
   "dependencies": {
