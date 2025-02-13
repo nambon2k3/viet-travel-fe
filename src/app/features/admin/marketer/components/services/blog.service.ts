@@ -2,8 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { UserStorageService } from "../../../../../core/services/user-storage/user-storage.service";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
-
-const BASIC_URL = "http://localhost:8080/api/v1/marketing/blog";
+import { environment } from "../../../../../../environments/environment";
 
 @Injectable({
     providedIn: 'root',
@@ -38,7 +37,7 @@ export class BlogService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${BASIC_URL}/list`, { params });
+        return this.http.get(`${environment.apiUrl}/marketing/blog/list`, { params });
     }
 
 
@@ -49,7 +48,15 @@ export class BlogService {
             throw new Error('No authentication token found');
         }
 
-        return this.http.post(`${BASIC_URL}/change-status/${id}`,  isDeleted);
+        return this.http.post(`${environment.apiUrl}/marketing/blog/change-status/${id}`,  isDeleted);
+    }
+
+    getBlogById(id: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}/marketing/blog/details/${id}`);
+    }
+
+    update(formData: any): Observable<any> {
+        return this.http.post(`${environment.apiUrl}/marketing/blog/update`, formData);
     }
 
 }

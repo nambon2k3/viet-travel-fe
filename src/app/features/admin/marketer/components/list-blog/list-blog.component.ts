@@ -1,15 +1,18 @@
 import { Component, computed, signal } from '@angular/core';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { TableHeaderComponent } from './table-header/table-header.component';
-import { HttpClient } from '@angular/common/http';
 import { Blog } from '../../../../../core/models/blog.model';
 import { BlogService } from '../services/blog.service';
 import { TableRowComponent } from './table-row/table-row.component';
 import { TableActionComponent } from './table-action/table-action.component';
+import { BlogDetailComponent } from '../blog-detail/blog-detail.component';
 
 @Component({
   selector: 'app-list-blog',
-  imports: [TableActionComponent, TableFooterComponent,  TableHeaderComponent, TableRowComponent],
+  imports: [TableActionComponent, 
+            TableFooterComponent,  
+            TableHeaderComponent, 
+            TableRowComponent],
   templateUrl: './list-blog.component.html',
   styleUrl: './list-blog.component.css'
 })
@@ -19,7 +22,12 @@ export class ListBlogComponent {
   page = 0;
   size = 10;
 
+
+
+
   constructor(private blogService: BlogService) {}
+
+  
 
   ngOnInit(): void {
     this.loadBlogs();
