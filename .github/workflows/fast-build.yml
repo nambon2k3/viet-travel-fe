@@ -46,7 +46,7 @@ jobs:
       - name: Build the project
         run: |
           export NODE_OPTIONS=--max-old-space-size=4096
-          npm run build --verbose
+          npm run build:prod --verbose
 
       - name: Verify build folder
         run: |
