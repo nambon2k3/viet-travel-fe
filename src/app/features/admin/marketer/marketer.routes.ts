@@ -1,6 +1,7 @@
 import { Route } from "@angular/router";
 import { LayoutComponent } from "../layout/layout.component";
 import { ListBlogComponent } from "./components/list-blog/list-blog.component";
+import { BlogDetailComponent } from "./components/blog-detail/blog-detail.component";
 
 export const MARKETER_ROUTES: Route[] = [
   {
@@ -10,6 +11,10 @@ export const MARKETER_ROUTES: Route[] = [
       {
         path: 'blog',
         component: ListBlogComponent
+      },
+      {
+        path: 'blog-details',
+        component: BlogDetailComponent,
       }]
   },
 ];

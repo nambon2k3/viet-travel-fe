@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { UserStorageService } from "../../../../../core/services/user-storage/user-storage.service";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
+import { Blog } from "../../../../../core/models/blog.model";
 
 const BASIC_URL = "http://localhost:8080/api/v1/marketing/blog";
 
@@ -50,6 +51,14 @@ export class BlogService {
         }
 
         return this.http.post(`${BASIC_URL}/change-status/${id}`,  isDeleted);
+    }
+
+    getBlogById(id: number): Observable<any> {
+        return this.http.get(`${BASIC_URL}/details/${id}`);
+    }
+
+    update(formData: any): Observable<any> {
+        return this.http.post(`${BASIC_URL}/update`, formData);
     }
 
 }
