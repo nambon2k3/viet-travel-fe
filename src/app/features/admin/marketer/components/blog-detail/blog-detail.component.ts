@@ -19,17 +19,15 @@ export class BlogDetailComponent {
   successMessage: string | null = null;
   imagePreview: string | null = null;
   selectedFile: File | null = null;
-  blog: Blog = <Blog>{};
+  blog!: Blog;
 
   constructor(private blogService: BlogService,
     private fb: FormBuilder,
     private router: Router) { }
 
   ngOnInit(): void {
-
-    const navigation = this.router.getCurrentNavigation();
-    this.blog = navigation?.extras.state?.['blog'];
-
+    this.blog = history.state.blog;
+    this.imagePreview! = this.blog.thumbnailImageUrl;
 
     this.editBlogForm = this.fb.group({
       id: [this.blog.id, Validators.required],
@@ -37,11 +35,8 @@ export class BlogDetailComponent {
       description: [this.blog.description, Validators.required],
       content: [this.blog.content, Validators.required],
       tags: [this.blog.tags?.map(tag => tag.name).join(', '), Validators.required],
-      authorName: [this.blog.author?.fullName, Validators.required]
+      authorName: [this.blog.author?.fullName, Validators.required],
     });
-
-    
-    
   }
 
   onFileSelected(event: Event): void {
@@ -59,11 +54,11 @@ export class BlogDetailComponent {
     }
   }
 
+  onCancel(): void {
+    this.router.navigate(['/m/blog']);
+  }
 
   saveChanges(): void {
-
-
-
     const formData = this.editBlogForm.value;
 
     this.blogService.update(formData)
@@ -87,5 +82,4 @@ export class BlogDetailComponent {
         }
       });
   }
-
 }

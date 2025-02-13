@@ -23,18 +23,14 @@ export class TableRowComponent {
     private router: Router
   ) { }
 
-
-  showEditModal = false;
-
-
-  openDetail(): void {
-    this.router.navigate(['/m/blog-details'], { state: { blog: this.blog } });
+  openDetail(blog: Blog): void {
+    this.router.navigate(['/m/blog-details'], { state: {blog} });
   }
 
-  closeEditModal(): void {
-    this.showEditModal = false;
+  
+  ngOnInit(): void {
+    console.log('blog:', this.blog);
   }
-
 
   hideBlog(): void {
     this.blogService.updateBlogStatus(this.blog.id, true).subscribe({

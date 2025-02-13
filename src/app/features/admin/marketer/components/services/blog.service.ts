@@ -44,21 +44,15 @@ export class BlogService {
 
 
     updateBlogStatus(id: number, isDeleted: boolean): Observable<any> {
-        const token = this.userStorageService.getToken();
-
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-
-        return this.http.post(`${BASIC_URL}/change-status/${id}`,  isDeleted);
+        return this.http.post(`${environment.apiUrl}marketing/blog/change-status/${id}`,  isDeleted);
     }
 
     getBlogById(id: number): Observable<any> {
-        return this.http.get(`${BASIC_URL}/details/${id}`);
+        return this.http.get(`${environment.apiUrl}marketing/blog/details/${id}`);
     }
 
     update(formData: any): Observable<any> {
-        return this.http.post(`${BASIC_URL}/update`, formData);
+        return this.http.post(`${environment.apiUrl}marketing/blog/update`, formData);
     }
 
 }
