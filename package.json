@@ -5,9 +5,11 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:prod": "ng build --configuration production --base-href https://haominhnguyen.github.io/viet-travel-fe/",
+    "build:prod": "ng build --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
     "serve:ssr:viet-travel-fe": "node dist/viet-travel-fe/server/server.mjs",
     "test:headless": "ng test --watch=false --browsers=ChromeHeadless"
   },
