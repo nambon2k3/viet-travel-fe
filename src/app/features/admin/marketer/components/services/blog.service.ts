@@ -35,14 +35,14 @@ export class BlogService {
 
 
     updateBlogStatus(id: number, isDeleted: boolean): Observable<any> {
-        return this.http.post(`${environment.apiUrl}/marketing/blog/change-status/${id}`,  isDeleted);
+        return this.http.post(`${environment.apiUrl}marketing/blog/change-status/${id}`,  isDeleted);
     }
 
     getBlogById(id: number): Observable<any> {
-        return this.http.get(`${environment.apiUrl}/marketing/blog/details/${id}`);
+        return this.http.get(`${environment.apiUrl}marketing/blog/details/${id}`);
     }
 
     update(formData: any): Observable<any> {
-        return this.http.post(`${environment.apiUrl}/marketing/blog/update`, formData);
+        return this.http.post(`${environment.apiUrl}marketing/blog/update`, formData);
     }
 }

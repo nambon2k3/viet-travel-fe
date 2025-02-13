@@ -22,8 +22,13 @@ export class TableRowComponent {
     private router: Router
   ) { }
 
-  openDetail(): void {
-    this.router.navigate(['/m/blog-details'], { state: { blog: this.blog } });
+  openDetail(blog: Blog): void {
+    this.router.navigate(['/m/blog-details'], { state: {blog} });
+  }
+
+  
+  ngOnInit(): void {
+    console.log('blog:', this.blog);
   }
 
   hideBlog(): void {

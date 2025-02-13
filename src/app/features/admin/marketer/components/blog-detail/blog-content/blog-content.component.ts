@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Highlight from '@tiptap/extension-highlight';
@@ -11,29 +11,57 @@ import TextStyle from '@tiptap/extension-text-style';
 import FontFamily from '@tiptap/extension-font-family';
 import { Color } from '@tiptap/extension-color';
 import Bold from '@tiptap/extension-bold';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
 
 @Component({
   selector: 'app-blog-content',
   templateUrl: './blog-content.component.html',
   styleUrls: ['./blog-content.component.css'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => BlogContentComponent),
+      multi: true
+    }
+  ]
 })
 export class BlogContentComponent implements OnInit {
-
   @Input() content: string | null = null;
-
   showTextSizeDropdown: boolean = false;
-
-
-
-
-  
-
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
   editor!: Editor;
 
   ngOnInit(): void {
     this.initializeEditor();
+  }
+
+  // ControlValueAccessor Callbacks
+  onChange = (value: any) => {};
+  onTouched = () => {};
+
+  // Implement ControlValueAccessor Methods
+  writeValue(value: any): void {
+    this.content = value;
+    if (this.editor) {
+      this.editor.commands.setContent(value);
+    }
+  }
+
+  // Register the function to call when the value changes
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  // Register the function to call when the control is touched
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    if (this.editor) {
+      this.editor.setEditable(!isDisabled);
+    }
   }
 
   initializeEditor(): void {
@@ -89,11 +117,15 @@ export class BlogContentComponent implements OnInit {
         YouTube,
       ],
       content: this.content,
+      onUpdate: ({ editor }) => {
+        this.onChange(editor.getHTML());
+      },
         editorProps: {
             attributes: {
                 class: 'format lg:format-lg dark:format-invert focus:outline-none format-blue max-w-none',
             },
         }
+        
     });
   }
 
