@@ -7,14 +7,14 @@
         </div>
     </div>
     <div class="inline-block space-x-4">
-        <button class="bg-primary text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold">
+        <button class="bg-green-800 text-white text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold">
             Add Staff
         </button>
     </div>
 </div>
 
 <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2">
-    <app-table-action [totalItems]="totalItems"></app-table-action>
+    <app-table-action [size]="size" [totalItems]="totalItems"></app-table-action>
     <div
         class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
         <table
@@ -37,5 +37,7 @@
             </tbody>
         </table>
     </div>
-    <app-table-footer></app-table-footer>
+    <app-table-footer [totalPages]="totalPages()" [currentPage]="page" (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)">
+    </app-table-footer>
 </div>

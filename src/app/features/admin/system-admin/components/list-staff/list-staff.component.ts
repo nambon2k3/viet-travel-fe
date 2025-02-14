@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-list-staff',
+  standalone: true,
   imports: [
     TableActionComponent,
     TableFooterComponent,
@@ -17,13 +18,14 @@ import { CommonModule } from '@angular/common';
     CommonModule
   ],
   templateUrl: './list-staff.component.html',
-  styleUrl: './list-staff.component.css'
+  styleUrls: ['./list-staff.component.css']
 })
 export class ListStaffComponent {
   staffs = signal<User[]>([]);
   totalItems = 0;
   page = 0;
   size = 10;
+  totalPages = signal(0); 
 
   constructor(private staffService: StaffService) { }
 
@@ -31,7 +33,7 @@ export class ListStaffComponent {
     this.loadStaffs();
   }
 
-
+  // Load staffs với page và size hiện tại
   loadStaffs(): void {
     this.staffService.getStaffByPage(this.page, this.size).subscribe({
       next: (response) => {
@@ -39,6 +41,7 @@ export class ListStaffComponent {
         this.totalItems = response.data.total;
         this.page = response.data.page;
         this.size = response.data.size;
+        this.totalPages.set(Math.ceil(this.totalItems / this.size));
       },
       error: (err) => {
         console.error('Failed to load staffs:', err);
@@ -46,6 +49,20 @@ export class ListStaffComponent {
     });
   }
 
+  // Thay đổi số lượng hiển thị trên mỗi trang
+  onPageSizeChange(newSize: number): void {
+    this.size = newSize;
+    this.page = 0; // Reset về trang đầu tiên
+    this.loadStaffs();
+  }
+
+  // Thay đổi trang hiện tại
+  onPageChange(newPage: number): void {
+    if (newPage >= 0 && newPage < this.totalPages()) {
+      this.page = newPage;
+      this.loadStaffs();
+    }
+  }
 
   public toggleStaffs(checked: boolean): void {
     this.staffs.update((staffs) => {
@@ -53,11 +70,10 @@ export class ListStaffComponent {
         return { ...staff, selected: checked };
       });
     });
-
   }
-
 
   filteredStaffs = computed(() => {
     return this.staffs();
   });
+
 }
