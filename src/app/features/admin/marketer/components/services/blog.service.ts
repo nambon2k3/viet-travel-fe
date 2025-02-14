@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { UserStorageService } from "../../../../../core/services/user-storage/user-storage.service";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
+import { environment } from "../../../../../../environments/environment";
 
 const BASIC_URL = "http://localhost:8080/api/v1/marketing/blog";
 
@@ -31,7 +32,7 @@ export class BlogService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${BASIC_URL}/list`, { params });
+        return this.http.get(`${environment.apiUrl}marketing/blog/list`, { params });
     }
 
 

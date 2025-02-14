@@ -22,16 +22,22 @@ export class StaffService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${environment.apiUrl}ceo/users`, { params });
+        return this.http.get(`${environment.apiUrl}admin/staffs`, { params });
     }
 
+    getStaffById(id: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}admin/staffs/${id}`);
+    }
 
     deleteStaff(id: number): Observable<any> {
-        return this.http.delete(`${environment.apiUrl}ceo/users/${id}`);
+        return this.http.delete(`${environment.apiUrl}admin/staffs/delete/${id}`);
     }
 
     update(formData: any): Observable<any> {
-        return this.http.post(`${environment.apiUrl}ceo/users/update`, formData);
+        return this.http.put(`${environment.apiUrl}admin/staffs/update/${formData.id}`, formData);
     }
-
+    
+    recoverStaff(id: number): Observable<any> {
+        return this.http.delete(`${environment.apiUrl}admin/staffs/delete/${id}`);
+    }
 }
