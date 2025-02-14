@@ -60,4 +60,10 @@ export const routes: Routes = [
         path: 'sa',
         loadChildren: () => import('./features/admin/system-admin/system-admin.routes').then(m => m.SYSTEM_ADMIN_ROUTES),
     },
+    //TODO: 
+
+    {
+        path: 'reset-password',
+        component: ResetPasswordComponent
+    }
 ];
