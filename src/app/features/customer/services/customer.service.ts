@@ -12,14 +12,8 @@ export class CustomerService {
   constructor(private http: HttpClient, private userStorageService: UserStorageService) { }
 
   getUserProfile(): Observable<any> {
-    const token = this.userStorageService.getToken();
-
-    if (!token) {
-      throw new Error('No authentication token found');
-    }
-
-    return this.http.post<any>(environment.apiUrl + 'user-profile', token);
-  }
+    return this.http.get<any>(environment.apiUrl + 'user-profile');
+  }  
 
   updateUserProfile(userId: string, profileData: any): Observable<any> {
     return this.http.post(`${environment.apiUrl + 'user-profile/update'}/${userId}`, profileData);

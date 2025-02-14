@@ -49,6 +49,21 @@ export class StaffDetailComponent {
     this.updateSelectedRolesDisplay();
   }
 
+  loadUserById(id: number): void {
+    this.staffService.getStaffById(id)
+      .subscribe((response: any) => {
+        if (response?.code === 200) {
+          this.staff = response.data;
+          this.editUserForm.patchValue(this.staff);
+        } else {
+          // Handle error
+          console.error('Failed to load user:', response?.message);
+          this.errorMessage = response?.message || 'An error occurred while loading user.';
+          this.successMessage = null;
+        }
+      });
+  }
+
   updateSelectedRolesDisplay(): void {
     this.selectedRolesDisplay = this.selectedRoles.join(', ');
   }
@@ -56,7 +71,7 @@ export class StaffDetailComponent {
   onRoleChange(event: Event): void {
     const target = event.target as HTMLInputElement;
     const value = target.value;
-  
+
     if (target.checked) {
       // Nếu được chọn, thêm vào mảng
       this.selectedRoles.push(value);
@@ -64,11 +79,11 @@ export class StaffDetailComponent {
       // Nếu bỏ chọn, xóa khỏi mảng
       this.selectedRoles = this.selectedRoles.filter(role => role !== value);
     }
-  
+
     // Cập nhật FormControl và Display
     this.editUserForm.get('role')?.setValue(this.selectedRoles);
     this.updateSelectedRolesDisplay();
-  }  
+  }
 
   onCancel(): void {
     this.router.navigate(['/sa/staff']);
