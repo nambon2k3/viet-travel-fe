@@ -12,7 +12,6 @@
 
             <div class="relative flex items-center mt-2">
                 <input type="text" formControlName="username" placeholder="Username" required
-                    (focus)="onFocus('username')" (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333"
                     class="w-[18px] h-[18px] absolute right-2" viewBox="0 0 24 24">
@@ -20,18 +19,12 @@
                         d="M12 14c4.418 0 8 1.79 8 4v2H4v-2c0-2.21 3.582-4 8-4z"></path>
                     <circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"></circle>
                 </svg>
-                <!-- Username Criteria Popup -->
-                <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
-                    *ngIf="activeField === 'username'">
-                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.minLength">✔ Minimum 8 characters</p>
-                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.maxLength">✔ Maximum 30 characters</p>
-                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.pattern">✔ Only alphanumeric characters</p>
-                </div>
+                
             </div>
 
             <div class="relative flex items-center mt-6">
                 <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" placeholder="Password"
-                    required (focus)="onFocus('password')" (blur)="onBlur()"
+                    required
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333" (click)="togglePasswordVisibility()"
                     class="w-[18px] h-[18px] absolute right-2 cursor-pointer" viewBox="0 0 128 128">
@@ -39,15 +32,7 @@
                         d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z"
                         data-original="#000000"></path>
                 </svg>
-                <!-- Password Criteria Popup -->
-                <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
-                    *ngIf="activeField === 'password'">
-                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.minLength">✔ Minimum 8 characters</p>
-                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.uppercase">✔ At least 1 uppercase letter</p>
-                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.lowercase">✔ At least 1 lowercase letter</p>
-                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.specialChar">✔ At least 1 special character
-                    </p>
-                </div>
+                
             </div>
 
             <div class="flex flex-wrap items-center justify-between gap-4 mt-6">
