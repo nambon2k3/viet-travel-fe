@@ -6,6 +6,7 @@ import { TableActionComponent } from './table-action/table-action.component';
 import { HttpClient } from '@angular/common/http';
 import { ServiceContact } from '../../../../core/models/service-contact.model';
 import { ServiceContactService } from '../../services/service-contact.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -20,10 +21,17 @@ export class ServiceContactComponent {
     page = 0;
     size = 10;
   
-    constructor(private ServiceContactService: ServiceContactService) {}
+    constructor(
+      private ServiceContactService: ServiceContactService,
+      private router : Router
+    ) {}
   
     ngOnInit(): void {
       this.loadServiceContact();
+    }
+
+    onAdd(): void{
+      this.router.navigate(['/service-provider/add-service-contact']);
     }
   
   
