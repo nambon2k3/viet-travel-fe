@@ -30,12 +30,24 @@ export class BlogDetailComponent {
     this.imagePreview! = this.blog.thumbnailImageUrl;
 
     this.editBlogForm = this.fb.group({
-      id: [this.blog.id, Validators.required],
-      title: [this.blog.title, Validators.required],  // Corrected binding
-      description: [this.blog.description, Validators.required],
-      content: [this.blog.content, Validators.required],
-      tags: [this.blog.tags?.map(tag => tag.name).join(', '), Validators.required],
-      authorName: [this.blog.author?.fullName, Validators.required],
+      id: [null, Validators.required],
+      title: [null, Validators.required],  // Corrected binding
+      description: [null, Validators.required],
+      content: [null, Validators.required],
+      tags: [null, Validators.required],
+      authorName: [null, Validators.required],
+    });
+
+    this.getBlogById(this.blog.id);
+  }
+
+
+  getBlogById(id: number): void {
+    this.blogService.getBlogById(id).subscribe({
+      next: (response) => {
+        this.blog = response;
+        this.editBlogForm.patchValue(response.data)
+      }
     });
   }
 

@@ -30,7 +30,7 @@ export class BlogService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${environment.apiUrl}/marketing/blog/list`, { params });
+        return this.http.get(`${environment.apiUrl}marketing/blog/list`, { params });
     }
 
 
