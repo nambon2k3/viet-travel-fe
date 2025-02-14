@@ -6,7 +6,7 @@ import { ServiceProvidedService } from '../../../services/service-provided.servi
 import { DatePipe } from '@angular/common';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, DatePipe],
+  imports: [FormsModule, AngularSvgIconModule],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })

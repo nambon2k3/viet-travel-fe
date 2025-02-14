@@ -3,7 +3,7 @@ import { UserStorageService } from "../../../core/services/user-storage/user-sto
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 
-const BASIC_URL = "http://localhost:8080/api/v1/CEO/service-contacts";
+const BASIC_URL = "http://localhost:8080/ceo/service-contacts";
 
 @Injectable({
     providedIn: 'root',
@@ -36,14 +36,14 @@ export class ServiceContactService {
     }
 
 
-    // updateServiceContactStatus(id: number, isDeleted: boolean): Observable<any> {
-    //     const token = this.userStorageService.getToken();
+    deleteServiceContact(id: number, isDeleted: boolean): Observable<any> {
+        const token = this.userStorageService.getToken();
 
-    //     if (!token) {
-    //         throw new Error('No authentication token found');
-    //     }
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
 
-    //     return this.http.post(`${BASIC_URL}/${id}`,  isDeleted);
-    // }
+        return this.http.post(`${BASIC_URL}/delete/${id}`,  isDeleted);
+    }
 
 }
