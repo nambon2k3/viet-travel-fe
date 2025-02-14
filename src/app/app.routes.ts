@@ -53,6 +53,11 @@ export const routes: Routes = [
 
     },
     {
+        path: 'service-provider',
+        loadChildren: () => import('./features/service-provider/service-provider.routes').then(m => m.SERVICE_PROVIDER_ROUTES),
+
+    },
+    {
         path: '',
         loadChildren: () => import('./features/public/public.routes').then(m => m.PUBLIC_ROUTES),
     },
