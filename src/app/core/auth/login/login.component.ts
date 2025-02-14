@@ -21,8 +21,6 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   hidePassword = true;
   errorMessage: string | null = null;
-  activeField: string | null = null;
-
   passwordCriteria = {
     minLength: false,
     uppercase: false,
@@ -90,14 +88,6 @@ export class LoginComponent implements OnInit {
 
   togglePasswordVisibility() {
     this.hidePassword = !this.hidePassword;
-  }
-
-  onFocus(field: string): void {
-    this.activeField = field;
-  }
-
-  onBlur(): void {
-    this.activeField = null;
   }
 
   onSubmit() {

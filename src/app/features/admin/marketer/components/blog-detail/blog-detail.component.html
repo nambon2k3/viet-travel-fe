@@ -1,0 +1,95 @@
+<h2 class="text-lg font-bold mb-4">Edit Blog</h2>
+
+<form [formGroup]="editBlogForm">
+  <!-- Thumbnail Image -->
+  <label class="block mb-2 text-sm font-medium text-gray-700"
+    >Thumbnail Image</label>
+  <div class="flex flex-col items-center justify-center mb-4">
+    <!-- Image Preview -->
+    <img
+      *ngIf="imagePreview"
+      [src]="imagePreview"
+      alt="Thumbnail Preview"
+      class="w-full h-64 object-cover rounded-md mb-2"
+    />
+    <input
+      type="file"
+      (change)="onFileSelected($event)"
+      accept="image/*"
+      class="w-full"
+    />
+  </div>
+
+  
+  <!-- Title -->
+  <label class="block mb-2 text-sm font-medium text-gray-700">Title</label>
+  <input
+    type="text"
+    formControlName="title"
+    class="w-full p-2 border rounded-md mb-4"
+    placeholder="Enter blog title"
+  />
+
+  <!-- Description -->
+  <label class="block mb-2 text-sm font-medium text-gray-700"
+    >Description</label
+  >
+  <textarea
+  formControlName="description"
+  rows="6"
+  class="w-full p-2 border rounded-md mb-4"
+  placeholder="Enter blog content"
+></textarea>
+
+  <!-- Content -->
+  <label class="block mb-2 text-sm font-medium text-gray-700">Content</label>
+ 
+
+  <app-blog-content [content]="blog.content" formControlName="content"></app-blog-content>
+
+  <!-- Tags -->
+  <label class="block mb-2 mt-3 text-sm font-medium text-gray-700">Tags</label>
+  <input
+    type="text"
+    formControlName="tags"
+    class="w-full p-2 border rounded-md mb-4"
+    placeholder="Enter tags separated by commas (e.g., Angular, Frontend)"
+  />
+
+  <!-- Author -->
+  <label class="block mb-2 text-sm font-medium text-gray-700"
+    >Author Name</label
+  >
+  <input
+    type="text"
+    formControlName="authorName"
+    class="w-full p-2 border rounded-md mb-4"
+    placeholder="Enter author's full name"
+  />
+
+  <!-- Error Message -->
+  <p *ngIf="errorMessage" class="text-red-500 text-sm mb-3">
+    {{ errorMessage }}
+  </p>
+  <p *ngIf="successMessage" class="text-green-500 text-sm mb-3">
+    {{ successMessage }}
+  </p>
+
+  <!-- Action Buttons -->
+  <div class="flex justify-end space-x-2">
+    <button
+      type="button"
+      (click)="onCancel()"
+      class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      (click)="saveChanges()"
+      class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+    >
+      Save Changes
+    </button>
+  </div>
+</form>

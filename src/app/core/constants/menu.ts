@@ -65,8 +65,8 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Users',
           children: [
-            { label: 'Staff', route: '/ceo/staff' },
-            { label: 'Customer', route: '/ceo/customer' },
+            { label: 'Staff', route: '/sa/staff' },
+            { label: 'Customer', route: '/sa/customer' },
           ],
         },
       ],
