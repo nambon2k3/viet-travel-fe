@@ -11,6 +11,7 @@ import { TableFilterService } from '../../../services/table-filter.service';
 export class TableActionComponent {
 
   @Input() totalItems = 0;
+  @Input() size = 0;
 
   constructor(public filterService: TableFilterService) {}
 
