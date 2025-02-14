@@ -3,22 +3,19 @@ import { MenuItem } from '../models/menu.model';
 export class Menu {
   public static pages: MenuItem[] = [
     {
-      group: 'Base',
-      separator: false,
+      group: 'Provider',
+      separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
-          label: 'Dashboard',
-          route: '/dashboard',
+          label: 'Provider',
+          route: '/service-provider',
           children: [
-            { label: 'Nfts', route: '/dashboard/nfts' },
-            { label: 'Podcast', route: '/dashboard/podcast' },
+            { label: 'Service Contact', route: '/service-provider/service-contact' },
+            { label: 'Service', route: '/service-provider/service' },
+            { label: 'Review Services', route: '/service-provider/review-service' },
+            { label: 'Booking Services', route: '/service-provider/booking-service' },
           ],
-        },
-        {
-          icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Components',
-          route: '/components',
         },
       ],
     },
@@ -30,18 +27,35 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Operations',
           children: [
-            { label: 'Change Tour', route: '/ceo/staff' },
-            { label: 'Booking', route: '/ceo/customer' },
+            { label: 'Request Service', route: '/ceo/staff' },
+            { label: 'Operation', route: '/ceo/customer' },
+            { label: 'Tour Operation', route: '/ceo/customer' },
+          ],
+        }
+      ],
+    },
+    {
+      group: 'Salesman',
+      separator: true,
+      items: [
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Tour',
+          children: [
+            { label: 'Booking Tours', route: '/m/blog' },
+            { label: 'Review Tours', route: '/m/blog' },
           ],
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Operations',
-          children: [
-            { label: 'Change Tour', route: '/ceo/staff' },
-            { label: 'Booking', route: '/ceo/customer' },
-          ],
+          label: 'Retail Services',
+          route: '/m/blog',
         },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Reports',
+          route: '/m/blog',
+        }
       ],
     },
     {
@@ -55,6 +69,62 @@ export class Menu {
             { label: 'List Blog', route: '/m/blog' }
           ],
         },
+      ],
+    },
+    {
+      group: 'Head of Business',
+      separator: true,
+      items: [
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Tour',
+          children: [
+            { label: 'Tours', route: '/m/blog' },
+            { label: 'Tours Guide', route: '/m/blog' }
+          ],
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Locations',
+          route: '/m/blog',
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Refund',
+          route: '/m/blog',
+        }
+      ],
+    },
+    {
+      group: 'Accountant',
+      separator: true,
+      items: [
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Expenditure',
+          route: '/m/blog',
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Revenue',
+          route: '/m/blog',
+        }
+      ],
+    },
+    {
+      group: 'CEO',
+      separator: true,
+      items: [
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Tour Confirmation',
+          route: '/ceo/staff',
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Providers',
+          route: '/ceo/staff',
+        }
       ],
     },
     {
