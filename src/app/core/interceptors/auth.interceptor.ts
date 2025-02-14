@@ -2,20 +2,17 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { UserStorageService } from '../services/user-storage/user-storage.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
-  // Exclude specific routes from the interceptor logic
   if (req.url.includes('/confirm-email')) {
-    // Bypass the interceptor for /confirm-email route
     return next(req);
   }
 
-  // Retrieve the token from localStorage
-  const token = localStorage.getItem('authToken');
+  const token = inject(UserStorageService).getToken();
 
-  // Clone the request and add the Authorization header if a token exists
   const clonedRequest = token
     ? req.clone({
         setHeaders: {
@@ -24,19 +21,26 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       })
     : req;
 
-  // Handle the request and catch errors
   return next(clonedRequest).pipe(
     catchError((error) => {
+      let errorMessage = 'An unexpected error occurred. Please try again later.';
+
+      if (error.error && typeof error.error === 'object') {
+        errorMessage = error.error.message || error.error.data || errorMessage;
+      } else if (error.error && typeof error.error === 'string') {
+        errorMessage = error.error;
+      }
+
       if (error.status === 401) {
-        // Handle unauthorized access (e.g., clear token and redirect to login)
-        localStorage.removeItem('authToken');
+        UserStorageService.signOut();
         router.navigate(['/login']);
       } else if (error.status === 403) {
-        // Handle forbidden access
-        console.error('Access denied:', error.message);
+        console.error('Access denied:', errorMessage);
+      } else if (error.status === 500) {
+        console.error('Server error:', errorMessage);
       }
-      // Re-throw the error to propagate it further
-      return throwError(() => new Error(error.message));
+
+      return throwError(() => new Error(errorMessage));
     })
   );
 };

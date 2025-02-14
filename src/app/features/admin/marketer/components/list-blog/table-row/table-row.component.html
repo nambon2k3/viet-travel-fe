@@ -1,0 +1,67 @@
+<ng-container>
+  <td class="text-center">
+    <input
+      [(ngModel)]="blog.selected"
+      class="checkbox checkbox-sm"
+      data-datatable-row-check="true"
+      type="checkbox"
+      value="28" />
+  </td>
+  <td>{{ blog.id }}</td>
+  <td>
+    <div class="flex items-center gap-2.5">
+      <img
+        alt="blog thumnail"
+        class="h-16 w-32 shrink-0 rounded-lg object-cover bg-gray-200"
+        [src]="blog.thumbnailImageUrl" />
+    </div>
+  </td>
+
+  <td>
+    {{ blog.title }}
+  </td>
+
+  <td>
+    {{ blog.description }}
+  </td>
+
+  <td>{{ blog.author.fullName }}</td>
+  
+  <td class="space-x-1">
+    @for (tag of blog.tags; track $index) {
+    <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
+      {{ tag.name }}
+    </span>
+    }
+  </td>
+  
+  <td>
+    {{ blog.createdAt | date }}
+  </td>
+
+  
+  <td>
+    <div  class="text-center flex justify-center items-center">
+    <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+      Details
+    </button>
+    @if (blog.deleted) {
+      <button 
+        type="button" 
+        class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+        (click)="showBlog()">
+        Show
+      </button>
+    } @else {
+      <button 
+        type="button" 
+        class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+        (click)="hideBlog()">
+        Hide
+      </button>
+    }
+    
+    </div>
+    
+  </td>
+</ng-container>

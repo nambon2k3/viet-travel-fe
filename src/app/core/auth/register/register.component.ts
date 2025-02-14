@@ -45,6 +45,18 @@ export class RegisterComponent implements OnInit {
         validFormat: false,
     };
 
+    phoneCriteria = {
+        validFormat: false,
+    };
+
+    addressCriteria = {
+        validFormat: false,
+    };
+
+    gendersCriteria = {
+        validFormat: false,
+    };
+
     confirmPasswordMismatch = false;
 
 
@@ -78,6 +90,9 @@ export class RegisterComponent implements OnInit {
                     ],
                 ],
                 email: [null, [Validators.required, Validators.email]],
+                phone: [null, [Validators.required]],
+                gender: ["", [Validators.required]],
+                address: [null, [Validators.required]],
                 rePassword: [null, [Validators.required]],
             },
             {
@@ -95,6 +110,16 @@ export class RegisterComponent implements OnInit {
         // Full name validation criteria
         this.signupForm.get('fullName')?.valueChanges.subscribe((value) => {
             this.fullNameCriteria.pattern = /^[a-zA-Z ]*$/.test(value);
+        });
+
+        // Address validation criteria
+        this.signupForm.get('address')?.valueChanges.subscribe((value) => {
+            this.addressCriteria.validFormat = /^[a-zA-Z0-9 ]*$/.test(value);
+        });
+
+        // Phone validation criteria
+        this.signupForm.get('phone')?.valueChanges.subscribe((value) => {
+            this.phoneCriteria.validFormat = /^[0-9]{10}$/.test(value);
         });
 
         // Email validation criteria
@@ -142,32 +167,25 @@ export class RegisterComponent implements OnInit {
     }
 
     onSubmit(): void {
-        this.isLoading = true;
-        this.errorMessage = null;
-    
         this.authService
             .register(this.signupForm.value)
             .pipe(
-                catchError((error) => {
-                    // Extract error message from the server's response
-                    const apiError = error?.error?.message || 'An error occurred during registration.';
-                    this.errorMessage = apiError;
-                    this.isLoading = false;
-                    return of(null);
+                catchError((err) => {
+                    const apiError = err?.error?.message || "An error occurred during registration.";
+                    const encodedError = encodeURIComponent(apiError);
+                    this.router.navigate(['/regis-confirm'], { queryParams: { error: encodedError } });
+                    return of(null); // Ensure the stream continues
                 })
             )
             .subscribe((response: any) => {
-                if (response?.success) {
-                    alert(response.message); // Display success message
-                    this.isLoading = false;
-                    this.router.navigateByUrl('/login');
-                } else if (!response) {
-                    this.isLoading = false;
-                    // If the error is already handled in catchError, do nothing here
-                } else {
-                    this.isLoading = false;
-                    this.errorMessage = response?.message || 'An error occurred during registration.';
+                if (response?.code === 201) {
+                    this.router.navigate(['/regis-confirm']);
+                } else if (response) {
+                    const errorMessage = response?.message || "An unexpected error occurred.";
+                    const encodedError = encodeURIComponent(errorMessage);
+                    this.router.navigate(['/regis-confirm'], { queryParams: { error: encodedError } });
                 }
             });
     }
+    
 }
