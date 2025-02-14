@@ -7,6 +7,7 @@ import { EditProfileModalComponent } from '../edit-profile/edit-profile.componen
 import { UserProfileService } from '../../services/user-profile.service';
 import { ChangePasswordComponent } from '../../../common/components/change-password/change-password.component';
 import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
+import { FormatDatePipe } from "../../../../shared/pipes/format-date.pipe";
 
 @Component({
   selector: 'app-user-profile',
@@ -17,7 +18,8 @@ import { ChangeAvatarComponent } from './change-avatar/change-avatar.component';
     EditProfileModalComponent,
     ChangePasswordComponent,
     ChangeAvatarComponent,
-  ],
+    FormatDatePipe
+],
   templateUrl: 'user-profile-management.component.html',
   styleUrls: ['user-profile-management.component.css'],
 })
