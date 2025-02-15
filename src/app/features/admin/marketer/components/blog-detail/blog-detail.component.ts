@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { BlogService } from '../services/blog.service';
 import { CommonModule } from '@angular/common';
 import { Blog } from '../../../../../core/models/blog.model';
-import { BlogContentComponent } from "./blog-content/blog-content.component";
 import { Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
+import { BlogContentComponent } from './blog-content/blog-content.component';
 
 @Component({
   selector: 'app-blog-detail',
