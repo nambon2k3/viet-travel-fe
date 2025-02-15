@@ -41,10 +41,16 @@ export class TableFooterComponent {
         pages.push(i);
       }
     } else {
-      if (this.currentPage <= 2) {
+      if (this.currentPage < 1) {
         pages.push(1);
         pages.push(2);
         pages.push('...', this.totalPages);
+      }
+      else if (this.currentPage < 2) {
+        pages.push(1);
+        pages.push(2);
+        pages.push(3);
+        pages.push('...');
       }
       else if (this.currentPage >= this.totalPages - 1) {
         pages.push(1, '...');

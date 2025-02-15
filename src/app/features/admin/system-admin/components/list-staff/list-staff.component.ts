@@ -6,6 +6,7 @@ import { TableRowComponent } from './table-row/table-row.component';
 import { User } from '../../../../../core/models/user.model';
 import { StaffService } from '../../services/staff.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-staff',
@@ -27,7 +28,10 @@ export class ListStaffComponent {
   size = 10;
   totalPages = signal(0); 
 
-  constructor(private staffService: StaffService) { }
+  constructor(
+    private staffService: StaffService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.loadStaffs();
@@ -47,6 +51,10 @@ export class ListStaffComponent {
         console.error('Failed to load staffs:', err);
       },
     });
+  }
+
+  openPostStaffDetail(): void {
+    this.router.navigate(['/sa/staff-details']);
   }
 
   // Thay đổi số lượng hiển thị trên mỗi trang

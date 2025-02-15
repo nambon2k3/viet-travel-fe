@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../../../core/models/user.model';
 import { CommonModule } from '@angular/common';
+import { Role } from '../../../../../core/models/role.model';
 
 @Component({
   selector: 'app-staff-detail',
@@ -25,7 +26,7 @@ export class PostStaffDetailComponent {
   staffId: string | null = null;
   staff: User = <User>{};
 
-  availableRoles: string[] = ['Admin', 'Staff', 'Manager', 'Editor'];
+  availableRoles: string[] = [];
   selectedRoles: string[] = [];
   selectedRolesDisplay: string = '';
 
@@ -34,7 +35,7 @@ export class PostStaffDetailComponent {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -44,7 +45,33 @@ export class PostStaffDetailComponent {
         this.loadUserById(this.staffId);
       }
     });
-  }  
+
+    this.staffService.getStaffRoles().subscribe({
+      next: (response: { code: number, data: Role[] }) => {
+        if (response.code === 200) {
+          this.availableRoles = response.data.map(role => role.roleName);
+        }
+      },
+      error: (err) => {
+        this.errorMessage = err.message;
+      }
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.selectedFile = file;
+
+      // Generate a preview URL for the selected image
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   initForm(): void {
     this.editUserForm = this.fb.group({
@@ -52,10 +79,14 @@ export class PostStaffDetailComponent {
       fullName: ['', Validators.required],
       username: ['', Validators.required],
       password: ['', Validators.required],
+      rePassword: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       gender: ['MALE', Validators.required],
       phone: ['', Validators.required],
-      role: [[], Validators.required],
+      address: ['', Validators.required],
+      roleNames: [[], Validators.required],
+      avatarImage: ['', Validators.required],
+      updatedAt: [new Date()],
       status: ['active', Validators.required]
     });
   }
@@ -65,7 +96,6 @@ export class PostStaffDetailComponent {
       next: (response: any) => {
         if (response?.code === 200) {
           this.staff = response.data;
-          console.log(this.staff);
           this.editUserForm.patchValue({
             id: this.staff.id,
             fullName: this.staff.fullName,
@@ -74,18 +104,21 @@ export class PostStaffDetailComponent {
             email: this.staff.email,
             gender: this.staff.gender ? 'MALE' : 'FEMALE',
             phone: this.staff.phone,
-            role: this.staff.roleNames || [],
+            address: this.staff.address,
+            roleNames: this.staff.roleNames || [],
             status: this.staff.deleted ? 'inactive' : 'active'
           });
+          if (this.staff.avatarImage !== "https://example.com/avatar.jpg") {
+            this.imagePreview = this.staff.avatarImage;
+          }
           this.selectedRoles = this.staff.roleNames || [];
           this.updateSelectedRolesDisplay();
         } else {
-          this.errorMessage = response?.message || 'An error occurred while loading user.';
+          this.errorMessage = response.message;
         }
       },
       error: (err) => {
-        console.error('Failed to load user:', err);
-        this.errorMessage = 'An error occurred while loading user.';
+        this.errorMessage = err.message;
       }
     });
   }
@@ -104,7 +137,7 @@ export class PostStaffDetailComponent {
       this.selectedRoles = this.selectedRoles.filter(role => role !== value);
     }
 
-    this.editUserForm.get('role')?.setValue(this.selectedRoles);
+    this.editUserForm.get('roleNames')?.setValue(this.selectedRoles);
     this.updateSelectedRolesDisplay();
   }
 
@@ -121,12 +154,13 @@ export class PostStaffDetailComponent {
   }
 
   updateStaff(): void {
+    this.editUserForm.get('rePassword')?.setValue(this.editUserForm.get('password')?.value);
     const formData = this.editUserForm.getRawValue();
 
     this.staffService.updateStaff(formData)
       .pipe(
         catchError((error) => {
-          const apiError = error?.error?.message || 'An error occurred while updating staff.';
+          const apiError = error?.message;
           this.errorMessage = apiError;
           this.successMessage = null;
           return of(null);
@@ -137,19 +171,20 @@ export class PostStaffDetailComponent {
           this.successMessage = response?.message;
           this.errorMessage = null;
         } else {
-          this.errorMessage = response?.message || 'An error occurred while updating staff.';
+          this.errorMessage = response.message;
           this.successMessage = null;
         }
       });
   }
 
   createStaff(): void {
+    this.editUserForm.get('rePassword')?.setValue(this.editUserForm.get('password')?.value);
     const formData = this.editUserForm.getRawValue();
 
     this.staffService.createStaff(formData)
       .pipe(
         catchError((error) => {
-          const apiError = error?.error?.message || 'An error occurred while creating staff.';
+          const apiError = error?.message;
           this.errorMessage = apiError;
           this.successMessage = null;
           return of(null);
@@ -161,7 +196,7 @@ export class PostStaffDetailComponent {
           this.errorMessage = null;
           this.router.navigate(['/sa/staff']);
         } else {
-          this.errorMessage = response?.message || 'An error occurred while creating staff.';
+          this.errorMessage = response.message;
           this.successMessage = null;
         }
       });

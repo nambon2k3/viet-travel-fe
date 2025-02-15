@@ -39,7 +39,7 @@ export class TableRowComponent {
   }
 
   recoverStaff(): void {
-    this.staffService.recoverStaff(this.staff.id, this.staff).subscribe({
+    this.staffService.recoverStaff(this.staff.id).subscribe({
       next: (response) => {
         if (response.code === 200) {
           this.staff.deleted = false;

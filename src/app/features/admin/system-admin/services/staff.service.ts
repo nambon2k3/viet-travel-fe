@@ -29,19 +29,23 @@ export class StaffService {
         return this.http.get(`${environment.apiUrl}admin/staffs/${id}`);
     }
 
+    getStaffRoles(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}auth/roles`);
+    }
+
     updateStaff(formData: any): Observable<any> {
         return this.http.put(`${environment.apiUrl}admin/staffs/${formData.id}`, formData);
     }
 
     createStaff(formData: any): Observable<any> {
-        return this.http.put(`${environment.apiUrl}admin/staffs`, formData);
+        return this.http.post(`${environment.apiUrl}admin/staffs`, formData);
     }
 
     deleteStaff(id: number): Observable<any> {
-        return this.http.delete(`${environment.apiUrl}admin/staffs/delete/${id}`);
+        return this.http.post(`${environment.apiUrl}admin/staffs/change-status/${id}?isDeleted=true`, {});
     }
     
-    recoverStaff(id: number, staff: any ): Observable<any> {
-        return this.http.put(`${environment.apiUrl}admin/staffs/recover/${id}`, {});
+    recoverStaff(id: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}admin/staffs/change-status/${id}?isDeleted=false`, {});
     }
 }

@@ -7,8 +7,9 @@ export interface User {
     gender: boolean;
     phone: string;
     address: string;
+    avatarImage: string;
     roleNames: [string];
     deleted: boolean;
-    selected: boolean;
     createdAt: Date;
+    updatedAt: Date;
 }
