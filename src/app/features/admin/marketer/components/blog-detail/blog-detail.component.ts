@@ -9,7 +9,11 @@ import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-blog-detail',
-  imports: [ReactiveFormsModule, CommonModule, BlogContentComponent],
+  imports: [
+    ReactiveFormsModule,
+     CommonModule, 
+     BlogContentComponent
+  ],
   templateUrl: './blog-detail.component.html',
   styleUrl: './blog-detail.component.css'
 })

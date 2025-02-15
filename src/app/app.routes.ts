@@ -39,7 +39,7 @@ export const routes: Routes = [
         component: ResetPasswordComponent
     },
     {
-        path: 'c',
+        path: 'customer',
         loadChildren: () => import('./features/customer/customer.routes').then(m => m.CUSTOMER_ROUTES),
         canActivate: [AuthGuard]
     },
@@ -48,7 +48,7 @@ export const routes: Routes = [
         loadChildren: () => import('./features/admin/ceo/ceo.routes').then(m => m.CEO_ROUTES),
     },
     {
-        path: 'm',
+        path: 'marketer',
         loadChildren: () => import('./features/admin/marketer/marketer.routes').then(m => m.MARKETER_ROUTES),
 
     },
@@ -57,7 +57,7 @@ export const routes: Routes = [
         loadChildren: () => import('./features/public/public.routes').then(m => m.PUBLIC_ROUTES),
     },
     {
-        path: 'sa',
+        path: 'admin',
         loadChildren: () => import('./features/admin/system-admin/system-admin.routes').then(m => m.SYSTEM_ADMIN_ROUTES),
     },
 ];

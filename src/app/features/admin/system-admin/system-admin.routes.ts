@@ -9,11 +9,11 @@ export const SYSTEM_ADMIN_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       {
-        path: 'staff',
+        path: 'user',
         component: ListStaffComponent,
       },
       {
-        path: 'staff-details',
+        path: 'user-details',
         component: PostStaffDetailComponent,
       },
     ]
