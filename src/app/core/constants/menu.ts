@@ -42,19 +42,19 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Tour',
           children: [
-            { label: 'Booking Tours', route: '/m/blog' },
-            { label: 'Review Tours', route: '/m/blog' },
+            { label: 'Booking Tours', route: '/marketer/blog' },
+            { label: 'Review Tours', route: '/marketer/blog' },
           ],
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Retail Services',
-          route: '/m/blog',
+          route: '/marketer/blog',
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Reports',
-          route: '/m/blog',
+          route: '/marketer/blog',
         }
       ],
     },
@@ -66,7 +66,7 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Blog',
           children: [
-            { label: 'List Blog', route: '/m/blog' }
+            { label: 'List Blog', route: '/marketer/blog' }
           ],
         },
       ],
@@ -79,19 +79,19 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Tour',
           children: [
-            { label: 'Tours', route: '/m/blog' },
-            { label: 'Tours Guide', route: '/m/blog' }
+            { label: 'Tours', route: '/marketer/blog' },
+            { label: 'Tours Guide', route: '/marketer/blog' }
           ],
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Locations',
-          route: '/m/blog',
+          route: '/marketer/blog',
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Refund',
-          route: '/m/blog',
+          route: '/marketer/blog',
         }
       ],
     },
@@ -102,12 +102,12 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Expenditure',
-          route: '/m/blog',
+          route: '/marketer/blog',
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Revenue',
-          route: '/m/blog',
+          route: '/marketer/blog',
         }
       ],
     },
@@ -135,8 +135,8 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Users',
           children: [
-            { label: 'Staff', route: '/sa/staff' },
-            { label: 'Customer', route: '/sa/customer' },
+            { label: 'Staff', route: '/admin/user' },
+            { label: 'Customer', route: '/admin/user' },
           ],
         },
       ],
