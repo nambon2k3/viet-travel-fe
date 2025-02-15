@@ -22,7 +22,7 @@
   </td>
 
   <td>
-    {{ blog.description }}
+    {{ blog.description | truncate:20}}
   </td>
 
   <td>{{ blog.author.fullName }}</td>

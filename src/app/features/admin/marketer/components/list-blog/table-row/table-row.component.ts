@@ -5,9 +5,10 @@ import { Blog } from '../../../../../../core/models/blog.model';
 import { BlogService } from '../../services/blog.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { TruncatePipe } from '../../../../../../shared/pipes/truncate.pipe';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, DatePipe, CommonModule],
+  imports: [FormsModule, AngularSvgIconModule, DatePipe, CommonModule, TruncatePipe],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })
