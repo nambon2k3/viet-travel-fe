@@ -15,7 +15,7 @@
   </div>
   
   <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2">
-    <app-table-action [totalItems]="totalItems"></app-table-action>
+    <app-table-action [totalItems]="totalItems" (onFilter)="onFilter($event)" [pageItems]="pageItemCount"></app-table-action>
     <div
       class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
       <table
@@ -34,7 +34,8 @@
         </tbody>
       </table>
     </div>
-    <app-table-footer></app-table-footer>
+    <app-table-footer [totalPages]="totalPages()" [currentPage]="page" (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"></app-table-footer>
   </div>
   
 

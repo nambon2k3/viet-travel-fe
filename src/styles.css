@@ -14,6 +14,9 @@ body {
   text-decoration: underline;
 }
 
+.max-w-xl {
+  max-width: 48rem;
+}
 
 
 code {

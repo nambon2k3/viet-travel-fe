@@ -28,10 +28,6 @@ export class TableRowComponent {
     });
   }
 
-  ngOnInit(): void {
-    console.log('blog:', this.blog);
-  }
-
   hideBlog(): void {
     this.blogService.updateBlogStatus(this.blog.id, true).subscribe({
       next: (response) => {
