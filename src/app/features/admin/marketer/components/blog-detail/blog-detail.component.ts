@@ -23,7 +23,7 @@ export class BlogDetailComponent {
   successMessage: string | null = null;
   imagePreview: string | null = null;
   selectedFile: File | null = null;
-  blogId: string | null = null;
+  blogId: number | null = null;
   blog!: Blog;
 
   constructor(private blogService: BlogService,
@@ -52,12 +52,10 @@ export class BlogDetailComponent {
   }
 
 
-  getBlogById(id: string): void {
+  getBlogById(id: number): void {
     this.blogService.getBlogById(id).subscribe({
       next: (response) => {
         this.blog = response.data;
-        
-        console.log(this.blog); // Kiểm tra dữ liệu trả về từ API
         
         // Đảm bảo patchValue có cấu trúc giống với form
         this.editBlogForm.patchValue({

@@ -38,7 +38,7 @@ export class BlogService {
         return this.http.post(`${environment.apiUrl}marketing/blog/change-status/${id}`,  isDeleted);
     }
 
-    getBlogById(id: string): Observable<any> {
+    getBlogById(id: number): Observable<any> {
         return this.http.get(`${environment.apiUrl}marketing/blog/details/${id}`);
     }
 
