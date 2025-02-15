@@ -86,7 +86,7 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Locations',
-          route: '/m/blog',
+          route: '/head-business/locations',
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',

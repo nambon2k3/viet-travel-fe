@@ -1,0 +1,54 @@
+<h2 class="text-lg font-bold mb-4">Edit Location</h2>
+
+<form [formGroup]="editLocationForm">
+
+    <!-- Id -->
+    <input type="hidden" formControlName="id" readonly class="w-full p-2 border rounded-md mb-4"
+        placeholder="Enter Id" />
+
+    <!-- Name -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Username</label>
+    <input type="text" formControlName="name" class="w-full p-2 border rounded-md mb-4"
+        placeholder="Enter Username" />
+
+    <!-- Description -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">description</label>
+    <input type="text" formControlName="description" class="w-full p-2 border rounded-md mb-4"
+        placeholder="Enter Description" />
+
+    <!-- latitude -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">latitude</label>
+    <input type="text" formControlName="latitude" class="w-full p-2 border rounded-md mb-4" placeholder="Enter latitude" />
+
+    <!-- longitude -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">longitude</label>
+    <input type="text" formControlName="longitude" class="w-full p-2 border rounded-md mb-4" placeholder="Enter longitude" />
+
+    <!-- Status -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Status</label>
+    <select formControlName="deleted" class="w-full p-2 border rounded-md mb-4">
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+    </select>
+
+
+    <!-- Error Message -->
+    <p *ngIf="errorMessage" class="text-red-500 text-sm mb-3">
+        {{ errorMessage }}
+    </p>
+    <p *ngIf="successMessage" class="text-green-500 text-sm mb-3">
+        {{ successMessage }}
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-2">
+        <button type="button" class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+            (click)="onCancel()">
+            Cancel
+        </button>
+        <button type="submit" (click)="saveChanges()"
+            class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
+            Save Changes
+        </button>
+    </div>
+</form>

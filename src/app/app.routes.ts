@@ -60,4 +60,8 @@ export const routes: Routes = [
         path: 'sa',
         loadChildren: () => import('./features/admin/system-admin/system-admin.routes').then(m => m.SYSTEM_ADMIN_ROUTES),
     },
+    {
+        path: 'head-business',
+        loadChildren: () => import('./features/admin/head-of-business/head-of-business.routes').then(m => m.HEAD_OF_BUSINESS_ROUTES),
+    },
 ];
