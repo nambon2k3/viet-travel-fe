@@ -6,12 +6,14 @@ import { Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { LocationService } from '../../services/location/location.service';
 import { CommonModule } from '@angular/common';
+import { VietnamMapComponent } from "./vietnam-map/vietnam-map.component";
 
 @Component({
   selector: 'app-post-location-detail',
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    VietnamMapComponent
   ],
   templateUrl: './post-location-detail.component.html',
   styleUrl: './post-location-detail.component.css'
@@ -20,14 +22,10 @@ export class PostLocationDetailComponent {
   editLocationForm!: FormGroup;
   errorMessage: string | null = null;
   successMessage: string | null = null;
-  imagePreview: string | null = null;
+  imagePreview: string | ArrayBuffer | null = null;
   selectedFile: File | null = null;
   locationId: string | null = null;
   location: Locations = <Locations>{};
-
-  availableRoles: string[] = ['Admin', 'Location', 'Manager', 'Editor'];
-  selectedRoles: string[] = [];
-  selectedRolesDisplay: string = '';
 
   constructor(
     private locationService: LocationService,
@@ -53,8 +51,10 @@ export class PostLocationDetailComponent {
       description: ['', Validators.required],
       image: [''],
       deleted: [false],
-      latitude: [0, Validators.required],
-      longitude: [0, Validators.required]
+      geoPosition: this.fb.group({
+        latitude: [0, Validators.required],
+        longitude: [0, Validators.required]
+      })
     });
   }
 
@@ -64,18 +64,22 @@ export class PostLocationDetailComponent {
       next: (response: any) => {
         if (response?.code === 200) {
           this.location = response.data;
-          console.log(this.location);
-
-          // Map dữ liệu từ response vào form
           this.editLocationForm.patchValue({
             id: this.location.id,
             name: this.location.name,
             description: this.location.description,
             image: this.location.image,
             deleted: this.location.deleted,
-            latitude: this.location.geoPosition?.latitude ?? 0,
-            longitude: this.location.geoPosition?.longitude ?? 0
+            geoPosition: {
+              latitude: this.location.geoPosition?.latitude ?? 0,
+              longitude: this.location.geoPosition?.longitude ?? 0
+            }
           });
+
+          if (this.location.image !== "image_url_here") {
+            this.imagePreview = this.location.image;
+          }
+
         } else {
           this.errorMessage = response?.message || 'An error occurred while loading location.';
         }
@@ -87,9 +91,34 @@ export class PostLocationDetailComponent {
     });
   }
 
+  onFileSelected(event: any): void {
+    if (event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+      if (this.selectedFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target && e.target.result) {
+            this.imagePreview = e.target.result as string | ArrayBuffer;
+          }
+        };
+        reader.readAsDataURL(this.selectedFile);
+      }
+    }
+  }
+
+  onLocationSelected(location: { name: string, latitude: number, longitude: number }): void {
+    this.editLocationForm.patchValue({
+      name: location.name,
+      geoPosition: {
+        latitude: location.latitude,
+        longitude: location.longitude
+      }
+    });
+  }
+
 
   onCancel(): void {
-    this.router.navigate(['/head-business/location']);
+    this.router.navigate(['/head-business/locations']);
   }
 
   saveChanges(): void {
@@ -99,10 +128,16 @@ export class PostLocationDetailComponent {
       this.createLocation();
     }
   }
-
+  
   updateLocation(): void {
+    if (!this.selectedFile && !this.imagePreview) {
+      this.editLocationForm.get('image')?.setValue(null);
+    } else if (this.imagePreview) {
+      this.editLocationForm.get('image')?.setValue(this.imagePreview);
+    }
+    
     const formData = this.editLocationForm.getRawValue();
-
+  
     this.locationService.updateLocation(formData)
       .pipe(
         catchError((error) => {
@@ -122,10 +157,16 @@ export class PostLocationDetailComponent {
         }
       });
   }
-
+  
   createLocation(): void {
+    if (!this.selectedFile && !this.imagePreview) {
+      this.editLocationForm.get('image')?.setValue(null);
+    } else if (this.imagePreview) {
+      this.editLocationForm.get('image')?.setValue(this.imagePreview);
+    }
+  
     const formData = this.editLocationForm.getRawValue();
-
+  
     this.locationService.createLocation(formData)
       .pipe(
         catchError((error) => {
@@ -146,5 +187,4 @@ export class PostLocationDetailComponent {
         }
       });
   }
-
 }

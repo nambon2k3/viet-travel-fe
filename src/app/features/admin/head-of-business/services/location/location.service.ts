@@ -29,7 +29,7 @@ export class LocationService {
   }
 
   updateLocation(formData: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}head-business/location/${formData.id}`, formData);
+    return this.http.put(`${environment.apiUrl}head-business/location/update/${formData.id}`, formData);
   }
 
   createLocation(formData: any): Observable<any> {

@@ -5,9 +5,10 @@ import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { LocationService } from '../../../services/location/location.service';
 import { Locations } from '../../../../../../core/models/location.model';
+import { TruncatePipe } from '../../../../../../shared/pipes/truncate.pipe';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, DatePipe],
+  imports: [FormsModule, AngularSvgIconModule, DatePipe, TruncatePipe],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })

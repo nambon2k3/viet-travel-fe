@@ -6,31 +6,43 @@
     <input type="hidden" formControlName="id" readonly class="w-full p-2 border rounded-md mb-4"
         placeholder="Enter Id" />
 
+    <!-- Thumbnail Image -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Thumbnail Image</label>
+    <div class="flex flex-col items-center justify-center mb-4">
+        <!-- Image Preview -->
+        <img *ngIf="imagePreview" [src]="imagePreview" alt="Thumbnail Preview"
+            class="w-full h-64 object-cover rounded-md mb-2" />
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="w-full" />
+    </div>
+
+    <app-vietnam-map (locationSelected)="onLocationSelected($event)"></app-vietnam-map>
+
     <!-- Name -->
-    <label class="block mb-2 text-sm font-medium text-gray-700">Username</label>
-    <input type="text" formControlName="name" class="w-full p-2 border rounded-md mb-4"
-        placeholder="Enter Username" />
+    <label class="block mt-3 mb-2 text-sm font-medium text-gray-700">Name</label>
+    <input type="text" formControlName="name" class="w-full p-2 border rounded-md mb-4" placeholder="Enter Name" />
 
     <!-- Description -->
-    <label class="block mb-2 text-sm font-medium text-gray-700">description</label>
+    <label class="block mb-2 text-sm font-medium text-gray-700">Description</label>
     <input type="text" formControlName="description" class="w-full p-2 border rounded-md mb-4"
         placeholder="Enter Description" />
 
-    <!-- latitude -->
-    <label class="block mb-2 text-sm font-medium text-gray-700">latitude</label>
-    <input type="text" formControlName="latitude" class="w-full p-2 border rounded-md mb-4" placeholder="Enter latitude" />
+    <fieldset formGroupName="geoPosition">
+        <!-- Latitude -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Latitude</label>
+        <input type="text" formControlName="latitude" class="w-full p-2 border rounded-md mb-4"
+            placeholder="Enter Latitude" />
 
-    <!-- longitude -->
-    <label class="block mb-2 text-sm font-medium text-gray-700">longitude</label>
-    <input type="text" formControlName="longitude" class="w-full p-2 border rounded-md mb-4" placeholder="Enter longitude" />
+        <!-- Longitude -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Longitude</label>
+        <input type="text" formControlName="longitude" class="w-full p-2 border rounded-md mb-4"
+            placeholder="Enter Longitude" />
+    </fieldset>
+
 
     <!-- Status -->
     <label class="block mb-2 text-sm font-medium text-gray-700">Status</label>
-    <select formControlName="deleted" class="w-full p-2 border rounded-md mb-4">
-        <option value="true">Active</option>
-        <option value="false">Inactive</option>
-    </select>
-
+    <input type="text" readonly [value]="location.deleted ? 'Inactive' : 'Active'" formControlName="deleted"
+        class="w-full p-2 border rounded-md mb-4">
 
     <!-- Error Message -->
     <p *ngIf="errorMessage" class="text-red-500 text-sm mb-3">

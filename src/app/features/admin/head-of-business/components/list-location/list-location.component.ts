@@ -15,7 +15,7 @@ import { LocationService } from '../../services/location/location.service';
         TableFooterComponent,
         TableHeaderComponent,
         TableRowComponent,
-        CommonModule
+        CommonModule,
   ],
   templateUrl: './list-location.component.html',
   styleUrl: './list-location.component.css'
@@ -57,8 +57,8 @@ export class ListLocationComponent {
       this.loadLocation();
     }
   
-    openAddStaffModal(): void {
-      this.router.navigate(['/sa/staff-details']);
+    openAddLocationModal(): void {
+      this.router.navigate(['/head-business/location-details']);
     }
   
     onPageChange(newPage: number): void {
