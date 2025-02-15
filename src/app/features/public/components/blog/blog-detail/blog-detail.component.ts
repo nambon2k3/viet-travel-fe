@@ -13,7 +13,7 @@ export class BlogDetailComponent {
   ) { }
 
   ngOnInit(): void {
-    this.blogService.getBlogById(7).subscribe({
+    this.blogService.getBlogById("7").subscribe({
       next: (response) => {
         console.log(response);
       },

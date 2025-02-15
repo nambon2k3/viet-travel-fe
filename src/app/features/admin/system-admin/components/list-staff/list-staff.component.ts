@@ -54,7 +54,7 @@ export class ListStaffComponent {
   }
 
   openPostStaffDetail(): void {
-    this.router.navigate(['/sa/staff-details']);
+    this.router.navigate(['/admin/user-details']);
   }
 
   // Thay đổi số lượng hiển thị trên mỗi trang

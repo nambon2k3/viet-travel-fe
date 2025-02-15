@@ -23,10 +23,11 @@ export class TableRowComponent {
   ) { }
 
   openDetail(blog: Blog): void {
-    this.router.navigate(['/m/blog-details'], { state: {blog} });
+    this.router.navigate(['/marketer/blog-details'],  {
+      queryParams: { id: blog.id }
+    });
   }
 
-  
   ngOnInit(): void {
     console.log('blog:', this.blog);
   }

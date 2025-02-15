@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { BlogService } from '../services/blog.service';
 import { CommonModule } from '@angular/common';
 import { Blog } from '../../../../../core/models/blog.model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { BlogContentComponent } from './blog-content/blog-content.component';
 
@@ -11,8 +11,8 @@ import { BlogContentComponent } from './blog-content/blog-content.component';
   selector: 'app-blog-detail',
   imports: [
     ReactiveFormsModule,
-     CommonModule, 
-     BlogContentComponent
+    CommonModule,
+    BlogContentComponent
   ],
   templateUrl: './blog-detail.component.html',
   styleUrl: './blog-detail.component.css'
@@ -23,37 +23,60 @@ export class BlogDetailComponent {
   successMessage: string | null = null;
   imagePreview: string | null = null;
   selectedFile: File | null = null;
+  blogId: string | null = null;
   blog!: Blog;
 
   constructor(private blogService: BlogService,
     private fb: FormBuilder,
-    private router: Router) { }
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.blog = history.state.blog;
-    this.imagePreview! = this.blog.thumbnailImageUrl;
-
     this.editBlogForm = this.fb.group({
       id: [null, Validators.required],
-      title: [null, Validators.required],  // Corrected binding
+      title: [null, Validators.required],
       description: [null, Validators.required],
       content: [null, Validators.required],
       tags: [null, Validators.required],
       authorName: [null, Validators.required],
+      thumbnailImageUrl: [null]
     });
+    
 
-    this.getBlogById(this.blog.id);
-  }
-
-
-  getBlogById(id: number): void {
-    this.blogService.getBlogById(id).subscribe({
-      next: (response) => {
-        this.blog = response;
-        this.editBlogForm.patchValue(response.data)
+    this.route.queryParams.subscribe(params => {
+      this.blogId = params['id'];
+      if (this.blogId) {
+        this.getBlogById(this.blogId);
       }
     });
   }
+
+
+  getBlogById(id: string): void {
+    this.blogService.getBlogById(id).subscribe({
+      next: (response) => {
+        this.blog = response.data;
+        
+        console.log(this.blog); // Kiểm tra dữ liệu trả về từ API
+        
+        // Đảm bảo patchValue có cấu trúc giống với form
+        this.editBlogForm.patchValue({
+          id: this.blog.id,
+          title: this.blog.title,
+          description: this.blog.description,
+          content: this.blog.content,
+          tags: this.blog.tags.map((tag) => tag.name).join(', '),
+          authorName: this.blog.author.fullName,
+          thumbnailImageUrl: this.blog.thumbnailImageUrl
+        });
+        
+        if (this.blog.thumbnailImageUrl) {
+          this.imagePreview = this.blog.thumbnailImageUrl;
+        }
+      }
+    });
+  }
+  
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -71,11 +94,13 @@ export class BlogDetailComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/m/blog']);
+    this.router.navigate(['/marketer/blog']);
   }
 
   saveChanges(): void {
     const formData = this.editBlogForm.value;
+    formData.tags = formData.tags.split(',').map((tag: string) => tag.trim());
+
 
     this.blogService.update(formData)
       .pipe(

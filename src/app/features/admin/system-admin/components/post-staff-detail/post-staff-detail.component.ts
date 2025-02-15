@@ -142,7 +142,7 @@ export class PostStaffDetailComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/sa/staff']);
+    this.router.navigate(['/admin/user']);
   }
 
   saveChanges(): void {

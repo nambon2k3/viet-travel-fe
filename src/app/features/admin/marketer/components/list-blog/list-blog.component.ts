@@ -5,7 +5,7 @@ import { Blog } from '../../../../../core/models/blog.model';
 import { BlogService } from '../services/blog.service';
 import { TableRowComponent } from './table-row/table-row.component';
 import { TableActionComponent } from './table-action/table-action.component';
-import { BlogDetailComponent } from '../blog-detail/blog-detail.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-blog',
@@ -22,17 +22,13 @@ export class ListBlogComponent {
   page = 0;
   size = 10;
 
-
-
-
-  constructor(private blogService: BlogService) {}
-
-  
+  constructor(
+    private router: Router,
+    private blogService: BlogService) {}
 
   ngOnInit(): void {
     this.loadBlogs();
   }
-
 
   loadBlogs(): void {
     this.blogService.getBlogByPage(this.page, this.size).subscribe({
@@ -47,8 +43,11 @@ export class ListBlogComponent {
       },
     });
   }
-  
 
+  openPostBlogDetail(): void {
+    this.router.navigate(['/marketer/blog-details']);
+  }
+  
   public toggleBlogs(checked: boolean): void {
     this.blogs.update((blogs) => {
       return blogs.map((blog) => {
@@ -58,10 +57,8 @@ export class ListBlogComponent {
     
   }
 
-
   filteredBlogs = computed(() => {
     return this.blogs();
   });
-
 
 }
