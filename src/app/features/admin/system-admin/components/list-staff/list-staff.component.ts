@@ -64,6 +64,11 @@ export class ListStaffComponent {
     this.loadStaffs();
   }
 
+  openAddStaffModal(): void {
+    this.router.navigate(['/sa/staff-details']);
+  }
+
+
   // Thay đổi trang hiện tại
   onPageChange(newPage: number): void {
     if (newPage >= 0 && newPage < this.totalPages()) {

@@ -16,6 +16,7 @@ export const SYSTEM_ADMIN_ROUTES: Route[] = [
         path: 'user-details',
         component: PostStaffDetailComponent,
       },
+      
     ]
   },
 ];
