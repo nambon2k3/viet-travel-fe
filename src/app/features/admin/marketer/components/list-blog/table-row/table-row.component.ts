@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Blog } from '../../../../../../core/models/blog.model';
-import { BlogService } from '../../services/blog.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { TruncatePipe } from '../../../../../../shared/pipes/truncate.pipe';
+import { BlogService } from '../../../services/blog.service';
 @Component({
   selector: '[app-table-row]',
   imports: [FormsModule, AngularSvgIconModule, DatePipe, CommonModule, TruncatePipe],

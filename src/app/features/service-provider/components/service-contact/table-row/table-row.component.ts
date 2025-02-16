@@ -6,7 +6,7 @@ import { ServiceContactService } from '../../../services/service-contact.service
 import { CommonModule, DatePipe } from '@angular/common';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, CommonModule],
+  imports: [FormsModule, AngularSvgIconModule, DatePipe, CommonModule],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })

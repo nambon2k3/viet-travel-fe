@@ -31,7 +31,6 @@
     class="w-full p-2 border rounded-md mb-4"
     placeholder="Enter blog title"
   />
-
   <!-- Tags -->
   <label class="block mb-2 mt-3 text-sm font-medium text-gray-700">Tags</label>
   <ng-multiselect-dropdown
@@ -62,35 +61,13 @@
   <label class="block mb-2 text-sm font-medium text-gray-700">Content</label>
 
   <app-blog-content
-    [content]="blog.content"
     formControlName="content"
   ></app-blog-content>
-
-  <!-- Author -->
-  <label class="mt-5 block mb-2 text-sm font-medium text-gray-700"
-    >Author Name</label
-  >
-  <input
-    type="hidden"
-    formControlName="author"
-    readonly
-    class="w-full p-2 bg-gray-200 border rounded-md mb-4"
-    placeholder="Enter author's full name"
-  />
-
-  <input
-    type="text"
-    readonly
-    [value]="blog.author.fullName"
-    class="w-full p-2 bg-gray-200 border rounded-md mb-4"
-    placeholder="Enter author's full name"
-  />
 
   <!-- Error Message -->
   <p *ngIf="errorMessage" class="text-red-500 text-sm mb-3">
     {{ errorMessage }}
   </p>
-  
   <p *ngIf="successMessage" class="text-green-500 text-sm mb-3">
     {{ successMessage }}
   </p>

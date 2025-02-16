@@ -2,17 +2,18 @@ import { Component, computed, signal } from '@angular/core';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { Blog } from '../../../../../core/models/blog.model';
-import { BlogService } from '../services/blog.service';
 import { TableRowComponent } from './table-row/table-row.component';
 import { TableActionComponent } from './table-action/table-action.component';
 import { Router } from '@angular/router';
+import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
+import { BlogService } from '../../services/blog.service';
 
 @Component({
   selector: 'app-list-blog',
   imports: [TableActionComponent,
     TableFooterComponent,
     TableHeaderComponent,
-    TableRowComponent],
+    TableRowComponent, SpinnerComponent],
   templateUrl: './list-blog.component.html',
   styleUrl: './list-blog.component.css'
 })
@@ -27,6 +28,7 @@ export class ListBlogComponent {
   orderType = 'Newest';
   status = undefined as boolean | undefined;
   pageItemCount = 0;
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -37,6 +39,7 @@ export class ListBlogComponent {
   }
 
   loadBlogs(): void {
+    this.isLoading = true;
     this.blogService.getBlogByPage(this.page, this.size, this.search, this.status).subscribe({
       next: (response) => {
         this.blogs.set(response.data.items);
@@ -45,6 +48,7 @@ export class ListBlogComponent {
         this.size = response.data.size;
         this.totalPages.set(Math.ceil(this.totalItems / this.size));
         this.pageItemCount = this.blogs().length;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Failed to load blogs:', err);
@@ -61,7 +65,7 @@ export class ListBlogComponent {
   }
 
   openPostBlogDetail(): void {
-    this.router.navigate(['/marketer/blog-details']);
+    this.router.navigate(['/marketer/add-blog']);
   }
 
   public toggleBlogs(checked: boolean): void {

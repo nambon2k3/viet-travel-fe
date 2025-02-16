@@ -36,3 +36,7 @@ code {
   margin: 0px;
   transform: translate3d(192.667px, 70.6667px, 0px);
 }
+
+#selector .selected-item {
+  max-width: 250px;
+}

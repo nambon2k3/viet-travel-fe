@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { TableFilterService } from '../../services/table-filter.service';
 
 @Component({
   selector: 'app-table-action',
@@ -20,7 +19,7 @@ export class TableActionComponent {
   orderType: string = 'Newest';
   status: boolean | undefined = undefined;
 
-  constructor(public filterService: TableFilterService) { }
+  constructor() { }
 
 
   onInput(event: Event) {

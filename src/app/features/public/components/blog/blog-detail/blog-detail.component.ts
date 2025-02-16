@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { BlogService } from '../../../../admin/marketer/components/services/blog.service';
 import { Blog } from '../../../../../core/models/blog.model';
 import { DatePipe } from '@angular/common';
+import { BlogService } from '../../../../admin/marketer/services/blog.service';
+import { BlogLoadingComponent } from "../../../../../shared/components/blog-loading/blog-loading.component";
 
 @Component({
   selector: 'app-blog-detail',
-  imports: [DatePipe],
+  imports: [DatePipe, BlogLoadingComponent],
   templateUrl: './blog-detail.component.html',
   styleUrl: './blog-detail.component.css'
 })
