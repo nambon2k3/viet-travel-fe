@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-service-contact',
-  imports: [TableActionComponent, TableFooterComponent, TableHeaderComponent, TableRowComponent],
   templateUrl: './add-service-contact.component.html',
   styleUrls: ['./add-service-contact.component.css']
 })
