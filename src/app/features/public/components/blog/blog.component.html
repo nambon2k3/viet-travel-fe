@@ -1,1 +1,138 @@
-<p>blog works!</p>
+<section class="mt-20 py-8 lg:py-12">
+  <div class="max-w-[1280px] mx-auto px-4">
+    <div class="relative rounded-lg h-[500px] overflow-hidden">
+      <div 
+        class="absolute inset-0 transition-transform duration-700" 
+        [style.transform]="'translateX(-' + currentIndex * 100 + '%)'"
+        style="display: flex; width: 300%;">
+        
+        <div 
+          *ngFor="let article of articles"
+          class="min-w-full bg-cover bg-center"
+          [style.backgroundImage]="'url(' + article.imageUrl + ')'">
+          <div class="bg-gradient-to-t from-black to-transparent h-full w-full p-8 flex flex-col justify-end">
+            <h2 class="text-3xl font-bold text-white mb-2">{{ article.title }}</h2>
+            <p class="text-white mb-4">{{ article.description }}</p>
+            <button class="bg-white w-40 text-blue-600 px-4 py-2 rounded-md font-semibold">
+              Read more
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button 
+  class="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 text-white text-xl bg-black/30 hover:bg-black/50 rounded-full p-2 transition-colors duration-300"
+  (click)="prevArticle()">
+  &#9664;
+</button>
+<button 
+  class="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 text-white text-xl bg-black/30 hover:bg-black/50 rounded-full p-2 transition-colors duration-300"
+  (click)="nextArticle()">
+  &#9654;
+</button>
+
+    </div>
+  </div>
+</section>
+<section class="py-12">
+  <div class="max-w-[1280px] mx-auto px-4 text-center">
+    <h2 class="text-3xl font-bold mb-2">Food and Drink</h2>
+    <p class="text-gray-600 mb-8">Dig into the best restaurants and bars, street food, and culinary hotspots around the
+      world. Who's hungry?</p>
+    <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 h-[400px] sm:h-[500px]">
+      <!-- Bottom Left Large Block -->
+      <div
+        class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold col-span-1 sm:col-span-8 row-span-1">
+        Da Nang
+      </div>
+      <!-- Bottom Right Grid (4 Small Blocks) -->
+      <div class="grid grid-cols-1 sm:grid-cols-1 gap-4 col-span-1 sm:col-span-4">
+        <div class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold">Da Nang
+        </div>
+        <div class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold">Da Nang
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="mt-8 text-center">
+    <h2 class="text-3xl font-bold mb-2">Places to Visit</h2>
+    <p class="text-gray-600 mb-8">The most exciting destinations, experiences, hidden gems, and traveler faves to check out now.</p>
+  <div class="max-w-[1280px] mx-auto flex flex-wrap gap-4">
+    <!-- Card 1 (Cao hơn, chiếm chiều cao 2 thẻ) -->
+    <div class="bg-gray-300 rounded-lg h-[350px] flex-1 min-w-[300px] self-center"></div>
+
+    <!-- Cặp thẻ trên cùng bên phải -->
+    <div class="flex flex-col gap-4">
+      <div class="bg-gray-300 rounded-lg h-[300px] min-w-[300px]"></div>
+      <div class="bg-gray-300 rounded-lg h-[300px] min-w-[300px]"></div>
+    </div>
+
+    <!-- Cặp thẻ dưới cùng bên trái -->
+    <div class="flex flex-col gap-4">
+      <div class="bg-gray-300 rounded-lg h-[300px] min-w-[300px]"></div>
+      <div class="bg-gray-300 rounded-lg h-[300px] min-w-[300px]"></div>
+    </div>
+
+    <!-- Card cuối cùng (Cao hơn, chiếm chiều cao 2 thẻ) -->
+    <div class="bg-gray-300 rounded-lg h-[350px] flex-1 min-w-[300px] self-center"></div>
+  </div>
+</section>
+
+<!-- Travel Creators -->
+<section class="max-w-6xl mx-auto mt-16 sm:mt-32 text-center">
+  <h2 class="text-2xl sm:text-3xl font-bold">Passport. Keys. Wallet.</h2>
+  <p class="text-base sm:text-lg text-gray-600 mt-4 sm:mt-6">See a new place from the drivers seat</p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mt-10 sm:mt-32">
+      <div
+          class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
+          3 family-friendly days in Rome
+      </div>
+      <div
+          class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
+          3 family-friendly days in Rome
+      </div>
+      <div
+          class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
+          3 family-friendly days in Rome
+      </div>
+  </div>
+</section>
+
+
+<section class="max-w-6xl mx-auto mt-16 sm:mt-32 text-center">
+  <h2 class="text-2xl sm:text-3xl font-bold">Keep Exploring</h2>
+  <div class="flex flex-wrap justify-center gap-6 max-w-[1200px] mx-auto mt-10 sm:mt-32">
+    <div 
+      *ngFor="let articl of article; index as i" 
+      class="relative bg-gray-300 rounded-lg w-[350px] overflow-hidden h-[450px]"
+    >
+      <!-- Ảnh nền -->
+      <img 
+        [src]="articl.imageUrl" 
+        alt="{{ articl.title }}"
+        class="w-full h-full object-cover"
+      />
+
+      <!-- Overlay & Tiêu đề -->
+      <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent text-white p-4">
+        <p class="text-lg font-bold">{{ articl.title }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  
+<div class="py-8 mt-4 text-center">
+  <ul class="inline-flex space-x-2">
+    <li><a href="#" class="px-3 py-2 rounded-md bg-black text-white">1</a></li>
+    <li><a href="#" class="px-3 py-2 rounded-md border">2</a></li>
+    <li><a href="#" class="px-3 py-2 rounded-md border">3</a></li>
+    <li><span class="px-3 py-2">...</span></li>
+    <li><a href="#" class="px-3 py-2 rounded-md border">67</a></li>
+    <li><a href="#" class="px-3 py-2 rounded-md border">68</a></li>
+  </ul>
+</div>
+
+<app-footer></app-footer>
