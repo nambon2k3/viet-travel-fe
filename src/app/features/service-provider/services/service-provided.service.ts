@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { UserStorageService } from "../../../core/services/user-storage/user-storage.service";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
-
-const BASIC_URL = "http://localhost:8080/ceo/service-provided";
+import { environment } from "../../../../environments/environment";
+import { ServiceProvided } from "../../../core/models/service-provided.model";
 
 @Injectable({
     providedIn: 'root',
@@ -32,8 +32,16 @@ export class ServiceProvidedService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${BASIC_URL}`, { params });
+        return this.http.get(`${environment.apiUrl}ceo/service-provider/list`, { params });
     }
+
+    getServiceProvidedById(id: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}ceo/service-provider/details/${id}`);
+    }
+
+    updateServiceProvided(id: number, data: ServiceProvided): Observable<ServiceProvided> {
+        return this.http.put<ServiceProvided>(`${environment.apiUrl}ceo/service-provider/updates/${id}`, data); 
+      }
 
 
     // updateServiceProvidedStatus(id: number, isDeleted: boolean): Observable<any> {

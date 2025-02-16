@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ServiceContact } from '../../../../../core/models/service-contact.model';
 import { ServiceContactService } from '../../../services/service-contact.service';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
 @Component({
   selector: '[app-table-row]',
   imports: [FormsModule, AngularSvgIconModule, DatePipe, CommonModule],
@@ -12,23 +13,20 @@ import { CommonModule, DatePipe } from '@angular/common';
 })
 export class TableRowComponent {
   @Input() serviceContact: ServiceContact = <ServiceContact>{};
+  @Output() serviceDeleted = new EventEmitter<void>(); // Thông báo component cha cập nhật danh sách
+
 
   authorName: string = 'Loading...';
   tags: string[] = [];
 
-  constructor(private serviceContactService: ServiceContactService) {}
+  constructor(
+    private serviceContactService: ServiceContactService,
+    private router : Router
+  ) {}
 
-deleteServiceContact(): void {
-    this.serviceContactService.deleteServiceContact(this.serviceContact.id, true).subscribe({
-      next: (response) => {
-        if(response.code === 200) {
-          this.serviceContact.deleted = true;
-        }
-      },
-      error: (err) => {
-        console.error('Failed to delete Service Contact:', err);
-      },
-    });
+
+  onUpdate(): void{
+    this.router.navigate(['/service-provider/update-service-contact']);
   }
 
   showServiceContact(): void {
@@ -54,8 +52,17 @@ deleteServiceContact(): void {
 
   // Method to confirm action
   onConfirm() {
-    // Logic để thực hiện deactivate ở đây
-    this.showPopup = false; // Ẩn popup
+    this.serviceContactService.deleteServiceContact(this.serviceContact.id, true).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.showPopup = false; // Ẩn popup
+          this.serviceDeleted.emit(); // Gửi sự kiện lên component cha để cập nhật danh sách
+        }
+      },
+      error: (err) => {
+        console.error('Failed to delete Service Contact:', err);
+      },
+    });
   }
 
   // Method to cancel action

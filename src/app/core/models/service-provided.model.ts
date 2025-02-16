@@ -1,6 +1,6 @@
 export interface ServiceProvided {
     id: number;
-    image_url: string;
+    imageUrl: string;
     name: string;
     abbreviation: string;
     website: string;

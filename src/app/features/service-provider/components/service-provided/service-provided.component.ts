@@ -6,6 +6,8 @@ import { TableActionComponent } from './table-action/table-action.component';
 import { HttpClient } from '@angular/common/http';
 import { ServiceProvided } from '../../../../core/models/service-provided.model';
 import { ServiceProvidedService } from '../../services/service-provided.service';
+import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -20,10 +22,17 @@ export class ServiceProvidedComponent {
     page = 0;
     size = 10;
   
-    constructor(private ServiceProvidedService: ServiceProvidedService) {}
+    constructor(
+      private ServiceProvidedService: ServiceProvidedService,
+      private router : Router
+    ) {}
   
     ngOnInit(): void {
       this.loadServiceProvided();
+    }
+
+    onAdd(): void{
+      this.router.navigate(['/service-provider/add-services']);
     }
   
   
