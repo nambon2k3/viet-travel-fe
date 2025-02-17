@@ -1,8 +1,7 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { UserStorageService } from "../../../../../core/services/user-storage/user-storage.service";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
-import { environment } from "../../../../../../environments/environment";
+import { environment } from "../../../../../environments/environment";
 
 @Injectable({
     providedIn: 'root',
@@ -16,7 +15,7 @@ export class BlogService {
       throw new Error('Method not implemented.');
     }
 
-    constructor(private http: HttpClient, private userStorageService: UserStorageService) { }
+    constructor(private http: HttpClient) { }
 
     getBlogByPage(page: number = 0, size: number = 10, keyword?: string, isDeleted?: boolean): Observable<any> {
         let params = new HttpParams()
@@ -42,7 +41,19 @@ export class BlogService {
         return this.http.get(`${environment.apiUrl}marketing/blog/details/${id}`);
     }
 
-    update(formData: any): Observable<any> {
-        return this.http.post(`${environment.apiUrl}marketing/blog/update`, formData);
+    update(formData: any, id: number): Observable<any> {
+        return this.http.put(`${environment.apiUrl}marketing/blog/update/${id}`, formData);
+    }
+
+    addBlog(): Observable<any> {
+        return this.http.post(`${environment.apiUrl}marketing/blog/create`, {});
+    }
+
+    getAllTags(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}public/tags/all`);
+    }
+
+    uploadImage(formData: any): Observable<any> {
+        return this.http.post(`${environment.apiUrl}public/upload-file`, formData);
     }
 }

@@ -10,10 +10,19 @@ import { environment } from "../../../../../environments/environment";
 export class StaffService {
     constructor(private http: HttpClient) { }
 
-    getStaffByPage(page: number = 0, size: number = 10, keyword?: string, isDeleted?: boolean): Observable<any> {
+    getStaffByPage(
+        page: number = 0,
+        size: number = 10,
+        keyword?: string,
+        isDeleted?: boolean,
+        sortField: string = 'createdAt',
+        sortDirection: string = 'desc'
+    ): Observable<any> {
         let params = new HttpParams()
             .set('page', page)
-            .set('size', size);
+            .set('size', size)
+            .set('sortField', sortField)
+            .set('sortDirection', sortDirection);
 
         if (keyword) {
             params = params.set('keyword', keyword);
@@ -22,22 +31,30 @@ export class StaffService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${environment.apiUrl}admin/staffs`, { params });
+        return this.http.get(`${environment.apiUrl}admin/users`, { params });
     }
 
-    getStaffById(id: number): Observable<any> {
-        return this.http.get(`${environment.apiUrl}admin/staffs/${id}`);
+
+    getStaffById(id: string): Observable<any> {
+        return this.http.get(`${environment.apiUrl}admin/users/${id}`);
     }
 
+    getStaffRoles(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}auth/roles`);
+    }
+
+    updateStaff(formData: any): Observable<any> {
+        return this.http.put(`${environment.apiUrl}admin/users/${formData.id}`, formData);
+    }
+
+    createStaff(formData: any): Observable<any> {
+        return this.http.post(`${environment.apiUrl}admin/users`, formData);
+    }
     deleteStaff(id: number): Observable<any> {
-        return this.http.delete(`${environment.apiUrl}admin/staffs/delete/${id}`);
+        return this.http.post(`${environment.apiUrl}admin/users/change-status/${id}?isDeleted=true`, {});
     }
 
-    update(formData: any): Observable<any> {
-        return this.http.put(`${environment.apiUrl}admin/staffs/update/${formData.id}`, formData);
-    }
-    
     recoverStaff(id: number): Observable<any> {
-        return this.http.delete(`${environment.apiUrl}admin/staffs/delete/${id}`);
+        return this.http.post(`${environment.apiUrl}admin/users/change-status/${id}?isDeleted=false`, {});
     }
 }

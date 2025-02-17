@@ -1,0 +1,66 @@
+<h2 class="text-lg font-bold mb-4">Edit Location</h2>
+
+<form [formGroup]="editLocationForm">
+
+    <!-- Id -->
+    <input type="hidden" formControlName="id" readonly class="w-full p-2 border rounded-md mb-4"
+        placeholder="Enter Id" />
+
+    <!-- Thumbnail Image -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Thumbnail Image</label>
+    <div class="flex flex-col items-center justify-center mb-4">
+        <!-- Image Preview -->
+        <img *ngIf="imagePreview" [src]="imagePreview" alt="Thumbnail Preview"
+            class="w-full h-64 object-cover rounded-md mb-2" />
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="w-full" />
+    </div>
+
+    <app-vietnam-map (locationSelected)="onLocationSelected($event)"></app-vietnam-map>
+
+    <!-- Name -->
+    <label class="block mt-3 mb-2 text-sm font-medium text-gray-700">Name</label>
+    <input type="text" formControlName="name" class="w-full p-2 border rounded-md mb-4" placeholder="Enter Name" />
+
+    <!-- Description -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Description</label>
+    <input type="text" formControlName="description" class="w-full p-2 border rounded-md mb-4"
+        placeholder="Enter Description" />
+
+    <fieldset formGroupName="geoPosition">
+        <!-- Latitude -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Latitude</label>
+        <input type="text" formControlName="latitude" class="w-full p-2 border rounded-md mb-4"
+            placeholder="Enter Latitude" />
+
+        <!-- Longitude -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Longitude</label>
+        <input type="text" formControlName="longitude" class="w-full p-2 border rounded-md mb-4"
+            placeholder="Enter Longitude" />
+    </fieldset>
+
+
+    <!-- Status -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Status</label>
+    <input type="text" readonly [value]="location.deleted ? 'Inactive' : 'Active'" formControlName="deleted"
+        class="w-full p-2 border rounded-md mb-4">
+
+    <!-- Error Message -->
+    <p *ngIf="errorMessage" class="text-red-500 text-sm mb-3">
+        {{ errorMessage }}
+    </p>
+    <p *ngIf="successMessage" class="text-green-500 text-sm mb-3">
+        {{ successMessage }}
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-end space-x-2">
+        <button type="button" class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
+            (click)="onCancel()">
+            Cancel
+        </button>
+        <button type="submit" (click)="saveChanges()"
+            class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
+            Save Changes
+        </button>
+    </div>
+</form>

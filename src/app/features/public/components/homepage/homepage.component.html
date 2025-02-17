@@ -43,205 +43,40 @@
 </div>
 
 <!-- Featured Tours -->
-<div
-    class="mt-16 sm:mt-32 max-w-6xl mx-auto bg-gray-200 h-[400px] sm:h-[520px] flex items-center justify-center rounded-xl">
-    <div class="text-center">
-        <p class="font-bold text-xl sm:text-2xl">The 2025 Top Tours</p>
-        <p class="text-base sm:text-lg text-gray-600">Forecasting the future of travel—now.</p>
-        <button class="mt-6 sm:mt-8 px-6 sm:px-8 py-3 sm:py-5 bg-black text-white rounded-lg text-base sm:text-lg">Check
+<div class="relative mt-16 sm:mt-32 max-w-6xl mx-auto bg-gray-200 h-[400px] sm:h-[520px] overflow-hidden rounded-xl">
+    <img src="https://maichautourist.vn/wp-content/uploads/2017/06/dia-diem-du-lich-sapa.jpg" alt="Tour Image" loading="lazy"
+        class="absolute top-0 left-0 w-full h-full object-cover rounded-xl z-0">
+    <div class="relative mt-6 z-10 flex flex-col items-center justify-center h-full text-white">
+        <p class="font-bold text-xl sm:text-2xl drop-shadow-lg">The 2025 Top Tours</p>
+        <p class="text-base sm:text-lg text-gray-200 drop-shadow-md">Forecasting the future of travel—now.</p>
+        <button
+            class="mt-6 sm:mt-8 px-6 sm:px-8 py-3 sm:py-5 bg-black bg-opacity-70 hover:bg-opacity-90 rounded-lg text-base sm:text-lg">Check
             it out</button>
     </div>
+    <div class="absolute inset-0 bg-black bg-opacity-30 rounded-xl z-5"></div>
 </div>
 
 <!-- Trending Tours -->
 <section class="max-w-6xl mx-auto mt-16 sm:mt-32">
     <h2 class="text-2xl sm:text-3xl font-bold text-center">Trending Tours</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mt-10 sm:mt-28">
-        <!-- Tour Card -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+        <div *ngFor="let tour of trendingTours"
+            class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
             <div class="relative">
-                <!-- Image -->
-                <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Tour Image"
+                <img [src]="tour.tourImages[0].imageUrl" alt="Tour Image" loading="lazy"
                     class="w-full h-64 object-cover">
             </div>
-
-            <!-- Content -->
             <div class="p-4">
-                <h3 class="font-bold text-lg leading-snug">
-                    Trung Quốc: Thượng Hải - Hàng Châu - Vô Tích - Tô Châu - Bắc Kinh
-                </h3>
+                <h3 class="font-bold text-lg leading-snug h-12">{{ tour.name }}</h3>
                 <div class="text-sm text-gray-700 space-y-1 mb-2">
                     <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Depart: <span
-                            class="text-blue-600 font-medium">Ha Noi</span></p>
-                    <p><i class="fas fa-calendar-alt text-green-500 mr-1"></i> Depart Time: 23/02/2025</p>
-                    <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: 7 days 6 nights</p>
+                            class="text-blue-600 font-medium">{{ tour.depart_location.id }}</span></p>
+                    <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: {{ tour.numberDays }}D{{
+                        tour.numberNight }}N</p>
                     <p><i class="fas fa-users text-gray-500 mr-1"></i> Remain slots: <span
-                            class="text-red-600 font-bold">15</span></p>
+                            class="text-red-600 font-bold">{{ tour.numberSeats }}</span></p>
                 </div>
-
-                <!-- Price and Button -->
-                <div class="border-t pt-2">
-                    <p class="text-red-600 text-lg font-bold">25.990.000 đ</p>
-                    <button
-                        class="w-full bg-red-500 text-white text-sm font-bold py-2 rounded mt-2 hover:bg-red-600 transition duration-200">
-                        Place Now
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-            <div class="relative">
-                <!-- Image -->
-                <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Tour Image"
-                    class="w-full h-64 object-cover">
-            </div>
-
-            <!-- Content -->
-            <div class="p-4">
-                <h3 class="font-bold text-lg leading-snug">
-                    Trung Quốc: Thượng Hải - Hàng Châu - Vô Tích - Tô Châu - Bắc Kinh
-                </h3>
-                <div class="text-sm text-gray-700 space-y-1 mb-2">
-                    <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Depart: <span
-                            class="text-blue-600 font-medium">Ha Noi</span></p>
-                    <p><i class="fas fa-calendar-alt text-green-500 mr-1"></i> Depart Time: 23/02/2025</p>
-                    <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: 7 days 6 nights</p>
-                    <p><i class="fas fa-users text-gray-500 mr-1"></i> Remain slots: <span
-                            class="text-red-600 font-bold">15</span></p>
-                </div>
-
-                <!-- Price and Button -->
-                <div class="border-t pt-2">
-                    <p class="text-red-600 text-lg font-bold">25.990.000 đ</p>
-                    <button
-                        class="w-full bg-red-500 text-white text-sm font-bold py-2 rounded mt-2 hover:bg-red-600 transition duration-200">
-                        Place Now
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-            <div class="relative">
-                <!-- Image -->
-                <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Tour Image"
-                    class="w-full h-64 object-cover">
-            </div>
-
-            <!-- Content -->
-            <div class="p-4">
-                <h3 class="font-bold text-lg leading-snug">
-                    Trung Quốc: Thượng Hải - Hàng Châu - Vô Tích - Tô Châu - Bắc Kinh
-                </h3>
-                <div class="text-sm text-gray-700 space-y-1 mb-2">
-                    <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Depart: <span
-                            class="text-blue-600 font-medium">Ha Noi</span></p>
-                    <p><i class="fas fa-calendar-alt text-green-500 mr-1"></i> Depart Time: 23/02/2025</p>
-                    <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: 7 days 6 nights</p>
-                    <p><i class="fas fa-users text-gray-500 mr-1"></i> Remain slots: <span
-                            class="text-red-600 font-bold">15</span></p>
-                </div>
-
-                <!-- Price and Button -->
-                <div class="border-t pt-2">
-                    <p class="text-red-600 text-lg font-bold">25.990.000 đ</p>
-                    <button
-                        class="w-full bg-red-500 text-white text-sm font-bold py-2 rounded mt-2 hover:bg-red-600 transition duration-200">
-                        Place Now
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-            <div class="relative">
-                <!-- Image -->
-                <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Tour Image"
-                    class="w-full h-64 object-cover">
-            </div>
-
-            <!-- Content -->
-            <div class="p-4">
-                <h3 class="font-bold text-lg leading-snug">
-                    Trung Quốc: Thượng Hải - Hàng Châu - Vô Tích - Tô Châu - Bắc Kinh
-                </h3>
-                <div class="text-sm text-gray-700 space-y-1 mb-2">
-                    <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Depart: <span
-                            class="text-blue-600 font-medium">Ha Noi</span></p>
-                    <p><i class="fas fa-calendar-alt text-green-500 mr-1"></i> Depart Time: 23/02/2025</p>
-                    <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: 7 days 6 nights</p>
-                    <p><i class="fas fa-users text-gray-500 mr-1"></i> Remain slots: <span
-                            class="text-red-600 font-bold">15</span></p>
-                </div>
-
-                <!-- Price and Button -->
-                <div class="border-t pt-2">
-                    <p class="text-red-600 text-lg font-bold">25.990.000 đ</p>
-                    <button
-                        class="w-full bg-red-500 text-white text-sm font-bold py-2 rounded mt-2 hover:bg-red-600 transition duration-200">
-                        Place Now
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-            <div class="relative">
-                <!-- Image -->
-                <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Tour Image"
-                    class="w-full h-64 object-cover">
-            </div>
-
-            <!-- Content -->
-            <div class="p-4">
-                <h3 class="font-bold text-lg leading-snug">
-                    Trung Quốc: Thượng Hải - Hàng Châu - Vô Tích - Tô Châu - Bắc Kinh
-                </h3>
-                <div class="text-sm text-gray-700 space-y-1 mb-2">
-                    <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Depart: <span
-                            class="text-blue-600 font-medium">Ha Noi</span></p>
-                    <p><i class="fas fa-calendar-alt text-green-500 mr-1"></i> Depart Time: 23/02/2025</p>
-                    <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: 7 days 6 nights</p>
-                    <p><i class="fas fa-users text-gray-500 mr-1"></i> Remain slots: <span
-                            class="text-red-600 font-bold">15</span></p>
-                </div>
-
-                <!-- Price and Button -->
-                <div class="border-t pt-2">
-                    <p class="text-red-600 text-lg font-bold">25.990.000 đ</p>
-                    <button
-                        class="w-full bg-red-500 text-white text-sm font-bold py-2 rounded mt-2 hover:bg-red-600 transition duration-200">
-                        Place Now
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-            <div class="relative">
-                <!-- Image -->
-                <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Tour Image"
-                    class="w-full h-64 object-cover">
-            </div>
-
-            <!-- Content -->
-            <div class="p-4">
-                <h3 class="font-bold text-lg leading-snug">
-                    Trung Quốc: Thượng Hải - Hàng Châu - Vô Tích - Tô Châu - Bắc Kinh
-                </h3>
-                <div class="text-sm text-gray-700 space-y-1 mb-2">
-                    <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Depart: <span
-                            class="text-blue-600 font-medium">Ha Noi</span></p>
-                    <p><i class="fas fa-calendar-alt text-green-500 mr-1"></i> Depart Time: 23/02/2025</p>
-                    <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: 7 days 6 nights</p>
-                    <p><i class="fas fa-users text-gray-500 mr-1"></i> Remain slots: <span
-                            class="text-red-600 font-bold">15</span></p>
-                </div>
-
-                <!-- Price and Button -->
-                <div class="border-t pt-2">
-                    <p class="text-red-600 text-lg font-bold">25.990.000 đ</p>
+                <div class="border-t">
                     <button
                         class="w-full bg-red-500 text-white text-sm font-bold py-2 rounded mt-2 hover:bg-red-600 transition duration-200">
                         Place Now
@@ -252,92 +87,100 @@
     </div>
 </section>
 
-
-<!-- Favorited Locations -->
 <section class="max-w-5xl mx-auto mt-16 sm:mt-32">
     <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-28">Favorited Locations</h2>
     <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 h-[400px] sm:h-[700px]">
         <!-- Left Large Block -->
-        <div
-            class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold col-span-1 sm:col-span-5 row-span-2">
-            Hanoi
+        <div class="rounded-xl bg-cover bg-center relative col-span-1 sm:col-span-5 row-span-2"
+            style="background-image: url('https://ik.imagekit.io/tvlk/blog/2022/08/pho-co-ha-noi-11.jpg');">
+            <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+            <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
+                Hanoi</h3>
         </div>
         <!-- Top Right Large Block -->
-        <div
-            class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold col-span-1 sm:col-span-7 row-span-2 p-4">
-            Da Nang
+        <div class="rounded-xl bg-cover bg-center relative col-span-1 sm:col-span-7 row-span-2"
+            style="background-image: url('https://vcdn1-dulich.vnecdn.net/2022/06/03/cauvang-1654247842-9403-1654247849.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=Swd6JjpStebEzT6WARcoOA');">
+            <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+            <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">Da
+                Nang</h3>
         </div>
         <!-- Bottom Left Large Block -->
-        <div
-            class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold col-span-1 sm:col-span-6 row-span-2">
-            Da Nang
+        <div class="rounded-xl bg-cover bg-center relative col-span-1 sm:col-span-6 row-span-2"
+            style="background-image: url('https://sakos.vn/wp-content/uploads/2023/05/kham-pha-cac-ngon-doi-dep-tai-da-lat-3.jpg');">
+            <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+            <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">Da
+                Lat</h3>
         </div>
         <!-- Bottom Right Grid (4 Small Blocks) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 grid-rows-2 gap-4 col-span-1 sm:col-span-6 row-span-2">
-            <div class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold">Da Nang
+            <div class="rounded-xl bg-cover bg-center relative"
+                style="background-image: url('https://www.kkday.com/vi/blog/wp-content/uploads/du-lich-sapa.jpg');">
+                <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+                <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
+                    Lao Cai</h3>
             </div>
-            <div class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold">Da Nang
+            <div class="rounded-xl bg-cover bg-center relative"
+                style="background-image: url('https://i2.ex-cdn.com/crystalbay.com/files/content/2023/12/25/tour-nha-trang-3-ngay-2-dem-1-1548.jpg');">
+                <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+                <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
+                    Nha Trang</h3>
             </div>
-            <div class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold">Da Nang
+            <div class="rounded-xl bg-cover bg-center relative"
+                style="background-image: url('https://ik.imagekit.io/tvlk/blog/2023/07/bai-bien-phu-quoc-17.jpg');">
+                <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+                <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
+                    Phu Quoc</h3>
             </div>
-            <div class="bg-gray-300 rounded-xl flex items-center justify-center text-base sm:text-lg font-bold">Da Nang
+            <div class="rounded-xl bg-cover bg-center relative"
+                style="background-image: url('https://motogo.vn/wp-content/uploads/2023/10/dai-noi-kinh-thanh-hue.jpg');">
+                <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+                <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
+                    Hue</h3>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Travel Creators -->
-<section class="max-w-6xl mx-auto mt-16 sm:mt-32 text-center">
-    <h2 class="text-2xl sm:text-3xl font-bold">Get inspired by our fave travel creators</h2>
-    <p class="text-base sm:text-lg text-gray-600 mt-4 sm:mt-6">Tried-and-true guidance to fuel your next big trip</p>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mt-10 sm:mt-32">
-        <div
-            class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
-            3 family-friendly days in Rome
-        </div>
-        <div
-            class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
-            3 family-friendly days in Rome
-        </div>
-        <div
-            class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
-            3 family-friendly days in Rome
+
+<section class="max-w-6xl mx-auto mt-16 text-center">
+    <h2 class="text-2xl sm:text-3xl font-bold">New Blogs</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mt-10">
+        <div *ngFor="let blog of blogs" class="rounded-xl bg-cover bg-center relative h-[350px]"
+            [style.background-image]="'url(' + blog.thumbnailImageUrl + ')'" loading="lazy">
+            <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+            <div class="absolute inset-0 flex flex-col justify-end  text-white">
+                <h3 class="font-semibold text-xl mb-2">{{ blog.title }}</h3>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Travel Creators -->
-<section class="max-w-6xl mx-auto mt-16 sm:mt-32 text-center">
-    <h2 class="text-2xl sm:text-3xl font-bold">You might like these activity</h2>
-    <p class="text-base sm:text-lg text-gray-600 mt-4 sm:mt-6">More things to do in Old Town</p>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mt-10 sm:mt-32">
-        <div
-            class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
-            Lower Loop: Hot Springs & Geysers
-        </div>
-        <div
-            class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
-            Lower Loop: Hot Springs & Geysers
-        </div>
-        <div
-            class="bg-gray-200 h-[200px] sm:h-[280px] flex justify-center items-center text-base sm:text-xl font-semibold rounded-xl">
-            Lower Loop: Hot Springs & Geysers
+
+<section class="max-w-6xl mx-auto mt-16 text-center">
+    <h2 class="text-2xl sm:text-3xl font-bold">Recommended Activities</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mt-10">
+        <div *ngFor="let activity of activities" class="rounded-xl bg-cover bg-center relative h-[350px]"
+            [style.background-image]="'url(' + activity.imageUrl + ')'" loading="lazy">
+            <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
+            <div class="absolute inset-0 flex flex-col justify-end text-white">
+                <h3 class="font-semibold text-xl mb-2 al">{{ activity.title }}</h3>
+            </div>
         </div>
     </div>
 </section>
+ 
 
 <!-- Adventure Callout -->
 <div
     class="max-w-6xl mx-auto bg-gray-100 p-6 sm:p-10 rounded-xl flex flex-col sm:flex-row items-center space-x-0 sm:space-x-12 shadow-lg mt-16 sm:mt-32">
     <!-- Image Placeholder -->
-    <div class="w-40 h-40 sm:w-52 sm:h-52 bg-gray-300 rounded-xl rotate-6"></div>
+    <div class="w-40 h-40 sm:w-52 sm:h-52 bg-gray-300 rounded-xl rotate-6" 
+    [style.background-image]="'url(' + blog?.thumbnailImageUrl + ')'" loading="lazy"></div>
     <!-- Text Content -->
     <div class="flex-1 text-center sm:text-left mt-4 sm:mt-0">
-        <h2 class="font-bold text-xl sm:text-2xl">Feel the adventure: A fresh take on summer in <br
-                class="hidden sm:block"> New South Wales</h2>
+        <h2 class="font-bold text-xl sm:text-2xl"> {{ blog?.title }} </h2>
         <p class="text-base sm:text-lg text-gray-600 mt-2 sm:mt-4">
-            Set off on a journey through five captivating regions of NSW, where every moment invites you to feel
-            something new.
+            {{ blog?.description }}
         </p>
     </div>
     <!-- Button -->
@@ -346,55 +189,4 @@
         now</button>
 </div>
 <!-- Footer -->
-<footer class="bg-gray-200 py-6 sm:py-10 mt-16 sm:mt-32 sm:h-[400px]">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-20 px-4 sm:px-6 sm:mt-7">
-        <!-- Information -->
-        <div>
-            <h3 class="font-bold text-base sm:text-lg">Information</h3>
-            <ul class="mt-2 space-y-1 text-gray-700 text-sm sm:text-base">
-                <li>About Us</li>
-                <li>Sitemap</li>
-                <li>Help</li>
-                <li>Policy</li>
-            </ul>
-        </div>
-        <!-- Contact -->
-        <div>
-            <h3 class="font-bold text-base sm:text-lg">Contact</h3>
-            <ul class="mt-2 space-y-1 text-gray-700 text-sm sm:text-base">
-                <li>FPT Uni, Hoa Lac, Thach That, Ha Noi, Viet Nam</li>
-                <li>(+84 28) 1234 5678</li>
-                <li>(+84 28) 1234 5678</li>
-                <li>infoviettravel.com</li>
-                <li>1900 1839</li>
-                <li>From 8:00 - 23:00 every day</li>
-            </ul>
-        </div>
-        <!-- Tour -->
-        <div>
-            <h3 class="font-bold text-base sm:text-lg">Tour</h3>
-            <ul class="mt-2 space-y-1 text-gray-700 text-sm sm:text-base">
-                <li>Viet Nam Tour</li>
-                <li>Global Tour</li>
-                <li>Deluxe Tour</li>
-                <li>Economic Tour</li>
-            </ul>
-        </div>
-        <!-- Retail Service -->
-        <div>
-            <h3 class="font-bold text-base sm:text-lg">Retail service</h3>
-            <ul class="mt-2 space-y-1 text-gray-700 text-sm sm:text-base">
-                <li>Hotel</li>
-                <li>Restaurant</li>
-                <li>Flight</li>
-            </ul>
-        </div>
-        <!-- Payment -->
-        <div>
-            <h3 class="font-bold text-base sm:text-lg">Payment</h3>
-            <ul class="mt-2 space-y-1 text-gray-700 text-sm sm:text-base">
-                <li>VNPay</li>
-            </ul>
-        </div>
-    </div>
-</footer>
+<app-footer></app-footer>

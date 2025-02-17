@@ -64,7 +64,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   onScroll = () => {
     if (this.mainContent) {
       const scrollPosition = this.mainContent.scrollTop;
-      console.log("Scroll Position:", scrollPosition);
       this.isScrolled = scrollPosition > 300;
     }
   };

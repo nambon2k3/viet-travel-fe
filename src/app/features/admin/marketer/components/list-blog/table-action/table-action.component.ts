@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { TableFilterService } from '../../services/table-filter.service';
 
 @Component({
   selector: 'app-table-action',
@@ -9,23 +8,47 @@ import { TableFilterService } from '../../services/table-filter.service';
   styleUrl: './table-action.component.css',
 })
 export class TableActionComponent {
+  
 
   @Input() totalItems = 0;
+  @Input() pageItems = 0;
+  @Output() onFilter = new EventEmitter<{search: string, orderType: string, status: boolean | undefined}>();
 
-  constructor(public filterService: TableFilterService) {}
 
-  onSearchChange(value: Event) {
-    const input = value.target as HTMLInputElement;
-    this.filterService.searchField.set(input.value);
+  search: string = '';
+  orderType: string = 'Newest';
+  status: boolean | undefined = undefined;
+
+  constructor() { }
+
+
+  onInput(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.search = value;
+  }
+  onOrderSelected(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.orderType = value;
+  }
+  onStatusSelected(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    if(value.toLowerCase() === 'all') {
+      this.status = undefined;
+      console.log(this.status)
+      return;
+
+    }
+    this.status = value !== 'Active';
   }
 
-  onStatusChange(value: Event) {
-    const selectElement = value.target as HTMLSelectElement;
-    this.filterService.statusField.set(selectElement.value);
+  filter() {
+    this.onFilter.emit({
+      search: this.search,
+      orderType: this.orderType,
+      status: this.status
+    });
+    console.log(this.status)
   }
 
-  onOrderChange(value: Event) {
-    const selectElement = value.target as HTMLSelectElement;
-    this.filterService.orderField.set(selectElement.value);
-  }
+
 }

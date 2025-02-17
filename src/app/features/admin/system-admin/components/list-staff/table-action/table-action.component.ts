@@ -1,31 +1,32 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { TableFilterService } from '../../../services/table-filter.service';
 
 @Component({
   selector: 'app-table-action',
-  imports: [AngularSvgIconModule],
+  standalone: true,
+  imports: [AngularSvgIconModule, FormsModule],
   templateUrl: './table-action.component.html',
-  styleUrl: './table-action.component.css',
+  styleUrls: ['./table-action.component.css'],
 })
 export class TableActionComponent {
-
   @Input() totalItems = 0;
+  @Input() size = 0;
 
-  constructor(public filterService: TableFilterService) {}
+  // Filter inputs
+  keyword = '';
+  status = '';
+  order = '1';
 
-  onSearchChange(value: Event) {
-    const input = value.target as HTMLInputElement;
-    this.filterService.searchField.set(input.value);
-  }
+  // Emit search and filter data to parent component
+  @Output() searchFilters = new EventEmitter<any>();
 
-  onStatusChange(value: Event) {
-    const selectElement = value.target as HTMLSelectElement;
-    this.filterService.statusField.set(selectElement.value);
-  }
-
-  onOrderChange(value: Event) {
-    const selectElement = value.target as HTMLSelectElement;
-    this.filterService.orderField.set(selectElement.value);
+  onSubmit(): void {
+    const filters = {
+      keyword: this.keyword,
+      status: this.status,
+      order: this.order
+    };
+    this.searchFilters.emit(filters);
   }
 }

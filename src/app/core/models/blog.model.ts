@@ -4,7 +4,7 @@ export interface Blog {
     title: string;
     description: string;
     content: string;
-    author: {id: number; fullName: string};
+    author: {id: number; fullName: string, avatarImage:string, email: string};
     tags: { id: number; name: string }[];
     deleted: boolean;
     selected: boolean;

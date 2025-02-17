@@ -6,10 +6,24 @@
     <input type="hidden" formControlName="id" readonly class="w-full p-2 border rounded-md mb-4"
         placeholder="Enter Id" />
 
+    <!-- Avatar Image -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Avatar Image</label>
+    <div class="flex flex-col items-center justify-center mb-4">
+        <!-- Image Preview -->
+        <img *ngIf="imagePreview" [src]="imagePreview" alt="Avatar Preview"
+            class="w-20 h-20 rounded-full mb-4" />
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="w-full" />
+    </div>
+
     <!-- Username -->
     <label class="block mb-2 text-sm font-medium text-gray-700">Username</label>
     <input type="text" formControlName="username" class="w-full p-2 border rounded-md mb-4"
         placeholder="Enter Username" />
+
+    <!-- Password -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Password</label>
+    <input type="text" formControlName="password" class="w-full p-2 border rounded-md mb-4"
+        placeholder="Enter Password" />
 
     <!-- Fullname -->
     <label class="block mb-2 text-sm font-medium text-gray-700">Fullname</label>
@@ -31,6 +45,10 @@
     <!-- Phone -->
     <label class="block mb-2 text-sm font-medium text-gray-700">Phone</label>
     <input type="text" formControlName="phone" class="w-full p-2 border rounded-md mb-4" placeholder="Enter Phone" />
+
+    <!-- Address -->
+    <label class="block mb-2 text-sm font-medium text-gray-700">Address</label>
+    <input type="text" formControlName="address" class="w-full p-2 border rounded-md mb-4" placeholder="Enter Address" />
 
     <!-- Role -->
     <label class="block mb-2 text-sm font-medium text-gray-700">Role</label>

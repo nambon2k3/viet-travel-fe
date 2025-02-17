@@ -17,17 +17,12 @@ export class TableRowComponent {
   constructor(
     private staffService: StaffService,
     private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    console.log('staff:', this.staff);
-  }
-
+  ) { }
 
   deleteStaff(): void {
     this.staffService.deleteStaff(this.staff.id).subscribe({
       next: (response) => {
-        if(response.code === 200) {
+        if (response.code === 200) {
           this.staff.deleted = true;
         }
       },
@@ -38,19 +33,21 @@ export class TableRowComponent {
   }
 
   openDetail(staff: User): void {
-    this.router.navigate(['/sa/staff-details'], { state: {staff} });
+    this.router.navigate(['/sa/staff-details'], {
+      queryParams: { id: staff.id }
+    });
   }
 
-  // recoverStaff(): void {
-  //   this.staffService.updatestaffStatus(this.staff.id, false).subscribe({
-  //     next: (response) => {
-  //       if(response.code === 200) {
-  //         this.staff.deleted = false;
-  //       }
-  //     },
-  //     error: (err) => {
-  //       console.error('Failed to show staff:', err);
-  //     },
-  //   });
-  // }
+  recoverStaff(): void {
+    this.staffService.recoverStaff(this.staff.id).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.staff.deleted = false;
+        }
+      },
+      error: (err) => {
+        console.error('Failed to show staff:', err);
+      },
+    });
+  }
 }

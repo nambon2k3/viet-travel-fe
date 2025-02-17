@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { TableFilterService } from '../../../../features/admin/marketer/components/services/table-filter.service';
-
+import { TableFilterService } from '../../../services/table-filter.service';
 
 @Component({
   selector: 'app-table-action',
@@ -10,6 +9,10 @@ import { TableFilterService } from '../../../../features/admin/marketer/componen
   styleUrl: './table-action.component.css',
 })
 export class TableActionComponent {
+
+  @Input() totalItems = 0;
+  @Input() size = 0;
+
   constructor(public filterService: TableFilterService) {}
 
   onSearchChange(value: Event) {

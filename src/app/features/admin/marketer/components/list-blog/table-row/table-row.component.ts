@@ -2,12 +2,13 @@ import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Blog } from '../../../../../../core/models/blog.model';
-import { BlogService } from '../../services/blog.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
+import { TruncatePipe } from '../../../../../../shared/pipes/truncate.pipe';
+import { BlogService } from '../../../services/blog.service';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, DatePipe, CommonModule],
+  imports: [FormsModule, AngularSvgIconModule, DatePipe, CommonModule, TruncatePipe],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })
@@ -23,12 +24,9 @@ export class TableRowComponent {
   ) { }
 
   openDetail(blog: Blog): void {
-    this.router.navigate(['/m/blog-details'], { state: {blog} });
-  }
-
-  
-  ngOnInit(): void {
-    console.log('blog:', this.blog);
+    this.router.navigate(['/marketer/blog-details'],  {
+      queryParams: { id: blog.id }
+    });
   }
 
   hideBlog(): void {
