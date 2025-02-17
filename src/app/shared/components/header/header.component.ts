@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
 import { CustomerService } from '../../../features/customer/services/customer.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -17,7 +18,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   isProfileOpen: boolean = false;
 
   constructor(
-    private customerService: CustomerService
+    private customerService: CustomerService,
+    private router : Router
   ){}
 
   ngOnInit(): void {
@@ -52,6 +54,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
       // Lắng nghe sự kiện scroll trên phần tử này
       this.mainContent.addEventListener('scroll', this.onScroll);
     }
+  }
+
+  goHomepage(): void {
+    this.router.navigate(['/homepage']);
   }
 
   ngOnDestroy() {
