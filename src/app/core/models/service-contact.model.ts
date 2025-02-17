@@ -4,7 +4,7 @@ export interface ServiceContact {
     fullName: string;
     phoneNumber: string;
     email: string;
-    gender: 'MALE' | 'FEMALE'; 
+    gender: string; 
     deleted: boolean;
     selected: boolean;
     serviceProviderName: string;

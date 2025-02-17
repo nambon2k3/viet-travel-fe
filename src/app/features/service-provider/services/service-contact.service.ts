@@ -2,8 +2,9 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { UserStorageService } from "../../../core/services/user-storage/user-storage.service";
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
+import { environment } from "../../../../environments/environment";
+import { ServiceContact } from "../../../core/models/service-contact.model";
 
-const BASIC_URL = "http://localhost:8080/service-provider/service-contacts";
 
 @Injectable({
     providedIn: 'root',
@@ -14,13 +15,6 @@ export class ServiceContactService {
     constructor(private http: HttpClient, private userStorageService: UserStorageService) { }
 
     getServiceContactByPage(page: number = 0, size: number = 10, keyword?: string, isDeleted?: boolean): Observable<any> {
-        const token = this.userStorageService.getToken();
-
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-
-
         let params = new HttpParams()
             .set('page', page)
             .set('size', size);
@@ -32,18 +26,15 @@ export class ServiceContactService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${BASIC_URL}`, { params });
+        return this.http.get(`${environment.apiUrl}service-provider/service-contacts`, { params });
     }
 
+    addServiceContact(contact: ServiceContact): Observable<any> {
+        return this.http.post(`${environment.apiUrl}service-provider/service-contacts`, contact);
+    }
 
-    deleteServiceContact(id: number, isDeleted: boolean): Observable<any> {
-        const token = this.userStorageService.getToken();
-
-        if (!token) {
-            throw new Error('No authentication token found');
-        }
-
-        return this.http.post(`${BASIC_URL}/delete/${id}`,  isDeleted);
+    deleteServiceContact(id: number, isDeleted: boolean): Observable<any> {    
+        return this.http.post(`${environment.apiUrl}service-provider/service-contacts/delete/${id}`,  isDeleted);
     }
 
 }

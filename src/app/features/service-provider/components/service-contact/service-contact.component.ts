@@ -33,6 +33,7 @@ export class ServiceContactComponent {
     onAdd(): void{
       this.router.navigate(['/service-provider/add-service-contact']);
     }
+    
   
   
     loadServiceContact(): void {

@@ -7,20 +7,42 @@ import { HttpClient } from '@angular/common/http';
 import { ServiceContact } from '../../../../../core/models/service-contact.model';
 import { ServiceContactService } from '../../../services/service-contact.service';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-service-contact',
+  imports: [FormsModule],
   templateUrl: './add-service-contact.component.html',
   styleUrls: ['./add-service-contact.component.css']
 })
 export class AddServiceContactComponent {
 
-  constructor(private router: Router) {}
+  fullName: string = '';
+  email: string = '';
+  phone: string = '';
+  website: string = '';
+  gender: string = '';
+  position: string = '';
+  services: string = '';
 
-  onSubmit(form: any) {
-    // Handle form submission logic, e.g., send the data to a backend service
-    console.log(form.value);
-    this.router.navigate(['/service-contact']);
+  constructor(private router: Router, private serviceContactService: ServiceContactService) {}
+
+  onSubmit() {
+    const newContact: ServiceContact = {
+      id: 0,
+      fullName: this.fullName,
+      email: this.email,
+      phoneNumber: this.phone,
+      gender: this.gender.toUpperCase(),
+      position: this.position,
+      serviceProviderName: this.services,
+      deleted: false,
+      selected: false
+    };
+
+    this.serviceContactService.addServiceContact(newContact).subscribe(() => {
+      this.router.navigate(['/service-contact']);
+    });
   }
 
   onCancel(): void {
