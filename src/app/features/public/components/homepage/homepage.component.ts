@@ -51,17 +51,17 @@ export class HomepageComponent {
   }
 
   ngOnInit() {
-    const cachedData = localStorage.getItem('homepageData');
-    if (cachedData) {
-      const data = JSON.parse(cachedData);
-      this.trendingTours = data.trendingTours;
-      this.topTourOfYear = data.topTourOfYear;
-      this.blogs = data.newBlogs.slice(0, 3);
-      this.blog = data.newBlogs[data.newBlogs.length - 1];
-      this.activities = data.recommendedActivities;
-    } else {
+    // const cachedData = localStorage.getItem('homepageData');
+    // if (cachedData) {
+    //   const data = JSON.parse(cachedData);
+    //   this.trendingTours = data.trendingTours;
+    //   this.topTourOfYear = data.topTourOfYear;
+    //   this.blogs = data.newBlogs.slice(0, 3);
+    //   this.blog = data.newBlogs[data.newBlogs.length - 1];
+    //   this.activities = data.recommendedActivities;
+    // } else {
       this.fetchHomepageData();
-    }
+    // } 
   }
 
   fetchHomepageData() {

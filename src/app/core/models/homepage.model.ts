@@ -5,10 +5,53 @@ export interface Tour {
   numberSeats: number;
   numberDays: number;
   numberNight: number;
-  note?: string;
-  locationsId?: number[];
-  tagsId?: number[];
-  departLocationId?: number;
+  note?: string | null;
+  locations: Location[];
+  tags: Tag[];
+  depart_location: Location;
+  tickets: Ticket[];
+  tourSchedules: TourSchedule[];
+  tourImages: TourImage[];
+}
+
+export interface Location {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  deleted: boolean;
+  geoPosition: GeoPosition;
+}
+
+export interface GeoPosition {
+  id: number;
+  latitude: number;
+  longitude: number;
+  deleted: boolean;
+}
+
+export interface Tag {
+  id: number;
+  name: string;
+}
+
+export interface Ticket {
+  id: number;
+  type: string;
+  price: number;
+  deleted: boolean;
+}
+
+export interface TourSchedule {
+  id: number;
+  date: string;
+  deleted: boolean;
+}
+
+export interface TourImage {
+  id: number;
+  imageUrl: string;
+  deleted: boolean;
 }
 
 export interface Blog {
@@ -30,27 +73,15 @@ export interface Author {
   email: string;
 }
 
-export interface Tag {
-  id: number;
-  name: string;
-}
-
 export interface Activity {
   id: number;
   title: string;
-  content: string;
+  content: string | null;
   imageUrl: string;
   pricePerPerson: number;
   geoPosition: GeoPosition;
-  locationId: number;
-  activityCategoryId: number;
-  deleted: boolean;
-}
-
-export interface GeoPosition {
-  id: number;
-  latitude: number;
-  longitude: number;
+  locationId: number | null;
+  activityCategoryId: number | null;
   deleted: boolean;
 }
 
@@ -62,5 +93,5 @@ export interface ApiResponse {
     trendingTours: Tour[];
     newBlogs: Blog[];
     recommendedActivities: Activity[];
-  }
+  };
 }

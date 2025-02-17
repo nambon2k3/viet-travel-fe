@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiResponse } from '../../../core/models/homepage.model';
-import { environment } from '../../../../environments/environment';
+// import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,6 +16,7 @@ export class HomepageService {
       .set('numberTour', numberTour)
       .set('numberBlog', numberBlog)
       .set('numberActivity', numberActivity);
-      return this.http.get<ApiResponse>(`${environment.apiUrl + 'public/homepage'}`, { params });
+      return this.http.get<ApiResponse>(`'http://localhost:8080/v1/' + 'public/homepage'}`, { params });
   }
 }
+ 

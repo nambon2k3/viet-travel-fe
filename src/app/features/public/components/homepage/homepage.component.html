@@ -63,14 +63,14 @@
         <div *ngFor="let tour of trendingTours"
             class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
             <div class="relative">
-                <img src="https://cdn.pixabay.com/photo/2017/10/12/03/03/view-2843338_1280.jpg" alt="Tour Image" loading="lazy"
+                <img [src]="tour.tourImages[0].imageUrl" alt="Tour Image" loading="lazy"
                     class="w-full h-64 object-cover">
             </div>
             <div class="p-4">
                 <h3 class="font-bold text-lg leading-snug h-12">{{ tour.name }}</h3>
                 <div class="text-sm text-gray-700 space-y-1 mb-2">
                     <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Depart: <span
-                            class="text-blue-600 font-medium">{{ tour.departLocationId }}</span></p>
+                            class="text-blue-600 font-medium">{{ tour.depart_location.id }}</span></p>
                     <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: {{ tour.numberDays }}D{{
                         tour.numberNight }}N</p>
                     <p><i class="fas fa-users text-gray-500 mr-1"></i> Remain slots: <span
@@ -168,7 +168,7 @@
         </div>
     </div>
 </section>
-
+ 
 
 <!-- Adventure Callout -->
 <div
