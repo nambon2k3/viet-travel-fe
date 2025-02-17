@@ -26,7 +26,13 @@ export class ListStaffComponent {
   totalItems = 0;
   page = 0;
   size = 10;
-  totalPages = signal(0); 
+  totalPages = signal(0);
+
+  // Store filters to persist data across pages
+  keyword = '';
+  isDeleted?: boolean;
+  sortField = 'createdAt';
+  sortDirection = 'desc';
 
   constructor(
     private staffService: StaffService,
@@ -37,9 +43,16 @@ export class ListStaffComponent {
     this.loadStaffs();
   }
 
-  // Load staffs với page và size hiện tại
+  // Load staff list with filters and pagination
   loadStaffs(): void {
-    this.staffService.getStaffByPage(this.page, this.size).subscribe({
+    this.staffService.getStaffByPage(
+      this.page,
+      this.size,
+      this.keyword,
+      this.isDeleted,
+      this.sortField,
+      this.sortDirection
+    ).subscribe({
       next: (response) => {
         this.staffs.set(response.data.items);
         this.totalItems = response.data.total;
@@ -49,32 +62,38 @@ export class ListStaffComponent {
       },
       error: (err) => {
         console.error('Failed to load staffs:', err);
-      },
+      }
     });
+  }
+
+  onSearch(filters: any): void {
+    this.keyword = filters.keyword || '';
+    this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
+    this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
+    this.page = 0; // Reset to first page on new search
+    this.loadStaffs();
+  }
+
+  onPageChange(newPage: number): void {
+    if (newPage >= 0 && newPage < this.totalPages()) {
+      this.page = newPage;
+      this.loadStaffs();
+    }
+  }
+
+  // Change page size and reload data
+  onPageSizeChange(newSize: number): void {
+    this.size = newSize;
+    this.page = 0; // Reset to first page
+    this.loadStaffs();
   }
 
   openPostStaffDetail(): void {
     this.router.navigate(['/admin/user-details']);
   }
 
-  // Thay đổi số lượng hiển thị trên mỗi trang
-  onPageSizeChange(newSize: number): void {
-    this.size = newSize;
-    this.page = 0; // Reset về trang đầu tiên
-    this.loadStaffs();
-  }
-
   openAddStaffModal(): void {
-    this.router.navigate(['/sa/staff-details']);
-  }
-
-
-  // Thay đổi trang hiện tại
-  onPageChange(newPage: number): void {
-    if (newPage >= 0 && newPage < this.totalPages()) {
-      this.page = newPage;
-      this.loadStaffs();
-    }
+    this.router.navigate(['/admin/user-details']);
   }
 
   public toggleStaffs(checked: boolean): void {
@@ -88,5 +107,4 @@ export class ListStaffComponent {
   filteredStaffs = computed(() => {
     return this.staffs();
   });
-
 }

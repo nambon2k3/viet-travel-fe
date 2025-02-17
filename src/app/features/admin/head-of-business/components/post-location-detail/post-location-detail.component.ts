@@ -180,7 +180,7 @@ export class PostLocationDetailComponent {
         if (response?.code === 200) {
           this.successMessage = response?.message;
           this.errorMessage = null;
-          this.router.navigate(['/sa/location']);
+          this.router.navigate(['/head-business/locations']);
         } else {
           this.errorMessage = response?.message || 'An error occurred while creating location.';
           this.successMessage = null;
