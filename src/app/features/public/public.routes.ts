@@ -13,7 +13,7 @@ export const PUBLIC_ROUTES: Route[] = [
         component: HomepageComponent,
       },
       {
-        path: 'blog-detail',
+        path: 'blog-details/:id',
         component: BlogDetailComponent,
       },
     ]
