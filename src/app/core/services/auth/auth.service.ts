@@ -22,7 +22,8 @@ export class AuthService {
     return this.http.post(environment.apiUrl + 'auth', body, { headers, observe: 'response' }).pipe(
       map((response: any) => {
         const token = response.body.data.token;
-        const user = response.body.data.username;
+        const user = response.body.data;
+        console.log( user);
         if (token && user) {
           this.userStorageService.saveToken(token);
           this.userStorageService.saveUser(user);

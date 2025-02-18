@@ -2,6 +2,7 @@ import { Route } from "@angular/router";
 import { PublicLayoutComponent } from "./layout/public-layout/public-layout.component";
 import { HomepageComponent } from "./components/homepage/homepage.component";
 import { BlogDetailComponent } from "./components/blog/blog-detail/blog-detail.component";
+import { BlogComponent } from "./components/blog/blog.component";
 
 export const PUBLIC_ROUTES: Route[] = [
   {
@@ -15,6 +16,10 @@ export const PUBLIC_ROUTES: Route[] = [
       {
         path: 'blog-details/:id',
         component: BlogDetailComponent,
+      },
+      {
+        path: 'blogs',
+        component: BlogComponent,
       },
     ]
   },

@@ -4,7 +4,9 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-service-provided',
-  imports: [],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './add-service-provided.component.html',
   styleUrls: ['./add-service-provided.component.css']
 })
