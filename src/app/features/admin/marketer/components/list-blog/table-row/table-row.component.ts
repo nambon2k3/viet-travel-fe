@@ -8,7 +8,7 @@ import { TruncatePipe } from '../../../../../../shared/pipes/truncate.pipe';
 import { BlogService } from '../../../services/blog.service';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, DatePipe, CommonModule, TruncatePipe],
+  imports: [FormsModule, AngularSvgIconModule, CommonModule, TruncatePipe],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })

@@ -9,20 +9,28 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 export class LocationService {
   constructor(private http: HttpClient) { }
 
-  getLocationByPage(page: number = 0, size: number = 10, keyword?: string, isDeleted?: boolean): Observable<any> {
+  getLocationByPage(
+    page: number = 0,
+    size: number = 10,
+    keyword?: string,
+    isDeleted?: boolean,
+    orderDate: string = 'desc'
+): Observable<any> {
     let params = new HttpParams()
-      .set('page', page)
-      .set('size', size);
+        .set('page', page)
+        .set('size', size)
+        .set('orderDate', orderDate)
 
     if (keyword) {
-      params = params.set('keyword', keyword);
+        params = params.set('keyword', keyword);
     }
     if (isDeleted !== undefined) {
-      params = params.set('isDeleted', isDeleted);
+        params = params.set('isDeleted', isDeleted);
     }
 
     return this.http.get(`${environment.apiUrl}head-business/location/list`, { params });
-  }
+}
+
 
   getLocationById(id: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}head-business/location/details/${id}`);
@@ -37,10 +45,10 @@ export class LocationService {
   }
 
   deleteLocation(id: number): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}head-business/location/change-status/${id}`);
+    return this.http.delete(`${environment.apiUrl}head-business/location/change-status/${id}` + '?isDeleted=true');
   }
 
-  recoverLocation(id: number, location: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}head-business/location/change-status/${id}`, {});
+  recoverLocation(id: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}head-business/location/change-status/${id}` + '?isDeleted=false');
   }
 }

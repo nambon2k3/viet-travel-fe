@@ -1,8 +1,8 @@
 <div class="mb-2 flex justify-between">
     <div class="inline-block">
-        <h3 class="text-foreground font-semibold">Content Marketing</h3>
+        <h3 class="text-foreground font-semibold">Head Of Business</h3>
         <div class="text-muted-foreground space-x-1 text-xs font-medium">
-            <a href="" class="hover:text-primary">All Staffs:</a>
+            <a href="" class="hover:text-primary">All Locations:</a>
             <span class="text-foreground">{{ totalItems}}</span>
         </div>
     </div>
@@ -15,7 +15,9 @@
 </div>
 
 <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2">
-    <app-table-action [size]="size" [totalItems]="totalItems"></app-table-action>
+    <app-table-action [totalItems]="totalItems" 
+    [size]="size" 
+    (searchFilters)="onSearch($event)">"></app-table-action>
     <div
         class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
         <table

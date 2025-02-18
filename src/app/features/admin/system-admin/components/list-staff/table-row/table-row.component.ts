@@ -7,7 +7,7 @@ import { User } from '../../../../../../core/models/user.model';
 import { Router } from '@angular/router';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, DatePipe],
+  imports: [FormsModule, AngularSvgIconModule],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })

@@ -17,10 +17,19 @@ export class BlogService {
 
     constructor(private http: HttpClient) { }
 
-    getBlogByPage(page: number = 0, size: number = 10, keyword?: string, isDeleted?: boolean): Observable<any> {
+    getBlogByPage(
+        page: number = 0,
+        size: number = 10,
+        keyword?: string,
+        isDeleted?: boolean,
+        sortField: string = 'createdAt',
+        sortDirection: string = 'desc'
+    ): Observable<any> {
         let params = new HttpParams()
             .set('page', page)
-            .set('size', size);
+            .set('size', size)
+            .set('sortField', sortField)
+            .set('sortDirection', sortDirection);
 
         if (keyword) {
             params = params.set('keyword', keyword);
