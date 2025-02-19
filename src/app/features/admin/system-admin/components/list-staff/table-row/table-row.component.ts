@@ -33,7 +33,7 @@ export class TableRowComponent {
   }
 
   openDetail(staff: User): void {
-    this.router.navigate(['/sa/staff-details'], {
+    this.router.navigate(['/admin/user-details'], {
       queryParams: { id: staff.id }
     });
   }

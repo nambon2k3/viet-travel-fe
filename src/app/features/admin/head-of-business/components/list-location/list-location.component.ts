@@ -7,6 +7,7 @@ import { TableRowComponent } from './table-row/table-row.component';
 import { Router } from '@angular/router';
 import { Locations } from '../../../../../core/models/location.model';
 import { LocationService } from '../../services/location/location.service';
+import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-list-location',
@@ -16,7 +17,8 @@ import { LocationService } from '../../services/location/location.service';
     TableHeaderComponent,
     TableRowComponent,
     CommonModule,
-  ],
+    SpinnerComponent
+],
   templateUrl: './list-location.component.html',
   styleUrl: './list-location.component.css'
 })
@@ -26,6 +28,7 @@ export class ListLocationComponent {
   page = 0;
   size = 10;
   totalPages = signal(0);
+  isLoading: boolean = false;
 
   constructor(
     private locationService: LocationService,
@@ -37,6 +40,7 @@ export class ListLocationComponent {
   }
 
   loadLocation(): void {
+    this.isLoading = true;
     this.locationService.getLocationByPage(
       this.page,
       this.size,
@@ -50,6 +54,7 @@ export class ListLocationComponent {
         this.page = response.data.page;
         this.size = response.data.size;
         this.totalPages.set(Math.ceil(this.totalItems / this.size));
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Failed to load locations:', err);

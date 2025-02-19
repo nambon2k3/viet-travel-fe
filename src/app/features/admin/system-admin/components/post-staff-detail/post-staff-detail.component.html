@@ -10,8 +10,7 @@
     <label class="block mb-2 text-sm font-medium text-gray-700">Avatar Image</label>
     <div class="flex flex-col items-center justify-center mb-4">
         <!-- Image Preview -->
-        <img *ngIf="imagePreview" [src]="imagePreview" alt="Avatar Preview"
-            class="w-20 h-20 rounded-full mb-4" />
+        <img *ngIf="imagePreview" [src]="imagePreview" alt="Avatar Preview" class="w-20 h-20 rounded-full mb-4" />
         <input type="file" (change)="onFileSelected($event)" accept="image/*" class="w-full" />
     </div>
 
@@ -23,7 +22,7 @@
     <!-- Password -->
     <label class="block mb-2 text-sm font-medium text-gray-700">Password</label>
     <input type="text" formControlName="password" class="w-full p-2 border rounded-md mb-4"
-        placeholder="Enter Password" />
+        placeholder="Enter New Password" />
 
     <!-- Fullname -->
     <label class="block mb-2 text-sm font-medium text-gray-700">Fullname</label>
@@ -48,21 +47,15 @@
 
     <!-- Address -->
     <label class="block mb-2 text-sm font-medium text-gray-700">Address</label>
-    <input type="text" formControlName="address" class="w-full p-2 border rounded-md mb-4" placeholder="Enter Address" />
+    <input type="text" formControlName="address" class="w-full p-2 border rounded-md mb-4"
+        placeholder="Enter Address" />
 
     <!-- Role -->
-    <label class="block mb-2 text-sm font-medium text-gray-700">Role</label>
-    <div class="space-y-2 mb-4">
-        <label *ngFor="let role of availableRoles" class="flex items-center space-x-2">
-            <input type="checkbox" [value]="role" (change)="onRoleChange($event)"
-                class="text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                [checked]="selectedRoles.includes(role)" />
-            <span class="text-gray-700">{{ role }}</span>
-        </label>
-    </div>
-
-    <!-- Display Selected Roles -->
-    <input type="text" [value]="selectedRolesDisplay" class="w-full p-2 border rounded-md mb-4 bg-gray-100" readonly />
+    <label class="block mb-2 mt-3 text-sm font-medium text-gray-700">Roles</label>
+    <ng-multiselect-dropdown id="selector" formControlName="roleNames" [settings]="dropdownSettings"
+        [data]="dropdownList" [ngModel]="selectedItems" (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)" (onDeSelect)="onDeSelect($event)">
+    </ng-multiselect-dropdown>
 
 
 
@@ -90,7 +83,7 @@
         </button>
         <button type="submit" (click)="saveChanges()"
             class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
-            Save Changes
+            Save
         </button>
     </div>
 </form>
