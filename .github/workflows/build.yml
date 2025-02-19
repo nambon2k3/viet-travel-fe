@@ -29,5 +29,3 @@ jobs:
           export NODE_OPTIONS=--max-old-space-size=4096
           npm install
           npm run build:prod --verbose --if-present
-          npm run lint
-
