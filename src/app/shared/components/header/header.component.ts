@@ -17,7 +17,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   isProfileOpen: boolean = false;
   isLoggedIn: boolean = false;
   username: string = '';
-  isHomepage: boolean = false;
+  isHomepage: boolean = true;
 
   constructor(
     private customerService: CustomerService,
