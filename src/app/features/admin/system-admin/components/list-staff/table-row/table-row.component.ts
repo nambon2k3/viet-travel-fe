@@ -7,7 +7,7 @@ import { User } from '../../../../../../core/models/user.model';
 import { Router } from '@angular/router';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, DatePipe],
+  imports: [FormsModule, AngularSvgIconModule],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })
@@ -33,7 +33,7 @@ export class TableRowComponent {
   }
 
   openDetail(staff: User): void {
-    this.router.navigate(['/sa/staff-details'], {
+    this.router.navigate(['/admin/user-details'], {
       queryParams: { id: staff.id }
     });
   }

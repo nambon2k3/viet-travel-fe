@@ -7,6 +7,7 @@ import { User } from '../../../../../core/models/user.model';
 import { StaffService } from '../../services/staff.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-list-staff',
@@ -16,8 +17,9 @@ import { Router } from '@angular/router';
     TableFooterComponent,
     TableHeaderComponent,
     TableRowComponent,
-    CommonModule
-  ],
+    CommonModule,
+    SpinnerComponent
+],
   templateUrl: './list-staff.component.html',
   styleUrls: ['./list-staff.component.css']
 })
@@ -27,6 +29,7 @@ export class ListStaffComponent {
   page = 0;
   size = 10;
   totalPages = signal(0);
+  isLoading: boolean = false;
 
   // Store filters to persist data across pages
   keyword = '';
@@ -45,6 +48,7 @@ export class ListStaffComponent {
 
   // Load staff list with filters and pagination
   loadStaffs(): void {
+    this.isLoading = true;
     this.staffService.getStaffByPage(
       this.page,
       this.size,
@@ -59,6 +63,7 @@ export class ListStaffComponent {
         this.page = response.data.page;
         this.size = response.data.size;
         this.totalPages.set(Math.ceil(this.totalItems / this.size));
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Failed to load staffs:', err);

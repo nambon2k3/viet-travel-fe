@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { StaffService } from '../../services/staff.service';
 import { catchError, of } from 'rxjs';
-import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../../../core/models/user.model';
 import { CommonModule } from '@angular/common';
-import { Role } from '../../../../../core/models/role.model';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { AdminService } from '../../../admin.service';
 
 @Component({
   selector: 'app-staff-detail',
@@ -13,6 +14,8 @@ import { Role } from '../../../../../core/models/role.model';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    NgMultiSelectDropDownModule,
+    FormsModule,
   ],
   templateUrl: './post-staff-detail.component.html',
   styleUrls: ['./post-staff-detail.component.css']
@@ -26,18 +29,30 @@ export class PostStaffDetailComponent {
   staffId: string | null = null;
   staff: User = <User>{};
 
-  availableRoles: string[] = [];
-  selectedRoles: string[] = [];
-  selectedRolesDisplay: string = '';
+  dropdownList: any = [];
+  dropdownSettings: IDropdownSettings = {};
+  selectedItems: any = [];
 
   constructor(
     private staffService: StaffService,
+    private adminService: AdminService,
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'item_id',
+      textField: 'item_text',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 5,
+      searchPlaceholderText: 'Search Roles Name',
+      allowSearchFilter: true
+    };
+
     this.initForm();
     this.route.queryParams.subscribe(params => {
       this.staffId = params['id'];
@@ -45,17 +60,47 @@ export class PostStaffDetailComponent {
         this.loadUserById(this.staffId);
       }
     });
+    this.getStaffRoles();
+  }
 
+  getStaffRoles(): void {
     this.staffService.getStaffRoles().subscribe({
-      next: (response: { code: number, data: Role[] }) => {
-        if (response.code === 200) {
-          this.availableRoles = response.data.map(role => role.roleName);
+      next: (response) => {
+        this.dropdownList = response.data.map((role: { id: number, roleName: string }) => ({
+          item_id: role.id,
+          item_text: role.roleName
+        }));
+
+        if (this.staffId && this.staff.roleNames) {
+          this.selectedItems = this.dropdownList.filter((item: any) =>
+            this.staff.roleNames.includes(item.item_text)
+          );
         }
       },
       error: (err) => {
         this.errorMessage = err.message;
       }
     });
+  }
+
+  onItemSelect(item: any) {
+    const roleNames = this.editUserForm.get('roleNames')?.value || [];
+  }
+
+
+  onDeSelect(item: any) {
+    const roleNames = this.editUserForm.get('roleNames')?.value || [];
+    this.editUserForm.get('roleNames')?.setValue(roleNames.filter((role: string) => role !== item.item_text));
+  }
+
+  onSelectAll(items: any) {
+    this.editUserForm.get('roleNames')?.setValue(items.map((item: any) => item.item_text));
+  }
+
+  resetItems(): void {
+    this.selectedItems = this.selectedItems.map((role: any) => ({
+      item_text: role.name
+    }));
   }
 
   onFileSelected(event: Event): void {
@@ -79,7 +124,6 @@ export class PostStaffDetailComponent {
       fullName: ['', Validators.required],
       username: ['', Validators.required],
       password: ['', Validators.required],
-      rePassword: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       gender: ['MALE', Validators.required],
       phone: ['', Validators.required],
@@ -100,7 +144,6 @@ export class PostStaffDetailComponent {
             id: this.staff.id,
             fullName: this.staff.fullName,
             username: this.staff.username,
-            password: this.staff.password,
             email: this.staff.email,
             gender: this.staff.gender ? 'MALE' : 'FEMALE',
             phone: this.staff.phone,
@@ -108,11 +151,17 @@ export class PostStaffDetailComponent {
             roleNames: this.staff.roleNames || [],
             status: this.staff.deleted ? 'inactive' : 'active'
           });
-          if (this.staff.avatarImage !== "https://example.com/avatar.jpg") {
+
+          this.selectedItems = this.staff.roleNames.map((role: string) => ({
+            item_id: role,
+            item_text: role
+          }));
+
+          this.getStaffRoles();
+
+          if (this.staff.avatarImage) {
             this.imagePreview = this.staff.avatarImage;
           }
-          this.selectedRoles = this.staff.roleNames || [];
-          this.updateSelectedRolesDisplay();
         } else {
           this.errorMessage = response.message;
         }
@@ -123,51 +172,47 @@ export class PostStaffDetailComponent {
     });
   }
 
-  updateSelectedRolesDisplay(): void {
-    this.selectedRolesDisplay = this.selectedRoles.join(', ');
-  }
-
-  onRoleChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const value = target.value;
-
-    if (target.checked) {
-      this.selectedRoles.push(value);
-    } else {
-      this.selectedRoles = this.selectedRoles.filter(role => role !== value);
-    }
-
-    this.editUserForm.get('roleNames')?.setValue(this.selectedRoles);
-    this.updateSelectedRolesDisplay();
-  }
-
   onCancel(): void {
     this.router.navigate(['/admin/user']);
   }
 
   saveChanges(): void {
-    if (this.staffId) {
-      this.updateStaff();
-    } else {
-      this.createStaff();
+    if (this.selectedFile) {
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
+      this.adminService.uploadImage(formData).subscribe({
+        next: (response) => {
+          this.editUserForm.get('avatarImage')?.setValue(response.data);
+          if (this.staffId) {
+            this.updateStaff();
+          } else {
+            this.createStaff();
+          }
+        },
+        error: (err) => {
+          this.errorMessage = err.message;
+        }
+      });
     }
   }
 
   updateStaff(): void {
-    this.editUserForm.get('rePassword')?.setValue(this.editUserForm.get('password')?.value);
+    if (this.editUserForm.get('password')?.value !== null) { 
+      this.editUserForm.get('password')?.setValue(this.staff.password);
+    }
+    this.editUserForm.get('roleNames')?.setValue(this.editUserForm.get('roleNames')?.value.map((role: any) => role.item_text));
     const formData = this.editUserForm.getRawValue();
 
     this.staffService.updateStaff(formData)
       .pipe(
         catchError((error) => {
-          const apiError = error?.message;
-          this.errorMessage = apiError;
+          this.errorMessage = error?.message;
           this.successMessage = null;
           return of(null);
         })
       )
       .subscribe((response: any) => {
-        if (response?.code === 200) {
+        if (response?.code === 0) {
           this.successMessage = response?.message;
           this.errorMessage = null;
         } else {
@@ -177,8 +222,9 @@ export class PostStaffDetailComponent {
       });
   }
 
+
   createStaff(): void {
-    this.editUserForm.get('rePassword')?.setValue(this.editUserForm.get('password')?.value);
+    this.editUserForm.get('roleNames')?.setValue(this.editUserForm.get('roleNames')?.value.map((role: any) => role.item_text));
     const formData = this.editUserForm.getRawValue();
 
     this.staffService.createStaff(formData)
@@ -194,7 +240,7 @@ export class PostStaffDetailComponent {
         if (response?.code === 200) {
           this.successMessage = response?.message;
           this.errorMessage = null;
-          this.router.navigate(['/sa/staff']);
+          this.router.navigate(['/admin/user']);
         } else {
           this.errorMessage = response.message;
           this.successMessage = null;

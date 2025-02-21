@@ -6,10 +6,6 @@
   </td>
 
   <td>
-    {{ staff.username }}
-  </td>
-
-  <td>
     {{ staff.email }}
   </td>
 
@@ -21,9 +17,6 @@
     {{ staff.phone }}
   </td>
 
-  <td>
-    {{ staff.address }}
-  </td>
   <td class="space-x-1">
     @for (role of staff.roleNames; track $index) {
     <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
@@ -31,9 +24,23 @@
     </span>
     }
   </td>
-  
+
   <td>
-    {{ staff.createdAt | date }}
+    @if (staff.deleted) {
+      <button 
+        type="button" 
+        class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1"
+        (click)="recoverStaff()">
+        Deactivated
+      </button>
+    } @else {
+      <button 
+        type="button" 
+        class="rounded-[30px] bg-red-900/10 px-2 py-0.5 text-xs font-medium text-red-600 inline-block mt-1"
+        (click)="deleteStaff()">
+        Activated
+      </button>
+    }
   </td>
   
   <td>
@@ -44,21 +51,6 @@
       (click)="openDetail(staff)">
       Details
     </button>
-    @if (staff.deleted) {
-      <button 
-        type="button" 
-        class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-        (click)="recoverStaff()">
-        Activate
-      </button>
-    } @else {
-      <button 
-        type="button" 
-        class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-        (click)="deleteStaff()">
-        Deactivate
-      </button>
-    }
     </div>
   </td>
 </ng-container>

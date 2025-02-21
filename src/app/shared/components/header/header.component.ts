@@ -1,29 +1,48 @@
 import { CommonModule } from '@angular/common';
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
 import { CustomerService } from '../../../features/customer/services/customer.service';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports:[
-    CommonModule
-  ],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './header.component.html',
 })
-export class HeaderComponent implements AfterViewInit, OnDestroy {
+export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   userProfile: any;
   isScrolled = false;
   private mainContent: HTMLElement | null = null;
   isProfileOpen: boolean = false;
+  isLoggedIn: boolean = false;
+  username: string = '';
+  isHomepage: boolean = true;
 
   constructor(
     private customerService: CustomerService,
-    private router : Router
-  ){}
+    private userStorageService: UserStorageService,
+    public router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadUserProfile();
+    this.checkLoginStatus();
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isHomepage = this.router.url === '/homepage';
+      }
+    });
+  }
+
+  checkLoginStatus() {
+    const user = this.userStorageService.getUser();
+    if (user) {
+      this.isLoggedIn = true;
+      this.username = user.username;
+      this.loadUserProfile();
+    } else {
+      this.isLoggedIn = false;
+    }
   }
 
   loadUserProfile(): void {
@@ -47,34 +66,33 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.isProfileOpen = false;
   }
 
-  ngAfterViewInit() {
-    // Lấy phần tử có id là main-content
-    this.mainContent = document.getElementById('main-content');
-    if (this.mainContent) {
-      // Lắng nghe sự kiện scroll trên phần tử này
-      this.mainContent.addEventListener('scroll', this.onScroll);
-    }
-  }
-
   goHomepage(): void {
     this.router.navigate(['/homepage']);
   }
 
+  ngAfterViewInit() {
+    this.mainContent = document.getElementById('main-content');
+    if (this.mainContent) {
+      this.mainContent.addEventListener('scroll', this.onScroll);
+    }
+  }
+
   ngOnDestroy() {
-    // Cleanup khi component bị hủy
     if (this.mainContent) {
       this.mainContent.removeEventListener('scroll', this.onScroll);
     }
   }
 
   onScroll = () => {
-    if (this.mainContent) {
+    if (this.mainContent && this.isHomepage) {
       const scrollPosition = this.mainContent.scrollTop;
       this.isScrolled = scrollPosition > 300;
     }
   };
 
-  onLogout(){
+  onLogout() {
     UserStorageService.signOut();
+    this.isLoggedIn = false;
+    this.router.navigate(['/homepage']);
   }
 }

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FooterComponent } from "../../../../shared/components/footer/footer.component";
 import { HomepageService } from '../../services/homepage.service';
-import { Activity, Blog, Tour } from '../../../../core/models/homepage.model';
+import { Activity, Blog, Tour, Location } from '../../../../core/models/homepage.model';
 import { shareReplay } from 'rxjs';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
@@ -43,6 +43,7 @@ export class HomepageComponent {
   }
 
   trendingTours: Tour[] = [];
+  locations: Location[] = [];
   blogs: Blog[] = [];
   blog: Blog | undefined;
   activities: Activity[] = [];
@@ -53,7 +54,7 @@ export class HomepageComponent {
     private homepageService: HomepageService,
     private router: Router
   ) {
-    this.homepageData$ = this.homepageService.getHomepageData(6, 4, 3).pipe(
+    this.homepageData$ = this.homepageService.getHomepageData(6, 4, 3, 7).pipe(
       shareReplay(1)
     );
   }
@@ -67,13 +68,14 @@ export class HomepageComponent {
       this.blogs = data.newBlogs.slice(0, 3);
       this.blog = data.newBlogs[data.newBlogs.length - 1];
       this.activities = data.recommendedActivities;
+      this.locations = data.recommendedLocations;
     } else {
       this.fetchHomepageData();
     } 
   }
 
   fetchHomepageData() {
-    this.homepageService.getHomepageData(6, 4, 3).subscribe({
+    this.homepageService.getHomepageData(6, 4, 3, 7).subscribe({
       next: (res) => {
         if (res.code !== 200) {
           console.error('Fetching homepage data:', res.message);
@@ -84,6 +86,8 @@ export class HomepageComponent {
         this.blogs = res.data.newBlogs.slice(0, 3);
         this.blog = res.data.newBlogs[res.data.newBlogs.length - 1];
         this.activities = res.data.recommendedActivities;
+        this.locations = res.data.recommendedLocations;
+        console.log(this.locations);
 
         // Cache the data
         localStorage.setItem('homepageData', JSON.stringify(res.data));

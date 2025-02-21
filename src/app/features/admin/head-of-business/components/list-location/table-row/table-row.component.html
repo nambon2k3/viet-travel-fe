@@ -27,11 +27,21 @@
   </td>
   
   <td>
-    {{ location.geoPosition.createdAt | date }}
-  </td>
-
-  <td>
-    {{ location.geoPosition.updatedAt | date }}
+    @if (location.deleted) {
+      <button 
+        type="button" 
+        class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1"
+        (click)="recoverLocation()">
+        Deactivated
+      </button>
+    } @else {
+      <button 
+        type="button" 
+        class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1"
+        (click)="deleteLocation()">
+        Activated
+      </button>
+    }
   </td>
   
   <td>
@@ -42,22 +52,6 @@
       (click)="openDetail(location)">
       Details
     </button>
-    @if (location.deleted) {
-      <button 
-        type="button" 
-        class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-        (click)="recoverLocation()">
-        Activate
-      </button>
-    } @else {
-      <button 
-        type="button" 
-        class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-        (click)="deleteLocation()">
-        Deactivate
-      </button>
-    }
-    
     </div>
     
   </td>

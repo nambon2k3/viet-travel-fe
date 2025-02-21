@@ -11,11 +11,12 @@ export class HomepageService {
 
   constructor(private http: HttpClient) { }
 
-  getHomepageData(numberTour: number, numberBlog: number, numberActivity: number): Observable<ApiResponse> {
+  getHomepageData(numberTour: number, numberBlog: number, numberActivity: number, numberLocation: number): Observable<ApiResponse> {
     let params = new HttpParams()
       .set('numberTour', numberTour)
       .set('numberBlog', numberBlog)
-      .set('numberActivity', numberActivity);
+      .set('numberActivity', numberActivity)
+      .set('numberLocation', numberLocation);
       return this.http.get<ApiResponse>(`${environment.apiUrl}public/homepage`, { params });
   }
 }

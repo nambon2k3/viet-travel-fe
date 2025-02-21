@@ -1,14 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { LocationService } from '../../../services/location/location.service';
 import { Locations } from '../../../../../../core/models/location.model';
 import { TruncatePipe } from '../../../../../../shared/pipes/truncate.pipe';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, DatePipe, TruncatePipe],
+  imports: [FormsModule, AngularSvgIconModule, TruncatePipe],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })
@@ -40,7 +39,7 @@ export class TableRowComponent {
   }
 
   recoverLocation(): void {
-    this.locationService.recoverLocation(this.location.id, this.location).subscribe({
+    this.locationService.recoverLocation(this.location.id).subscribe({
       next: (response) => {
         if (response.code === 200) {
           this.location.deleted = false;

@@ -93,5 +93,6 @@ export interface ApiResponse {
     trendingTours: Tour[];
     newBlogs: Blog[];
     recommendedActivities: Activity[];
+    recommendedLocations: Location[];
   };
 }

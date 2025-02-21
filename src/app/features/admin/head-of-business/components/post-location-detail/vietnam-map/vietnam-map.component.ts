@@ -22,6 +22,13 @@ export class VietnamMapComponent implements AfterViewInit {
       ]).then(([L]) => {
         this.map = L.map('map').setView([14.0583, 108.2772], 6);
 
+        delete (L.Icon.Default.prototype as any)._getIconUrl;
+        L.Icon.Default.mergeOptions({
+          iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+          iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png'
+        });
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
           attribution: '© OpenStreetMap'
@@ -59,7 +66,7 @@ export class VietnamMapComponent implements AfterViewInit {
                   this.markersLayer.addLayer(marker);
 
                   this.map.setView([lat, lon], 12);
-                  
+
                   this.locationSelected.emit({
                     name: searchText,
                     latitude: lat,
