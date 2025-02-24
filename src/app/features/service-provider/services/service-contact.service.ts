@@ -10,7 +10,11 @@ import { ServiceContact } from "../../../core/models/service-contact.model";
     providedIn: 'root',
 })
 
-export class ServiceContactService {    
+export class ServiceContactService {   
+
+    getServiceProviderByServiceContactId(id: number) {
+        throw new Error('Method not implemented.');
+      } 
 
     constructor(private http: HttpClient, private userStorageService: UserStorageService) { }
 
@@ -29,12 +33,24 @@ export class ServiceContactService {
         return this.http.get(`${environment.apiUrl}service-provider/service-contacts`, { params });
     }
 
-    addServiceContact(contact: ServiceContact): Observable<any> {
-        return this.http.post(`${environment.apiUrl}service-provider/service-contacts`, contact);
+    updateServiceContactStatus(id: number, isDeleted: boolean): Observable<any> {
+        return this.http.post(`${environment.apiUrl}service-provider/service-contacts/change-status/${id}`,  isDeleted);
     }
 
-    deleteServiceContact(id: number, isDeleted: boolean): Observable<any> {    
-        return this.http.post(`${environment.apiUrl}service-provider/service-contacts/delete/${id}`,  isDeleted);
+    getServiceContactById(id: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}service-provider/service-contacts/details/${id}`);
+    }
+
+    updateServiceContact(formData: any, id: number): Observable<any> {
+        return this.http.put(`${environment.apiUrl}service-provider/service-contacts/update/${id}`, formData);
+    }
+
+    addServiceContact(): Observable<any> {
+        return this.http.post(`${environment.apiUrl}service-provider/service-contacts`, {});
+    }
+
+    getAllServiceProvider(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}ceo/service-provider/list`);
     }
 
 }

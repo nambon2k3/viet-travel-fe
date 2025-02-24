@@ -1,51 +1,91 @@
-import { Component, computed, signal } from '@angular/core';
-import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
-import { TableHeaderComponent } from '../table-header/table-header.component';
-import { TableRowComponent } from '../table-row/table-row.component';
-import { TableActionComponent } from '../table-action/table-action.component';
-import { HttpClient } from '@angular/common/http';
-import { ServiceContact } from '../../../../../core/models/service-contact.model';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ServiceContactService } from '../../../services/service-contact.service';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { catchError, of } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { BlogLoadingComponent } from '../../../../../shared/components/blog-loading/blog-loading.component';
 
 @Component({
   selector: 'app-add-service-contact',
-  imports: [FormsModule],
+  imports: [
+        ReactiveFormsModule,
+        CommonModule,
+        BlogLoadingComponent,
+        FormsModule        
+      ],
   templateUrl: './add-service-contact.component.html',
-  styleUrls: ['./add-service-contact.component.css']
+  styleUrl: './add-service-contact.component.css'
 })
 export class AddServiceContactComponent {
+  addServiceContactForm!: FormGroup;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
+  serviceProviders: any[] = [];
+  isLoading = true;
 
-  fullName: string = '';
-  email: string = '';
-  phone: string = '';
-  website: string = '';
-  gender: string = '';
-  position: string = '';
-  services: string = '';
+  constructor(
+    private serviceContactService: ServiceContactService,
+    private fb: FormBuilder,
+    private router: Router
+  ) {}
 
-  constructor(private router: Router, private serviceContactService: ServiceContactService) {}
+  ngOnInit(): void {
+    this.addServiceContactForm = this.fb.group({
+      position: ['', Validators.required],
+      fullName: ['', Validators.required],
+      phoneNumber: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      gender: ['', Validators.required],
+      serviceProviderId: ['', Validators.required]
+    });
 
-  onSubmit() {
-    const newContact: ServiceContact = {
-      id: 0,
-      fullName: this.fullName,
-      email: this.email,
-      phoneNumber: this.phone,
-      gender: this.gender.toUpperCase(),
-      position: this.position,
-      serviceProviderName: this.services,
-      deleted: false,
-      selected: false
-    };
+    this.fetchServiceProviders();
+  }
 
-    this.serviceContactService.addServiceContact(newContact).subscribe(() => {
-      this.router.navigate(['/service-contact']);
+  fetchServiceProviders(): void {
+    this.serviceContactService.getAllServiceProvider().subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.serviceProviders = response.data;
+      },
+      error: () => {
+        this.errorMessage = 'Failed to load service providers';
+        this.isLoading = false;
+      }
     });
   }
 
   onCancel(): void {
     this.router.navigate(['/service-provider/service-contact']);
+  }
+
+  saveChanges(): void {
+    if (this.addServiceContactForm.invalid) {
+      this.errorMessage = 'Please fill in all required fields.';
+      return;
+    }
+
+    this.addContact(this.addServiceContactForm.value);
+  }
+
+  addContact(formData: any): void {
+    this.serviceContactService.updateServiceContact(formData, formData.id)
+      .pipe(
+        catchError((error) => {
+          const apiError = error?.error?.message || 'An error occurred while adding the contact.';
+          this.errorMessage = apiError;
+          return of(null);
+        })
+      )
+      .subscribe((response: any) => {
+        if (response?.code === 200) {
+          this.successMessage = response?.message;
+          this.errorMessage = null;
+        } else {
+          this.errorMessage = response?.message || 'An error occurred while adding the contact.';
+          this.successMessage = null;
+        }
+      });
   }
 }

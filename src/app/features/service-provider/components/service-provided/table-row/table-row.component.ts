@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { ServiceProvided } from '../../../../../core/models/service-provided.model';
+import { ServiceProvider } from '../../../../../core/models/service-provider.model';
 import { ServiceProvidedService } from '../../../services/service-provided.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
   styleUrl: './table-row.component.css',
 })
 export class TableRowComponent {
-  @Input() serviceProvided: ServiceProvided = <ServiceProvided>{};
+  @Input() serviceProvider: ServiceProvider = <ServiceProvider>{};
 
   authorName: string = 'Loading...';
   tags: string[] = [];

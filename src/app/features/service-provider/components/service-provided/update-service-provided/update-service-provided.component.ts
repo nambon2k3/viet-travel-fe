@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ServiceProvidedService } from '../../../services/service-provided.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ServiceProvided } from '../../../../../core/models/service-provided.model';
+import { ServiceProvider } from '../../../../../core/models/service-provider.model';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
 export class UpdateServiceProvidedComponent {
   imageUrl: string | ArrayBuffer | null = null;
   editServiceProvidedForm!: FormGroup;
-  serviceProvided!: ServiceProvided;
+  serviceProvided!: ServiceProvider;
   imagePreview: string | null = null;
   selectedFile: File | null = null;
 
@@ -92,7 +92,7 @@ export class UpdateServiceProvidedComponent {
 
   onSubmit() {
     if (this.editServiceProvidedForm.valid) {
-      const updatedData: ServiceProvided = {
+      const updatedData: ServiceProvider = {
         ...this.serviceProvided,
         ...this.editServiceProvidedForm.value,
         imageUrl: this.imageUrl ? (this.imageUrl as string) : this.serviceProvided.imageUrl

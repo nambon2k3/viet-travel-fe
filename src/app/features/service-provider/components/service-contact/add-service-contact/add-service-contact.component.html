@@ -1,51 +1,48 @@
-<div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Add new Service Contact</h2>
-    <form (ngSubmit)="onSubmit()">
-        <div class="mb-4">
-            <label for="fullname" class="block">Fullname</label>
-            <input id="fullname" type="text" [(ngModel)]="fullName" name="fullName" class="input" placeholder="Enter your Full Name" />
-        </div>
-    
-        <div class="mb-4">
-            <label for="email" class="block">Email</label>
-            <input id="email" type="email" [(ngModel)]="email" name="email" class="input" placeholder="Enter e-mail" />
-        </div>
-    
-        <div class="flex mb-4">
-            <div class="w-1/2 pr-1">
-                <label for="phone" class="block">Phone</label>
-                <input id="phone" type="tel" [(ngModel)]="phone" name="phone" class="input" placeholder="Enter Phone Number" />
-            </div>
-            <div class="w-1/2 pl-1">
-                <label for="website" class="block">Website</label>
-                <input id="website" type="url" [(ngModel)]="website" name="website" class="input" placeholder="Enter your website link..." />
-            </div>
-        </div>
-    
-        <div class="flex mb-4">
-            <div class="w-1/2 pr-1">
-                <label for="gender" class="block">Gender</label>
-                <select id="gender" [(ngModel)]="gender" name="gender" class="input">
-                    <option value="">Gender</option>
-                    <option value="MALE">Male</option>
-                    <option value="FEMALE">Female</option>
-                </select>
-            </div>
-            <div class="w-1/2 pl-1">
-                <label for="position" class="block">Position</label>
-                <input id="position" type="text" [(ngModel)]="position" name="position" class="input" placeholder="Your Position" />
-            </div>
-        </div>
-    
-        <div class="mb-4">
-            <label for="services" class="block">Name of Services</label>
-            <input id="services" type="text" [(ngModel)]="services" name="services" class="input" placeholder="Enter your Name of Services here..." />
-        </div>
-    
-        <div class="flex justify-end mt-4">
-            <button type="button" (click)="onCancel()" class="bg-gray-300 text-black px-4 py-2 rounded-md">Cancel</button>
-            <button type="submit" class="bg-black text-white px-4 py-2 rounded-md ml-2">Add Service Contact</button>
-        </div>
+<div class="container">
+  <h2 class="text-lg font-bold mb-4">Add Service Contact</h2>
+
+  @if(isLoading) {
+    <app-blog-loading></app-blog-loading>
+  } @else {
+    <form [formGroup]="addServiceContactForm">
+      <!-- Position -->
+      <label class="block mb-2 text-sm font-medium text-gray-700">Position</label>
+      <input type="text" formControlName="position" class="w-full p-2 border rounded-md mb-4" placeholder="Enter position" />
+      
+      <!-- Full Name -->
+      <label class="block mb-2 text-sm font-medium text-gray-700">Full Name</label>
+      <input type="text" formControlName="fullName" class="w-full p-2 border rounded-md mb-4" placeholder="Enter full name" />
+
+      <!-- Phone Number -->
+      <label class="block mb-2 text-sm font-medium text-gray-700">Phone Number</label>
+      <input type="text" formControlName="phoneNumber" class="w-full p-2 border rounded-md mb-4" placeholder="Enter phone number" />
+
+      <!-- Email -->
+      <label class="block mb-2 text-sm font-medium text-gray-700">Email</label>
+      <input type="email" formControlName="email" class="w-full p-2 border rounded-md mb-4" placeholder="Enter email" />
+
+      <!-- Gender -->
+      <label class="block mb-2 text-sm font-medium text-gray-700">Gender</label>
+      <select formControlName="gender" class="w-full p-2 border rounded-md mb-4">
+        <option value="MALE">Male</option>
+        <option value="FEMALE">Female</option>
+      </select>
+
+      <!-- Service Provider Dropdown -->
+      <label class="block mb-2 text-sm font-medium text-gray-700">Service Provider</label>
+      <select formControlName="serviceProviderId" class="w-full p-2 border rounded-md mb-4">
+        <option *ngFor="let provider of serviceProviders" [value]="provider.id">{{ provider.name }}</option>
+      </select>
+
+      <!-- Error & Success Messages -->
+      <p *ngIf="errorMessage" class="text-red-500 text-sm mb-3">{{ errorMessage }}</p>
+      <p *ngIf="successMessage" class="text-green-500 text-sm mb-3">{{ successMessage }}</p>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-2">
+        <button type="button" (click)="onCancel()" class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+        <button type="submit" (click)="saveChanges()" class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">Save Changes</button>
+      </div>
     </form>
-    
+  }
 </div>

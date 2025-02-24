@@ -4,7 +4,7 @@ import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableRowComponent } from './table-row/table-row.component';
 import { TableActionComponent } from './table-action/table-action.component';
 import { HttpClient } from '@angular/common/http';
-import { ServiceProvided } from '../../../../core/models/service-provided.model';
+import { ServiceProvider } from '../../../../core/models/service-provider.model';
 import { ServiceProvidedService } from '../../services/service-provided.service';
 import { Router } from '@angular/router';
 
@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
   styleUrl: './service-provided.component.css'
 })
 export class ServiceProvidedComponent {
-  service_provideds = signal<ServiceProvided[]>([]);
+  service_provideds = signal<ServiceProvider[]>([]);
     totalItems = 0;
     page = 0;
     size = 10;

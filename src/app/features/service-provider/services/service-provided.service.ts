@@ -3,7 +3,7 @@ import { UserStorageService } from "../../../core/services/user-storage/user-sto
 import { Observable } from "rxjs";
 import { Injectable } from "@angular/core";
 import { environment } from "../../../../environments/environment";
-import { ServiceProvided } from "../../../core/models/service-provided.model";
+import { ServiceProvider } from "../../../core/models/service-provider.model";
 
 @Injectable({
     providedIn: 'root',
@@ -39,8 +39,12 @@ export class ServiceProvidedService {
         return this.http.get(`${environment.apiUrl}ceo/service-provider/details/${id}`);
     }
 
-    updateServiceProvided(id: number, data: ServiceProvided): Observable<ServiceProvided> {
-        return this.http.put<ServiceProvided>(`${environment.apiUrl}ceo/service-provider/updates/${id}`, data); 
+    getServiceProvider(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}ceo/service-provider/list`);
+    }
+
+    updateServiceProvided(id: number, data: ServiceProvider): Observable<ServiceProvider> {
+        return this.http.put<ServiceProvider>(`${environment.apiUrl}ceo/service-provider/updates/${id}`, data); 
       }
 
 

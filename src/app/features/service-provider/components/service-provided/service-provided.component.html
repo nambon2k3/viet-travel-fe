@@ -24,7 +24,7 @@
         </thead>
         <tbody>
           @for (serviceProvided of filteredServiceProvideds(); track $index) {
-          <tr class="hover:bg-card/50" app-table-row [serviceProvided]="serviceProvided"></tr>
+          <tr class="hover:bg-card/50" app-table-row [serviceProvider]="serviceProvided"></tr>
           } @empty {
           <tr>
             <td class="py-4 text-center text-sm" colspan="7">No Service Provided found</td>

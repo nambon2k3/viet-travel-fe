@@ -6,15 +6,21 @@
         <span class="text-foreground">{{ totalItems}}</span>
       </div>
     </div>
+    <app-spinner [isLoading]="isLoading"></app-spinner>
     <div class="inline-block space-x-4">
-      <button (click)="onAdd()" class="bg-black text-white flex-none rounded-md px-4 py-2.5 text-xs font-semibold">
+      <button (click)="onAdd()" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+      >
         Add Service Contacts
       </button>
     </div>
   </div>
   
   <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2">
-    <app-table-action [totalItems]="totalItems"></app-table-action>
+    <app-table-action 
+    [totalItems]="totalItems"
+    (onFilter)="onFilter($event)"
+    [pageItems]="pageItemCount"
+    ></app-table-action>
     <div
       class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
       <table
@@ -33,6 +39,11 @@
         </tbody>
       </table>
     </div>
-    <app-table-footer></app-table-footer>
+    <app-table-footer
+    [totalPages]="totalPages()"
+    [currentPage]="page"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+    ></app-table-footer>
   </div>
   

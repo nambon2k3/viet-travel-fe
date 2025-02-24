@@ -1,6 +1,6 @@
 <ng-container>
   <td class="text-center">
-    <input [(ngModel)]="serviceProvided.id" class="checkbox checkbox-sm" data-datatable-row-check="true" type="checkbox"
+    <input [(ngModel)]="serviceProvider.id" class="checkbox checkbox-sm" data-datatable-row-check="true" type="checkbox"
       value="28" />
   </td>
   <!-- <td>{{ serviceProvided.image_url }}</td> -->
@@ -9,28 +9,28 @@
       <img
         alt="serv img"
         class="h-16 w-32 shrink-0 rounded-lg object-cover bg-gray-200"
-        [src]="serviceProvided.imageUrl" />
+        [src]="serviceProvider.imageUrl" />
     </div>
   </td>
 
-  <td>{{ serviceProvided.name }}</td>
+  <td>{{ serviceProvider.name }}</td>
 
   <td>
-    {{ serviceProvided.abbreviation }}
+    {{ serviceProvider.abbreviation }}
   </td>
 
   <td>
-    {{ serviceProvided.website }}
+    {{ serviceProvider.website }}
   </td>
 
-  <td>{{ serviceProvided.email }}</td>
+  <td>{{ serviceProvider.email }}</td>
 
   <td>
-    {{ serviceProvided.phone }}
+    {{ serviceProvider.phone }}
   </td>
 
   <td>
-    {{ serviceProvided.address }}
+    {{ serviceProvider.address }}
   </td>
 
 
