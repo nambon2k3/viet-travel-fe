@@ -1,1 +1,156 @@
-<p>hotel works!</p>
+<div class="mt-24 container mx-auto px-4 py-6">
+    <!-- Map & Date Inputs (as before) -->
+    <div
+        class="mx-auto w-full bg-gray-200 p-6 rounded-lg flex flex-col md:flex-row gap-20 justify-center items-start md:items-center">
+        <div class="bg-white w-full md:w-1/3 h-56 flex items-center justify-center font-bold text-lg rounded-lg shadow">
+            View Map
+        </div>
+        <div class="">
+            <div class="font-bold text-3xl mb-16">All the hotel</div>
+            <div class="flex flex-col gap-4 md:flex-row mt-4 md:mt-0">
+                <!-- Check In -->
+                <div class="bg-white p-4 rounded-lg shadow flex items-center gap-2">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <p class="text-sm">Check In</p>
+                        <p class="font-bold">Sun, Feb 02</p>
+                    </div>
+                </div>
+                <!-- Check Out -->
+                <div class="bg-white p-4 rounded-lg shadow flex items-center gap-2">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <p class="text-sm">Check Out</p>
+                        <p class="font-bold">Sun, Feb 02</p>
+                    </div>
+                </div>
+                <!-- Rooms/Guests -->
+                <div class="bg-white p-4 rounded-lg shadow flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    <div>
+                        <p class="text-sm">Rooms/Guest</p>
+                        <p class="font-bold">Sun, Feb 02</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-between items-center mx-20 mt-10 h-fit">
+        <div class="flex gap-1">
+            <p class="font-bold">{{ totalHotels }}</p>
+            <p>properties in Hanoi</p>
+        </div>
+        <div>
+            <p class="font-bold inline-block mr-2">Sort by:</p>
+            <select class="w-40 h-8 bg-gray-100 rounded px-2" [(ngModel)]="sortBy" (change)="onSort()">
+                <option value="">None</option>
+                <option value="priceAsc">Price: Low to High</option>
+                <option value="priceDesc">Price: High to Low</option>
+                <option value="classAsc">Hotel Class: Low to High</option>
+                <option value="classDesc">Hotel Class: High to Low</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Filters & Sorting Header -->
+    <div class="flex flex-col md:flex-row gap-7 container mx-auto px-20 py-6">
+        <div class="flex flex-col md:flex-row gap-6 w-1/5">
+            <!-- Sidebar Filters -->
+            <div class="w-full max-w-md">
+
+                <!-- Price Range Filter -->
+                <h2 class="text-2xl font-bold mb-4">Price Range</h2>
+
+                <!-- Custom Range Slider -->
+                <div class="relative mt-4 slider-container">
+                    <input type="range" min="0" max="1000" [(ngModel)]="minPrice" (input)="updateSlider()"
+                        class="absolute w-full opacity-0 z-10">
+                    <input type="range" min="0" max="1000" [(ngModel)]="maxPrice" (input)="updateSlider()"
+                        class="absolute w-full opacity-0 z-10">
+
+                    <!-- Styled Track -->
+                    <div class="relative w-full h-2 bg-gray-200 rounded-md">
+                        <div class="absolute h-2 bg-gradient-to-r from-green-900 to-green-400 rounded-md"
+                            [style.left.%]="minPercent" [style.right.%]="100 - maxPercent"></div>
+                    </div>
+                </div>
+
+                <!-- Price Labels -->
+                <div class="flex justify-between mt-3 text-gray-600">
+                    <span>From: ${{ minPrice }}</span>
+                    <span>To: ${{ maxPrice }}</span>
+                </div>
+
+
+                <p class="font-bold mt-4">Hotel Class</p>
+                <div class="mt-2 space-y-2">
+                    <ul class="w-full">
+                        <li *ngFor="let star of [5, 4, 3, 2, 1]" class="mb-4">
+                            <input type="radio" [id]="'hotel-class-' + star" name="hotelClass" [value]="star"
+                                [(ngModel)]="hotelClassFilter" class="hidden peer" required />
+                            <label [for]="'hotel-class-' + star"
+                                class="inline-flex items-center justify-between w-full px-5 py-2 text-black bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-green-600 peer-checked:text-green-600 hover:text-white-600 hover:bg-gray-100">
+                                <div class="block">
+                                    <div class="w-full text-lg font-semibold">{{ star }} Star</div>
+                                </div>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <!-- Clear All Filters Button -->
+                <button class="bg-white border border-black-500 text-black px-4 py-2 rounded-lg mt-4 w-full"
+                    (click)="clearFilters()">
+                    Clear All Filters
+                </button>
+
+
+                <button class="bg-green-800 text-white px-4 py-2 rounded-lg mt-4 w-full"
+                    (click)="onFilter()">Filter</button>
+            </div>
+        </div>
+
+        <!-- Hotel List -->
+        <div class="w-full md:w-4/5">
+            <div *ngFor="let hotel of filteredHotels" class="bg-gray-100 p-4 rounded-lg flex items-start gap-4 mb-4">
+                <div name="image" class="w-1/3 h-40 bg-gray-300 rounded-lg"></div>
+                <div class="w-2/3">
+                    <p class="font-bold mb-4">{{ hotel.id }}. {{ hotel.name }} Hanoi: Vietnam’s capital in the north</p>
+                    <div class=" flex items-center my-auto gap-10">
+                        <!-- Price & Actions -->
+                        <div class="gap-4 mt-2 items-center justify-center ml-4">
+                            <p class="font-bold mb-4 text-center">${{ hotel.price }}</p>
+                            <button class="bg-gray-300 px-4 py-2 rounded-lg mx-auto">View deals</button>
+                        </div>
+                        <div class="w-2/3">
+                            <p class="text-sm text-gray-500">Hanoi: Vietnam’s capital in the north offers a more
+                                introspective and slower-paced vibe. Rooted in history, Hanoi invites you to explore its
+                                tree-lined streets, ancient pagodas, and bustling markets.</p>
+    
+                            <!-- Hotel Rating -->
+                            <div class="flex items-center justify-center mt-2">
+                                {{ hotel.hotelClass}}
+                                <svg class="w-6 h-6 ml-2 text-gray-800 dark:text-green-800" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination UI -->
+            <div class="flex justify-center gap-2 mt-4">
+                <button *ngFor="let page of pages" class="px-3 py-1 border rounded"
+                    [class.bg-blue-500]="currentPage === page" (click)="changePage(page)">
+                    {{ page }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

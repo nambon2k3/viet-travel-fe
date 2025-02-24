@@ -1,175 +1,107 @@
-<nav
-  [class.transition-all]="isHomepage"
-  class="fixed top-0 left-0 w-full bg-white shadow-md z-50"
->
-  <div class="flex justify-between items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-    <!-- Logo -->
-    <div class="flex items-center space-x-3 cursor-pointer" (click)="goHomepage()">
-      <img class="w-16 h-16" src="assets/images/logo/logo.png" alt="" />
-      <span class="font-bold text-xl sm:text-2xl">Viet Travel</span>
-    </div>
+<div [class.transition-all]="isHomepage">
+  <nav class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+    <div class="flex justify-between items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <!-- Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer" (click)="goHomepage()">
+        <img class="w-16 h-16" src="assets/images/logo/logo.png" alt="" />
+        <span class="font-bold text-xl sm:text-2xl">Viet Travel</span>
+      </div>
 
-    <!-- Search Box -->
-    <div
-      class="transition-all duration-300 overflow-hidden"
-      [class.max-h-[60px]]="!isHomepage || (isHomepage && isScrolled)"
-      [class.max-h-0]="isHomepage && !isScrolled"
-    >
-      <div class="bg-white-100 py-2">
-        <div
-          class="max-w-7xl mx-auto flex items-center bg-white rounded-full px-4 pr-32 py-2 w-full border border-gray-300 shadow-sm"
-        >
-          <!-- Search Icon -->
-          <svg
-            class="w-6 h-6 text-gray-500"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
-            ></path>
+      <!-- Search Box -->
+      <div class="transition-all duration-300 overflow-hidden"
+        [class.max-h-[60px]]="!isHomepage || (isHomepage && isScrolled)" [class.max-h-0]="isHomepage && !isScrolled">
+        <div class="bg-white-100 py-2">
+          <div
+            class="max-w-7xl mx-auto flex items-center bg-white rounded-full px-4 pr-32 py-2 w-full border border-gray-300 shadow-sm">
+            <!-- Search Icon -->
+            <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"></path>
+            </svg>
+            <!-- Search Input -->
+            <input type="text" placeholder="Search..."
+              class="w-full outline-none px-4 text-gray-700 placeholder-gray-400 text-lg bg-transparent" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="hidden md:flex space-x-8 lg:space-x-14 text-lg font-semibold transition-all duration-300"
+        [class.ml-0]="!isHomepage || (isHomepage && isScrolled)" [class.ml-[-53rem]]="isHomepage && !isScrolled">
+        <li><a href="#" class="hover:text-gray-600">Destination</a></li>
+        <li><a href="#" class="hover:text-gray-600">Plans</a></li>
+        <li><a href="#" class="hover:text-gray-600">Review</a></li>
+      </ul>
+
+      <!-- Currency & Profile -->
+      <div class="relative">
+        <div class="flex items-center space-x-4 sm:space-x-6">
+          <svg class="w-6 h-6 text-gray-800 dark:text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+              d="M4.37 7.657c2.063.528 2.396 2.806 3.202 3.87 1.07 1.413 2.075 1.228 3.192 2.644 1.805 2.289 1.312 5.705 1.312 6.705M20 15h-1a4 4 0 0 0-4 4v1M8.587 3.992c0 .822.112 1.886 1.515 2.58 1.402.693 2.918.351 2.918 2.334 0 .276 0 2.008 1.972 2.008 2.026.031 2.026-1.678 2.026-2.008 0-.65.527-.9 1.177-.9H20M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
-          <!-- Search Input -->
-          <input
-            type="text"
-            placeholder="Search..."
-            class="w-full outline-none px-4 text-gray-700 placeholder-gray-400 text-lg bg-transparent"
-          />
+          <span class="text-base sm:text-lg">VND</span>
+          <!-- Profile Button -->
+          <div class="" *ngIf="isLoggedIn else signIn">
+            <img (click)="toggleProfileMenu()"
+              class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full cursor-pointer overflow-clip"
+              [src]="userProfile?.avatarImg || 'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg'"
+              alt="Profile Picture" />
+          </div>
         </div>
+        <!-- Profile Popup -->
+        <div *ngIf="isProfileOpen"
+          class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50"
+          (mouseleave)="closeProfileMenu()">
+          <ul class="py-2">
+            <li>
+              <a href="/customer/user-profile"
+                class="cursor-pointer block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black transition duration-200">
+                User Profile
+              </a>
+            </li>
+            <li>
+              <a (click)="onLogout()"
+                class="cursor-pointer block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black transition duration-200">
+                Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+        <ng-template #signIn>
+          <button (click)="router.navigate(['/login'])"
+            class="px-4 py-2 text-white bg-green-700 rounded-full hover:bg-green-800 transition duration-300">
+            Sign In
+          </button>
+        </ng-template>
       </div>
     </div>
 
-    <!-- Navigation Links -->
-    <ul
-      class="hidden md:flex space-x-8 lg:space-x-14 text-lg font-semibold transition-all duration-300"
-      [class.ml-0]="!isHomepage || (isHomepage && isScrolled)"
-      [class.ml-[-53rem]]="isHomepage && !isScrolled"
-    >
-      <li><a href="#" class="hover:text-gray-600">Discover</a></li>
-      <li><a href="#" class="hover:text-gray-600">Plans</a></li>
-      <li><a href="#" class="hover:text-gray-600">Review</a></li>
-    </ul>
-
-    <!-- Currency & Profile -->
-    <div class="relative">
-      <div class="flex items-center space-x-4 sm:space-x-6">
-        <svg
-          class="w-6 h-6 text-gray-800 dark:text-black"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-width="2"
-            d="M4.37 7.657c2.063.528 2.396 2.806 3.202 3.87 1.07 1.413 2.075 1.228 3.192 2.644 1.805 2.289 1.312 5.705 1.312 6.705M20 15h-1a4 4 0 0 0-4 4v1M8.587 3.992c0 .822.112 1.886 1.515 2.58 1.402.693 2.918.351 2.918 2.334 0 .276 0 2.008 1.972 2.008 2.026.031 2.026-1.678 2.026-2.008 0-.65.527-.9 1.177-.9H20M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-          />
-        </svg>
-        <span class="text-base sm:text-lg">VND</span>
-        <!-- Profile Button -->
-        <div class="" *ngIf="isLoggedIn else signIn">
-          <img
-            (click)="toggleProfileMenu()"
-            class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full cursor-pointer overflow-clip"
-            [src]="userProfile?.avatarImg || 'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg'"
-            alt="Profile Picture"
-          />
-        </div>
-      </div>
-      <!-- Profile Popup -->
-      <div
-        *ngIf="isProfileOpen"
-        class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50"
-        (mouseleave)="closeProfileMenu()"
-      >
-        <ul class="py-2">
+    <!-- Navigation Links Below Search -->
+    <div class="transition-all duration-300 overflow-hidden"
+      [class.max-h-[50px]]="!isHomepage || (isHomepage && isScrolled)" [class.max-h-0]="isHomepage && !isScrolled">
+      <div class="bg-white shadow-sm py-2">
+        <ul class="flex justify-left ml-20 space-x-8 text-lg font-semibold text-gray-700">
           <li>
-            <a
-              href="/customer/user-profile"
-              class="cursor-pointer block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black transition duration-200"
-            >
-              User Profile
+            <a href="/hotels"
+              class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
+              Hotel
             </a>
           </li>
           <li>
-            <a
-              (click)="onLogout()"
-              class="cursor-pointer block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black transition duration-200"
-            >
-              Logout
+            <a href="/tours" class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
+              Tour
+            </a>
+          </li>
+          <li>
+            <a href="/blogs" class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
+              Blog
             </a>
           </li>
         </ul>
       </div>
-      <ng-template #signIn>
-        <button
-          (click)="router.navigate(['/login'])"
-          class="px-4 py-2 text-white bg-green-700 rounded-full hover:bg-green-800 transition duration-300"
-        >
-          Sign In
-        </button>
-      </ng-template>
     </div>
-  </div>
-
-  <!-- Navigation Links Below Search -->
-  <div
-    class="transition-all duration-300 overflow-hidden"
-    [class.max-h-[50px]]="!isHomepage || (isHomepage && isScrolled)"
-    [class.max-h-0]="isHomepage && !isScrolled"
-  >
-    <div class="bg-white shadow-sm py-2">
-      <ul class="flex justify-left ml-20 space-x-8 text-lg font-semibold text-gray-700">
-        <li>
-          <a
-            href="#"
-            class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300"
-          >
-            Hotel
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300"
-          >
-            Restaurant
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300"
-          >
-            Tour
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300"
-          >
-            Activity
-          </a>
-        </li>
-        <li>
-          <a
-            href="/blogs"
-            class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300"
-          >
-            Blog
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+  </nav>
+</div>
