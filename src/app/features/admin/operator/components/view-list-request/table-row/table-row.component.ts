@@ -29,31 +29,4 @@ export class TableRowComponent {
       queryParams: { id: request.id }
     });
   }
-
-  deleteRequest(): void {
-    this.requestService.updateRequestStatus(this.request.id, true).subscribe({
-      next: (response) => {
-        if (response.code === 200) {
-          this.request.deleted = true;
-        }
-      },
-      error: (err) => {
-        console.error('Failed to hide request:', err);
-      },
-    });
-  }
-
-  recoverRequest(): void {
-    this.requestService.updateRequestStatus(this.request.id, false).subscribe({
-      next: (response) => {
-        if (response.code === 200) {
-          this.request.deleted = false;
-        }
-      },
-      error: (err) => {
-        console.error('Failed to show request:', err);
-      },
-    });
-  }
-
 }
