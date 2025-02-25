@@ -4,7 +4,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TruncatePipe } from '../../../../../../shared/pipes/truncate.pipe';
-import { OperatorService } from '../../../services/operator.service';
+import { RequestService } from '../../../services/request.service';
 import { loadRequests } from '../../../../../../core/models/request.model';
 import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe";
 @Component({
@@ -20,7 +20,7 @@ export class TableRowComponent {
   authorName: string = 'Loading...';
   tags: string[] = [];
 
-  constructor(private operatorService: OperatorService,
+  constructor(private requestService: RequestService,
     private router: Router
   ) { }
 
@@ -31,7 +31,7 @@ export class TableRowComponent {
   }
 
   deleteRequest(): void {
-    this.operatorService.updateRequestStatus(this.request.id, true).subscribe({
+    this.requestService.updateRequestStatus(this.request.id, true).subscribe({
       next: (response) => {
         if (response.code === 200) {
           this.request.deleted = true;
@@ -44,7 +44,7 @@ export class TableRowComponent {
   }
 
   recoverRequest(): void {
-    this.operatorService.updateRequestStatus(this.request.id, false).subscribe({
+    this.requestService.updateRequestStatus(this.request.id, false).subscribe({
       next: (response) => {
         if (response.code === 200) {
           this.request.deleted = false;

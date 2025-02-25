@@ -6,7 +6,7 @@ import { environment } from '../../../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class OperatorService {
+export class RequestService {
 
   constructor(private http: HttpClient) { }
 
@@ -41,8 +41,8 @@ export class OperatorService {
   getRequestById(id: number): Observable<any> {
     return this.http.get(`${environment.apiUrl}marketing/blog/details/${id}`);
   }
-  
+
   update(formData: any, id: number): Observable<any> {
     return this.http.put(`${environment.apiUrl}marketing/blog/update/${id}`, formData);
-}
+  }
 }

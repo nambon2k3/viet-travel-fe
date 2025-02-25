@@ -5,7 +5,7 @@ import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableRowComponent } from './table-row/table-row.component';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 import { Router } from '@angular/router';
-import { OperatorService } from '../../services/operator.service';
+import { RequestService } from '../../services/request.service';
 import { loadRequests } from '../../../../../core/models/request.model';
 
 const mockRequests: loadRequests[] = [
@@ -50,7 +50,7 @@ export class ViewListRequestComponent {
   
     constructor(
       private router: Router,
-      private operatorService: OperatorService) { }
+      private requestService: RequestService) { }
   
     ngOnInit(): void {
       this.loadRequests();
@@ -58,7 +58,7 @@ export class ViewListRequestComponent {
   
     loadRequests(): void {
       this.isLoading = true;
-      this.operatorService.getRequestByPage(
+      this.requestService.getRequestByPage(
         this.page,
         this.size,
         this.keyword,
