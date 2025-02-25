@@ -2,13 +2,13 @@
 
 
     <div class="inline-block">
-      <h3 class="text-foreground font-semibold">List Tours</h3>
+      <h3 class="text-foreground font-semibold">List Requests</h3>
       <div class="text-muted-foreground space-x-1 text-xs font-medium">
-        <a href="" class="hover:text-primary">All Tours:</a>
+        <a href="" class="hover:text-primary">All Requests:</a>
         <span class="text-foreground">{{ totalItems }}</span>
       </div>
     </div>
-    <!-- <app-spinner [isLoading]="!isLoading"></app-spinner> -->
+    <app-spinner [isLoading]="!isLoading"></app-spinner>
   </div>
   
   <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2">
@@ -18,14 +18,14 @@
       <table
         class="text-muted-foreground table w-full table-auto border-collapse border-0 text-left align-middle leading-5">
         <thead class="border-muted/20 text-muted-foreground border text-xs">
-          <tr app-table-header (onCheck)="toggleTours($event)"></tr>
+          <tr app-table-header (onCheck)="toggleRequests($event)"></tr>
         </thead>
         <tbody>
-          @for (tour of filteredTours(); track $index) {
-          <tr class="hover:bg-card/50" app-table-row [tour]="tour"></tr>
+          @for (request of filteredRequests(); track $index) {
+          <tr class="hover:bg-card/50" app-table-row [request]="request"></tr>
           } @empty {
           <tr>
-            <td class="py-4 text-center text-sm" colspan="7">No tours found</td>
+            <td class="py-4 text-center text-sm" colspan="7">No requests found</td>
           </tr>
           }
         </tbody>
