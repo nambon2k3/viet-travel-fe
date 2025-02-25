@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 
 interface Tour {
   id: number;
@@ -15,7 +16,7 @@ interface Tour {
 @Component({
   selector: 'app-tour',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CurrencyVndPipe],
   templateUrl: './tour.component.html',
   styleUrl: './tour.component.css'
 })
@@ -32,7 +33,7 @@ export class TourComponent implements OnInit {
 
   // Filters
   minPrice = 0;
-  maxPrice = 1000;
+  maxPrice = 1000000000;
   tourClassFilter: number | null = null;
   sortBy = '';
   ratingFilter = 0;

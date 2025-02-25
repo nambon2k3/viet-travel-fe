@@ -29,7 +29,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     this.checkLoginStatus();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.isHomepage = this.router.url === '/homepage';
+        this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
       }
     });
   }
