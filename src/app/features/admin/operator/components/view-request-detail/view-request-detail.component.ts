@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { OperatorService } from '../../services/operator.service';
+import { RequestService } from '../../services/request.service';
 
 @Component({
   selector: 'app-view-request-detail',
@@ -11,7 +11,7 @@ import { OperatorService } from '../../services/operator.service';
 export class ViewRequestDetailComponent {
   constructor(
     private router: Router,
-    private operatorService: OperatorService
+    private requestService: RequestService
   ) { }
 
   ngOnInit(): void {
