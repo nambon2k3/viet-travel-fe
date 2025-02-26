@@ -27,11 +27,11 @@
       </div>
 
       <!-- Navigation Links -->
-      <ul class="hidden md:flex space-x-8 lg:space-x-14 text-lg font-semibold transition-all duration-300"
+      <ul *ngIf="!isScrolled && isHomepage" class="hidden md:flex space-x-8 lg:space-x-14 text-lg font-semibold transition-all duration-300"
         [class.ml-0]="!isHomepage || (isHomepage && isScrolled)" [class.ml-[-53rem]]="isHomepage && !isScrolled">
         <li><a href="#" class="hover:text-gray-600">Destination</a></li>
         <li><a href="#" class="hover:text-gray-600">Plans</a></li>
-        <li><a href="#" class="hover:text-gray-600">Review</a></li>
+        <li><a href="/tours" class="hover:text-gray-600">Tours</a></li>
       </ul>
 
       <!-- Currency & Profile -->
@@ -91,13 +91,25 @@
             </a>
           </li>
           <li>
-            <a href="/tours" class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
-              Tour
+            <a href="/blogs" class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
+              Blog
             </a>
           </li>
           <li>
-            <a href="/blogs" class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
-              Blog
+            <a href="/locations"
+              class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
+              Destination
+            </a>
+          </li>
+          <li>
+            <a href="/plans" class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
+              Plans
+            </a>
+          </li>
+          <li>
+            <a href="/tours"
+              class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
+              Tours
             </a>
           </li>
         </ul>
