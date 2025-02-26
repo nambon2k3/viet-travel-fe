@@ -1,0 +1,25 @@
+<div class="flex justify-end items-end">
+    <div class="space-x-2">
+        <button class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">Back to List</button>
+        <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Assign Operation</button>
+    </div>
+</div>
+
+<!-- Tab Navigation -->
+<div class="bg-gray-100 shadow-md w-full mt-2 p-4">
+    <div class="text-lg font-semibold">
+        <span class="text-red-600 font-bold">MS001</span>
+        <span class="font-bold">_ Đà Nẵng -
+            Huế - Bà Nà - Hội An</span>
+        <span class="ml-4 font-bold">Departure time: 02/02/2025</span>
+    </div>
+    <nav class=" flex space-x-6 mt-4 text-gray-600">
+        <a href="/operator/tour-operation" class="font-semibold text-black border-b-4 border-green-700 pb-2">Overview</a>
+        <a href="/operator/tour-operation/list-customer" class="hover:text-black">List Customer</a>
+        <a href="/operator/tour-operation/list-booking" class="hover:text-black">List Booking</a>
+        <a href="/operator/tour-operation/service" class="hover:text-black">Service</a>
+        <a href="/operator/tour-operation/log" class="hover:text-black">Operation Log</a>
+        <a href="/operator/tour-operation/summary" class="hover:text-black">Summary</a>
+    </nav>
+</div>
+<router-outlet></router-outlet>

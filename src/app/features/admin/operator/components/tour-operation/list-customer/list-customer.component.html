@@ -1,0 +1,46 @@
+<div class="mt-4 overflow-x-auto bg-white shadow-md rounded-lg">
+    <table class="w-full border-collapse border border-gray-300">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border border-gray-300 text-green-700 p-2">No</th>
+          <th class="border border-gray-300 p-2">Fullname</th>
+          <th class="border border-gray-300 p-2">Phone</th>
+          <th class="border border-gray-300 p-2">Email</th>
+          <th class="border border-gray-300 p-2">Birthdate</th>
+          <th class="border border-gray-300 p-2">Gender</th>
+          <th class="border border-gray-300 p-2">Pick-up</th>
+          <th class="border border-gray-300 p-2">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let group of bookingGroups">
+          <tr class="bg-gray-100">
+            <td colspan="8" class="text-left font-semibold p-2">
+              Salesman: {{ group.salesman }} | Booking ID: {{ group.bookingId }} | Group Leader: {{ group.groupLeader }}
+            </td>
+          </tr>
+          <tr *ngFor="let customer of group.customers" class="border border-gray-300">
+            <td class="border border-gray-300 p-2 text-center">{{ customer.id }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.fullname }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.phone || 'N/A' }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.email || 'N/A' }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.birthdate }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.gender }}</td>
+            <td class="border border-gray-300 p-2">{{ customer.pickup }}</td>
+            <td class="border-0">
+                <div class="flex">
+                    <svg class="ml-4 w-6 h-6 text-gray-800 dark:text-green-700 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                      </svg>
+                      
+                    <svg class="ml-2 w-6 h-6 text-gray-800 dark:text-red-600 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                      </svg>
+                </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  
