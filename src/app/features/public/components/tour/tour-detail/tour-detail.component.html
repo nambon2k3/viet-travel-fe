@@ -1,0 +1,201 @@
+<div class="container mx-auto p-6 mt-20">
+  <!-- Title -->
+
+  <h1 class="text-4xl font-bold mb-10">
+    Journey across Vietnam - From the Capital of a Thousand Years of Culture to
+    the Southernmost Point of the Fatherland
+  </h1>
+
+  <div class="grid grid-cols-12 gap-4">
+    <!-- Left Thumbnail Images -->
+    <div class="col-span-2 flex flex-col gap-4">
+      <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
+        Image
+      </div>
+      <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
+        Image
+      </div>
+      <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
+        Image
+      </div>
+      <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
+        Image
+      </div>
+    </div>
+
+    <!-- Main Image -->
+    <div class="col-span-7">
+      <div
+        class="bg-gray-300 w-full h-[690px] flex items-center justify-center"
+      >
+        Image
+      </div>
+    </div>
+
+    <!-- Tour Details Card -->
+    <div
+      class="col-span-3 bg-gray-100 p-4 rounded-lg shadow-md sticky top-6 h-fit"
+    >
+      <h2 class="text-lg font-semibold">Price</h2>
+      <p class="text-red-600 text-2xl font-bold">
+        17.990.000 đ <span class="text-sm">/ pax</span>
+      </p>
+
+      <div class="mt-3 space-y-2 text-gray-700 text-sm">
+        <p>📍 Depart: TP. Ho Chi Minh</p>
+        <p>📅 Duration: 2D1N</p>
+        <p>🛑 Remains slot: 9 slot</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-4 flex gap-2">
+        <button
+          class="w-1/2 px-4 py-2 text-sm font-semibold border border-red-500 text-red-500 rounded-md hover:bg-red-100"
+        >
+          Another Day
+        </button>
+        <button
+          class="w-1/2 px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700"
+        >
+          Place
+        </button>
+      </div>
+    </div>
+
+    <div class="col-span-9 p-4 rounded-lg shadow-md mt-4">
+      <h2 class="text-lg font-semibold text-center">Lich Khoi Hanh</h2>
+      <full-calendar [options]="calendarOptions"></full-calendar>
+    </div>
+
+    <div class="col-span-9 p-4 rounded-lg shadow-md mt-4">
+      <!-- Title -->
+      <div class="mb-4 border-b pb-2">
+        <p class="text-lg font-semibold">Điểm nhấn của chương trình</p>
+      </div>
+
+      <!-- Content with expand/collapse effect -->
+      <div class="relative">
+        <div
+          [class]="isShow ? 'max-h-[750px]' : 'max-h-[250px]'"
+          class="overflow-hidden transition-all duration-500 ease-in-out"
+        >
+          <p>
+            <strong>- Hà Giang</strong> là mảnh đất có rất nhiều màu sắc ấn
+            tượng. Màu hồng phấn của những cánh đồng hoa tam giác mạch, mùa của
+            hoa cải vàng, hoa mận, hoa ban; màu vàng ươm như rót mật của những
+            thửa ruộng bậc thang mùa lúa chín; màu xanh của những dãy núi trùng
+            điệp, của cung đường đèo Mã Pì Lèng nổi tiếng uốn lượn bên dòng sông
+            Nho Quế thơ mộng… phủ khắp cả miền biên cương hùng vĩ của Tổ quốc.
+            &nbsp;
+          </p>
+
+          <p>
+            <strong>- Hà Giang</strong> còn mang sắc màu rực rỡ của những chiếc
+            váy, của một không gian bồng bềnh mây khói, xanh ngắt của núi đồi
+            với những con đường quanh co… Vẻ đẹp của cuộc sống giản dị hàng ngày
+            giữa thiên nhiên hùng vĩ với những ánh mắt ngây thơ của trẻ nhỏ hay
+            nụ cười hồn hậu của người dân…&nbsp;
+          </p>
+
+          <p>
+            - Đặc biệt, du khách đến Hà Giang còn bị hớp hồn bởi những triền đá
+            tai mèo trùng điệp, những con đường quanh co, uốn lượn, những điểm
+            đến độc đáo như cao nguyên đá Đồng Văn, dinh thự họ Vương, cột cờ
+            Lũng Cú hay cao điểm Vị Xuyên. Những sắc màu mang đầy sức sống của
+            vùng sơn cước khi “cỏ cây chen đá, lá chen hoa” như mời gọi du khách
+            đến với du lịch Hà Giang. Tất cả đã tạo nên một bức tranh Hà Giang
+            rực rỡ làm say đắm lòng người và mời gọi du khách.&nbsp;
+          </p>
+
+          <p>
+            - Tạm biệt cao nguyên đá Đồng Văn, Quý khách sẽ đặt chân đến vùng
+            đất văn hóa của người Tày tại Vườn Quốc Gia Hồ Ba Bể, Bắc Cạn và
+            Làng Đá Khuổi Ky, Cao Bằng. Nơi đây còn được biết đến với những danh
+            thắng hùng vỹ như Hồ nước ngọt Ba Bể, Bắc Cạn - một trong một trăm
+            hồ nước ngọt lớn nhất thế; thác Bản Giốc, Cao Bằng - thác nước lớn
+            thứ tư thế giới trong số các thác nước đẹp nằm trên biên giới giữa
+            các quốc gia, đồng thời là thác nước tự nhiên lớn nhất khu vực Đông
+            Nam<br />
+            &nbsp;
+          </p>
+        </div>
+      </div>
+
+      <!-- Toggle Button -->
+      <label
+        for="toggle"
+        class="block text-center text-blue-500 font-semibold cursor-pointer mt-3"
+      >
+        @if(isShow) {
+        <span>Thu gọn</span>
+
+        } @else {
+        <span>Xem thêm</span>
+        }
+      </label>
+
+      <input
+        id="toggle"
+        type="checkbox"
+        class="hidden"
+        (change)="showOrHide()"
+      />
+    </div>
+
+    <div class="col-span-9 p-4 rounded-lg shadow-md mt-4">
+        
+        <!-- Button to open modal -->
+
+
+<!-- Modal toggle -->
+<button data-modal-target="default-modal" data-modal-toggle="default-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+  Toggle modal
+</button>
+
+<!-- Main modal -->
+<div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Terms of Service
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4">
+                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                    With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply.
+                </p>
+                <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                    The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
+                </p>
+            </div>
+            <!-- Modal footer -->
+            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <button data-modal-hide="default-modal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I accept</button>
+                <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+      
+    </div>
+
+    
+
+  
+  </div>
+</div>
+
+
+
