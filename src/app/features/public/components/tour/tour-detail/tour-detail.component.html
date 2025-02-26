@@ -1,4 +1,4 @@
-<div class="container mx-auto p-6 mt-20">
+<div class="container mx-auto p-6 mt-32">
   <!-- Title -->
 
   <h1 class="text-4xl font-bold mb-10">
@@ -31,9 +31,7 @@
     </div>
 
     <!-- Tour Details Card -->
-    <div
-      class="col-span-3 bg-gray-100 p-4 rounded-lg shadow-md sticky top-32 h-fit"
-    >
+    <div class="col-span-3 bg-gray-100 p-4 rounded-lg shadow-md sticky top-32 h-fit">
       <h2 class="text-lg font-semibold">Price</h2>
       <p class="text-red-600 text-2xl font-bold">
         17.990.000 đ <span class="text-sm">/ pax</span>
@@ -62,44 +60,29 @@
 
       <div class="max-h-[80rem] w-full flex items-stretch gap-8">
         <div
-          class="max-h-[80rem] w-[15%] flex flex-col justify-start items-center shadow-md rounded-lg overflow-y-auto relative flex-grow pb-8"
-        >
-          <div
-            class="bg-white font-bold flex flex-col justify-center items-center p-12 px-6 top-0 w-full"
-          >
+          class="max-h-[80rem] w-[15%] flex flex-col justify-start items-center shadow-md rounded-lg overflow-y-auto relative flex-grow pb-8">
+          <div class="bg-white font-bold flex flex-col justify-center items-center p-12 px-6 top-0 w-full">
             <span>Chọn tháng</span>
           </div>
           <div class="flex flex-col gap-8 mb-8">
-            <div
-              class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white"
-            >
+            <div class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white">
               2/2025
             </div>
-            <div
-              class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white"
-            >
+            <div class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white">
               3/2025
             </div>
-            <div
-              class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white"
-            >
+            <div class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white">
               4/2025
             </div>
-            <div
-              class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white"
-            >
+            <div class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white">
               5/2025
             </div>
-            <div
-              class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white"
-            >
+            <div class="text-center font-bold p-6 rounded-xl text-[#15803d] border border-white">
               6/2025
             </div>
           </div>
         </div>
-        <div
-          class="w-[85%] p-8 px-12 bg-white shadow-md rounded-lg overflow-hidden"
-        >
+        <div class="w-[85%] p-8 px-12 bg-white shadow-md rounded-lg overflow-hidden">
           <full-calendar #calendar [options]="calendarOptions"></full-calendar>
         </div>
       </div>
@@ -171,26 +154,167 @@
     </div>
 
     <div class="col-span-9 p-4 rounded-lg mt-4">
+      <h2 class="text-2xl md:text-3xl font-bold text-center text-green-700 mb-6">
+        TOUR CONTENT
+      </h2>
+      <div id="accordion-collapse" data-accordion="collapse">
+        <h2 id="accordion-collapse-heading-1">
+          <button type="button"
+            class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+            data-accordion-target="#accordion-collapse-body-1" aria-expanded="true"
+            aria-controls="accordion-collapse-body-1">
+            <p class="flex flex-col">
+              <span><strong>Day 1: TP. Hồ Chí Minh - Cà Ná - Nha Trang Xưa</strong></span>
+              <span class="text-left"> 🍽️ 3 meals (breakfast, lunch, dinner)</span>
+            </p>
+
+            <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5 5 1 1 5" />
+            </svg>
+          </button>
+        </h2>
+        <div id="accordion-collapse-body-1" class="hidden" aria-labelledby="accordion-collapse-heading-1">
+          <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900">
+            <p class="mb-2 text-gray-500 dark:text-gray-400">Flowbite is an open-source library of interactive
+              components built on top of Tailwind CSS including buttons, dropdowns, modals, navbars, and more.</p>
+            <p class="text-gray-500 dark:text-gray-400">Check out this guide to learn how to <a
+                href="/docs/getting-started/introduction/" class="text-blue-600 dark:text-blue-500 hover:underline">get
+                started</a> and start developing websites even faster with components on top of Tailwind CSS.</p>
+          </div>
+        </div>
+        <h2 id="accordion-collapse-heading-2">
+          <button type="button"
+            class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+            data-accordion-target="#accordion-collapse-body-2" aria-expanded="false"
+            aria-controls="accordion-collapse-body-2">
+            <p class="flex flex-col">
+              <span><strong>Day 2: TP. Hồ Chí Minh - Cà Ná - Nha Trang Xưa</strong></span>
+              <span class="text-left"> 🍽️ 3 meals (breakfast, lunch, dinner)</span>
+            </p>
+            <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5 5 1 1 5" />
+            </svg>
+          </button>
+        </h2>
+        <div id="accordion-collapse-body-2" class="hidden" aria-labelledby="accordion-collapse-heading-2">
+          <div class="p-5 border border-b-0 border-gray-200 dark:border-gray-700">
+            <p class="mb-2 text-gray-500 dark:text-gray-400">Flowbite is first conceptualized and designed using the
+              Figma software so everything you see in the library has a design equivalent in our Figma file.</p>
+            <p class="text-gray-500 dark:text-gray-400">Check out the <a href="https://flowbite.com/figma/"
+                class="text-blue-600 dark:text-blue-500 hover:underline">Figma design system</a> based on the utility
+              classes from Tailwind CSS and components from Flowbite.</p>
+          </div>
+        </div>
+        <h2 id="accordion-collapse-heading-3">
+          <button type="button"
+            class="flex items-center justify-between w-full p-5 font-medium rtl:text-right text-gray-500 border border-gray-200 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3"
+            data-accordion-target="#accordion-collapse-body-3" aria-expanded="false"
+            aria-controls="accordion-collapse-body-3">
+            <p class="flex flex-col">
+              <span><strong>Day 1: TP. Hồ Chí Minh - Cà Ná - Nha Trang Xưa</strong></span>
+              <span class="text-left"> 🍽️ 3 meals (breakfast, lunch, dinner)</span>
+            </p>
+            <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5 5 1 1 5" />
+            </svg>
+          </button>
+        </h2>
+        <div id="accordion-collapse-body-3" class="hidden" aria-labelledby="accordion-collapse-heading-3">
+          <div class="p-5 border border-t-0 border-gray-200 dark:border-gray-700">
+            <p class="mb-2 text-gray-500 dark:text-gray-400">The main difference is that the core components from
+              Flowbite are open source under the MIT license, whereas Tailwind UI is a paid product. Another difference
+              is that Flowbite relies on smaller and standalone components, whereas Tailwind UI offers sections of
+              pages.</p>
+            <p class="mb-2 text-gray-500 dark:text-gray-400">However, we actually recommend using both Flowbite,
+              Flowbite Pro, and even Tailwind UI as there is no technical reason stopping you from using the best of two
+              worlds.</p>
+            <p class="mb-2 text-gray-500 dark:text-gray-400">Learn more about these technologies:</p>
+            <ul class="ps-5 text-gray-500 list-disc dark:text-gray-400">
+              <li><a href="https://flowbite.com/pro/" class="text-blue-600 dark:text-blue-500 hover:underline">Flowbite
+                  Pro</a></li>
+              <li><a href="https://tailwindui.com/" rel="nofollow"
+                  class="text-blue-600 dark:text-blue-500 hover:underline">Tailwind UI</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-span-9 p-4 rounded-lg mt-4">
+      <h2 class="text-2xl md:text-3xl font-bold text-center text-green-700 mb-6">
+        IMPORTANT INFORMATION
+      </h2>
+
+      <div class="relative">
+        <div
+          class="overflow-hidden transition-all h-fit duration-500 ease-in-out">
+          <p>
+            <strong>- Hà Giang</strong> là mảnh đất có rất nhiều màu sắc ấn
+            tượng. Màu hồng phấn của những cánh đồng hoa tam giác mạch, mùa của
+            hoa cải vàng, hoa mận, hoa ban; màu vàng ươm như rót mật của những
+            thửa ruộng bậc thang mùa lúa chín; màu xanh của những dãy núi trùng
+            điệp, của cung đường đèo Mã Pì Lèng nổi tiếng uốn lượn bên dòng sông
+            Nho Quế thơ mộng… phủ khắp cả miền biên cương hùng vĩ của Tổ quốc.
+            &nbsp;
+          </p>
+
+          <p>
+            <strong>- Hà Giang</strong> còn mang sắc màu rực rỡ của những chiếc
+            váy, của một không gian bồng bềnh mây khói, xanh ngắt của núi đồi
+            với những con đường quanh co… Vẻ đẹp của cuộc sống giản dị hàng ngày
+            giữa thiên nhiên hùng vĩ với những ánh mắt ngây thơ của trẻ nhỏ hay
+            nụ cười hồn hậu của người dân…&nbsp;
+          </p>
+
+          <p>
+            - Đặc biệt, du khách đến Hà Giang còn bị hớp hồn bởi những triền đá
+            tai mèo trùng điệp, những con đường quanh co, uốn lượn, những điểm
+            đến độc đáo như cao nguyên đá Đồng Văn, dinh thự họ Vương, cột cờ
+            Lũng Cú hay cao điểm Vị Xuyên. Những sắc màu mang đầy sức sống của
+            vùng sơn cước khi “cỏ cây chen đá, lá chen hoa” như mời gọi du khách
+            đến với du lịch Hà Giang. Tất cả đã tạo nên một bức tranh Hà Giang
+            rực rỡ làm say đắm lòng người và mời gọi du khách.&nbsp;
+          </p>
+
+          <p>
+            - Tạm biệt cao nguyên đá Đồng Văn, Quý khách sẽ đặt chân đến vùng
+            đất văn hóa của người Tày tại Vườn Quốc Gia Hồ Ba Bể, Bắc Cạn và
+            Làng Đá Khuổi Ky, Cao Bằng. Nơi đây còn được biết đến với những danh
+            thắng hùng vỹ như Hồ nước ngọt Ba Bể, Bắc Cạn - một trong một trăm
+            hồ nước ngọt lớn nhất thế; thác Bản Giốc, Cao Bằng - thác nước lớn
+            thứ tư thế giới trong số các thác nước đẹp nằm trên biên giới giữa
+            các quốc gia, đồng thời là thác nước tự nhiên lớn nhất khu vực Đông
+            Nam<br />
+            &nbsp;
+          </p>
+        </div>
+      </div>
+      
+
+
+    </div>
+
+
+    <div class="col-span-9 p-4 rounded-lg mt-4">
       <div class="max-w-6xl mx-auto py-10">
         <!-- Heading -->
-        <h2
-          class="text-2xl md:text-3xl font-bold text-center text-green-700 mb-6"
-        >
-          CÁC CHƯƠNG TRÌNH KHÁC
+        <h2 class="text-2xl md:text-3xl font-bold text-center text-green-700 mb-6">
+        RELATED TOURS
         </h2>
 
         <!-- Cards Container -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Card 1 -->
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200"
-          >
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
             <div class="relative">
-              <img
-                src="image1.jpg"
-                alt="Hạ Long Bay"
-                class="w-full h-56 object-cover"
-              />
+              <img src="image1.jpg" alt="Hạ Long Bay" class="w-full h-56 object-cover" />
               <div class="absolute top-2 left-2 bg-white rounded-full p-1">
                 ❤️
               </div>
@@ -210,23 +334,15 @@
               </p>
               <div class="flex justify-between items-center mt-3">
                 <p class="text-red-600 text-lg font-bold">11.390.000 đ</p>
-                <a href="#" class="text-blue-600 font-semibold"
-                  >Xem chi tiết →</a
-                >
+                <a href="#" class="text-blue-600 font-semibold">Xem chi tiết →</a>
               </div>
             </div>
           </div>
 
           <!-- Card 2 -->
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200"
-          >
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
             <div class="relative">
-              <img
-                src="image2.jpg"
-                alt="Ninh Bình"
-                class="w-full h-56 object-cover"
-              />
+              <img src="image2.jpg" alt="Ninh Bình" class="w-full h-56 object-cover" />
               <div class="absolute top-2 left-2 bg-white rounded-full p-1">
                 ❤️
               </div>
@@ -246,23 +362,15 @@
               </p>
               <div class="flex justify-between items-center mt-3">
                 <p class="text-red-600 text-lg font-bold">11.990.000 đ</p>
-                <a href="#" class="text-blue-600 font-semibold"
-                  >Xem chi tiết →</a
-                >
+                <a href="#" class="text-blue-600 font-semibold">Xem chi tiết →</a>
               </div>
             </div>
           </div>
 
           <!-- Card 3 -->
-          <div
-            class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200"
-          >
+          <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
             <div class="relative">
-              <img
-                src="image3.jpg"
-                alt="Fansipan"
-                class="w-full h-56 object-cover"
-              />
+              <img src="image3.jpg" alt="Fansipan" class="w-full h-56 object-cover" />
               <div class="absolute top-2 left-2 bg-white rounded-full p-1">
                 ❤️
               </div>
@@ -281,9 +389,7 @@
               </p>
               <div class="flex justify-between items-center mt-3">
                 <p class="text-red-600 text-lg font-bold">12.590.000 đ</p>
-                <a href="#" class="text-blue-600 font-semibold"
-                  >Xem chi tiết →</a
-                >
+                <a href="#" class="text-blue-600 font-semibold">Xem chi tiết →</a>
               </div>
             </div>
           </div>
