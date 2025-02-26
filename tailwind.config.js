@@ -5,10 +5,7 @@ module.exports = {
     "./node_modules/flowbite/**/*.js" 
   ],
   theme: {
-    extend: {
-      fontFamily: {
-      sans: ['Poppins', 'sans-serif'],
-    },},
+    extend: {},
   },
   plugins: [
   ],

@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { FullCalendarModule } from '@fullcalendar/angular';
+import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import { CommonModule } from '@angular/common';
 
@@ -11,18 +11,34 @@ import { CommonModule } from '@angular/common';
   styleUrl: './tour-detail.component.css'
 })
 export class TourDetailComponent {
+
+
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin],
     initialView: 'dayGridMonth',
     locale: 'vi', // Set Vietnamese locale
     events: [
-      { title: '18,990K', start: '2025-03-05', color: 'red' },
-      { title: '18,990K', start: '2025-03-12', color: 'red' },
-      { title: '18,990K', start: '2025-03-19', color: 'red' },
-      { title: '18,990K', start: '2025-03-26', color: 'red' }
+      { title: '18,990K', start: '2025-03-05' },
+      { title: '18,990K', start: '2025-03-12' },
+      { title: '18,990K', start: '2025-03-19' },
+      { title: '18,990K', start: '2025-03-26' }
     ],
-    headerToolbar: false // ✅ Remove this line if it causes issues
+    themeSystem: 'bootstrap',
+    headerToolbar: {
+      left: 'prev',
+      center: 'title',
+      right: 'next'
+    },
   };
+
+
+  goToMonth(month: number, year: number) {
+    const calendarApi = this.calendarComponent.getApi();
+    calendarApi.gotoDate(`${year}-${month.toString().padStart(2, '0')}-01`);
+  }
+  
 
 
   isShow = false;
