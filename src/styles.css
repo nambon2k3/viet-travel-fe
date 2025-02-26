@@ -44,9 +44,10 @@ code {
 
 /* Change background color of events */
 .fc-event {
-  background-color: #ff5733 !important;
+  background-color: #15803d !important;
   border-color: #ff5733 !important;
   color: white !important;
+  text-align: center;
 }
 
 
@@ -79,7 +80,7 @@ code {
   font-size: 2.4rem;
   font-weight: 700;
   margin: 2rem 0;
-  color: #0b5da7;
+  color: #15803d;
   text-transform: uppercase;
   display: inline;
   border: none;
@@ -144,5 +145,9 @@ code {
 
 .fc .fc-day-future .fc-daygrid-day-frame {
   background-color: #fff !important;
+}
+
+.fc .fc-scroller-liquid-absolute, .fc .fc-scroller {
+  overflow:  hidden !important;
 }
 

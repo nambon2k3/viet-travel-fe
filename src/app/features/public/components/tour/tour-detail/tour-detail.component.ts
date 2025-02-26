@@ -20,10 +20,10 @@ export class TourDetailComponent {
     initialView: 'dayGridMonth',
     locale: 'vi', // Set Vietnamese locale
     events: [
-      { title: '18,990K', start: '2025-03-05', color: 'red' },
-      { title: '18,990K', start: '2025-03-12', color: 'red' },
-      { title: '18,990K', start: '2025-03-19', color: 'red' },
-      { title: '18,990K', start: '2025-03-26', color: 'red' }
+      { title: '18,990K', start: '2025-03-05' },
+      { title: '18,990K', start: '2025-03-12' },
+      { title: '18,990K', start: '2025-03-19' },
+      { title: '18,990K', start: '2025-03-26' }
     ],
     themeSystem: 'bootstrap',
     headerToolbar: {
