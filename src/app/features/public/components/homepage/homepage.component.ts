@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FooterComponent } from "../../../../shared/components/footer/footer.component";
 import { HomepageService } from '../../services/homepage.service';
@@ -8,6 +8,7 @@ import { shareReplay } from 'rxjs';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { FormatDatePipe } from "../../../../shared/pipes/format-date.pipe";
+import { SsrService } from '../../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-homepage',
@@ -52,7 +53,8 @@ export class HomepageComponent {
 
   constructor(
     private homepageService: HomepageService,
-    private router: Router
+    private router: Router,
+    private ssrService: SsrService,
   ) {
     this.homepageData$ = this.homepageService.getHomepageData(6, 4, 3, 7).pipe(
       shareReplay(1)
@@ -60,18 +62,23 @@ export class HomepageComponent {
   }
 
   ngOnInit() {
-    const cachedData = localStorage.getItem('homepageData');
-    if (cachedData) {
-      const data = JSON.parse(cachedData);
-      this.trendingTours = data.trendingTours;
-      this.topTourOfYear = data.topTourOfYear;
-      this.blogs = data.newBlogs.slice(0, 3);
-      this.blog = data.newBlogs[data.newBlogs.length - 1];
-      this.activities = data.recommendedActivities;
-      this.locations = data.recommendedLocations;
-    } else {
-      this.fetchHomepageData();
-    } 
+
+    const document = this.ssrService.getDocument();
+    if (document) {
+      const cachedData = localStorage.getItem('homepageData');
+      if (cachedData) {
+        const data = JSON.parse(cachedData);
+        this.trendingTours = data.trendingTours;
+        this.topTourOfYear = data.topTourOfYear;
+        this.blogs = data.newBlogs.slice(0, 3);
+        this.blog = data.newBlogs[data.newBlogs.length - 1];
+        this.activities = data.recommendedActivities;
+        this.locations = data.recommendedLocations;
+      } else {
+        this.fetchHomepageData();
+      } 
+    }
+
   }
 
   fetchHomepageData() {

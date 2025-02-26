@@ -24,7 +24,7 @@ export class TableRowComponent {
   ) { }
 
   openDetail(tour: Tour): void {
-    this.router.navigate(['/operator/tour-details'],  {
+    this.router.navigate(['/operator/tour-operation'],  {
       queryParams: { id: tour.id }
     });
   }
