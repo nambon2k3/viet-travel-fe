@@ -10,7 +10,7 @@ import { TourDetailComponent } from "./components/tour/tour-detail/tour-detail.c
 export const PUBLIC_ROUTES: Route[] = [
   {
     path: '',
-    component: PublicLayoutComponent, 
+    component: PublicLayoutComponent,
     children: [
       {
         path: 'homepage',
@@ -36,6 +36,6 @@ export const PUBLIC_ROUTES: Route[] = [
         path: 'tour-detail',
         component: TourDetailComponent,
       },
-    ]
+    ],
   },
 ];

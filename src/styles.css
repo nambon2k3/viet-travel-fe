@@ -41,3 +41,15 @@ code {
 #selector .selected-item {
   max-width: 250px;
 }
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}

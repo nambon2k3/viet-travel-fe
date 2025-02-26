@@ -1,39 +1,49 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, AfterViewInit, OnDestroy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
-import { CustomerService } from '../../../features/customer/services/customer.service';
-import { NavigationEnd, Router } from '@angular/router';
+import { Component, AfterViewInit, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
 import { SsrService } from '../../../core/services/ssr.service';
+import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule],
   templateUrl: './header.component.html',
+  imports: [CommonModule]
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   userProfile: any;
   isScrolled = false;
   private mainContent: HTMLElement | null = null;
-  isProfileOpen: boolean = false;
-  isLoggedIn: boolean = false;
-  username: string = '';
-  isHomepage: boolean = false;
+  isProfileOpen = false;
+  isLoggedIn = false;
+  username = '';
+  isHomepage = false;
 
   constructor(
-    private customerService: CustomerService,
     private userStorageService: UserStorageService,
     public router: Router,
-    private ssrService: SsrService,
-  ) { }
+    private ssrService: SsrService
+  ) {}
 
   ngOnInit(): void {
-    this.checkLoginStatus();
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
-      }
-    });
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      this.checkLoginStatus();
+
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd) {
+          this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
+        }
+      });
+
+      doc.addEventListener('show.bs.modal', () => {
+        document.body.classList.add('no-scroll');
+      });
+
+      doc.addEventListener('hide.bs.modal', () => {
+        document.body.classList.remove('no-scroll');
+      });
+    }
   }
 
   checkLoginStatus() {
@@ -41,23 +51,9 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     if (user) {
       this.isLoggedIn = true;
       this.username = user.username;
-      this.loadUserProfile();
     } else {
       this.isLoggedIn = false;
     }
-  }
-
-  loadUserProfile(): void {
-    this.customerService.getUserProfile().subscribe({
-      next: (data) => {
-        if (data?.data) {
-          this.userProfile = data.data;
-        }
-      },
-      error: (err) => {
-        console.error('Error loading user profile', err);
-      },
-    });
   }
 
   toggleProfileMenu() {
@@ -72,26 +68,36 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     this.router.navigate(['/homepage']);
   }
 
-  ngAfterViewInit() {
-    const document = this.ssrService.getDocument();
-    if (document) {
-      this.mainContent = document.getElementById('main-content');
+  ngAfterViewInit(): void {
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      this.mainContent = doc.getElementById('main-content');
       if (this.mainContent) {
         this.mainContent.addEventListener('scroll', this.onScroll);
       }
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.mainContent) {
       this.mainContent.removeEventListener('scroll', this.onScroll);
     }
+
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      doc.removeEventListener('show.bs.modal', () => {});
+      doc.removeEventListener('hide.bs.modal', () => {});
+    }
   }
 
+  @HostListener('window:scroll', [])
   onScroll = () => {
     if (this.mainContent && this.isHomepage) {
-      const scrollPosition = this.mainContent.scrollTop;
-      this.isScrolled = scrollPosition > 300;
+      const isModalOpen = document.body.classList.contains('modal-open');
+      if (!isModalOpen) {
+        const scrollPosition = this.mainContent.scrollTop;
+        this.isScrolled = scrollPosition > 300;
+      }
     }
   };
 

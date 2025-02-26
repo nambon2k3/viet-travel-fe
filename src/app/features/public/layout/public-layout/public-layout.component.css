@@ -1,0 +1,4 @@
+.modal-open {
+  overflow: hidden !important;
+  height: 100%;
+}
