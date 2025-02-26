@@ -28,13 +28,12 @@ export class PublicLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
       setTimeout(() => {
         this.mainContent = doc.getElementById('main-content');
       }, 100);
+      this.router.events.subscribe((event: Event) => {
+        if (event instanceof NavigationEnd && this.mainContent && doc.body.classList.contains('modal-open')) {
+          this.mainContent.scrollTop = 0;
+        }
+      });
     }
-
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd && this.mainContent && !document.body.classList.contains('modal-open')) {
-        this.mainContent.scrollTop = 0;
-      }
-    });
   }
 
   ngAfterViewInit(): void {
@@ -65,7 +64,8 @@ export class PublicLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     
     const doc = this.ssrService.getDocument();
-    if(doc)
-    doc.body.classList.remove('modal-open');
+    if(doc){
+      doc.body.classList.remove('modal-open');
+    }
   }
 }

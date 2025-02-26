@@ -1,8 +1,9 @@
-import { Component, AfterViewInit, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { SsrService } from '../../../core/services/ssr.service';
 import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -22,12 +23,12 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   constructor(
     private userStorageService: UserStorageService,
     public router: Router,
-    private ssrService: SsrService
+    private ssrService: SsrService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    const doc = this.ssrService.getDocument();
-    if (doc) {
+    if (isPlatformBrowser(this.platformId)) {
       this.checkLoginStatus();
 
       this.router.events.subscribe((event) => {
@@ -36,13 +37,16 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
         }
       });
 
-      doc.addEventListener('show.bs.modal', () => {
-        document.body.classList.add('no-scroll');
-      });
+      const doc = this.ssrService.getDocument();
+      if (doc) {
+        doc.addEventListener('show.bs.modal', () => {
+          doc.body.classList.add('no-scroll');
+        });
 
-      doc.addEventListener('hide.bs.modal', () => {
-        document.body.classList.remove('no-scroll');
-      });
+        doc.addEventListener('hide.bs.modal', () => {
+          doc.body.classList.remove('no-scroll');
+        });
+      }
     }
   }
 
@@ -69,34 +73,40 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngAfterViewInit(): void {
-    const doc = this.ssrService.getDocument();
-    if (doc) {
-      this.mainContent = doc.getElementById('main-content');
-      if (this.mainContent) {
-        this.mainContent.addEventListener('scroll', this.onScroll);
+    if (isPlatformBrowser(this.platformId)) {
+      const doc = this.ssrService.getDocument();
+      if (doc) {
+        this.mainContent = doc.getElementById('main-content');
+        if (this.mainContent) {
+          this.mainContent.addEventListener('scroll', this.onScroll);
+        }
       }
     }
   }
 
   ngOnDestroy(): void {
-    if (this.mainContent) {
-      this.mainContent.removeEventListener('scroll', this.onScroll);
-    }
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.mainContent) {
+        this.mainContent.removeEventListener('scroll', this.onScroll);
+      }
 
-    const doc = this.ssrService.getDocument();
-    if (doc) {
-      doc.removeEventListener('show.bs.modal', () => {});
-      doc.removeEventListener('hide.bs.modal', () => {});
+      const doc = this.ssrService.getDocument();
+      if (doc) {
+        doc.removeEventListener('show.bs.modal', () => {});
+        doc.removeEventListener('hide.bs.modal', () => {});
+      }
     }
   }
 
   @HostListener('window:scroll', [])
   onScroll = () => {
-    if (this.mainContent && this.isHomepage) {
-      const isModalOpen = document.body.classList.contains('modal-open');
-      if (!isModalOpen) {
-        const scrollPosition = this.mainContent.scrollTop;
-        this.isScrolled = scrollPosition > 300;
+    if (isPlatformBrowser(this.platformId)) {
+      if (this.mainContent && this.isHomepage) {
+        const isModalOpen = document.body.classList.contains('modal-open');
+        if (!isModalOpen) {
+          const scrollPosition = this.mainContent.scrollTop;
+          this.isScrolled = scrollPosition > 300;
+        }
       }
     }
   };
