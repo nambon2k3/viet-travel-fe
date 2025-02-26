@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-public-layout',
@@ -16,7 +17,10 @@ import { HeaderComponent } from '../../../../shared/components/header/header.com
 export class PublicLayoutComponent {
   private mainContent: HTMLElement | null = null;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: object
+  ) {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         if (this.mainContent) {
@@ -27,6 +31,8 @@ export class PublicLayoutComponent {
   }
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
     this.mainContent = document.getElementById('main-content');
+    }
   }
 }

@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
 import { AdminHeaderComponent } from '../../../shared/components/admin-header/admin-header.component';
@@ -7,8 +7,8 @@ import { AdminHeaderComponent } from '../../../shared/components/admin-header/ad
 @Component({
   selector: 'app-layout',
   imports: [
-    CommonModule, 
-    RouterOutlet, 
+    CommonModule,
+    RouterOutlet,
     AdminSidebarComponent,
     AdminHeaderComponent
   ],
@@ -18,7 +18,10 @@ import { AdminHeaderComponent } from '../../../shared/components/admin-header/ad
 export class LayoutComponent {
   private mainContent: HTMLElement | null = null;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: object
+  ) {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         if (this.mainContent) {
@@ -29,7 +32,9 @@ export class LayoutComponent {
   }
 
   ngOnInit(): void {
-    this.mainContent = document.getElementById('main-content');
+    if (isPlatformBrowser(this.platformId)) {
+      this.mainContent = document.getElementById('main-content');
+    }
   }
 }
 

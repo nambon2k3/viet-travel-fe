@@ -104,30 +104,30 @@
         
         <!-- Left Large Block -->
         <div class="relative col-span-1 sm:col-span-5 row-span-2 group rounded-xl overflow-hidden">
-            <img *ngIf="locations[4].image" [src]="locations[4].image" alt="{{ locations[4].name }}" 
+            <img *ngIf="locations[4]?.image" [src]="locations[4].image" alt="{{ locations[4].name }}" 
                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy">
             <div class="absolute inset-0 bg-black/10 group-hover:bg-black/50 transition-all duration-300"></div>
-            <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
+            <h3 *ngIf="locations[4]?.name" class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
                 {{ locations[4].name || 'Loading...' }}
             </h3>
         </div>
 
         <!-- Top Right Large Block -->
         <div class="relative col-span-1 sm:col-span-7 row-span-2 group rounded-xl overflow-hidden">
-            <img *ngIf="locations[5].image" [src]="locations[5].image" alt="{{ locations[5].name }}" 
+            <img *ngIf="locations[5]?.image" [src]="locations[5].image" alt="{{ locations[5].name }}" 
                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy">
             <div class="absolute inset-0 bg-black/10 group-hover:bg-black/50 transition-all duration-300"></div>
-            <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
+            <h3 *ngIf="locations[5]?.name" class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
                 {{ locations[5].name || 'Loading...' }}
             </h3>
         </div>
 
         <!-- Bottom Left Large Block -->
         <div class="relative col-span-1 sm:col-span-6 row-span-2 group rounded-xl overflow-hidden">
-            <img *ngIf="locations[6].image" [src]="locations[6].image" alt="{{ locations[6].name }}" 
+            <img *ngIf="locations[6]?.image" [src]="locations[6].image" alt="{{ locations[6].name }}" 
                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy">
             <div class="absolute inset-0 bg-black/10 group-hover:bg-black/50 transition-all duration-300"></div>
-            <h3 class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
+            <h3 *ngIf="locations[6]?.name" class="absolute inset-0 flex items-center justify-center text-base sm:text-lg font-bold text-white">
                 {{ locations[6].name || 'Loading...' }}
             </h3>
         </div>
