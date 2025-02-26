@@ -3,6 +3,8 @@ import { PublicLayoutComponent } from "./layout/public-layout/public-layout.comp
 import { HomepageComponent } from "./components/homepage/homepage.component";
 import { BlogDetailComponent } from "./components/blog/blog-detail/blog-detail.component";
 import { BlogComponent } from "./components/blog/blog.component";
+import { HotelComponent } from "./components/hotel/hotel.component";
+import { TourComponent } from "./components/tour/tour.component";
 import { TourDetailComponent } from "./components/tour/tour-detail/tour-detail.component";
 
 export const PUBLIC_ROUTES: Route[] = [
@@ -21,6 +23,14 @@ export const PUBLIC_ROUTES: Route[] = [
       {
         path: 'blogs',
         component: BlogComponent,
+      },
+      {
+        path: 'hotels',
+        component: HotelComponent,
+      },
+      {
+        path: 'tours',
+        component: TourComponent,
       },
       {
         path: 'tour-detail',

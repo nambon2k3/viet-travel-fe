@@ -69,4 +69,8 @@ export const routes: Routes = [
         path: 'head-business',
         loadChildren: () => import('./features/admin/head-of-business/head-of-business.routes').then(m => m.HEAD_OF_BUSINESS_ROUTES),
     },
+    {
+        path: 'operator',
+        loadChildren: () => import('./features/admin/operator/operator.routes').then(m => m.OPERATOR_ROUTES),
+    },
 ];
