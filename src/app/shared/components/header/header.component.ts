@@ -1,8 +1,9 @@
-import { CommonModule } from '@angular/common';
-import { Component, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, AfterViewInit, OnDestroy, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
 import { CustomerService } from '../../../features/customer/services/customer.service';
 import { NavigationEnd, Router } from '@angular/router';
+import { SsrService } from '../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-header',
@@ -22,14 +23,15 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   constructor(
     private customerService: CustomerService,
     private userStorageService: UserStorageService,
-    public router: Router
-  ) {}
+    public router: Router,
+    private ssrService: SsrService,
+  ) { }
 
   ngOnInit(): void {
     this.checkLoginStatus();
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.isHomepage = this.router.url === '/homepage';
+        this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
       }
     });
   }
@@ -71,9 +73,12 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngAfterViewInit() {
-    this.mainContent = document.getElementById('main-content');
-    if (this.mainContent) {
-      this.mainContent.addEventListener('scroll', this.onScroll);
+    const document = this.ssrService.getDocument();
+    if (document) {
+      this.mainContent = document.getElementById('main-content');
+      if (this.mainContent) {
+        this.mainContent.addEventListener('scroll', this.onScroll);
+      }
     }
   }
 

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 @plugin "flowbite-typography";
-@plugin "flowbite"
+@plugin "flowbite";
 
 body {
   font-family: 'Poppins', sans-serif;

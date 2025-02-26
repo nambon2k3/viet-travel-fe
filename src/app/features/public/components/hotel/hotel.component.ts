@@ -148,4 +148,8 @@ export class HotelComponent implements OnInit {
 
     this.applyFilters();
   }
+
+  getStars(count: number): number[] {
+    return Array.from({ length: count }, (_, i) => i);
+  }  
 }
