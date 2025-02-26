@@ -18,6 +18,6 @@ export class CurrencyVndPipe implements PipeTransform {
       return showSymbol ? `$ ${formattedValue}` : formattedValue;
     }
 
-    return showSymbol ? `${formattedValue} VND` : formattedValue;
+    return showSymbol ? `${formattedValue} ₫` : formattedValue;
   }
 }
