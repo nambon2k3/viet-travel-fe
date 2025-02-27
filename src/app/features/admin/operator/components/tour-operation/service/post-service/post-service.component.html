@@ -1,0 +1,105 @@
+<div id="chooseServiceModal" tabindex="-1" aria-hidden="true"
+    class="hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-gray-900 bg-opacity-50">
+    <div class="relative p-6 w-full max-w-lg bg-white rounded-lg shadow-lg">
+        <h3 class="text-xl font-semibold text-gray-900">Choose Service</h3>
+
+        <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow">
+            <h2 class="text-lg font-bold mb-3">Choose Service</h2>
+
+            <!-- Search Bar -->
+            <div class="border rounded-md p-3 bg-gray-100 flex justify-between items-center">
+                <input type="text" placeholder="Press Enter to search Service"
+                    class="bg-transparent flex-1 outline-none">
+                <span class="material-icons cursor-pointer">expand_more</span>
+            </div>
+
+            <!-- Service List -->
+            <div class="border rounded-md bg-gray-100 p-3 mt-3">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr>
+                            <th class="font-semibold">Service Name</th>
+                            <th class="font-semibold">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let service of services" class="border-t">
+                            <td>{{ service.name }}</td>
+                            <td class="flex justify-between">
+                                {{ service.type }}
+                                <button class="text-xl">+</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Date and Room Selection -->
+            <div class="grid grid-cols-3 gap-4 mt-4">
+                <div>
+                    <label class="block text-sm">Start Date</label>
+                    <input type="date" [(ngModel)]="startDate" class="border p-2 rounded w-full">
+                </div>
+                <div>
+                    <label class="block text-sm">End Date</label>
+                    <input type="date" [(ngModel)]="endDate" class="border p-2 rounded w-full">
+                </div>
+                <div>
+                    <label class="block text-sm">Level</label>
+                    <select [(ngModel)]="selectedLevel" class="border p-2 rounded w-full">
+                        <option>Single room</option>
+                        <option>Double room</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Room Counter -->
+            <div class="mt-4 flex items-center space-x-2">
+                <label class="text-sm">Room</label>
+                <button (click)="decrementRoom()" class="border px-2 py-1 rounded bg-gray-200">−</button>
+                <span class="w-10 text-center">{{ roomCount | number:'2.0' }}</span>
+                <button (click)="incrementRoom()" class="border px-2 py-1 rounded bg-gray-200">+</button>
+            </div>
+
+            <!-- Service Price Table -->
+            <div class="border rounded-md bg-gray-100 p-3 mt-4">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Unit Price</th>
+                            <th>Quantity</th>
+                            <th>Night</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let price of servicePrices">
+                            <td>{{ price.type }}</td>
+                            <td>{{ price.unitPrice | number }}</td>
+                            <td>{{ price.quantity }}</td>
+                            <td>{{ price.nights }}</td>
+                            <td>{{ price.unitPrice * price.quantity * price.nights | number }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-right font-bold mt-2">
+                    Total Price: {{ getTotalPrice() | number }}
+                </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div class="mt-4">
+                <label class="block text-sm">Note</label>
+                <textarea class="border w-full p-2 rounded" placeholder="Customer will..."></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end space-x-2 mt-4">
+                <button class="border px-4 py-2 rounded bg-gray-300">Cancel</button>
+                <button class="border px-4 py-2 rounded bg-black text-white">Add Service</button>
+            </div>
+        </div>
+
+    </div>
+</div>
