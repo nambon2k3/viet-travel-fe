@@ -1,9 +1,9 @@
 import { Route } from "@angular/router";
-import { LayoutComponent } from "../layout/layout.component";
 import { DashBoardComponent } from "./components/dash-board/dash-board.component";
 import { ViewListRequestComponent } from "./components/view-list-request/view-list-request.component";
 import { ViewRequestDetailComponent } from "./components/view-request-detail/view-request-detail.component";
 import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
+import { LayoutComponent } from "../layout/layout.component";
 
 export const OPERATOR_ROUTES: Route[] = [
   {
@@ -28,7 +28,7 @@ export const OPERATOR_ROUTES: Route[] = [
       },
       {
         path: 'tour-operation',
-        loadChildren: () => import('./components/tour-operation/tour-operation.routes').then(m => m.TOUR_OPERATION_ROUTES),
+        loadChildren: () => import('./components/tour-operation/tour-operation.routes').then(m => m.TOUROPERATION_ROUTES),
       }
     ]
   },
