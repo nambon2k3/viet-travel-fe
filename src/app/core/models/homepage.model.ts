@@ -10,7 +10,7 @@ export interface Tour {
   tags: Tag[];
   depart_location: Location;
   tickets: Ticket[];
-  tourSchedules: TourSchedule[];
+  priceFrom: number;
   tourImages: TourImage[];
 }
 

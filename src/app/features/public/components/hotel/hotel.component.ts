@@ -1,79 +1,85 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-interface Hotel {
-  id: number;
-  name: string;
-  reviews: number;
-  description: string;
-  price: number;
-  hotelClass: number; // 1, 2, 3, 4, 5 stars
-  rating: number; // 1 to 5
-}
+import { HotelService } from '../../services/hotel.service';
+import { Hotel } from '../../../../core/models/hotel.model';
+import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
+import { SsrService } from '../../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-hotel',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CurrencyVndPipe],
   templateUrl: './hotel.component.html',
   styleUrl: './hotel.component.css'
 })
 export class HotelComponent implements OnInit {
-  hotels: Hotel[] = [];
-  filteredHotels: Hotel[] = [];
+  hotels = signal<Hotel[]>([]);
 
   // Pagination
-  totalHotels = 0;
-  hotelsPerPage = 5;
-  currentPage = 1;
+  totalItems = 0;
+  size = 10;
+  keyword = '';
+  currentPage: number = 0;
   totalPages: number = 0;
-  pages: number[] = [];
+  private map!: L.Map;
 
   // Filters
   minPrice = 0;
-  maxPrice = 1000;
-  hotelClassFilter: number | null = null;
+  maxPrice = 200000000;
   sortBy = '';
   ratingFilter = 0;
   minPercent = 0;
   maxPercent = 100;
+  hotelClassFilter = 0;
+
+  constructor(
+    private hotelService: HotelService,
+    private ssrService: SsrService
+  ) { }
 
   ngOnInit(): void {
-    this.generateMockHotels(); // Temporary mock data
-    this.calculatePagination();
-    this.applyFilters();
+    this.getHotels();
+    // this.applyFilters();
   }
+
+  getHotels(): void {
+    this.hotelService.getHotels(
+      this.currentPage,
+      this.size,
+      this.keyword,
+      this.hotelClassFilter,
+      this.maxPrice,
+      this.minPrice,
+      //sortBy ?: string
+    ).subscribe({
+      next: (response) => {
+        // console.log(response);
+        this.hotels.set(response.data.items);
+        this.totalItems = response.data.total;
+        this.currentPage = response.data.page;
+        this.size = response.data.size;
+        this.totalPages = (Math.ceil(this.totalItems / this.size));
+      },
+      error: (err) => {
+        console.error('Failed to load hotels:', err);
+      }
+    });
+  }
+
+  filteredHotels = computed(() => {
+      return this.hotels();
+    });
 
   clearFilters(): void {
     this.minPrice = 0;
     this.maxPrice = 1000;
-    this.hotelClassFilter = null;
-    this.sortBy = '';
+    this.hotelClassFilter = 0;
+    // this.sortBy = '';
     this.ratingFilter = 0;
     this.currentPage = 1;
     this.applyFilters();
     this.updateSlider();
-  }
-
-  generateMockHotels(): void {
-    this.hotels = Array.from({ length: 10 }, (_, i) => ({
-      id: i + 1,
-      name: `Hotel ${i + 1}`,
-      reviews: Math.floor(Math.random() * 500),
-      description: `Description for Hotel ${i + 1}`,
-      price: Math.floor(Math.random() * 500) + 50, // Price between 50 and 550
-      hotelClass: Math.floor(Math.random() * 5) + 1, // 1 to 5 stars
-      rating: Math.floor(Math.random() * 5) + 1 // 1 to 5 rating
-    }));
-
-    this.totalHotels = this.hotels.length;
-    this.calculatePagination();
-  }
-
-  calculatePagination(): void {
-    this.totalPages = Math.ceil(this.totalHotels / this.hotelsPerPage);
-    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
   changeRatingFilter(minRating: number): void {
@@ -87,44 +93,15 @@ export class HotelComponent implements OnInit {
   }
 
   applyFilters(): void {
-    let hotels = [...this.hotels];
-
-    // Apply price, hotel class, and rating filters
-    hotels = hotels.filter(hotel =>
-      hotel.price >= this.minPrice &&
-      hotel.price <= this.maxPrice &&
-      (this.hotelClassFilter === null || hotel.hotelClass === this.hotelClassFilter) &&
-      hotel.rating >= this.ratingFilter
-    );
-
-    // Apply sorting
-    if (this.sortBy) {
-      switch (this.sortBy) {
-        case 'priceAsc': hotels.sort((a, b) => a.price - b.price); break;
-        case 'priceDesc': hotels.sort((a, b) => b.price - a.price); break;
-        case 'classAsc': hotels.sort((a, b) => a.hotelClass - b.hotelClass); break;
-        case 'classDesc': hotels.sort((a, b) => b.hotelClass - a.hotelClass); break;
-      }
-    }
-
-    // Apply pagination
-    this.totalHotels = hotels.length;
-    this.calculatePagination();
-    const start = (this.currentPage - 1) * this.hotelsPerPage;
-    const end = start + this.hotelsPerPage;
-    this.filteredHotels = hotels.slice(start, end);
+    this.currentPage = 0;
+    this.getHotels();
   }
 
   changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
-      this.applyFilters();
+      this.getHotels();
     }
-  }
-
-  onFilter(): void {
-    this.currentPage = 1; // Reset to first page after filtering
-    this.applyFilters();
   }
 
   onSort(): void {
@@ -135,7 +112,7 @@ export class HotelComponent implements OnInit {
     // Ensure min and max have a gap of at least $10
     const minGap = 10;
     if (this.maxPrice - this.minPrice < minGap) {
-      if (this.minPrice + minGap <= 1000) {
+      if (this.minPrice + minGap <= 100000) {
         this.minPrice = this.maxPrice - minGap;
       } else {
         this.maxPrice = this.minPrice + minGap;
@@ -143,13 +120,35 @@ export class HotelComponent implements OnInit {
     }
 
     // Update percentage positions for track styling
-    this.minPercent = (this.minPrice / 1000) * 100;
-    this.maxPercent = (this.maxPrice / 1000) * 100;
+    this.minPercent = (this.minPrice / 200000000) * 100;
+    this.maxPercent = (this.maxPrice / 200000000) * 100;
 
     this.applyFilters();
   }
 
+  ngAfterViewInit(): void {
+    if (this.ssrService.isBrowser) {
+    this.initMap();
+    }
+  }
+
   getStars(count: number): number[] {
     return Array.from({ length: count }, (_, i) => i);
-  }  
+  }
+
+  private async initMap(): Promise<void> {
+    const L = await import('leaflet');
+
+    this.map = L.map('map').setView([21.0285, 105.8542], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    L.marker([21.0285, 105.8542]).addTo(this.map)
+  }
+
+  openMap(): void {
+    this.map.invalidateSize();
+  }
 }

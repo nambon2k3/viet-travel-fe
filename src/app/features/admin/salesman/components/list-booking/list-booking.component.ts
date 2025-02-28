@@ -10,7 +10,7 @@ import { TableFooterComponent } from '../../../../../shared/components/table/tab
   imports: [TableActionComponent,
     TableFooterComponent,
     TableHeaderComponent,
-    TableRowComponent, SpinnerComponent],
+    SpinnerComponent],
   templateUrl: './list-booking.component.html',
   styleUrl: './list-booking.component.css'
 })

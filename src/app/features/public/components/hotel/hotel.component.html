@@ -2,53 +2,11 @@
     <!-- Map & Date Inputs (as before) -->
     <div
         class="mx-auto w-full bg-gray-200 p-6 rounded-lg flex flex-col md:flex-row gap-20 justify-center items-start md:items-center">
-        <div class="bg-white w-full md:w-1/3 h-56 flex items-center justify-center font-bold text-lg rounded-lg shadow">
-            View Map
+        <div id="map" (click)="openMap()"
+            class="relative w-full md:w-1/3 h-56 flex items-center justify-center font-bold text-lg rounded-lg shadow">
         </div>
         <div class="">
-            <div class="font-bold text-3xl mb-16">All the hotel in</div>
-            
-
-<!-- Modal toggle -->
-<button data-modal-target="default-modal" data-modal-toggle="default-modal" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
-    Toggle modal
-  </button>
-  
-  <!-- Main modal -->
-  <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-      <div class="relative p-4 w-full max-w-2xl max-h-full">
-          <!-- Modal content -->
-          <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-              <!-- Modal header -->
-              <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                      Terms of Service
-                  </h3>
-                  <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal">
-                      <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                      </svg>
-                      <span class="sr-only">Close modal</span>
-                  </button>
-              </div>
-              <!-- Modal body -->
-              <div class="p-4 md:p-5 space-y-4">
-                  <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                      With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply.
-                  </p>
-                  <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                      The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
-                  </p>
-              </div>
-              <!-- Modal footer -->
-              <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                  <button data-modal-hide="default-modal" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I accept</button>
-                  <button data-modal-hide="default-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Decline</button>
-              </div>
-          </div>
-      </div>
-  </div>
-  
+            <div class="font-bold text-3xl mb-16">All the hotel in {{ keyword }}</div>
             <div class="flex flex-col gap-4 md:flex-row mt-4 md:mt-0">
                 <!-- Check In -->
                 <div class="bg-white p-4 rounded-lg shadow flex items-center gap-2">
@@ -74,37 +32,13 @@
                         <p class="font-bold">Sun, Feb 02</p>
                     </div>
                 </div>
-                
-<button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Dropdown button <svg class="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-    </svg>
-    </button>
-    
-    <!-- Dropdown menu -->
-    <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-          <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-          </li>
-          <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
-          </li>
-          <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
-          </li>
-          <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</a>
-          </li>
-        </ul>
-    </div>
-    
             </div>
         </div>
     </div>
 
     <div class="flex justify-between items-center mx-20 mt-10 h-fit">
         <div class="flex gap-1">
-            <p class="font-bold">{{ totalHotels }}</p>
+            <p class="font-bold">{{ totalItems }}</p>
             <p>properties in Hanoi</p>
         </div>
         <div>
@@ -130,9 +64,9 @@
 
                 <!-- Custom Range Slider -->
                 <div class="relative mt-4 slider-container">
-                    <input type="range" min="0" max="1000" [(ngModel)]="minPrice" (input)="updateSlider()"
+                    <input type="range" min="0" max="200000000" [(ngModel)]="minPrice" (input)="updateSlider()"
                         class="absolute w-full opacity-0 z-10">
-                    <input type="range" min="0" max="1000" [(ngModel)]="maxPrice" (input)="updateSlider()"
+                    <input type="range" min="0" max="200000000" [(ngModel)]="maxPrice" (input)="updateSlider()"
                         class="absolute w-full opacity-0 z-10">
 
                     <!-- Styled Track -->
@@ -144,8 +78,8 @@
 
                 <!-- Price Labels -->
                 <div class="flex justify-between mt-3 text-gray-600">
-                    <span>From: ${{ minPrice }}</span>
-                    <span>To: ${{ maxPrice }}</span>
+                    <span>{{ minPrice | currencyVnd }}</span>
+                    <span>{{ maxPrice | currencyVnd }}</span>
                 </div>
 
 
@@ -174,34 +108,38 @@
 
 
                 <button class="bg-green-700 text-white hover:bg-green-800 px-4 py-2 rounded-lg mt-4 w-full"
-                    (click)="onFilter()">Filter</button>
+                    (click)="applyFilters()">Filter</button>
             </div>
         </div>
 
         <!-- Hotel List -->
         <div class="w-full md:w-4/5">
-            <div *ngFor="let hotel of filteredHotels" class="bg-gray-100 p-4 rounded-lg flex items-start gap-4 mb-4">
-                <div name="image" class="w-1/3 h-40 bg-gray-300 rounded-lg"></div>
+            @for (hotel of filteredHotels(); track $index){
+            <div class="bg-gray-100 p-4 rounded-lg flex items-start gap-4 mb-4">
+                <div name="image" class="w-1/3 h-48 bg-gray-300 rounded-lg"></div>
                 <div class="w-2/3">
                     <div class="flex justify-between items-start">
-                        <p class="font-bold mb-4">{{ hotel.id }}. {{ hotel.name }} Hanoi: Vietnam’s capital in the north</p>
+                        <p class="font-bold mb-4">{{ hotel.id }}. {{ hotel.name }} Hanoi: Vietnam’s capital in the north
+                        </p>
                         <div class="flex items-center">
-                            <ng-container *ngFor="let star of getStars(hotel.hotelClass)">
+                            <ng-container>
+                                @for (star of getStars(hotel.star); track $index){
                                 <svg class="w-4 h-4 ml-1 text-green-700" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     viewBox="0 0 24 24">
                                     <path
                                         d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                                </svg>
+                                </svg>}
                             </ng-container>
                         </div>
-                        
-                    </div>                                        
+
+                    </div>
                     <div class=" flex items-center my-auto gap-10">
                         <!-- Price & Actions -->
                         <div class="gap-4 mt-2 items-center justify-center ml-4">
-                            <p class="font-bold mb-4 text-center">${{ hotel.price }}</p>
-                            <button class="bg-green-700 text-white hover:bg-green-800 px-4 py-2 rounded-lg mx-auto">View deals</button>
+                            <!-- <p class="font-bold mb-4 text-center">${{ hotel.price }}</p> -->
+                            <button class="bg-green-700 text-white hover:bg-green-800 px-4 py-2 rounded-lg mx-auto">View
+                                deals</button>
                         </div>
                         <div class="w-2/3">
                             <p class="text-sm text-gray-500">Hanoi: Vietnam’s capital in the north offers a more
@@ -211,13 +149,26 @@
                     </div>
                 </div>
             </div>
+            }
+            <div class="py-8 mt-4 text-center">
+                <ul class="inline-flex space-x-2">
+                    <li *ngIf="currentPage > 0">
+                        <a (click)="changePage(currentPage - 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">«</a>
+                    </li>
 
-            <!-- Pagination UI -->
-            <div class="flex justify-center gap-2 mt-4">
-                <button *ngFor="let page of pages" class="px-3 py-1 border text-black rounded hover:bg-green-800 hover:text-white"
-                    [class.bg-green-700]="currentPage === page" [class.text-white]="currentPage === page" (click)="changePage(page)">
-                    {{ page }}
-                </button>
+                    <li *ngFor="let page of [].constructor(totalPages); let i = index">
+                        <a (click)="changePage(i)" class="px-3 py-2 rounded-md border cursor-pointer"
+                            [class.bg-black]="i === currentPage" [class.text-white]="i === currentPage">
+                            {{ i + 1 }}
+                        </a>
+                    </li>
+
+                    <li *ngIf="currentPage < totalPages - 1">
+                        <a (click)="changePage(currentPage + 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">»</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
