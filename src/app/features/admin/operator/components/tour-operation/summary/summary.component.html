@@ -1,0 +1,31 @@
+<div class="flex flex-wrap gap-6 p-6">
+    <!-- Left Box: Total Collect -->
+    <div class="bg-gray-200 p-6 rounded-lg w-96">
+        <p class="mb-2">Total Collect <span class="float-right">{{ totalCollect.total | number }}</span></p>
+        <p class="mb-2">Company Collect <span class="float-right">{{ totalCollect.companyCollect | number }}</span></p>
+        <p class="mb-2">Travel Guide Collect <span class="float-right">{{ totalCollect.travelGuideCollect | number }}</span></p>
+        <p>Remain <span class="float-right">{{ totalCollect.remain | number }}</span></p>
+    </div>
+
+    <!-- Right Box: Total Paid -->
+    <div class="bg-gray-200 p-6 rounded-lg w-96">
+        <p class="mb-2">Total Paid <span class="float-right">{{ totalPaid.total | number }}</span></p>
+        <p class="mb-2">Company Paid <span class="float-right">{{ totalPaid.companyPaid | number }}</span></p>
+        <p class="mb-2">Travel Guide Paid <span class="float-right">{{ totalPaid.travelGuidePaid | number }}</span></p>
+        <p>Remain <span class="float-right">{{ totalPaid.remain | number }}</span></p>
+    </div>
+
+    <!-- Bottom Box: Summary -->    
+    <div class="bg-gray-200 p-6 rounded-lg w-fit">
+        <div class="grid grid-cols-3 font-semibold mb-2 gap-60 pr-5">
+            <p>Content</p>
+            <p>Estimate</p>
+            <p>Summary</p>
+        </div>
+        <div *ngFor="let item of summary" class="grid grid-cols-3 mb-2 gap-40">
+            <p>{{ item.content }}</p>
+            <p>{{ item.estimate | currencyVnd }}</p>
+            <p>{{ item.summary | currencyVnd }}</p>
+        </div>
+    </div>
+</div>
