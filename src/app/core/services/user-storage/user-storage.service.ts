@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
-import { isPlatformBrowser } from '@angular/common';
 import { SsrService } from '../ssr.service';
 
 
