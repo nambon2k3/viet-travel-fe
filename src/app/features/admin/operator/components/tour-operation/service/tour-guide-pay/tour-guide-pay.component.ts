@@ -22,24 +22,14 @@ export class TourGuidePayComponent {
   constructor(private ssrService: SsrService) {}
 
   ngAfterViewInit() {
-    const doc = this.ssrService.getDocument();
-    if (doc) {
-      const modalElement = doc.getElementById('tourGuideModal');
+    const document = this.ssrService.getDocument();
+    if (document) {
+      const modalElement = document.getElementById('tourGuidePayModal');
       if (modalElement) {
-        this.modal = new Modal(modalElement, {
-          onHide: () => {
-            this.close.emit();
-            console.log('Modal hidden');
-          },
-        });
-      } else {
-        console.error('Modal element not found!');
+        this.modal = new Modal(modalElement);
       }
     }
-  }
 
-  openPopup() {
-    this.modal?.show();
   }
 
   sendRequest() {
@@ -48,26 +38,5 @@ export class TourGuidePayComponent {
       amount: this.amount,
       note: this.note,
     });
-    this.close.emit();
-    this.modal?.hide();
-  }
-
-  cancel() {
-    if (this.modal) {
-      this.modal.hide();
-    }
-
-    // Manually remove the backdrop if it still exists
-    const doc = this.ssrService.getDocument();
-    if (doc) {
-      setTimeout(() => {
-        const backdrop = doc.querySelector('.modal-backdrop');
-        if (backdrop) {
-          backdrop.remove();
-        }
-      }, 300); // Delay to ensure modal is closed
-    }
-
-    this.close.emit();
   }
 }

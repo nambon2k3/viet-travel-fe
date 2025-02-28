@@ -4,29 +4,26 @@ import { SsrService } from '../../../../../../core/services/ssr.service';
 import { Modal } from 'flowbite';
 import { TourGuidePayComponent } from './tour-guide-pay/tour-guide-pay.component';
 import { PostServiceComponent } from "./post-service/post-service.component";
+import { Router } from '@angular/router';
+import { OrderServiceComponent } from "./order-service/order-service.component";
 
 @Component({
   selector: 'app-service',
-  standalone: true,
   templateUrl: './service.component.html',
   styleUrls: ['./service.component.css'],
   imports: [
     CommonModule,
     TourGuidePayComponent,
-    PostServiceComponent
+    PostServiceComponent,
+    OrderServiceComponent
 ]
 })
 export class ServiceComponent implements AfterViewInit {
+  selectedService: any = null;
+
   @ViewChild('chooseServiceModal') chooseServiceModal!: PostServiceComponent;
   @ViewChild('tourGuidePayModal') tourGuidePayModal!: TourGuidePayComponent;
-
-  openServiceModal() {
-    this.chooseServiceModal.openModal();
-  }
-
-  openPopup() {
-    this.tourGuidePayModal.openPopup();
-  }
+  @ViewChild('orderModal') orderModal!: OrderServiceComponent;
 
   services = [
     { id: 1, name: 'Lan Than', type: 'Meals', bookingId: 234, date: '20/03/2025', quantity: '25 slots', order: 'Not order yet', payment: 'Not pay yet', status: 'continuing' },
@@ -34,13 +31,20 @@ export class ServiceComponent implements AfterViewInit {
     { id: 3, name: 'Con Vit 2', type: 'Room', bookingId: 456, date: '25/03/2025', quantity: '25 slots', order: 'Ordered', payment: '', status: 'not-started' }
   ];
 
+  openServiceDetail(serviceId: number) {
+    this.router.navigate(['/operator/tour-operation/service', serviceId]);
+  }
+
   totalService = 3;
   paid = '10.000.000';
   remain = 0;
   totalCost = '10.000.000';
   modal: Modal | null = null;
 
-  constructor(private ssrService: SsrService) { }
+  constructor(
+    private ssrService: SsrService,
+    private router : Router
+  ) { }
 
   async ngAfterViewInit() {
     const { Dropdown } = await import('flowbite');
@@ -68,6 +72,7 @@ export class ServiceComponent implements AfterViewInit {
   }
 
   changeOrderStatus(service: any, status: string) {
+    this.selectedService = service;
     service.order = status;
   }
 

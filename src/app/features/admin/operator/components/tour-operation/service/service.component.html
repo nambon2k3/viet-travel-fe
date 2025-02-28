@@ -1,7 +1,8 @@
 <div class="mt-6">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">List Service</h2>
-        <button (click)="openServiceModal()" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Add
+        <button data-modal-target="chooseServiceModal" data-modal-toggle="chooseServiceModal"
+            class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Add
             Service</button>
     </div>
 
@@ -20,11 +21,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let service of services" class="border-b">
-                    <td class="p-2">{{ service.id }}</td>
-                    <td class="p-2">{{ service.name }}</td>
-                    <td class="p-2">{{ service.type }}</td>
-                    <td class="p-2">{{ service.bookingId }}</td>
+                <tr *ngFor="let service of services"
+                    class="border-b cursor-pointer hover:font-bold hover:text-green-700">
+                    <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.id }}</td>
+                    <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.name }}</td>
+                    <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.type }}</td>
+                    <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.bookingId }}</td>
                     <td class="p-2">
                         <span [class]="getStatusClass(service.status)">{{ service.date }}</span>
                     </td>
@@ -42,9 +44,9 @@
                             class="z-10 hidden absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-36 dark:bg-white">
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                                 <li>
-                                    <button
+                                    <button data-modal-target="orderModal" data-modal-toggle="orderModal"
                                         class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-1"
-                                        (click)="changeOrderStatus(service, 'Not Order Yet')">
+                                        (click)="changeOrderStatus(service, 'Waiting For Accept')">
                                         Order
                                     </button>
                                 </li>
@@ -72,7 +74,7 @@
                             class="z-10 hidden absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-36 dark:bg-white">
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                                 <li>
-                                    <button (click)="openPopup()"
+                                    <button data-modal-target="tourGuidePayModal" data-modal-toggle="tourGuidePayModal"
                                         class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-1">
                                         Tour Guide Pay
                                     </button>
@@ -93,14 +95,14 @@
     </div>
 
     <div class="mt-6 bg-gray-300 h-24 p-4 rounded-md grid grid-cols-4 place-items-center text-center">
-        <span>Total Service: <br> {{ totalService }}</span>
-        <span>Paid: <br> {{ paid }}</span>
-        <span>Remain: <br> {{ remain }}</span>
-        <span>Total Cost: <br> {{ totalCost }}</span>
+        <span><strong>Service </strong> <br> {{ totalService }}</span>
+        <span><strong>Paid </strong> <br> {{ paid }}</span>
+        <span><strong>Remain </strong> <br> {{ remain }}</span>
+        <span><strong>Total Cost </strong><br> {{ totalCost }}</span>
     </div>
 
 
-    <div class="mt-6 bg-gray-300 w-fit p-4 rounded-md">
+    <div class="mt-6 bg-gray-100 w-fit p-4 rounded-md">
         <h3 class="font-semibold">Note</h3>
         <div class="flex items-center mt-2">
             <span class="bg-blue-400 w-6 h-6 inline-block rounded-md mr-2"></span> Continuing
@@ -116,3 +118,4 @@
 
 <app-post-service #chooseServiceModal></app-post-service>
 <app-tour-guide-pay #tourGuidePayModal></app-tour-guide-pay>
+<app-order-service [selectedService]="selectedService" #orderModal></app-order-service>
