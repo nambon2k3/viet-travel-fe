@@ -9,6 +9,13 @@
       {
         "button-name": "off"
       }
+    ],
+    "axe/aria": [
+      "default",
+      {
+        "aria-required-children": "off",
+        "aria-required-parent": "off"
+      }
     ]
   }
 }

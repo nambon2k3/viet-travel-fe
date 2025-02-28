@@ -88,8 +88,29 @@ body.modal-open {
   margin: auto;
 }
 
-.fc-toolbar-title {
-  font-size: 2.4rem;
+.manage .fc .fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  margin: auto;
+}
+
+.public .fc-toolbar-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 2rem 0;
+  color: #15803d;
+  text-transform: uppercase;
+  display: inline;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer
+}
+
+.manage .fc-toolbar-title {
+  font-size: 1rem;
   font-weight: 700;
   margin: 2rem 0;
   color: #15803d;
