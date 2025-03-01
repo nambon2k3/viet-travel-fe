@@ -1,131 +1,164 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
-
-interface Tour {
-  id: number;
-  name: string;
-  reviews: number;
-  description: string;
-  price: number;
-  tourClass: number; // 1, 2, 3, 4, 5 stars
-  rating: number; // 1 to 5
-}
+import { SsrService } from '../../../../core/services/ssr.service';
+import { TourService } from '../../services/tour.service/tour.service';
+import { Tour } from '../../../../core/models/public-tour.model';
+import { FooterComponent } from "../../../../shared/components/footer/footer.component";
+import { shareReplay } from 'rxjs';
 
 @Component({
   selector: 'app-tour',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyVndPipe],
+  imports: [CommonModule, FormsModule, CurrencyVndPipe,
+    FooterComponent
+  ],
   templateUrl: './tour.component.html',
   styleUrl: './tour.component.css'
 })
 export class TourComponent implements OnInit {
-  tours: Tour[] = [];
-  filteredTours: Tour[] = [];
+  tours = signal<Tour[]>([]);
 
   // Pagination
-  totalTours = 0;
-  toursPerPage = 5;
-  currentPage = 1;
+  totalItems = 0;
+  size = 10;
+  keyword = '';
+  currentPage: number = 0;
   totalPages: number = 0;
-  pages: number[] = [];
+  private map!: L.Map;
 
   // Filters
   minPrice = 0;
-  maxPrice = 1000000000;
-  tourClassFilter: number | null = null;
-  sortBy = '';
-  ratingFilter = 0;
+  maxPrice = 200000000;
+  // sortBy = '';
   minPercent = 0;
   maxPercent = 100;
 
-  ngOnInit(): void {
-    this.generateMockTours(); // Temporary mock data
-    this.calculatePagination();
-    this.applyFilters();
+  duration = 0;
+  fromDate = new Date('2021-01-01');
+  tourData$;
+
+  constructor(
+    private tourService: TourService, private ssrService: SsrService,
+  ) {
+    this.tourData$ = this.tourService.getTours(
+      this.currentPage,
+      this.size,
+      this.keyword,
+      this.minPrice,
+      this.maxPrice,
+      this.duration,
+      this.fromDate
+    ).pipe(
+      shareReplay(1)
+    );
   }
+
+  ngOnInit(): void {
+    const document = this.ssrService.getDocument();
+    if (document) {
+      const cachedTimestamp = localStorage.getItem('tourDataTimestamp');
+      const cacheExpiration = 24 * 60 * 60 * 1000;
+
+      const cachedData = localStorage.getItem('tourData');
+      if (cachedData && cachedTimestamp) {
+        const now = new Date().getTime();
+        if (now - parseInt(cachedTimestamp) < cacheExpiration) {
+          const data = JSON.parse(cachedData);
+          this.tours.set(data.items);
+          this.totalItems = data.total;
+          this.currentPage = 0;
+          this.size = data.size;
+          return;
+        }
+      }
+      this.getTours();
+    }
+  }
+
+  getTours(): void {
+    this.tourService.getTours(
+      this.currentPage,
+      this.size,
+      this.keyword,
+      this.minPrice,
+      this.maxPrice,
+      this.duration,
+      this.fromDate
+      //sortBy ?: string
+    ).subscribe({
+      next: (response) => {
+        this.tours.set(response.data.items);
+        this.totalItems = response.data.total;
+        this.currentPage = response.data.page;
+        this.size = response.data.size;
+        this.totalPages = (Math.ceil(this.totalItems / this.size));
+
+        // Cache the data
+        const local = this.ssrService.getLocalStorage();
+        if (local) {
+          localStorage.setItem('tourData', JSON.stringify(response.data));
+          localStorage.setItem('tourDataTimestamp', new Date().getTime().toString());
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load tours:', err);
+      }
+    });
+  }
+
+  filteredTours = computed(() => {
+    return this.tours();
+  });
 
   clearFilters(): void {
     this.minPrice = 0;
     this.maxPrice = 1000;
-    this.tourClassFilter = null;
-    this.sortBy = '';
-    this.ratingFilter = 0;
+    this.duration = 0;
+    // this.sortBy = '';
+    this.fromDate = new Date();
     this.currentPage = 1;
     this.applyFilters();
     this.updateSlider();
   }
 
-  generateMockTours(): void {
-    this.tours = Array.from({ length: 10 }, (_, i) => ({
-      id: i + 1,
-      name: `Tour ${i + 1}`,
-      reviews: Math.floor(Math.random() * 500),
-      description: `Description for Tour ${i + 1}`,
-      price: Math.floor(Math.random() * 500) + 50, // Price between 50 and 550
-      tourClass: Math.floor(Math.random() * 5) + 1, // 1 to 5 stars
-      rating: Math.floor(Math.random() * 5) + 1 // 1 to 5 rating
-    }));
-
-    this.totalTours = this.tours.length;
-    this.calculatePagination();
-  }
-
-  calculatePagination(): void {
-    this.totalPages = Math.ceil(this.totalTours / this.toursPerPage);
-    this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
-  }
-
-  changeRatingFilter(minRating: number): void {
-    this.ratingFilter = minRating;
+  changeTourDuration(durationInput: number): void {
+    this.duration = durationInput;
     this.applyFilters();
   }
 
-  changeTourClassFilter(selectedClass: number): void {
-    this.tourClassFilter = selectedClass;
+  changeTourDate(date: Date): void {
+    this.fromDate = date;
     this.applyFilters();
+  }
+
+  onDurationChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.valueAsNumber;
+    if (!isNaN(value)) {
+      this.changeTourDuration(value);
+    }
+  }
+
+  onDateChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.valueAsDate;
+    if (value) {
+      this.changeTourDate(value);
+    }
   }
 
   applyFilters(): void {
-    let tours = [...this.tours];
-
-    // Apply price, tour class, and rating filters
-    tours = tours.filter(tour =>
-      tour.price >= this.minPrice &&
-      tour.price <= this.maxPrice &&
-      (this.tourClassFilter === null || tour.tourClass === this.tourClassFilter) &&
-      tour.rating >= this.ratingFilter
-    );
-
-    // Apply sorting
-    if (this.sortBy) {
-      switch (this.sortBy) {
-        case 'priceAsc': tours.sort((a, b) => a.price - b.price); break;
-        case 'priceDesc': tours.sort((a, b) => b.price - a.price); break;
-        case 'classAsc': tours.sort((a, b) => a.tourClass - b.tourClass); break;
-        case 'classDesc': tours.sort((a, b) => b.tourClass - a.tourClass); break;
-      }
-    }
-
-    // Apply pagination
-    this.totalTours = tours.length;
-    this.calculatePagination();
-    const start = (this.currentPage - 1) * this.toursPerPage;
-    const end = start + this.toursPerPage;
-    this.filteredTours = tours.slice(start, end);
+    this.currentPage = 0;
+    this.getTours();
   }
 
   changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;
-      this.applyFilters();
+      this.getTours();
     }
-  }
-
-  onFilter(): void {
-    this.currentPage = 1; // Reset to first page after filtering
-    this.applyFilters();
   }
 
   onSort(): void {
@@ -133,20 +166,40 @@ export class TourComponent implements OnInit {
   }
 
   updateSlider(): void {
-    // Ensure min and max have a gap of at least $10
     const minGap = 10;
     if (this.maxPrice - this.minPrice < minGap) {
-      if (this.minPrice + minGap <= 1000) {
+      if (this.minPrice + minGap <= 100000) {
         this.minPrice = this.maxPrice - minGap;
       } else {
         this.maxPrice = this.minPrice + minGap;
       }
     }
 
-    // Update percentage positions for track styling
-    this.minPercent = (this.minPrice / 1000) * 100;
-    this.maxPercent = (this.maxPrice / 1000) * 100;
+    this.minPercent = (this.minPrice / 200000000) * 100;
+    this.maxPercent = (this.maxPrice / 200000000) * 100;
 
     this.applyFilters();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.ssrService.isBrowser) {
+      this.initMap();
+    }
+  }
+
+  private async initMap(): Promise<void> {
+    const L = await import('leaflet');
+
+    this.map = L.map('map').setView([21.0285, 105.8542], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    L.marker([21.0285, 105.8542]).addTo(this.map)
+  }
+
+  openMap(): void {
+    this.map.invalidateSize();
   }
 }
