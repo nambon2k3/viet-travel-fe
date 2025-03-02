@@ -5,8 +5,9 @@ import { CalendarOptions } from '@fullcalendar/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { TourDetail, TourSchedule } from '../../../../../core/models/tour-detail.model';
 import { TourDetailService } from '../../../services/tour-detail.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import interactionPlugin from '@fullcalendar/interaction';
+import { BookingInfoService } from '../../../services/booking-infor.service';
 
 @Component({
   selector: 'app-tour-detail',
@@ -35,8 +36,9 @@ export class TourDetailComponent {
 
   constructor(
     private tourDetailService: TourDetailService,
-    private route: ActivatedRoute,
-    private datePipe: DatePipe
+    private router: Router,
+    private datePipe: DatePipe,
+    private bookingInforService: BookingInfoService
   ) { }
 
 
@@ -47,7 +49,7 @@ export class TourDetailComponent {
         next: (response) => {
           this.tourDetails = response.data;
           this.tourDetails?.tourDays.sort((a: any, b: any) => a.id - b.id);
-          this.isLoading = false;
+
 
 
           this.events = this.tourDetails?.tourSchedules.map(schedule => ({
@@ -56,7 +58,6 @@ export class TourDetailComponent {
             start: schedule.startDate.split("T")[0] // Extract only YYYY-MM-DD
           }));
 
-          console.log(this.tourDetails?.tourSchedules)
 
           if (this.tourDetails?.tourSchedules.length) {
             this.minPrice = Math.min(
@@ -64,7 +65,7 @@ export class TourDetailComponent {
             );
           }
 
-         // this.selectedSchedule = this.tourDetails?.tourSchedules[0];
+          // this.selectedSchedule = this.tourDetails?.tourSchedules[0];
 
           const initialDate = this.events?.length ? this.events[0].start : new Date().toISOString().split("T")[0];
 
@@ -84,8 +85,7 @@ export class TourDetailComponent {
             }
           });
 
-          console.log(this.events)
-
+          this.isLoading = false;
         },
         error: (err) => {
           console.error('Failed to load blog:', err);
@@ -99,7 +99,6 @@ export class TourDetailComponent {
 
   scrollToSchedule(sectionId: string) {
     const element = document.getElementById(sectionId);
-    console.log(element)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
@@ -132,17 +131,25 @@ export class TourDetailComponent {
     // Check if the clicked date has an event
     const eventOnDate = this.events?.find(event => event.start === arg.dateStr);
 
-    console.log(eventOnDate)
-
     if (eventOnDate) {
       this.selectedSchedule = this.tourDetails?.tourSchedules.find(schedule => schedule.scheduleId === eventOnDate.scheduleId);
-    } 
+    }
   }
 
 
   goToMonth(month: string, year: string) {
     const calendarApi = this.calendarComponent.getApi();
     calendarApi.gotoDate(`${year}-${month.padStart(2, '0')}-01`);
+  }
+
+
+  navigateToDetails() {
+    console.log('Setting tour data:', this.tourDetails?.id, this.selectedSchedule?.scheduleId);
+
+    if (this.tourDetails && this.selectedSchedule) {
+      this.bookingInforService.setTourData(this.tourDetails.id, this.selectedSchedule.scheduleId);
+      this.router.navigate(['/tour-booking']); // Navigate without putting IDs in the URL
+    }
   }
 
 

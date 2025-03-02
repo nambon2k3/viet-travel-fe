@@ -14,6 +14,17 @@ export interface TourDetail {
     otherTours: OtherTour[];
     tourDays: TourDay[];
   }
+
+  export interface TourBookingData {
+    id: number;
+    name: string;
+    numberDays: number;
+    numberNight: number;
+    privacy: string;
+    depart_location: Location;
+    tourSchedules: TourSchedule;
+    tourImage: TourImage;
+  }
   
   export interface Location {
     id: number;

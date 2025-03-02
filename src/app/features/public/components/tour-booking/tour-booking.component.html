@@ -27,212 +27,278 @@
     </div>
 
     <!-- Main Form Section -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-        <!-- Left Section: Contact Information -->
-        <div class="md:col-span-2 bg-white p-6 rounded-lg shadow">
-            <h2 class="text-2xl mb-12 font-semibold mb-4">Contact Information</h2>
-            <div class="bg-blue-100 text-blue-700 p-3 rounded-md mb-4">
-                <a href="#" class="font-semibold">🔑 Sign in</a> to receive offers, earn points, and manage orders more
-                easily!
-            </div>
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+            <!-- Left Section: Contact Information -->
+            <div class="md:col-span-2 bg-white p-6 rounded-lg shadow">
+                <h2 class="text-2xl mb-12 font-semibold mb-4">Contact Information</h2>
+                <!-- <div class="bg-blue-100 text-blue-700 p-3 rounded-md mb-4">
+                    <a href="#" class="font-semibold">🔑 Sign in</a> to receive offers, earn points, and manage orders more
+                    easily!
+                </div> -->
 
-            <!-- Form Fields -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block font-semibold">Fullname *</label>
-                    <input type="text" class="w-full border p-2 rounded mt-1" placeholder="Enter fullname">
-                    <p class="text-red-500 text-sm">Required Information</p>
-                </div>
-                <div>
-                    <label class="block font-semibold">Phone *</label>
-                    <input type="text" class="w-full border p-2 rounded mt-1" placeholder="Enter phone number">
-                    <p class="text-red-500 text-sm">Required Information</p>
-                </div>
-                <div>
-                    <label class="block font-semibold">Email *</label>
-                    <input type="email" class="w-full border p-2 rounded mt-1" placeholder="Enter email">
-                    <p class="text-red-500 text-sm">Required Information</p>
-                </div>
-                <div>
-                    <label class="block font-semibold">Address</label>
-                    <input type="text" class="w-full border p-2 rounded mt-1" placeholder="Enter address">
-                </div>
-            </div>
-
-            <!-- Passenger Selection -->
-            <h2 class="text-lg font-semibold mt-6 mb-2">Passenger</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="border p-4 rounded-lg flex justify-between items-center">
-                    <span>Adult<br><small class="text-gray-500">12 and up</small></span>
-                    <div class="flex items-center space-x-2">
-                        <button class="border px-3 py-1 rounded">-</button>
-                        <span>2</span>
-                        <button class="border px-3 py-1 rounded">+</button>
+                <!-- Form Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold">Fullname *</label>
+                        <input type="text" class="w-full border p-2 rounded mt-1" formControlName="fullName"
+                            placeholder="Enter fullname">
+                        <p class="text-red-500 text-sm">Required Information</p>
+                    </div>
+                    <div>
+                        <label class="block font-semibold">Phone *</label>
+                        <input type="text" class="w-full border p-2 rounded mt-1" formControlName="phone"
+                            placeholder="Enter phone number">
+                        <p class="text-red-500 text-sm">Required Information</p>
+                    </div>
+                    <div>
+                        <label class="block font-semibold">Email *</label>
+                        <input type="email" class="w-full border p-2 rounded mt-1" formControlName="email"
+                            placeholder="Enter email">
+                        <p class="text-red-500 text-sm">Required Information</p>
+                    </div>
+                    <div>
+                        <label class="block font-semibold">Address</label>
+                        <input type="text" class="w-full border p-2 rounded mt-1" formControlName="address"
+                            placeholder="Enter address">
                     </div>
                 </div>
-                <div class="border p-4 rounded-lg flex justify-between items-center">
-                    <span>Children<br><small class="text-gray-500">Under 12</small></span>
-                    <div class="flex items-center space-x-2">
-                        <button class="border px-3 py-1 rounded">-</button>
-                        <span>2</span>
-                        <button class="border px-3 py-1 rounded">+</button>
+
+                <!-- Passenger Selection -->
+                <h2 class="text-lg font-semibold mt-6 mb-2">Passenger</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="border p-4 rounded-lg flex justify-between items-center">
+                        <span>Adult<br><small class="text-gray-500">12 and up</small></span>
+                        <div class="flex items-center space-x-2">
+                            <button type="button" class="border px-3 py-1 rounded" (click)="decrementAldults()">-</button>
+                            <span>{{numberAdults}}</span>
+                            <button type="button" class="border px-3 py-1 rounded" (click)="incrementAldults()">+</button>
+                        </div>
+                    </div>
+                    <div class="border p-4 rounded-lg flex justify-between items-center">
+                        <span>Children<br><small class="text-gray-500">Under 12</small></span>
+                        <div class="flex items-center space-x-2">
+                            <button type="button" class="border px-3 py-1 rounded" (click)="decrementChildren()">-</button>
+                            <span>{{numberChildren}}</span>
+                            <button type="button" class="border px-3 py-1 rounded" (click)="incrementChildren()">+</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Passenger Information -->
-            <h2 class="text-2xl font-semibold mt-12 mb-12">Passenger Information</h2>
-            <p class="font-semibold mb-6">👨‍👩‍👧 Adult (12 years and older)</p>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
-                <div>
-                    <label class="block font-semibold">Fullname *</label>
-                    <input type="text" class="w-full border p-2 rounded mt-1" placeholder="Enter fullname">
-                    <p class="text-red-500 text-sm">Required Information</p>
-                </div>
-                <div>
-                    <label class="block font-semibold">Gender *</label>
-                    <select class="w-full border p-2 rounded mt-1">
-                        <option>Male</option>
-                        <option>Female</option>
-                    </select>
-                    <p class="text-red-500 text-sm">Required Information</p>
-                </div>
-                <div>
-                    <label class="block font-semibold">Date of Birth *</label>
-                    <input type="date" class="w-full border p-2 rounded mt-1">
-                    <p class="text-red-500 text-sm">Required Information</p>
-                </div>
-                <div class="flex flex-col justify-center text-center gap-2">
+                <!-- Passenger Information -->
+                <h2 class="text-2xl font-semibold mt-12 mb-12">Passenger Information</h2>
+                <p class="font-semibold mb-6">👨‍👩‍👧 Adult (12 years and older)</p>
 
-                    <label class="block font-semibold">🛏️ Single Room</label>
 
-                    <label class="inline-flex items-center cursor-pointer justify-center">
-                        <input type="checkbox" value="" class="sr-only peer">
-                        <div
-                            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
+                <div formArrayName="adults">
+                    @for (num of range(numberAdults); track num) {
+                    <div [formGroupName]="$index" class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                        <div>
+                            <label class="block font-semibold">Fullname *</label>
+                            <input type="text" formControlName="fullName" class="w-full border p-2 rounded mt-1"
+                                placeholder="Enter fullname">
+                            <p class="text-red-500 text-sm">Required Information</p>
+                        </div>
+                        <div>
+                            <label class="block font-semibold">Gender *</label>
+                            <select formControlName="gender" class="w-full border p-2 rounded mt-1">
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                            </select>
+                            <p class="text-red-500 text-sm">Required Information</p>
+                        </div>
+                        <div>
+                            <label class="block font-semibold">Date of Birth *</label>
+                            <input type="date" formControlName="dateOfBirth" class="w-full border p-2 rounded mt-1">
+                            <p class="text-red-500 text-sm">Required Information</p>
+                        </div>
+                        <div class="flex flex-col justify-center text-center gap-2">
+
+                            <label class="block font-semibold">🛏️ Single Room</label>
+
+                            <label class="inline-flex items-center cursor-pointer justify-center">
+                                <input type="checkbox" value="" class="sr-only peer" formControlName="singleRoom">
+                                <div
+                                    class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
+                                </div>
+
+                            </label>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{extraCost}} VND</span>
+
+                        </div>
+                    </div>
+                    }
+                </div>
+
+
+
+
+
+                <div formArrayName="children">
+                    @for (num of range(numberChildren); track num; let first = $first) {
+                    @if(first) {
+                    <p class="font-semibold mt-12 mb-6">👨‍👩‍👧 Children (Under 12)</p>
+                    }
+                    <div [formGroupName]="$index" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                        <div>
+                            <label class="block font-semibold">Fullname *</label>
+                            <input type="text" formControlName="fullName"  class="w-full border p-2 rounded mt-1" placeholder="Enter fullname">
+                            <p class="text-red-500 text-sm">Required Information</p>
+                        </div>
+                        <div>
+                            <label class="block font-semibold">Gender *</label>
+                            <select formControlName="gender"  class="w-full border p-2 rounded mt-1">
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                            </select>
+                            <p class="text-red-500 text-sm">Required Information</p>
+                        </div>
+                        <div>
+                            <label class="block font-semibold">Date of Birth *</label>
+                            <input type="date" formControlName="dateOfBirth"  class="w-full border p-2 rounded mt-1">
+                            <p class="text-red-500 text-sm">Required Information</p>
                         </div>
 
-                    </label>
-                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">400,000 VND</span>
-
-                </div>
-            </div>
-
-            <p class="font-semibold mt-12 mb-6">👨‍👩‍👧 Children (Under 12)</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div>
-                    <label class="block font-semibold">Fullname *</label>
-                    <input type="text" class="w-full border p-2 rounded mt-1" placeholder="Enter fullname">
-                    <p class="text-red-500 text-sm">Required Information</p>
-                </div>
-                <div>
-                    <label class="block font-semibold">Gender *</label>
-                    <select class="w-full border p-2 rounded mt-1">
-                        <option>Male</option>
-                        <option>Female</option>
-                    </select>
-                    <p class="text-red-500 text-sm">Required Information</p>
-                </div>
-                <div>
-                    <label class="block font-semibold">Date of Birth *</label>
-                    <input type="date" class="w-full border p-2 rounded mt-1">
-                    <p class="text-red-500 text-sm">Required Information</p>
+                    </div>
+                    }
                 </div>
 
-            </div>
 
 
 
 
-            <!-- Note Section -->
-            <h2 class="text-lg font-semibold mb-2 mt-12">Note</h2>
-            <p class="text-gray-600 text-sm mb-2">If you have any notes, please let us know</p>
-            <textarea class="w-full border p-3 rounded-md mb-6" rows="4"
-                placeholder="Please enter message here..."></textarea>
 
-            <!-- Payment Methods -->
-            <h2 class="text-lg font-semibold mb-4">Payment Methods</h2>
 
-            <ul class="grid w-full gap-6 md:grid-cols-1">
-                <li>
-                    <input type="radio" id="hosting-small" name="hosting" value="hosting-small" class="hidden peer" required />
-                    <label for="hosting-small" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
-                        <div class="block">
-                            <div class="w-full text-lg font-semibold">Cash</div>
-                            <div class="w-full">Please pay directly at FPT University Hoa Lac</div>
-                        </div>
-                    </label>
-                </li>
-                <li>
-                    <input type="radio" id="hosting-big" name="hosting" value="hosting-big" class="hidden peer">
-                    <label for="hosting-big" class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
-                        <div class="block">
-                            <div class="w-full text-lg font-semibold">Bank Account</div>
-                            <div class="w-full">After making the transfer, please send an email a.com to receive confirmation from us.</div>
-                            <div class="w-full mt-5">
-                                <p><strong>Account Number:</strong> 2003883886 - Nguyen Viet Hoai Nam</p>
-                                <p class="mt-2"><strong>Bank:</strong> MB Bank</p>
+                <!-- Note Section -->
+                <h2 class="text-lg font-semibold mb-2 mt-12">Note</h2>
+                <p class="text-gray-600 text-sm mb-2">If you have any notes, please let us know</p>
+                <textarea class="w-full border p-3 rounded-md mb-6" rows="4" formControlName="note"
+                    placeholder="Please enter message here..."></textarea>
+
+                <!-- Payment Methods -->
+                <h2 class="text-lg font-semibold mb-4">Payment Methods</h2>
+
+                <ul class="grid w-full gap-6 md:grid-cols-1">
+                    <li>
+                        <input type="radio" id="hosting-small" formControlName="paymentMethod" name="paymentMethod"
+                            value="CASH" checked class="hidden peer" required />
+                        <label for="hosting-small"
+                            class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                            <div class="block">
+                                <div class="w-full text-lg font-semibold">Cash</div>
+                                <div class="w-full">Please pay directly at FPT University Hoa Lac</div>
                             </div>
-                        </div>
-                    </label>
-                </li>
-            </ul>
+                        </label>
+                    </li>
+                    <li>
+                        <input type="radio" id="hosting-big" formControlName="paymentMethod" name="paymentMethod"
+                            value="BANKING" class="hidden peer">
+                        <label for="hosting-big"
+                            class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                            <div class="block">
+                                <div class="w-full text-lg font-semibold">Bank Account</div>
+                                <div class="w-full">After making the transfer, please send an email a.com to receive
+                                    confirmation from us.</div>
+                                <div class="w-full mt-5">
+                                    <p><strong>Account Number:</strong> 2003883886 - Nguyen Viet Hoai Nam</p>
+                                    <p class="mt-2"><strong>Bank:</strong> MB Bank</p>
+                                </div>
+                            </div>
+                        </label>
+                    </li>
+                </ul>
 
-            <!-- Mandatory Terms -->
-            <h2 class="text-lg font-semibold mb-4">Mandatory Terms</h2>
-            <p class="max-h-[350px] border p-3 rounded-md mb-4" rows="3">
-                ĐIỀU KHOẢN THỎA THUẬN SỬ DỤNG DỊCH VỤ DU LỊCH NỘI ĐỊA
+                <!-- Mandatory Terms -->
+                <h2 class="text-lg font-semibold mb-4">Mandatory Terms</h2>
+                <p class="max-h-[350px] border p-3 rounded-md mb-4" rows="3">
+                    ĐIỀU KHOẢN THỎA THUẬN SỬ DỤNG DỊCH VỤ DU LỊCH NỘI ĐỊA
 
-                Quý khách cần đọc những điều khoản dưới đây trước khi đăng ký và trải nghiệm dịch vụ do Vietravel tổ
-                chức. Việc Quý khách tiếp tục sử dụng trang web này xác nhận việc Quý khách đã chấp thuận và tuân thủ
-                những điều khoản dưới đây.
+                    Quý khách cần đọc những điều khoản dưới đây trước khi đăng ký và trải nghiệm dịch vụ do Vietravel tổ
+                    chức. Việc Quý khách tiếp tục sử dụng trang web này xác nhận việc Quý khách đã chấp thuận và tuân
+                    thủ
+                    những điều khoản dưới đây.
 
-                Nội dung dưới đây gồm có 02 phần:
+                    Nội dung dưới đây gồm có 02 phần:
 
-                Phần I: Điều kiện bán vé các chương trình du lịch nội địa
+                    Phần I: Điều kiện bán vé các chương trình du lịch nội địa
 
-                Phần II: Chính sách bảo vệ dữ liệu cá nhân
+                    Phần II: Chính sách bảo vệ dữ liệu cá nhân
 
-                Chi tiết nội dung như sau:
+                    Chi tiết nội dung như sau:
 
-                PHẦN I: ĐIỀU KIỆN BÁN VÉ CÁC CHƯƠNG TRÌNH DU LỊCH NỘI ĐỊA
+                    PHẦN I: ĐIỀU KIỆN BÁN VÉ CÁC CHƯƠNG TRÌNH DU LỊCH NỘI ĐỊA
 
-            </p>
+                </p>
 
-            <label class="flex items-center space-x-2 mt-12">
-                <input type="checkbox" class="w-5 h-5">
-                <span class="text-gray-700 text-sm">I agree to the Personal Data Protection and the above terms</span>
-            </label>
+                <label class="flex items-center space-x-2 mt-12">
+                    <input type="checkbox" (click)="confirmAgreeTerms()" class="w-5 h-5">
+                    <span class="text-gray-700 text-sm">I agree to the Personal Data Protection and the above
+                        terms</span>
+                </label>
 
 
 
-        </div>
-
-        <!-- Right Section: Trip Summary -->
-        <div class="bg-white p-6 rounded-lg shadow h-fit sticky top-32">
-            <h2 class="text-lg font-semibold mb-4">Trip Summary</h2>
-
-            <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
-                Image
             </div>
 
-            <div class="bg-gray-100 p-4 rounded-md mb-4">
-                <p class="font-semibold">📍 Đà Nẵng - Huế - Bà Nà - Hội An</p>
-                <p class="text-gray-500">🎟️ Tour code:</p>
-                <p class="text-gray-500">📍 Departure: <strong>Ho Chi Minh</strong></p>
-                <p class="text-gray-500">⏳ Time: <strong>3D2N</strong></p>
+            <!-- Right Section: Trip Summary -->
+            <div class="bg-white p-6 rounded-lg shadow h-fit sticky top-32">
+                <h2 class="text-lg font-semibold mb-4">Trip Summary</h2>
+
+                <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
+                    <img [src]="tourBookingData?.tourImage?.imageUrl" alt="" class="w-full h-full object-cover" />
+                </div>
+
+                <div class="bg-gray-100 p-4 rounded-md mb-4">
+                    <p class="font-semibold">📍 {{tourBookingData?.name}}</p>
+                    <p class="text-gray-500">🎟️ Depart Date: {{tourBookingData?.tourSchedules?.startDate | date:
+                        'dd/MM/yyyy'}}</p>
+                    <p class="text-gray-500">📍 Departure: <strong>{{tourBookingData?.depart_location?.name}}</strong>
+                    </p>
+                    <p class="text-gray-500">⏳ Time:
+                        <strong>{{tourBookingData?.numberDays}}D{{tourBookingData?.numberNight}}N</strong>
+                    </p>
+                </div>
+                <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Customer</span> <span
+                        class="text-red-600">{{total}}  VND</span></p>
+                <p class="flex justify-between mb-2"><span>🧑 Adult: </span> <span>{{numberAdults}} x
+                        {{tourBookingData?.tourSchedules?.sellingPrice}} VND</span></p>
+                <p class="flex justify-between mb-2">
+                    @if(numberChildren > 0) {
+                    <span>👶 Children:</span> <span>{{numberChildren}} x {{childrenPrice}} VND</span>
+
+                    }
+                </p>
+                <p class="flex justify-between mb-2">
+                    @if(numberSingleRooms > 0) {
+                        <span>📍 Single Room:</span> <span>{{numberSingleRooms}} x
+                            {{tourBookingData?.tourSchedules?.extraHotelCost}} VND</span>
+                    } @else {
+                        <span>📍 Single Room:</span> <span>0 VND</span>
+                    }
+                </p>
+                <hr class="my-4">
+                <input type="text" formControlName="total" class="w-full border p-2 rounded mt-1"
+                    >
+                <p class="font-semibold text-xl flex justify-between"><span>Total amount:</span> <span class="text-red-600">{{total}} VND</span></p>
+                <button [disabled]="!agreeTerms" type="submit" class="w-full bg-red-500 text-white py-3 rounded-lg mt-4">
+                    @if(!agreeTerms) {
+                        Enter information to book tour
+                    } @else { 
+                        Book Tour
+                    }
+                </button>
             </div>
-            <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Customer</span> <span
-                    class="text-red-600">4.760.000 VND</span></p>
-            <p class="flex justify-between mb-2"><span>🧑 Adult: </span> <span>2 x 1.290.000 VND</span></p>
-            <p class="flex justify-between mb-2"><span>👶 Children:</span> <span>2 x 1.090.000 VND</span></p>
-            <p class="flex justify-between mb-2"><span>📍 Single Room:</span> <span>2 x 1.090.000 VND</span></p>
-            <hr class="my-4">
-            <p class="font-semibold text-xl">Total amount: <span class="text-red-600">4.760.000 VND</span></p>
-            <button class="w-full bg-red-500 text-white py-3 rounded-lg mt-4">
-                Enter information to book tour
-            </button>
         </div>
+    </form>
+</div>
+
+
+@if(showWarning) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[10rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-red-500 text-xl mr-2">✖</span>
+        <p class="text-gray-800 text-sm">{{warningMessage}}</p>
     </div>
 </div>
+}
