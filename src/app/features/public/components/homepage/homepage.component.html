@@ -71,20 +71,21 @@
                 <div class="text-sm text-gray-700 space-y-1 mb-2">
                     <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Depart: <span
                             class="text-blue-600 font-medium">{{ tour.depart_location.name }}</span></p>
-                    <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Department Date: <span
-                            class="text-blue-600 font-medium">{{ tour.tourSchedules[0].date | formatDate }}</span></p>
                     <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Duration: {{ tour.numberDays }}D{{
                         tour.numberNight }}N</p>
-                    <p><i class="fas fa-users text-gray-500 mr-1"></i> Remain slots: <span
-                            class="text-red-600 font-bold">{{ tour.numberSeats }}</span></p>
-
+                    <div *ngFor="let tag of tour.tags" class="flex mr-2">
+                        <p><i class="fas fa-clock mr-1 rounded-[30px] bg-green-800/10 px-2 py-0.5 text-xs font-medium
+                            text-green-800">
+                                {{ tag.name }}</i>
+                        </p>
+                    </div>
                 </div>
                 <div class="border-t flex justify-between items-center mt-4 pt-4">
                     <div class="block ml-1">
                         <p class="fas fa-users text-gray-500 mr-1"> Price:
                         </p>
                         <p class="text-red-600 font-bold text-xl">
-                            {{ getTotalPrice(tour.tickets) | currencyVnd }}
+                            {{ tour.priceFrom | currencyVnd }}
                         </p>
                     </div>
                     <button
@@ -202,7 +203,7 @@
         </p>
     </div>
     <!-- Button -->
-    <button
+    <button (click)="openBlogDetail(blog?.id)"
         class="bg-black hover:bg-gray-800 text-white text-base sm:text-lg font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-full shadow mt-4 sm:mt-0">View
         now</button>
 </div>

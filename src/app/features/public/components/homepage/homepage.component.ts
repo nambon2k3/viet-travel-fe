@@ -1,5 +1,5 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FooterComponent } from "../../../../shared/components/footer/footer.component";
 import { HomepageService } from '../../services/homepage.service';
@@ -7,7 +7,6 @@ import { Activity, Blog, Tour, Location } from '../../../../core/models/homepage
 import { shareReplay } from 'rxjs';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
-import { FormatDatePipe } from "../../../../shared/pipes/format-date.pipe";
 import { SsrService } from '../../../../core/services/ssr.service';
 
 @Component({
@@ -17,8 +16,7 @@ import { SsrService } from '../../../../core/services/ssr.service';
     CommonModule,
     FooterComponent,
     CurrencyVndPipe,
-    FormatDatePipe
-],
+  ],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
@@ -62,23 +60,27 @@ export class HomepageComponent {
   }
 
   ngOnInit() {
-
     const document = this.ssrService.getDocument();
     if (document) {
-      const cachedData = localStorage.getItem('homepageData');
-      if (cachedData) {
-        const data = JSON.parse(cachedData);
-        this.trendingTours = data.trendingTours;
-        this.topTourOfYear = data.topTourOfYear;
-        this.blogs = data.newBlogs.slice(0, 3);
-        this.blog = data.newBlogs[data.newBlogs.length - 1];
-        this.activities = data.recommendedActivities;
-        this.locations = data.recommendedLocations;
-      } else {
-        this.fetchHomepageData();
-      } 
-    }
+      const cachedTimestamp = localStorage.getItem('homepageDataTimestamp');
+      const cacheExpiration = 30 * 60 * 1000;
 
+      const cachedData = localStorage.getItem('homepageData');
+      if (cachedData && cachedTimestamp) {
+        const now = new Date().getTime();
+        if (now - parseInt(cachedTimestamp) < cacheExpiration) {
+          const data = JSON.parse(cachedData);
+          this.trendingTours = data.trendingTours;
+          this.topTourOfYear = data.topTourOfYear;
+          this.blogs = data.newBlogs.slice(0, 3);
+          this.blog = data.newBlogs[data.newBlogs.length - 1];
+          this.activities = data.recommendedActivities;
+          this.locations = data.recommendedLocations;
+          return; // Sử dụng cache, không gọi API
+        }
+      }
+      this.fetchHomepageData();
+    }
   }
 
   fetchHomepageData() {
@@ -94,20 +96,19 @@ export class HomepageComponent {
         this.blog = res.data.newBlogs[res.data.newBlogs.length - 1];
         this.activities = res.data.recommendedActivities;
         this.locations = res.data.recommendedLocations;
-        console.log(this.locations);
 
         // Cache the data
-        localStorage.setItem('homepageData', JSON.stringify(res.data));
+        const local = this.ssrService.getLocalStorage();
+        if (local) {
+          localStorage.setItem('homepageData', JSON.stringify(res.data));
+          localStorage.setItem('homepageDataTimestamp', new Date().getTime().toString());
+        }
       },
       error: (err) => {
         console.error('Fetching homepage data:', err);
       }
     });
   }
-
-  getTotalPrice(tickets: any[]): number {
-    return tickets.reduce((total, ticket) => total + ticket.price, 0);
-  }  
 
   openBlogDetail(blogid: number | undefined) {
     if (blogid) {
@@ -116,5 +117,5 @@ export class HomepageComponent {
       console.error('Invalid blog id');
     }
   }
-  
+
 }
