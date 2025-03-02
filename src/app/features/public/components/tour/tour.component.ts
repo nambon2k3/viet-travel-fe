@@ -7,6 +7,7 @@ import { TourService } from '../../services/tour.service/tour.service';
 import { Tour } from '../../../../core/models/public-tour.model';
 import { FooterComponent } from "../../../../shared/components/footer/footer.component";
 import { shareReplay } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tour',
@@ -40,7 +41,7 @@ export class TourComponent implements OnInit {
   tourData$;
 
   constructor(
-    private tourService: TourService, private ssrService: SsrService,
+    private tourService: TourService, private ssrService: SsrService, private router: Router
   ) {
     this.tourData$ = this.tourService.getTours(
       this.currentPage,
@@ -139,6 +140,10 @@ export class TourComponent implements OnInit {
     if (!isNaN(value)) {
       this.changeTourDuration(value);
     }
+  }
+
+  viewDetails(tourId: number): void {
+    this.router.navigate(['/tour-details', tourId]);
   }
 
   onDateChange(event: Event): void {

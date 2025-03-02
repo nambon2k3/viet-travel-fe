@@ -43,7 +43,7 @@ export class TourDetailComponent {
 
 
   ngOnInit(): void {
-    const tourId = 1
+    const tourId = Number(this.router.url.split('/').pop());
     if (tourId) {
       this.tourDetailService.getTourDetails(tourId).subscribe({
         next: (response) => {
