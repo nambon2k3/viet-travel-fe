@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: az-agent
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
