@@ -3,47 +3,40 @@
     <form>
         <div class="mb-4">
             <label for="image" class="block">Image</label>
-            <div class="flex items-center">
-                <input id="image" type="file" accept="image/*" class="input mr-2" (change)="onFileChange($event)" />
-                <img *ngIf="imageUrl" [src]="imageUrl" alt="Image Preview" class="w-16 h-16 border" />
+            <img *ngIf="imageUrl" [src]="imageUrl" alt="Image Preview" class="w-16 h-16 border mb-2" />
+            <div class="flex items-center mb-2">
+                <input id="image" type="file" accept="image/*" class="input" (change)="onFileChange($event)" />
             </div>
         </div>
 
         <div class="mb-4 flex">
             <div class="flex-1 mr-2">
                 <label for="name" class="block">Name</label>
-                <input id="name" type="text" placeholder="Enter Name (e.g., Salute Premium Hotel & Spa)" class="input" />
-            </div>
-            <div class="flex-1 ml-2">
-                <label for="abbreviation" class="block">Abbreviation</label>
-                <input id="abbreviation" type="text" placeholder="Enter Abbreviation (e.g., Salute)" class="input" />
+                <input id="name" type="text" placeholder="Enter Name (e.g., Salute Premium Hotel & Spa)"
+                    class="input" />
             </div>
         </div>
 
         <div class="mb-4 flex">
             <div class="flex-1 mr-2">
-                <label for="email" class="block">Email</label>
-                <input id="email" type="email" placeholder="Enter e-mail" class="input" />
+                <label for="startDate" class="block">Start Date</label>
+                <input id="startDate" type="date" class="input" />
             </div>
             <div class="flex-1 ml-2">
-                <label for="phone" class="block">Phone</label>
-                <input id="phone" type="tel" placeholder="Enter Phone Number" class="input" />
+                <label for="endDate" class="block">End Date</label>
+                <input id="endDate" type="date" class="input" />
             </div>
         </div>
 
         <div class="mb-4">
-            <label for="website" class="block">Website</label>
-            <input id="website" type="url" placeholder="Enter your website link..." class="input" />
+            <label for="price" class="block">Price</label>
+            <input id="price" type="text" placeholder="Enter Price" class="input" />
         </div>
 
-        <div class="mb-4">
-            <label for="address" class="block">Address</label>
-            <input id="address" type="text" placeholder="Enter address" class="input" />
-        </div>
-
-        <div class="flex justify-end mt-4">
-            <button type="button" (click)="onCancel()" class="bg-gray-300 text-black px-4 py-2 rounded-md">Cancel</button>
-            <button type="submit" class="bg-black text-white px-4 py-2 rounded-md ml-2">Add Service</button>
+        <div class="flex justify-end mt-4 space-x-2">
+            <button type="button" (click)="onCancel()"
+                class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+            <button type="submit" class="px-4 py-2 text-white bg-green-700 rounded-md hover:bg-green-700">Add Service</button>
         </div>
     </form>
 </div>

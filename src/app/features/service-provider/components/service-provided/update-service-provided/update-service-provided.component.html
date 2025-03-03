@@ -1,62 +1,42 @@
 <div class="container mx-auto p-4">
     <h2 class="text-2xl font-bold mb-4">Update Service</h2>
-
-    <form [formGroup]="editServiceProvidedForm" (ngSubmit)="onSubmit()">
-        <!-- Image Upload Section -->
+    <form>
         <div class="mb-4">
             <label for="image" class="block">Image</label>
-            <div class="flex items-center">
-                <!-- Hiển thị ảnh cũ từ database -->
-                <img *ngIf="imagePreview" [src]="imagePreview" alt="Service Image" class="w-16 h-16 border mr-2" />
-
-                <!-- Input chọn ảnh mới -->
+            <img *ngIf="imageUrl" [src]="imageUrl" alt="Image Preview" class="w-16 h-16 border mb-2" />
+            <div class="flex items-center mb-2">
                 <input id="image" type="file" accept="image/*" class="input" (change)="onFileChange($event)" />
-
-                <!-- Hiển thị ảnh mới nếu người dùng chọn -->
-                <img *ngIf="imageUrl" [src]="imageUrl" alt="New Image Preview" class="w-16 h-16 border ml-2" />
             </div>
         </div>
 
-        <!-- Service Name & Abbreviation -->
         <div class="mb-4 flex">
             <div class="flex-1 mr-2">
                 <label for="name" class="block">Name</label>
-                <input id="name" type="text" formControlName="name" class="input" placeholder="Enter Name" />
-            </div>
-            <div class="flex-1 ml-2">
-                <label for="abbreviation" class="block">Abbreviation</label>
-                <input id="abbreviation" type="text" formControlName="abbreviation" class="input" placeholder="Enter Abbreviation" />
+                <input id="name" type="text" placeholder="Update Name (e.g., Salute Premium Hotel & Spa)"
+                    class="input" />
             </div>
         </div>
 
-        <!-- Email & Phone -->
         <div class="mb-4 flex">
             <div class="flex-1 mr-2">
-                <label for="email" class="block">Email</label>
-                <input id="email" type="email" formControlName="email" class="input" placeholder="Enter Email" />
+                <label for="startDate" class="block">Start Date</label>
+                <input id="startDate" type="date" class="input" />
             </div>
             <div class="flex-1 ml-2">
-                <label for="phone" class="block">Phone</label>
-                <input id="phone" type="tel" formControlName="phone" class="input" placeholder="Enter Phone Number" />
+                <label for="endDate" class="block">End Date</label>
+                <input id="endDate" type="date" class="input" />
             </div>
         </div>
 
-        <!-- Website -->
         <div class="mb-4">
-            <label for="website" class="block">Website</label>
-            <input id="website" type="url" formControlName="website" class="input" placeholder="Enter Website URL" />
+            <label for="price" class="block">Price</label>
+            <input id="price" type="text" placeholder="Enter Price" class="input" />
         </div>
 
-        <!-- Address -->
-        <div class="mb-4">
-            <label for="address" class="block">Address</label>
-            <input id="address" type="text" formControlName="address" class="input" placeholder="Enter Address" />
-        </div>
-
-        <!-- Buttons -->
-        <div class="flex justify-end mt-4">
-            <button type="button" (click)="onCancel()" class="bg-gray-300 text-black px-4 py-2 rounded-md">Cancel</button>
-            <button type="submit" class="bg-black text-white px-4 py-2 rounded-md ml-2">Update Service</button>
+        <div class="flex justify-end mt-4 space-x-2">
+            <button type="button" (click)="onCancel()"
+                class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+            <button type="submit" class="px-4 py-2 text-white bg-green-700 rounded-md hover:bg-green-700">Update Service</button>
         </div>
     </form>
 </div>

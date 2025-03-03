@@ -1,0 +1,75 @@
+<!-- request-detail.component.html -->
+<div class="container mx-auto p-4">
+    <!-- User Info -->
+    <div class="flex items-center space-x-4 mb-4">
+      <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
+        <span class="text-gray-600 text-lg font-semibold">LT</span>
+      </div>
+      <div>
+        <p class="text-lg font-semibold">Lan Than</p>
+        <p class="text-sm text-gray-500">01/04/2025 12:21:45</p>
+      </div>
+    </div>
+    
+    <!-- Service Mail -->
+    <div class="bg-gray-100 p-4 rounded-md mb-6">
+      <p class="text-gray-600 font-medium">Service Mail:</p>
+      <p class="text-gray-500 text-sm">This is an mail from Operator</p>
+    </div>
+    
+    <!-- Request Service Details -->
+    <div class="mb-6">
+      <p class="text-lg font-semibold">List Request Service</p>
+      <p class="text-sm text-gray-500">ID: 123 &nbsp;&nbsp; Booking ID: 234</p>
+      <p class="text-lg font-bold">Tour Đà Nẵng - Hội An 4D3N</p>
+      <p class="text-sm text-gray-500">Private Tour</p>
+      <p class="text-sm text-gray-500">Start Date: 02/02/2025</p>
+      <p class="text-sm text-gray-500 mb-4">End Date: 06/02/2025</p>
+    </div>
+    
+    <!-- Table -->
+    <div class="bg-gray-100 p-4 rounded-md mb-6">
+      <table class="w-full text-left text-sm">
+        <thead>
+          <tr class="border-b">
+            <th class="p-2">Order</th>
+            <th class="p-2">Request Content</th>
+            <th class="p-2">Unit Price</th>
+            <th class="p-2">Quantity</th>
+            <th class="p-2">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b">
+            <td class="p-2">1</td>
+            <td class="p-2">Deluxe Room</td>
+            <td class="p-2">5.000.000</td>
+            <td class="p-2">2</td>
+            <td class="p-2">10.000.000</td>
+          </tr>
+          <tr>
+            <td class="p-2">2</td>
+            <td class="p-2">Birthday Organization</td>
+            <td class="p-2">2.000.000</td>
+            <td class="p-2">1</td>
+            <td class="p-2">2.000.000</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-right font-semibold text-lg mt-2">Total Price: 12.000.000</div>
+    </div>
+    
+    <!-- Reason -->
+    <div class="mb-6">
+      <label class="block font-medium mb-2">Reason</label>
+      <textarea class="w-full p-3 border rounded-md" placeholder="Customer will..."></textarea>
+    </div>
+    
+    <!-- Buttons -->
+    <div class="flex justify-end mt-4 space-x-2">
+        <button (click)="onCancel()" class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300">Cancel</button>
+        <button class="px-4 py-2 text-white bg-red-700 rounded-md hover:bg-red-700">Reject</button>
+        <button class="px-4 py-2 text-white bg-green-700 rounded-md hover:bg-green-700">Approve</button>
+    </div>
+  </div>
+  

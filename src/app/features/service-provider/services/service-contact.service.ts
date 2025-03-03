@@ -30,7 +30,7 @@ export class ServiceContactService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${environment.apiUrl}service-provider/service-contacts`, { params });
+        return this.http.get(`${environment.apiUrl}service-provider/service-contacts/list`, { params });
     }
 
     updateServiceContactStatus(id: number, isDeleted: boolean): Observable<any> {

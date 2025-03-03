@@ -6,6 +6,8 @@ import { AddServiceContactComponent } from "./components/service-contact/add-ser
 import { UpdateServiceContactComponent } from "./components/service-contact/update-service-contact/update-service-contact.component";
 import { AddServiceProvidedComponent } from "./components/service-provided/add-service-provided/add-service-provided.component";
 import { UpdateServiceProvidedComponent } from "./components/service-provided/update-service-provided/update-service-provided.component";
+import { ServiceRequestComponent } from "./components/service-request/service-request.component";
+import { RequestDetailComponent } from "./components/service-request/request-detail/request-detail.component";
 
 
 export const SERVICE_PROVIDER_ROUTES: Route[] = [
@@ -20,6 +22,14 @@ export const SERVICE_PROVIDER_ROUTES: Route[] = [
       {
         path: 'services',
         component: ServiceProvidedComponent,
+      },
+      {
+        path: 'service-request',
+        component: ServiceRequestComponent,
+      },
+      {
+        path: 'request-detail',
+        component: RequestDetailComponent,
       },
       {
         path: 'add-service-contact',
