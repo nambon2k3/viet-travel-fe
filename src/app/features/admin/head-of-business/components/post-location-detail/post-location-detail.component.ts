@@ -58,7 +58,6 @@ export class PostLocationDetailComponent {
     });
   }
 
-
   loadLocationById(id: string): void {
     this.locationService.getLocationById(id).subscribe({
       next: (response: any) => {
@@ -79,14 +78,13 @@ export class PostLocationDetailComponent {
           if (this.location.image !== "image_url_here") {
             this.imagePreview = this.location.image;
           }
-
         } else {
-          this.errorMessage = response?.message || 'An error occurred while loading location.';
+          this.errorMessage = response?.message || 'Đã xảy ra lỗi khi tải địa điểm.';
         }
       },
       error: (err) => {
-        console.error('Failed to load location:', err);
-        this.errorMessage = 'An error occurred while loading location.';
+        console.error('Không thể tải địa điểm:', err);
+        this.errorMessage = 'Đã xảy ra lỗi khi tải địa điểm.';
       }
     });
   }
@@ -116,7 +114,6 @@ export class PostLocationDetailComponent {
     });
   }
 
-
   onCancel(): void {
     this.router.navigate(['/head-business/locations']);
   }
@@ -128,20 +125,20 @@ export class PostLocationDetailComponent {
       this.createLocation();
     }
   }
-  
+
   updateLocation(): void {
     if (!this.selectedFile && !this.imagePreview) {
       this.editLocationForm.get('image')?.setValue(null);
     } else if (this.imagePreview) {
       this.editLocationForm.get('image')?.setValue(this.imagePreview);
     }
-    
+
     const formData = this.editLocationForm.getRawValue();
-  
+
     this.locationService.updateLocation(formData)
       .pipe(
         catchError((error) => {
-          const apiError = error?.error?.message || 'An error occurred while updating location.';
+          const apiError = error?.error?.message || 'Đã xảy ra lỗi khi cập nhật địa điểm.';
           this.errorMessage = apiError;
           this.successMessage = null;
           return of(null);
@@ -149,28 +146,28 @@ export class PostLocationDetailComponent {
       )
       .subscribe((response: any) => {
         if (response?.code === 200) {
-          this.successMessage = response?.message;
+          this.successMessage = response?.message || 'Đã cập nhật địa điểm thành công.';
           this.errorMessage = null;
         } else {
-          this.errorMessage = response?.message || 'An error occurred while updating location.';
+          this.errorMessage = response?.message || 'Đã xảy ra lỗi khi cập nhật địa điểm.';
           this.successMessage = null;
         }
       });
   }
-  
+
   createLocation(): void {
     if (!this.selectedFile && !this.imagePreview) {
       this.editLocationForm.get('image')?.setValue(null);
     } else if (this.imagePreview) {
       this.editLocationForm.get('image')?.setValue(this.imagePreview);
     }
-  
+
     const formData = this.editLocationForm.getRawValue();
-  
+
     this.locationService.createLocation(formData)
       .pipe(
         catchError((error) => {
-          const apiError = error?.error?.message || 'An error occurred while creating location.';
+          const apiError = error?.error?.message || 'Đã xảy ra lỗi khi tạo địa điểm.';
           this.errorMessage = apiError;
           this.successMessage = null;
           return of(null);
@@ -178,11 +175,11 @@ export class PostLocationDetailComponent {
       )
       .subscribe((response: any) => {
         if (response?.code === 200) {
-          this.successMessage = response?.message;
+          this.successMessage = response?.message || 'Đã tạo địa điểm thành công.';
           this.errorMessage = null;
           this.router.navigate(['/head-business/locations']);
         } else {
-          this.errorMessage = response?.message || 'An error occurred while creating location.';
+          this.errorMessage = response?.message || 'Đã xảy ra lỗi khi tạo địa điểm.';
           this.successMessage = null;
         }
       });

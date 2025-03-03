@@ -1,15 +1,15 @@
 <div class="mb-2 flex justify-between">
     <div class="inline-block">
-        <h3 class="text-foreground font-semibold">Content Marketing</h3>
+        <h3 class="text-foreground font-semibold">Quản trị viên hệ thống</h3>
         <div class="text-muted-foreground space-x-1 text-xs font-medium">
-            <a href="" class="hover:text-primary">All Staffs:</a>
+            <a href="" class="hover:text-primary">Tất cả nhân viên:</a>
             <span class="text-foreground">{{ totalItems}}</span>
         </div>
     </div>
     <div class="inline-block space-x-4">
         <button class="bg-green-800 text-white text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold"
             (click)="openPostStaffDetail()">
-            Add Staff
+            Thêm nhân viên
         </button>
     </div>
 </div>
@@ -17,9 +17,8 @@
 <app-spinner [isLoading]="isLoading"></app-spinner>
 
 <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2">
-    <app-table-action [totalItems]="totalItems" 
-    [size]="size" 
-    (searchFilters)="onSearch($event)">"></app-table-action>
+    <app-table-action [totalItems]="totalItems" [size]="size" (searchFilters)="onSearch($event)">
+    </app-table-action>
     <div
         class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
         <table
@@ -35,7 +34,7 @@
                 <ng-template #noStaffs>
                     <tr>
                         <td class="py-4 text-center text-sm" colspan="7">
-                            No staffs found
+                            Không tìm thấy nhân viên
                         </td>
                     </tr>
                 </ng-template>

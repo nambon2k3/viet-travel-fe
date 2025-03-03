@@ -2,15 +2,15 @@
     <table class="w-full border-collapse border border-gray-300">
         <thead class="bg-gray-200">
             <tr>
-                <th class="border border-gray-300 text-green-700 p-2">No</th>
-                <th class="border border-gray-300 p-2">Customer</th>
-                <th class="border border-gray-300 p-2">Slot</th>
-                <th class="border border-gray-300 p-2">From</th>
-                <th class="border border-gray-300 p-2">Payment</th>
-                <th class="border border-gray-300 p-2">Create Date</th>
-                <th class="border border-gray-300 p-2">Status</th>
-                <th class="border border-gray-300 p-2">Salesman</th>
-                <th class="border border-gray-300 p-2">Actions</th>
+                <th class="border border-gray-300 text-green-700 p-2">STT</th>
+                <th class="border border-gray-300 p-2">Khách hàng</th>
+                <th class="border border-gray-300 p-2">Số chỗ</th>
+                <th class="border border-gray-300 p-2">Tạo bởi</th>
+                <th class="border border-gray-300 p-2">Thanh toán</th>
+                <th class="border border-gray-300 p-2">Ngày tạo</th>
+                <th class="border border-gray-300 p-2">Trạng thái</th>
+                <th class="border border-gray-300 p-2">Nhân viên</th>
+                <th class="border border-gray-300 p-2">Thao tác</th>
             </tr>
         </thead>
         <tbody>
@@ -18,29 +18,28 @@
                 <td class="border border-gray-300 p-2 text-center">{{ booking.id }}</td>
                 <td class="border border-gray-300 p-2">{{ booking.customer }}</td>
                 <td class="border border-gray-300 p-2">
-                    Total: {{ booking.slot.total }} slots<br>
-                    Adult: {{ booking.slot.adult }} slots<br>
-                    Child: {{ booking.slot.child }} slots
+                    Tổng: {{ booking.slot.total }} chỗ<br>
+                    Người lớn: {{ booking.slot.adult }} chỗ<br>
+                    Trẻ em: {{ booking.slot.child }} chỗ
                 </td>
                 <td class="border border-gray-300 p-2">{{ booking.from }}</td>
                 <td class="border border-gray-300 p-2">
-                    <span class="text-gray-700">Total: </span>
+                    <span class="text-gray-700">Tổng: </span>
                     <span class="text-green-600 font-bold">{{ booking.payment.total | currencyVnd }}</span><br>
-                  
-                    <span class="text-gray-700">Received: </span>
+
+                    <span class="text-gray-700">Đã nhận: </span>
                     <span class="text-green-500 font-bold">{{ booking.payment.received | currencyVnd }}</span><br>
-                  
-                    <span class="text-gray-700">Remain: </span>
+
+                    <span class="text-gray-700">Còn lại: </span>
                     <span [ngClass]="booking.payment.remain > 0 ? 'text-red-500 font-bold' : 'text-green-500'">
-                      {{ booking.payment.remain | currencyVnd }}
+                        {{ booking.payment.remain | currencyVnd }}
                     </span><br>
-                  
-                    <span class="text-gray-700">Guide collect: </span>
+
+                    <span class="text-gray-700">HDV thu: </span>
                     <span [ngClass]="booking.payment.guideCollect > 0 ? 'text-red-500 font-bold' : 'text-green-500'">
-                      {{ booking.payment.guideCollect | currencyVnd }}
+                        {{ booking.payment.guideCollect | currencyVnd }}
                     </span>
-                  </td>
-                  
+                </td>
                 <td class="border border-gray-300 p-2">{{ booking.createDate }}</td>
                 <td class="border border-gray-300 p-2">{{ booking.status }}</td>
                 <td class="border border-gray-300 p-2">{{ booking.salesman || 'N/A' }}</td>

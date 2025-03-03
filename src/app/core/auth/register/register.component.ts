@@ -112,6 +112,10 @@ export class RegisterComponent implements OnInit {
             this.fullNameCriteria.pattern = /^[a-zA-Z ]*$/.test(value);
         });
 
+        this.signupForm.get('gender')?.valueChanges.subscribe((value) => {
+            this.gendersCriteria.validFormat = value === 'MALE' || value === 'FEMALE';
+        });
+
         // Address validation criteria
         this.signupForm.get('address')?.valueChanges.subscribe((value) => {
             this.addressCriteria.validFormat = /^[a-zA-Z0-9 ]*$/.test(value);
@@ -187,5 +191,5 @@ export class RegisterComponent implements OnInit {
                 }
             });
     }
-    
+
 }

@@ -37,7 +37,7 @@ export class BlogDetailComponent {
   dropdownSettings: IDropdownSettings = {};
   selectedItems: any = [];
 
-  isLoading: boolean = true;
+  isLoading: boolean = false;
 
 
   constructor(private blogService: BlogService,

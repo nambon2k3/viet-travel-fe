@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-tour-operation-layout',
@@ -10,5 +10,11 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './tour-operation-layout.component.css'
 })
 export class TourOperationLayoutComponent {
+  constructor(
+    private router : Router
+  ) { }
 
+  backToList() {
+    this.router.navigate(['/operator/view-list-tour']);
+  }
 }

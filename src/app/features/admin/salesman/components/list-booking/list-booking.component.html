@@ -2,19 +2,19 @@
 
 
     <div class="inline-block">
-      <h3 class="text-foreground font-semibold">SalesMan</h3>
+      <h3 class="text-foreground font-semibold">Nhân viên bán hàng</h3>
       <div class="text-muted-foreground space-x-1 text-xs font-medium">
-        <a href="" class="hover:text-primary">All Booking:</a>
+        <a href="" class="hover:text-primary">Tất cả đặt chỗ:</a>
         <span class="text-foreground">{{ totalItems }}</span>
       </div>
     </div>
     <app-spinner [isLoading]="isLoading"></app-spinner>
   
     <div class="inline-block space-x-4">
-      <button
+      <button (click)="addBooking()"
         class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
         >
-        Add Booking
+        Tạo đặt chỗ
       </button>
     </div>
   </div>
