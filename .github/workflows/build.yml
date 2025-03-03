@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: az-agent
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,6 +23,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # Cache npm dependencies
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Install, build and lint project
         run: |

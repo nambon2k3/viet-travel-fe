@@ -18,18 +18,18 @@ concurrency:
 
 jobs:
   cleanup:
-    runs-on: self-hosted
+    runs-on: az-agent
     steps:
       - name: Clean up temporary files
         run: |
           echo "Started cleaning up temporary files..."
-          sudo rm -rf /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/dist/*
+          sudo rm -rf /home/g79/runner-fe/az-runner/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe/dist/*
 
   build-n-deploy:
-    runs-on: self-hosted
+    runs-on: az-agent
     needs: cleanup
     env:
-      BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/dist
+      BUILD_FOLDER: /home/g79/runner-fe/az-runner/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe/dist
       DEPLOY_PATH: /var/www/viet-travel-fe
     steps:
       - name: Checkout branch
@@ -41,9 +41,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+
+      # Cache npm dependencies
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
           
       - name: Install dependencies
-        run: npm install
+        run:  |
+          export NODE_OPTIONS=--max-old-space-size=4096
+          npm install
 
       - name: Build the project
         run: |

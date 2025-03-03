@@ -35,7 +35,7 @@ export const PUBLIC_ROUTES: Route[] = [
         component: TourComponent,
       },
       {
-        path: 'tour-detail',
+        path: 'tour-details/:id',
         component: TourDetailComponent,
       },
       {
