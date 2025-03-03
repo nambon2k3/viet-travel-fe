@@ -24,6 +24,15 @@ jobs:
         with:
           node-version: '20'
 
+      # Cache npm dependencies
+      - name: Cache npm modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install, build and lint project
         run: |
           export NODE_OPTIONS=--max-old-space-size=4096
