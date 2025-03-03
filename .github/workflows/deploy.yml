@@ -23,13 +23,13 @@ jobs:
       - name: Clean up temporary files
         run: |
           echo "Started cleaning up temporary files..."
-          sudo rm -rf /home/g79/actions-runner/viet-travel/viet-travel-fe/dist/*
+          sudo rm -rf /home/g79/runner-fe/viet-travel/viet-travel-fe/dist/*
 
   build-n-deploy:
     runs-on: self-hosted
     needs: cleanup
     env:
-      BUILD_FOLDER: /home/g79/actions-runner/viet-travel/viet-travel-fe/dist
+      BUILD_FOLDER: /home/g79/runner-fe/viet-travel/viet-travel-fe/dist
       DEPLOY_PATH: /var/www/viet-travel-fe
     steps:
       - name: Checkout branch
