@@ -23,13 +23,13 @@ jobs:
       - name: Clean up temporary files
         run: |
           echo "Started cleaning up temporary files..."
-          sudo rm -rf /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/dist/*
+          sudo rm -rf /home/g79/actions-runner/viet-travel/viet-travel-fe/dist/*
 
   build-n-deploy:
     runs-on: self-hosted
     needs: cleanup
     env:
-      BUILD_FOLDER: /home/ubuntu/actions-runner/viet-travel/viet-travel-fe/dist
+      BUILD_FOLDER: /home/g79/actions-runner/viet-travel/viet-travel-fe/dist
       DEPLOY_PATH: /var/www/viet-travel-fe
     steps:
       - name: Checkout branch
@@ -46,10 +46,13 @@ jobs:
       - name: Cache npm modules
         uses: actions/cache@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: |
+            ~/.npm
+            **/node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-npm-
+            ${{ runner.os }}-
           
       - name: Install dependencies
         run:  |
