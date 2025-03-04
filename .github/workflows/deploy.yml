@@ -23,7 +23,7 @@ jobs:
       - name: Clean up temporary files
         run: |
           echo "Started cleaning up temporary files..."
-          sudo rm -rf /home/g79/runner-fe/az-runner/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe/dist/*
+          rm -rf /home/g79/runner-fe/az-runner/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe/dist/*
 
   build-n-deploy:
     runs-on: az-agent
@@ -70,8 +70,10 @@ jobs:
       - name: Deploy to server
         run: |
           echo "Deploying files..."
-          sudo mkdir -p $DEPLOY_PATH
-          sudo cp -r $BUILD_FOLDER/* $DEPLOY_PATH
+          # sudo mkdir -p $DEPLOY_PATH
+          # sudo cp -r $BUILD_FOLDER/* $DEPLOY_PATH
+          mkdir -p $DEPLOY_PATH
+          cp -r $BUILD_FOLDER/* $DEPLOY_PATH
           echo "Deployment completed."
 
       - name: Verify deployment
