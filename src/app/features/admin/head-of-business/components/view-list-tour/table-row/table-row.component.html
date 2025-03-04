@@ -1,0 +1,54 @@
+<ng-container>
+  <td>{{ tour.id }}</td>
+
+  <td>
+    {{ tour.tourName }}
+  </td>
+
+  <td>
+    {{ tour.authorName }}
+  </td>
+
+  <td>
+    {{ tour.duration }}N{{ tour.duration }}Đ
+  </td>
+
+  <td>
+    {{ tour.slot }}
+  </td>
+
+  <td>
+    {{ tour.price }}
+  </td>
+
+  <td>
+    @if (tour.deleted) {
+    <button type="button"
+      class="rounded-[30px] bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-800 inline-block mt-1"
+      >
+      Đã đóng
+    </button>
+    } @else {
+    <button type="button"
+      class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1"
+      >
+      Mở
+    </button>
+    }
+  </td>
+
+  <td>
+    <div class="text-center flex justify-start items-center">
+      <button type="button"
+        class="text-white w-24 bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        (click)="openDetail(tour)">
+        Chi tiết
+      </button>
+      <button type="button"
+        class="text-white w-24 bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+        >
+        Mở bán
+      </button>
+    </div>
+  </td>
+</ng-container>

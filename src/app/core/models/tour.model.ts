@@ -9,3 +9,14 @@ export interface Tour {
   status: string;
   TourGuide: User;
 }
+
+export interface TourHOB {
+  id: number;
+  tourName: string;
+  authorName: string;
+  duration: number;
+  slot: number;
+  price: number;
+  status: string;
+  deleted: boolean;
+}

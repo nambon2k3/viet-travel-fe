@@ -2,6 +2,7 @@ import { Route } from "@angular/router";
 import { LayoutComponent } from "../layout/layout.component";
 import { ListLocationComponent } from "./components/list-location/list-location.component";
 import { PostLocationDetailComponent } from "./components/post-location-detail/post-location-detail.component";
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
 import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
@@ -12,6 +13,10 @@ import { TourDetailsComponent } from "./components/tour-details/tour-details.com
 import { TourPaxComponent } from "./components/tour-details/tour-pax/tour-pax.component";
 import { UpdateTourDayComponent } from "./components/tour-details/update-tour-day/update-tour-day.component";
 >>>>>>> Stashed changes
+=======
+import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
+import { AddTourComponent } from "./components/add-tour/add-tour.component";
+>>>>>>> iter1
 
 export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
   {
@@ -31,8 +36,11 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
         path: 'location-details',
         component: PostLocationDetailComponent,
       },
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
+=======
+>>>>>>> iter1
       {
         path: 'list-tour',
         component: ViewListTourComponent,
@@ -41,6 +49,7 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
         path: 'add-tour',
         component: AddTourComponent,
       },
+<<<<<<< HEAD
       {
         path: '',
         component: TourDetailsLayoutComponent,
@@ -53,6 +62,8 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
         ],
       },
 >>>>>>> Stashed changes
+=======
+>>>>>>> iter1
     ]
   },
 ];
