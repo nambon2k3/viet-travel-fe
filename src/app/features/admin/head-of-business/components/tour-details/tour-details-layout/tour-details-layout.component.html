@@ -1,0 +1,17 @@
+<div class="container mx-auto p-4">
+    <div class="flex mb-4">
+        <button [routerLink]="['/head-business/tour-details']" routerLinkActive="bg-gray-700 text-white"
+            class="px-4 py-2 bg-gray-200 rounded-l hover:bg-gray-300">
+            Details
+        </button>
+        <button [routerLink]="['/head-business/tour-day']" routerLinkActive="bg-gray-700 text-white"
+            class="px-4 py-2 bg-gray-200 hover:bg-gray-300">
+            Tour Day
+        </button>
+        <button [routerLink]="['/head-business/pax']" routerLinkActive="bg-gray-700 text-white"
+            class="px-4 py-2 bg-gray-200 rounded-r hover:bg-gray-300">
+            Pax
+        </button>
+    </div>
+    <router-outlet></router-outlet>
+</div>
