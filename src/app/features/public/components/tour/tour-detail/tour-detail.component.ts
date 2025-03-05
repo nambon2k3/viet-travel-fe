@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, ViewportScroller } from '@angular/common';
 import { TourDetail, TourSchedule } from '../../../../../core/models/tour-detail.model';
 import { TourDetailService } from '../../../services/tour-detail.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -38,7 +38,8 @@ export class TourDetailComponent {
     private tourDetailService: TourDetailService,
     private router: Router,
     private datePipe: DatePipe,
-    private bookingInforService: BookingInfoService
+    private bookingInforService: BookingInfoService,
+    private viewportScroller: ViewportScroller
   ) { }
 
 
@@ -147,8 +148,12 @@ export class TourDetailComponent {
     console.log('Setting tour data:', this.tourDetails?.id, this.selectedSchedule?.scheduleId);
 
     if (this.tourDetails && this.selectedSchedule) {
-      this.bookingInforService.setTourData(this.tourDetails.id, this.selectedSchedule.scheduleId);
-      this.router.navigate(['/tour-booking']); // Navigate without putting IDs in the URL
+      this.bookingInforService.setTourDetails(this.tourDetails)
+      this.bookingInforService.setTourSchedule(this.selectedSchedule)
+      this.router.navigate(['/tour-booking']).then(() => {
+        // Scroll to the top after navigation completes
+        this.viewportScroller.scrollToPosition([0, 0]);
+      }); // Navigate without putting IDs in the URL
     }
   }
 

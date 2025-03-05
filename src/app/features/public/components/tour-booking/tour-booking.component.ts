@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BookingInfoService } from '../../services/booking-infor.service';
-import { TourBookingData } from '../../../../core/models/tour-detail.model';
+import { TourBookingData, TourDetail, TourSchedule } from '../../../../core/models/tour-detail.model';
 import { CommonModule, DatePipe } from '@angular/common';
 import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tour-booking',
@@ -12,12 +13,11 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
   styleUrl: './tour-booking.component.css',
   providers: [DatePipe]
 })
-export class TourBookingComponent {
+export class TourBookingComponent implements OnInit{
 
 
-  tourId: number | undefined = 0;
-  scheduleId: number | undefined = 0;
-  tourBookingData: TourBookingData | undefined;
+  tourDetails?: TourDetail;
+  tourSchedule?:TourSchedule;
   userInformation: any;
   bookingForm: FormGroup;
 
@@ -29,12 +29,16 @@ export class TourBookingComponent {
 
   numberSingleRooms: number = 1;
 
-  availableSeats: number | undefined = 0;
+  isLoading: boolean = true;
+
+
+
 
   constructor(
     private bookingInforService: BookingInfoService,
     private fb: FormBuilder,
     private userStorageService: UserStorageService,
+    private router: Router
   ) {
 
     this.bookingForm = this.fb.group({
@@ -65,7 +69,6 @@ export class TourBookingComponent {
 
 
   total: number = 0;
-  extraCost: number | undefined = 0;
 
   warningMessage: string = '';
 
@@ -73,16 +76,13 @@ export class TourBookingComponent {
     const adultsArray = this.adultsFormArray;
     const childrenArray = this.childrenFormArray;
 
-    const adultPrice = this.tourBookingData?.tourSchedules?.sellingPrice;
+    const adultPrice = this.tourSchedule?.sellingPrice;
     const childrenPrice = this.childrenPrice;
 
     const adultTotal = adultsArray.controls.length * adultPrice!;
     const childrenTotal = childrenArray.controls.length * childrenPrice;
 
-
-    console.log(childrenArray.length)
-
-    const extra = this.numberSingleRooms * this.extraCost!;
+    const extra = this.numberSingleRooms * this.tourSchedule?.extraHotelCost!;
 
     this.total = adultTotal + childrenTotal + extra;
 
@@ -155,26 +155,27 @@ export class TourBookingComponent {
   }
 
   ngOnInit(): void {
-    const data = this.bookingInforService.getTourData();
-    this.tourId = 1
-    this.scheduleId = 1;
 
-    console.log('Tour ID:', this.tourId, 'Schedule ID:', this.scheduleId);
+    this.tourDetails = this.bookingInforService.getTourDetails();
+    this.tourSchedule = this.bookingInforService.getTourSchedule();
 
 
-    this.getTourBookingData();
+    this.calculateTotal();
 
     this.getUserData();
 
+
+    console.log(this.tourSchedule?.extraHotelCost)
 
 
   }
 
   getUserData() {
     const cookie = this.userStorageService.getUser();
-    console.log(cookie)
+    
     this.bookingInforService.getUserInformation(cookie.userId).subscribe({
       next: (response) => {
+        this.isLoading = false
         this.userInformation = response.data;
         this.bookingForm.patchValue({
           userId: cookie.userId,
@@ -188,26 +189,11 @@ export class TourBookingComponent {
   }
 
 
-  getTourBookingData() {
-    this.bookingInforService.getTourDetails(this.tourId!, this.scheduleId!).subscribe({
-      next: (response) => {
-        this.tourBookingData = response.data;
-        this.availableSeats = this.tourBookingData?.tourSchedules!.availableSeats;
-        this.childrenPrice = this.tourBookingData?.tourSchedules!.sellingPrice! * 0.75;
-        this.extraCost = this.tourBookingData?.tourSchedules.extraHotelCost;
-        this.bookingForm.patchValue({
-          tourId: this.tourId!,
-          scheduleId: this.scheduleId!,
-        });
-        this.calculateTotal();
-      }
-    });
-  }
+  
 
 
   onSubmit() {
     if (this.bookingForm.valid) {
-      console.log('Form Data:', this.bookingForm.value);
 
       const formData = this.bookingForm.value;
 
@@ -215,6 +201,8 @@ export class TourBookingComponent {
         next: (response) => {
           console.log('Booking Successful:', response);
           alert('Booking successful!');
+          this.bookingInforService.setBookingData(formData)
+          this.router.navigate(['/tour-booking-confirm']);
         },
         error: (error) => {
           console.error('Booking Failed:', error);
@@ -232,13 +220,13 @@ export class TourBookingComponent {
 
 
   incrementAldults() {
-    if (this.numberAdults + this.numberChildren < this.availableSeats!){
+    if (this.numberAdults + this.numberChildren < this.tourSchedule?.availableSeats!){
       this.numberAdults++;
       this.addAdults(1);
       this.updateSingleRoomValues();
     } 
     else {
-      this.warningMessage = 'Sorry, the current tour has only ' + this.availableSeats + ' seats left.';
+      this.warningMessage = 'Sorry, the current tour has only ' + this.tourSchedule?.availableSeats + ' seats left.';
       this.triggerWarning();
     }
   }
@@ -252,13 +240,13 @@ export class TourBookingComponent {
   }
 
   incrementChildren() {
-    if (this.numberAdults + this.numberChildren < this.availableSeats!) {
+    if (this.numberAdults + this.numberChildren < this.tourSchedule?.availableSeats!) {
       this.numberChildren++
       this.addChildren();
       this.calculateTotal();
     }
     else {
-      this.warningMessage = 'Sorry, the current tour has only ' + this.availableSeats + ' seats left.';
+      this.warningMessage = 'Sorry, the current tour has only ' + this.tourSchedule?.availableSeats + ' seats left.';
       this.triggerWarning();
     }
   }
