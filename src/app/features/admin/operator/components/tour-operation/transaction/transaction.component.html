@@ -1,0 +1,33 @@
+<div class="mt-6">
+    <div class="flex justify-end gap-2 mb-4">
+      <button (click)="openPostReceipt()" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">Tạo Phiếu
+        Thu</button>
+      <button data-modal-target="paymentModal" data-modal-toggle="paymentModal"
+        class="bg-yellow-600 text-white hover:bg-yellow-700 px-4 py-2 rounded">Thanh Toán Tạm Ứng</button>
+    </div>
+  
+    <div class="rounded-md">
+      <table class="w-full text-left bg-white rounded-md">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="p-2">STT</th>
+            <th class="p-2">Tiêu đề</th>
+            <th class="p-2">Ngày</th>
+            <th class="p-2">Hành động</th>
+            <th class="p-2">Nội dung nhật ký</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs" class="border-b">
+            <td class="p-2">{{ log.id }}</td>
+            <td class="p-2">{{ log.title }}</td>
+            <td class="p-2">{{ log.date }}</td>
+            <td class="p-2">{{ log.action }}</td>
+            <td class="p-2">{{ log.logContent }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <app-post-advance-payment #paymentModal></app-post-advance-payment>

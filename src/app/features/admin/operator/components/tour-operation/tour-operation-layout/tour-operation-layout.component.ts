@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-tour-operation-layout',
   imports: [
-    RouterOutlet
+    RouterOutlet,
+    RouterModule
   ],
   templateUrl: './tour-operation-layout.component.html',
   styleUrl: './tour-operation-layout.component.css'

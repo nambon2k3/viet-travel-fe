@@ -8,6 +8,7 @@ import { TourOperationLayoutComponent } from "./tour-operation-layout/tour-opera
 import { TourOperationComponent } from "./tour-operation.component";
 import { ServiceDetailComponent } from "./service/service-detail/service-detail.component";
 import { PostReceiptComponent } from "./log/post-receipt/post-receipt.component";
+import { TransactionComponent } from "./transaction/transaction.component";
 
 export const TOUROPERATION_ROUTES: Route[] = [
   {
@@ -16,6 +17,11 @@ export const TOUROPERATION_ROUTES: Route[] = [
       children: [
         { 
           path: '',
+          pathMatch: 'full',
+          redirectTo: 'overview'
+        },
+        { 
+          path: 'overview',
           component: TourOperationComponent
         },
         {
@@ -33,6 +39,10 @@ export const TOUROPERATION_ROUTES: Route[] = [
         {
           path: 'log',
           component: LogComponent
+        },
+        {
+          path: 'transaction',
+          component: TransactionComponent
         },
         {
           path: 'summary',

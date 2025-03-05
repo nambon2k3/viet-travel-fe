@@ -9,6 +9,8 @@ import { TourDetailsComponent } from "./components/tour-details/tour-details.com
 import { TourPaxComponent } from "./components/tour-details/tour-pax/tour-pax.component";
 import { UpdateTourDayComponent } from "./components/tour-details/update-tour-day/update-tour-day.component";
 import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
+import { OpenTourForSaleComponent } from "./components/open-tour-for-sale/open-tour-for-sale.component";
+import { TourDiscountComponent } from "./components/tour-discount/tour-discount.component";
 
 export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
   {
@@ -37,14 +39,18 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
         component: AddTourComponent,
       },
       {
+        path: 'tour-discount',
+        component: TourDiscountComponent,
+      },
+      {
         path: '',
         component: TourDetailsLayoutComponent,
         children: [
+          { path: '', redirectTo: 'tour-details', pathMatch: 'full' },
           { path: 'tour-details', component: TourDetailsComponent },
           { path: 'tour-day', component: TourDayComponent },
           { path: 'pax', component: TourPaxComponent },
           { path: 'update-tour-day', component: UpdateTourDayComponent },
-          { path: '', redirectTo: 'details', pathMatch: 'full' },
         ],
       },
     ]

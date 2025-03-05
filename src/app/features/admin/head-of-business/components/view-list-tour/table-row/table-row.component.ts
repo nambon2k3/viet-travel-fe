@@ -37,6 +37,12 @@ export class TableRowComponent {
     });
   }
 
+  openSaleTour(tour: TourHOB): void {
+    this.router.navigate(['/head-business/open-sale-tour'], {
+      queryParams: { id: tour.id }
+    });
+  }
+
   recoverTour(): void {
     this.tourService.recoverTour(this.tour.id).subscribe({
       next: (response) => {

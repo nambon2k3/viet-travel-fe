@@ -1,5 +1,5 @@
-<div class="rounded">
-    <form class="space-y-4">
+<div class="rounded mt-4">
+    <form class="space-y-4" [formGroup]="editTourForm">
         <div>
             <label class="block mb-1 font-bold">Ngày</label>
             <input type="number" value="1" class="w-full p-2 bg-gray-300 border rounded" readonly>
@@ -14,7 +14,7 @@
             <div class="">
                 <!-- Dropdown search button -->
                 <label class="block mb-1 font-bold">Bữa Ăn</label>
-                <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch"
+                <button id="dropdownMealButton" data-dropdown-toggle="dropdownMeal"
                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                     type="button">Chọn Bữa Ăn<svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -22,9 +22,9 @@
                             d="m1 1 4 4 4-4" />
                     </svg></button>
                 <!-- Dropdown menu -->
-                <div id="dropdownSearch" class="z-10 hidden bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700">
+                <div id="dropdownMeal" class="z-10 hidden bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700">
                     <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
-                        aria-labelledby="dropdownSearchButton">
+                        aria-labelledby="dropdownMealButton">
                         <li>
                             <div class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
                                 <input id="checkbox-item-11" type="checkbox" value=""
@@ -67,7 +67,7 @@
             <div>
                 <!-- Dropdown search button -->
                 <label class="block mb-1 font-bold">Dịch Vụ</label>
-                <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch"
+                <button id="dropdownServiceButton" data-dropdown-toggle="dropdownService"
                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                     type="button">Chọn Dịch Vụ<svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -75,9 +75,9 @@
                             d="m1 1 4 4 4-4" />
                     </svg></button>
                 <!-- Dropdown menu -->
-                <div id="dropdownSearch" class="z-10 hidden bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700">
+                <div id="dropdownService" class="z-10 hidden bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700">
                     <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
-                        aria-labelledby="dropdownSearchButton">
+                        aria-labelledby="dropdownServiceButton">
                         <li>
                             <div class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
                                 <input id="checkbox-item-11" type="checkbox" value=""
@@ -121,20 +121,15 @@
 
         <div>
             <label class="block mb-1 font-bold">Điểm Đến</label>
-            <input type="text" value="Quảng Ninh" class="w-full p-2 border rounded">
+            <input type="text" value="Quảng Ninh" class="w-full p-2 mb-6 border rounded">
         </div>
 
-        <div>
-            <label class="block mb-1 font-bold">Mô Tả</label>
-            <textarea class="w-full p-2 border rounded" rows="4">
-                14:00: Tham quan Vĩnh Long, chèo thuyền kayak, khám phá động Thiền Cung...
-            </textarea>
-        </div>
+        <app-blog-content [content]="description"></app-blog-content>
 
         <div class="flex justify-end space-x-4">
-            <button class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Hủy Bỏ</button>
+            <button (click)="onCancel()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Hủy Bỏ</button>
             <button class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded">Cập Nhật Hoạt Động
                 Tour</button>
         </div>
     </form>
-</div>
+</div> 
