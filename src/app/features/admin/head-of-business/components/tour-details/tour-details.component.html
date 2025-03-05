@@ -1,0 +1,59 @@
+<div class="rounded ">
+    <form class="space-y-4">
+        <div>
+            <label class="block mb-1">Tên tour</label>
+            <input type="text" value="Tuyến Chùa - Vĩnh Long" placeholder="Nhập tên tour" class="w-full p-2 border rounded">
+        </div>
+
+        <div class="flex space-x-4">
+            <div class="w-1/2">
+                <label class="block mb-1">Tên người tạo</label>
+                <input type="text" value="Lan Thanh" placeholder="Nhập tên người tạo" class="w-full p-2 border rounded">
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-1">Địa điểm</label>
+                <select class="w-full p-2 border rounded">
+                    <option>Hà Nội</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex space-x-4">
+            <div class="w-1/2">
+                <label class="block mb-1">Ngày bắt đầu</label>
+                <input type="date" value="2025-02-01" class="w-full p-2 border rounded">
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-1">Ngày kết thúc</label>
+                <input type="date" value="2025-02-01" class="w-full p-2 border rounded">
+            </div>
+        </div>
+
+        <div class="flex space-x-4">
+            <div class="w-1/2">
+                <label class="block mb-1">Số ngày</label>
+                <input type="number" placeholder="Nhập số ngày" value="4" class="w-full p-2 border rounded">
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-1">Số đêm</label>
+                <input type="number" placeholder="Nhập số đêm" value="3" class="w-full p-2 border rounded">
+            </div>
+        </div>
+
+        <div>
+            <label class="block mb-1">Điểm nổi bật</label>
+            <textarea class="w-full p-2 border rounded" placeholder="Điểm nổi bật của tour"
+                rows="3">Tham quan Vĩnh Long, chèo thuyền kayak, khám phá động Thiền Cung...</textarea>
+        </div>
+
+        <div>
+            <label class="block mb-1">Ghi chú</label>
+            <textarea class="w-full p-2 border rounded" rows="3" placeholder="Ghi chú ở đây..."></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-4">
+            <button (click)="onCancel()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Hủy bỏ</button>
+            <button class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded">Cập nhật tour</button>
+        </div>
+    </form>
+</div>

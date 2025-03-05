@@ -1,5 +1,4 @@
 <div class="max-w-7xl mx-auto p-6 bg-white rounded-lg dark:bg-gray-800">
-    <!-- Stepper Progress Bar -->
     <div class="flex max-w-4xl m-auto justify-between mb-6">
         @for (step of steps; track $index) {
         <div class="flex flex-col items-center">
@@ -13,29 +12,24 @@
         }
     </div>
 
-    <!-- Stepper Content -->
     <div>
-        <!-- Step 1: Personal Information -->
         @if (currentStep === 0) {
         <form>
-            <h2 class="text-xl font-bold mb-4">Step 1: {{steps[currentStep]}}</h2>
-            <!-- Booking ID and Name -->
+            <h2 class="text-xl font-bold mb-4">Bước 1: {{steps[currentStep]}}</h2>
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label class="block font-semibold text-gray-700">Booking ID</label>
+                    <label class="block font-semibold text-gray-700">Mã đặt chỗ</label>
                     <input type="text" value="65" class="w-full p-2 border bg-gray-200 rounded-md" disabled>
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700">Booking Name</label>
-                    <input type="text" value="Tour Cái Chiên - Đầu Rồng"
-                        class="w-full p-2 border rounded-md" >
+                    <label class="block font-semibold text-gray-700">Tên đặt chỗ</label>
+                    <input type="text" value="Tour Cái Chiên - Đầu Rồng" class="w-full p-2 border rounded-md">
                 </div>
             </div>
 
-            <!-- Customer Contact -->
-            <label class="block font-semibold text-gray-700 mb-2">Customer Contact</label>
+            <label class="block font-semibold text-gray-700 mb-2">Liên hệ khách hàng</label>
             <div class="flex items-center gap-2 mb-4">
-                <input type="text" placeholder="Press Enter to search customer" class="w-full p-2 border rounded-md">
+                <input type="text" placeholder="Nhấn Enter để tìm kiếm khách hàng" class="w-full p-2 border rounded-md">
                 <button class="p-2 bg-gray-300 rounded-md">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-5 h-5">
@@ -45,82 +39,73 @@
                 </button>
             </div>
 
-            <!-- Email & Phone -->
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block font-semibold text-gray-700">Email</label>
-                    <input type="email" value="lanthan2003@dfgh.com" class="w-full p-2 border  rounded-md"
-                        >
+                    <input type="email" value="lanthan2003@dfgh.com" class="w-full p-2 border rounded-md">
                 </div>
                 <div>
-                    <label class="block font-semibold text-gray-700">Phone</label>
-                    <input type="text" value="4378658347" class="w-full p-2 border rounded-md" >
+                    <label class="block font-semibold text-gray-700">Điện thoại</label>
+                    <input type="text" value="4378658347" class="w-full p-2 border rounded-md">
                 </div>
             </div>
 
-            <!-- Address -->
             <div class="mb-4">
-                <label class="block font-semibold text-gray-700">Address</label>
-                <input type="text" value="Viet Yen, Bac Giang" class="w-full p-2 border rounded-md"
-                >
+                <label class="block font-semibold text-gray-700">Địa chỉ</label>
+                <input type="text" value="Viet Yen, Bac Giang" class="w-full p-2 border rounded-md">
             </div>
 
-            <!-- Payment -->
             <div class="mb-4">
-                <label class="block font-semibold text-gray-700">Payment</label>
+                <label class="block font-semibold text-gray-700">Thanh toán</label>
                 <select class="w-full p-2 border rounded-md ">
-                    <option>Cash</option>
+                    <option>Tiền mặt</option>
                     <option>VNPay</option>
                 </select>
             </div>
 
-            <!-- Note -->
             <div class="mb-4">
-                <label class="block font-semibold text-gray-700">Note</label>
-                <textarea class="w-full p-2 border rounded-md" >Customer will...</textarea>
+                <label class="block font-semibold text-gray-700">Ghi chú</label>
+                <textarea class="w-full p-2 border rounded-md">Khách hàng sẽ...</textarea>
             </div>
         </form>
         }
 
-        <!-- Step 2: Address Information -->
         @if (currentStep === 1) {
         <form>
-            <h2 class="text-xl font-bold mb-4">Step 2: {{steps[currentStep]}}</h2>
-            <div class="bg-white p-6 rounded-lg  w-full ">
-                <!-- Choose Tour -->
-                <label class="block font-semibold text-gray-700 mb-2">Choose Example Tour</label>
+            <h2 class="text-xl font-bold mb-4">Bước 2: {{steps[currentStep]}}</h2>
+            <div class="bg-white p-6 rounded-lg w-full ">
+                <label class="block font-semibold text-gray-700 mb-2">Chọn tour mẫu</label>
                 <div class="mb-4">
-                    <input type="text" placeholder="Press Enter to search Tour" class="w-full p-2 border rounded-md">
+                    <input type="text" placeholder="Nhấn Enter để tìm kiếm Tour" class="w-full p-2 border rounded-md">
                 </div>
-        
-                <!-- Tour List -->
+
                 <div class="bg-gray-200 p-4 rounded-md">
                     <table class="w-full">
                         <thead>
                             <tr class="text-left font-semibold">
-                                <th class="p-2">Tour Name</th>
-                                <th class="p-2">Duration</th>
+                                <th class="p-2">Tên tour</th>
+                                <th class="p-2">Thời lượng</th>
                                 <th class="p-2"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="border-t">
                                 <td class="p-2">Tour Cái Chiên - Đầu Rồng</td>
-                                <td class="p-2">4D3N</td>
+                                <td class="p-2">4N3Đ</td>
                                 <td class="p-2 text-center">
                                     <button class="p-1 bg-gray-300 rounded-md">+</button>
                                 </td>
                             </tr>
                             <tr class="border-t">
                                 <td class="p-2">Tour Cái Chiên - Đầu Rồng</td>
-                                <td class="p-2">4D3N</td>
+                                <td class="p-2">4N3Đ</td>
                                 <td class="p-2 text-center">
                                     <button class="p-1 bg-gray-300 rounded-md">+</button>
                                 </td>
                             </tr>
                             <tr class="border-t">
                                 <td class="p-2">Tour Cái Chiên - Đầu Rồng</td>
-                                <td class="p-2">4D3N</td>
+                                <td class="p-2">4N3Đ</td>
                                 <td class="p-2 text-center">
                                     <button class="p-1 bg-gray-300 rounded-md">+</button>
                                 </td>
@@ -128,54 +113,50 @@
                         </tbody>
                     </table>
                 </div>
-        
-                <!-- Tour Name -->
+
                 <div class="mt-4">
-                    <label class="block font-semibold text-gray-700">Tour Name</label>
+                    <label class="block font-semibold text-gray-700">Tên tour</label>
                     <input type="text" class="w-full p-2 border rounded-md">
                 </div>
-        
-                <!-- Dates and Duration -->
+
                 <div class="grid grid-cols-3 gap-4 mt-4">
                     <div>
-                        <label class="block font-semibold text-gray-700">Start Date</label>
+                        <label class="block font-semibold text-gray-700">Ngày bắt đầu</label>
                         <div class="relative">
                             <input type="text" value="01/02/2025" class="w-full p-2 border rounded-md">
                         </div>
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700">End Date</label>
+                        <label class="block font-semibold text-gray-700">Ngày kết thúc</label>
                         <div class="relative">
                             <input type="text" value="01/02/2025" class="w-full p-2 border rounded-md">
                         </div>
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700">Duration</label>
-                        <input type="text" value="4D3N" class="w-full p-2 border rounded-md bg-gray-200" disabled>
+                        <label class="block font-semibold text-gray-700">Thời lượng</label>
+                        <input type="text" value="4N3Đ" class="w-full p-2 border rounded-md bg-gray-200" disabled>
                     </div>
                 </div>
-        
-                <!-- Adult & Children -->
+
                 <div class="grid grid-cols-2 gap-4 mt-4">
                     <div>
-                        <label class="block font-semibold text-gray-700">Adult</label>
-                        <input type="text" value="4D3N" class="w-full p-2 border rounded-md bg-gray-200" disabled>
+                        <label class="block font-semibold text-gray-700">Người lớn</label>
+                        <input type="text" value="4N3Đ" class="w-full p-2 border rounded-md bg-gray-200" disabled>
                     </div>
                     <div>
-                        <label class="block font-semibold text-gray-700">Children</label>
-                        <input type="text" value="4D3N" class="w-full p-2 border rounded-md bg-gray-200" disabled>
+                        <label class="block font-semibold text-gray-700">Trẻ em</label>
+                        <input type="text" value="4N3Đ" class="w-full p-2 border rounded-md bg-gray-200" disabled>
                     </div>
                 </div>
-        
-                <!-- Tour Price Table -->
+
                 <div class="mt-4 bg-gray-200 p-4 rounded-md">
-                    <label class="block font-semibold text-gray-700 mb-2">Tour Price</label>
+                    <label class="block font-semibold text-gray-700 mb-2">Giá tour</label>
                     <table class="w-full">
                         <thead>
                             <tr class="text-left font-semibold">
-                                <th class="p-2">Unit Price</th>
-                                <th class="p-2">Quantity</th>
-                                <th class="p-2">Total Price</th>
+                                <th class="p-2">Đơn giá</th>
+                                <th class="p-2">Số lượng</th>
+                                <th class="p-2">Tổng giá</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -191,40 +172,37 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div class="text-right font-semibold mt-2">Total Price: 7.500.000</div>
+                    <div class="text-right font-semibold mt-2">Tổng giá: 7.500.000</div>
                 </div>
-        
-                <!-- Note -->
+
                 <div class="mt-4">
-                    <label class="block font-semibold text-gray-700">Note</label>
-                    <textarea class="w-full p-2 border bg-gray-200 rounded-md" disabled>Customer will...</textarea>
+                    <label class="block font-semibold text-gray-700">Ghi chú</label>
+                    <textarea class="w-full p-2 border bg-gray-200 rounded-md" disabled>Khách hàng sẽ...</textarea>
                 </div>
             </div>
         </form>
         }
 
-        <!-- Step 3: Confirmation -->
         @if (currentStep === 2) {
         <div>
-            <h2 class="text-xl font-bold mb-4">Step 3: {{steps[currentStep]}}</h2>
-            <p class="text-gray-500 dark:text-gray-400">Please review your information before submitting.</p>
+            <h2 class="text-xl font-bold mb-4">Bước 3: {{steps[currentStep]}}</h2>
+            <p class="text-gray-500 dark:text-gray-400">Vui lòng xem lại thông tin trước khi gửi.</p>
         </div>
         }
     </div>
 
-    <!-- Navigation Buttons -->
     <div class="flex justify-between mt-6">
         <button *ngIf="currentStep > 0" (click)="prevStep()"
             class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
-            Back
+            Quay lại
         </button>
         <button *ngIf="currentStep < steps.length - 1" (click)="nextStep()"
             class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            Next
+            Tiếp theo
         </button>
         <button *ngIf="currentStep === steps.length - 1" (click)="submitForm()"
             class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-            Submit
+            Gửi
         </button>
     </div>
 </div>

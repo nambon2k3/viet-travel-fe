@@ -4,6 +4,7 @@ import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableRowComponent } from './table-row/table-row.component';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-booking',
@@ -29,6 +30,12 @@ export class ListBookingComponent {
   sortField = 'createdAt';
   sortDirection = 'desc';
 
+  constructor(
+    private router: Router
+  ) {
+
+  }
+
 
   onPageChange(newPage: number): void {
     if (newPage >= 0 && newPage < this.totalPages()) {
@@ -39,7 +46,7 @@ export class ListBookingComponent {
 
 
   public toggleBlogs(checked: boolean): void {
-    
+
   }
 
   // Change page size and reload data
@@ -55,6 +62,10 @@ export class ListBookingComponent {
     this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
     this.page = 0; // Reset to first page on new search
     //this.loadBlogs();
+  }
+
+  addBooking(): void {
+    this.router.navigate(['/salesman/add-booking']);
   }
 
 }

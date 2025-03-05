@@ -2,9 +2,9 @@
 
 
     <div class="inline-block">
-      <h3 class="text-foreground font-semibold">List Tours</h3>
+      <h3 class="text-foreground font-semibold">Điều hành </h3>
       <div class="text-muted-foreground space-x-1 text-xs font-medium">
-        <a href="" class="hover:text-primary">All Tours:</a>
+        <a href="" class="hover:text-primary">Tất cả tour:</a>
         <span class="text-foreground">{{ totalItems }}</span>
       </div>
     </div>
@@ -25,7 +25,7 @@
           <tr class="hover:bg-card/50" app-table-row [tour]="tour"></tr>
           } @empty {
           <tr>
-            <td class="py-4 text-center text-sm" colspan="7">No tours found</td>
+            <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy tour nào</td>
           </tr>
           }
         </tbody>

@@ -1,81 +1,80 @@
-<div class="max-w-2xl bg-white shadow-md rounded-lg p-6">
-    <!-- Header -->
-    <div class="flex items-center justify-between border-b pb-4">
-      <div class="flex items-center gap-3">
-        <span class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full">
-          <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="User" class="w-full h-full rounded-full">
-        </span>
-        <div>
-          <p class="font-semibold text-lg">Lan Than</p>
-          <p class="text-gray-500 text-sm">01/04/2025 12:21:45</p>
-        </div>
+<div class="w-full">
+  <!-- Tiêu đề -->
+  <div class="flex items-center justify-between border-b pb-4">
+    <div class="flex items-center gap-3">
+      <span class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full">
+        <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="Người dùng" class="w-full h-full rounded-full">
+      </span>
+      <div>
+        <p class="font-semibold text-lg">Lan Thân</p>
+        <p class="text-gray-500 text-sm">01/04/2025 12:21:45</p>
       </div>
     </div>
-  
-    <!-- Service Note -->
-    <div class="bg-gray-100 p-3 rounded-md mt-4">
-      <p class="font-semibold text-gray-700">Service Note:</p>
-      <p class="text-gray-600 text-sm">This is a note from Salesman This is a note from Salesman</p>
-    </div>
-  
-    <!-- Request Service -->
-    <div class="mt-10">
-      <h2 class="text-lg font-bold">List Request Service</h2>
-      <p class="text-sm text-gray-600">ID: 123 &nbsp; | &nbsp; Booking ID: 234</p>
-      <p class="text-lg font-bold mt-10">Tour Đà Nẵng - Hội An 4D3N</p>
-      <p class="text-sm text-gray-600">Private Tour</p>
-      <p class="text-sm text-gray-600">Start Date: 02/02/2025</p>
-      <p class="text-sm text-gray-600">End Date: 06/02/2025</p>
-    </div>
-  
-    <!-- Table -->
-    <div class="mt-10">
-      <table class="w-full border-collapse border rounded-lg overflow-hidden text-sm">
-        <thead>
-          <tr class="bg-gray-200 text-gray-700">
-            <th class="p-2 border">Order</th>
-            <th class="p-2 border">Request Content</th>
-            <th class="p-2 border">Unit Price</th>
-            <th class="p-2 border">Quantity</th>
-            <th class="p-2 border">Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="text-center">
-            <td class="p-2 border">1</td>
-            <td class="p-2 border">Deluxe Room</td>
-            <td class="p-2 border">5.000.000</td>
-            <td class="p-2 border">2</td>
-            <td class="p-2 border">10.000.000</td>
-          </tr>
-          <tr class="text-center bg-gray-100">
-            <td class="p-2 border">2</td>
-            <td class="p-2 border">Birthday Organization</td>
-            <td class="p-2 border">2.000.000</td>
-            <td class="p-2 border">1</td>
-            <td class="p-2 border">2.000.000</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr class="bg-gray-200 font-bold text-center">
-            <td colspan="4" class="p-2 border">Total Price</td>
-            <td class="p-2 border">7.500.000</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  
-    <!-- Reason -->
-    <div class="mt-6">
-      <p class="font-semibold text-gray-700">Reason</p>
-      <textarea class="w-full p-3 border rounded-md bg-gray-100 text-gray-600" rows="3" placeholder="Customer will..."></textarea>
-    </div>
-  
-    <!-- Buttons -->
-    <div class="flex justify-end gap-3 mt-4">
-      <button (click)="onCanceled()" class="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400">Cancel</button>
-      <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Reject</button>
-      <button class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Approve</button>
-    </div>
   </div>
-  
+
+  <!-- Ghi chú dịch vụ -->
+  <div class="bg-gray-100 p-3 rounded-md mt-4">
+    <p class="font-semibold text-gray-700">Ghi chú dịch vụ:</p>
+    <p class="text-gray-600 text-sm">Đây là ghi chú từ nhân viên bán hàng. Đây là ghi chú từ nhân viên bán hàng.</p>
+  </div>
+
+  <!-- Yêu cầu dịch vụ -->
+  <div class="mt-10">
+    <h2 class="text-lg font-bold">Danh sách yêu cầu dịch vụ</h2>
+    <p class="text-sm text-gray-600">Mã ID: 123   |   Mã đặt chỗ: 234</p>
+    <p class="text-lg font-bold mt-10">Tour Đà Nẵng - Hội An 4N3Đ</p>
+    <p class="text-sm text-gray-600">Tour riêng</p>
+    <p class="text-sm text-gray-600">Ngày bắt đầu: 02/02/2025</p>
+    <p class="text-sm text-gray-600">Ngày kết thúc: 06/02/2025</p>
+  </div>
+
+  <!-- Bảng -->
+  <div class="mt-10">
+    <table class="w-full border-collapse border rounded-lg overflow-hidden text-sm">
+      <thead>
+        <tr class="bg-gray-200 text-gray-700">
+          <th class="p-2 border">Thứ tự</th>
+          <th class="p-2 border">Nội dung yêu cầu</th>
+          <th class="p-2 border">Đơn giá</th>
+          <th class="p-2 border">Số lượng</th>
+          <th class="p-2 border">Tổng cộng</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="text-center">
+          <td class="p-2 border">1</td>
+          <td class="p-2 border">Phòng Deluxe</td>
+          <td class="p-2 border">5.000.000</td>
+          <td class="p-2 border">2</td>
+          <td class="p-2 border">10.000.000</td>
+        </tr>
+        <tr class="text-center bg-gray-100">
+          <td class="p-2 border">2</td>
+          <td class="p-2 border">Tổ chức sinh nhật</td>
+          <td class="p-2 border">2.000.000</td>
+          <td class="p-2 border">1</td>
+          <td class="p-2 border">2.000.000</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="bg-gray-200 font-bold text-center">
+          <td colspan="4" class="p-2 border">Tổng giá</td>
+          <td class="p-2 border">7.500.000</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <!-- Lý do -->
+  <div class="mt-6">
+    <p class="font-semibold text-gray-700">Lý do</p>
+    <textarea class="w-full p-3 border rounded-md bg-gray-100 text-gray-600" rows="3" placeholder="Khách hàng sẽ..."></textarea>
+  </div>
+
+  <!-- Nút điều khiển -->
+  <div class="flex justify-end gap-3 mt-4">
+    <button (click)="onCanceled()" class="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400">Hủy</button>
+    <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Từ chối</button>
+    <button class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Phê duyệt</button>
+  </div>
+</div>

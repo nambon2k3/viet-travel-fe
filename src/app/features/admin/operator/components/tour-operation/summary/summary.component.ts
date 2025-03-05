@@ -29,8 +29,8 @@ export class SummaryComponent {
 
   // Summary data
   summary = [
-    { content: 'Total Collect', estimate: 80000000, summary: 80000000 },
-    { content: 'Total Paid', estimate: 50000000, summary: 50000000 },
-    { content: 'Profit', estimate: 30000000, summary: 30000000 }
+    { content: 'Đã thu', estimate: 80000000, summary: 80000000 },
+    { content: 'Đã chi', estimate: 50000000, summary: 50000000 },
+    { content: 'Lợi nhuận', estimate: 30000000, summary: 30000000 }
   ];
 }

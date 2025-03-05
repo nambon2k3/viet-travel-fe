@@ -1,121 +1,117 @@
 <div id="chooseServiceModal" tabindex="-1" aria-hidden="true"
-    class="hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-gray-900 bg-opacity-50">
+     class="hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-gray-900 bg-opacity-50">
     <div class="max-w-7xl w-11/12 mx-auto bg-white p-6 rounded-lg shadow">
-        <h2 class="text-lg font-bold mb-3">Choose Service</h2>
-        <!-- Search Bar -->
+        <h2 class="text-lg font-bold mb-3">Chọn dịch vụ</h2>
         <div class="border rounded-md p-3 bg-gray-100 flex justify-between items-center">
-            <input type="text" placeholder="Press Enter to search Service" class="bg-transparent flex-1 outline-none">
+            <input type="text" placeholder="Nhấn Enter để tìm kiếm dịch vụ" class="bg-transparent flex-1 outline-none">
             <span class="material-icons cursor-pointer">
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5" />
+                          d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5"/>
                 </svg>
             </span>
         </div>
-        <!-- Service List -->
         <div class="border rounded-md bg-gray-100 p-3 mt-3">
             <table class="w-full text-left">
                 <thead>
-                    <tr>
-                        <th class="font-semibold">Service Name</th>
-                        <th class="font-semibold">Type</th>
-                        <th class="font-semibold">Action</th>
-                    </tr>
+                <tr>
+                    <th class="font-semibold">Tên dịch vụ</th>
+                    <th class="font-semibold">Loại</th>
+                    <th class="font-semibold">Hành động</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let service of services; let i = index" [class.bg-blue-200]="i === selectedServiceIndex"
-                        (click)="addData(service); selectService(i)" class="border-t cursor-pointer">
-                        <td>{{ service.name }}</td>
-                        <td>{{ service.type }}</td>
-                        <td>
-                            <button class="text-xl">
-                                <svg class="w-6 h-6 text-green-700 hover:text-green-800 dark:text-white"
-                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr>
+                <tr *ngFor="let service of services; let i = index" [class.bg-blue-200]="i === selectedServiceIndex"
+                    (click)="addData(service); selectService(i)" class="border-t cursor-pointer">
+                    <td>{{ service.name }}</td>
+                    <td>{{ service.type }}</td>
+                    <td>
+                        <button class="text-xl">
+                            <svg class="w-6 h-6 text-green-700 hover:text-green-800 dark:text-white"
+                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
-        <!-- Date and Room Selection -->
         <div class="grid grid-cols-3 gap-4 mt-4">
             <div>
-                <label class="block text-sm">Start Date</label>
+                <label class="block text-sm">Ngày bắt đầu</label>
                 <input type="date" [(ngModel)]="startDate" (change)="updateSelectedService()"
-                    class="border p-2 rounded w-full">
+                       class="border p-2 rounded w-full">
             </div>
             <div>
-                <label class="block text-sm">End Date</label>
+                <label class="block text-sm">Ngày kết thúc</label>
                 <input type="date" [(ngModel)]="endDate" (change)="updateSelectedService()"
-                    class="border p-2 rounded w-full">
+                       class="border p-2 rounded w-full">
             </div>
         </div>
-        <!-- Room Counter -->
         <div class="mt-4 flex items-center space-x-2">
-            <label class="text-sm">Room</label>
+            <label class="text-sm">Phòng</label>
             <button (click)="decrementRoom(); updateSelectedService()" class="border px-2 py-1 rounded bg-gray-200">
                 <svg class="w-6 h-6 text-red-700 hover:text-red-800 dark:text-white" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                          d="M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                 </svg>
             </button>
             <input type="number" [(ngModel)]="roomCount" class="w-10 text-center">
             <button (click)="incrementRoom(); updateSelectedService()" class="border px-2 py-1 rounded bg-gray-200">
                 <svg class="w-6 h-6 text-green-700 hover:text-green-800 dark:text-white" aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                          d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                 </svg>
             </button>
         </div>
-        <!-- Service Price Table -->
         <div class="border rounded-md bg-gray-100 p-3 mt-4">
             <table class="w-full text-left">
                 <thead>
-                    <tr>
-                        <th>Service</th>
-                        <th>Unit Price</th>
-                        <th>Quantity</th>
-                        <th>Night</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                    </tr>
+                <tr>
+                    <th>Dịch vụ</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Số đêm</th>
+                    <th>Tổng cộng</th>
+                    <th>Hành động</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let price of servicePrices; let i = index">
-                        <td>{{ price.type }}</td>
-                        <td>{{ price.unitPrice | currencyVnd }}</td>
-                        <td>{{ price.quantity }}</td>
-                        <td>{{ price.nights }}</td>
-                        <td>{{ price.unitPrice * price.quantity * price.nights | currencyVnd }}</td>
-                        <td><button (click)="removeService(i)">
-                                <svg class="w-6 h-6 text-green-700 hover:text-green-800 dark:text-white"
-                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
-                                </svg>
-                            </button></td>
-                    </tr>
+                <tr *ngFor="let price of servicePrices; let i = index">
+                    <td>{{ price.type }}</td>
+                    <td>{{ price.unitPrice | currencyVnd }}</td>
+                    <td>{{ price.quantity }}</td>
+                    <td>{{ price.nights }}</td>
+                    <td>{{ price.unitPrice * price.quantity * price.nights | currencyVnd }}</td>
+                    <td>
+                        <button (click)="removeService(i)">
+                            <svg class="w-6 h-6 text-green-700 hover:text-green-800 dark:text-white"
+                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                 fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <div class="text-right font-bold mt-2">
-                Total Price: {{ getTotalPrice() | currencyVnd }}
+                Tổng giá: {{ getTotalPrice() | currencyVnd }}
             </div>
         </div>
-        <!-- Action Buttons -->
         <div class="flex justify-end space-x-2 mt-4">
-            <button class="border px-4 py-2 rounded bg-gray-300" data-modal-hide="chooseServiceModal">Cancel</button>
+            <button class="border px-4 py-2 rounded bg-gray-300" data-modal-hide="chooseServiceModal">Hủy</button>
             <button class="border px-4 py-2 rounded bg-black text-white" data-modal-hide="chooseServiceModal"
-                (click)="addServicesToFinalList()">Add
-                Services</button>
+                    (click)="addServicesToFinalList()">Thêm dịch vụ
+            </button>
         </div>
     </div>
 </div>
