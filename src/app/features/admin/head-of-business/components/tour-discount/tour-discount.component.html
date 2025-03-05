@@ -1,7 +1,8 @@
 <!-- Tour Header -->
 <div class="flex mb-6 items-center">
-    <svg class="w-10 h-10 text-white bg-green-700 hover:bg-green-800 cursor-pointer dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-        width="24" height="24" fill="none" viewBox="0 0 24 24" (click)="backToList()">
+    <svg class="w-10 h-10 text-white bg-green-700 hover:bg-green-800 cursor-pointer dark:text-white" aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+        (click)="backToList()">
         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="m15 19-7-7 7-7" />
     </svg>
@@ -35,9 +36,9 @@
                 <th class="p-2 text-right">
                     <table class="border-collapse inline-table w-full">
                         <tr>
-                            <td class="text-right pr-2">01 - 04 khách</td>
-                            <td class="text-right pr-2">05 - 10 khách</td>
-                            <td class="text-right">11 - 20 khách</td>
+                            <td class="text-center pr-2">01 - 04 khách</td>
+                            <td class="text-center pr-2">05 - 10 khách</td>
+                            <td class="text-center">11 - 20 khách</td>
                         </tr>
                     </table>
                 </th>
@@ -49,14 +50,14 @@
                 [class.bg-gray-50]="i % 2 === 0">
                 <td class="p-2">{{ hotel.name }}</td>
                 <td class="p-2">{{ hotel.location }}</td>
-                <td class="p-2 text-right">{{ hotel.netPrice | currencyVnd }}</td>
+                <td class="p-2 text-center">{{ hotel.netPrice | currencyVnd }}</td>
                 <td class="p-2 text-center">{{ hotel.quantity }}</td>
                 <td class="p-2 text-right">
                     <table class="border-collapse inline-table w-full">
                         <tr>
-                            <td class="text-right pr-2">{{ hotel.prices['01-04'] | currencyVnd }}</td>
-                            <td class="text-right pr-2">{{ hotel.prices['05-10'] | currencyVnd }}</td>
-                            <td class="text-right">{{ hotel.prices['11-20'] | currencyVnd }}</td>
+                            <td class="text-center pr-2">{{ hotel.prices['01-04'] | currencyVnd }}</td>
+                            <td class="text-center pr-2">{{ hotel.prices['05-10'] | currencyVnd }}</td>
+                            <td class="text-center">{{ hotel.prices['11-20'] | currencyVnd }}</td>
                         </tr>
                     </table>
                 </td>
@@ -81,22 +82,20 @@
         <thead>
             <tr class="bg-gray-100 border-b border-gray-300">
                 <th class="p-2 text-left">Tên phương tiện</th>
-                <th class="p-2 text-center">Loại</th>
+                <th class="p-2 text-left">Loại</th>
                 <th class="p-2 text-center">Giá Net</th>
                 <th class="p-2 text-center">Số lượng</th>
-                <th class="p-2 text-center">Giá</th>
-                <th class="p-2 text-center">Giá phòng</th>
+                <th class="p-2 text-center">Giá xe</th>
                 <th class="p-2 text-center">Actions</th>
             </tr>
             <tr class="bg-gray-200 border-b border-gray-300">
                 <th colspan="4"></th>
-                <th class="p-2 text-right"></th>
                 <th class="p-2 text-right">
                     <table class="border-collapse inline-table w-full">
                         <tr>
-                            <td class="text-right pr-2">01 - 04 khách</td>
-                            <td class="text-right pr-2">05 - 10 khách</td>
-                            <td class="text-right">11 - 20 khách</td>
+                            <td class="text-center pr-2">01 - 04 khách</td>
+                            <td class="text-center pr-2">05 - 10 khách</td>
+                            <td class="text-center">11 - 20 khách</td>
                         </tr>
                     </table>
                 </th>
@@ -108,15 +107,14 @@
                 [class.bg-gray-50]="i % 2 === 0">
                 <td class="p-2">{{ transport.name }}</td>
                 <td class="p-2">{{ transport.type }}</td>
-                <td class="p-2 text-right">{{ transport.netPrice | currencyVnd }}</td>
+                <td class="p-2 text-center">{{ transport.netPrice | currencyVnd }}</td>
                 <td class="p-2 text-center">{{ transport.quantity }}</td>
-                <td class="p-2 text-center">{{ transport.price | currencyVnd }}</td>
                 <td class="p-2 text-right">
                     <table class="border-collapse inline-table w-full">
                         <tr>
-                            <td class="text-right pr-2">{{ transport.roomPrices['01-04'] | currencyVnd }}</td>
-                            <td class="text-right pr-2">{{ transport.roomPrices['05-10'] | currencyVnd }}</td>
-                            <td class="text-right">{{ transport.roomPrices['11-20'] | currencyVnd }}</td>
+                            <td class="text-center pr-2">{{ transport.roomPrices['01-04'] | currencyVnd }}</td>
+                            <td class="text-center pr-2">{{ transport.roomPrices['05-10'] | currencyVnd }}</td>
+                            <td class="text-center">{{ transport.roomPrices['11-20'] | currencyVnd }}</td>
                         </tr>
                     </table>
                 </td>
@@ -142,22 +140,20 @@
             <tr class="bg-gray-100 border-b border-gray-300">
                 <th class="p-2 text-left">Tên nhà hàng</th>
                 <th class="p-2 text-left">Địa chỉ</th>
-                <th class="p-2 text-center">Loại</th>
-                <th class="p-2 text-left">Giá Net</th>
-                <th class="p-2 text-right">Số lượng</th>
-                <th class="p-2 text-center">Giá</th>
-                <th class="p-2 text-center">Giá phòng</th>
+                <th class="p-2 text-left">Loại</th>
+                <th class="p-2 text-center">Giá Net</th>
+                <th class="p-2 text-center">Số lượng</th>
+                <th class="p-2 text-center">Giá bữa ăn</th>
                 <th class="p-2 text-center">Actions</th>
             </tr>
             <tr class="bg-gray-200 border-b border-gray-300">
                 <th colspan="5"></th>
-                <th class="p-2 text-right"></th>
                 <th class="p-2 text-right">
                     <table class="border-collapse inline-table w-full">
                         <tr>
-                            <td class="text-right pr-2">01 - 04 khách</td>
-                            <td class="text-right pr-2">05 - 10 khách</td>
-                            <td class="text-right">11 - 20 khách</td>
+                            <td class="text-center pr-2">01 - 04 khách</td>
+                            <td class="text-center pr-2">05 - 10 khách</td>
+                            <td class="text-center">11 - 20 khách</td>
                         </tr>
                     </table>
                 </th>
@@ -172,13 +168,12 @@
                 <td class="p-2">{{ restaurant.type }}</td>
                 <td class="p-2 text-center">{{ restaurant.netPrice | currencyVnd }}</td>
                 <td class="p-2 text-center">{{ restaurant.quantity }}</td>
-                <td class="p-2 text-center">{{ restaurant.price | currencyVnd }}</td>
                 <td class="p-2 text-right">
                     <table class="border-collapse inline-table w-full">
                         <tr>
-                            <td class="text-right pr-2">{{ restaurant.roomPrices['01-04'] | currencyVnd }}</td>
-                            <td class="text-right pr-2">{{ restaurant.roomPrices['05-10'] | currencyVnd }}</td>
-                            <td class="text-right">{{ restaurant.roomPrices['11-20'] | currencyVnd }}</td>
+                            <td class="text-center pr-2">{{ restaurant.roomPrices['01-04'] | currencyVnd }}</td>
+                            <td class="text-center pr-2">{{ restaurant.roomPrices['05-10'] | currencyVnd }}</td>
+                            <td class="text-center">{{ restaurant.roomPrices['11-20'] | currencyVnd }}</td>
                         </tr>
                     </table>
                 </td>
@@ -204,21 +199,19 @@
             <tr class="bg-gray-100 border-b border-gray-300">
                 <th class="p-2 text-left">Tên HDV</th>
                 <th class="p-2 text-left">Nhà cung cấp</th>
-                <th class="p-2 text-right">Giá Net</th>
-                <th class="p-2 text-right">Số lượng</th>
-                <th class="p-2 text-right">Giá</th>
-                <th class="p-2 text-center">Giá phòng</th>
+                <th class="p-2 text-center">Giá Net</th>
+                <th class="p-2 text-center">Số lượng</th>
+                <th class="p-2 text-center">Giá HDV</th>
                 <th class="p-2 text-center">Actions</th>
             </tr>
             <tr class="bg-gray-200 border-b border-gray-300">
                 <th colspan="4"></th>
-                <th class="p-2 text-right"></th>
                 <th class="p-2 text-right">
                     <table class="border-collapse inline-table w-full">
                         <tr>
-                            <td class="text-right pr-2">01 - 04 khách</td>
-                            <td class="text-right pr-2">05 - 10 khách</td>
-                            <td class="text-right">11 - 20 khách</td>
+                            <td class="text-center pr-2">01 - 04 khách</td>
+                            <td class="text-center pr-2">05 - 10 khách</td>
+                            <td class="text-center">11 - 20 khách</td>
                         </tr>
                     </table>
                 </th>
@@ -230,15 +223,14 @@
                 [class.bg-gray-50]="i % 2 === 0">
                 <td class="p-2">{{ guide.name }}</td>
                 <td class="p-2">{{ guide.provider }}</td>
-                <td class="p-2 text-right">{{ guide.netPrice | currencyVnd }}</td>
-                <td class="p-2 text-right">{{ guide.quantity }}</td>
-                <td class="p-2 text-right">{{ guide.price | currencyVnd }}</td>
-                <td class="p-2 text-right">
+                <td class="p-2 text-center">{{ guide.netPrice | currencyVnd }}</td>
+                <td class="p-2 text-center">{{ guide.quantity }}</td>
+                <td class="p-2 text-center">
                     <table class="border-collapse inline-table w-full">
                         <tr>
-                            <td class="text-right pr-2">{{ guide.roomPrices['01-04'] | currencyVnd }}</td>
-                            <td class="text-right pr-2">{{ guide.roomPrices['05-10'] | currencyVnd }}</td>
-                            <td class="text-right">{{ guide.roomPrices['11-20'] | currencyVnd }}</td>
+                            <td class="text-center pr-2">{{ guide.roomPrices['01-04'] | currencyVnd }}</td>
+                            <td class="text-center pr-2">{{ guide.roomPrices['05-10'] | currencyVnd }}</td>
+                            <td class="text-center">{{ guide.roomPrices['11-20'] | currencyVnd }}</td>
                         </tr>
                     </table>
                 </td>
@@ -270,13 +262,11 @@
                         <th class="p-2 text-left min-w-[120px]">Type</th>
                         <th class="p-2 text-center min-w-[100px]">Giá Net</th>
                         <th class="p-2 text-center min-w-[90px]">Số lượng</th>
-                        <th class="p-2 text-center min-w-[120px]">Giá</th>
-                        <th class="p-2 text-center min-w-[250px]">Giá phòng</th>
+                        <th class="p-2 text-center min-w-[250px]">Giá vé</th>
                         <th class="p-2 text-center min-w-[100px]">Actions</th>
                     </tr>
                     <tr class="bg-gray-200 border-b border-gray-300">
                         <th colspan="5"></th>
-                        <th class="p-2 text-right"></th>
                         <th class="p-2 text-right">
                             <table class="border-collapse inline-table w-full">
                                 <tr>
@@ -297,7 +287,6 @@
                         <td class="p-2 whitespace-nowrap">{{ activity.type }}</td>
                         <td class="p-2 text-center whitespace-nowrap">{{ activity.netPrice | currencyVnd }}</td>
                         <td class="p-2 text-center whitespace-nowrap">{{ activity.quantity }}</td>
-                        <td class="p-2 text-center whitespace-nowrap">{{ activity.price | currencyVnd }}</td>
                         <td class="p-2 text-right whitespace-nowrap">
                             <table class="border-collapse inline-table w-full">
                                 <tr>
@@ -313,7 +302,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div>        
+        </div>
     </div>
 </div>
 
@@ -324,51 +313,44 @@
         <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Cấu hình giá</button>
     </div>
 
-    <!-- Tổng giá Net thực vụ -->
-    <div class="border border-gray-300 rounded-lg p-4 bg-gray-50">
-        <div class="flex border-b border-gray-300 pb-2">
-            <div class="w-1/4 font-semibold">Tổng giá Net thực vụ</div>
-            <div class="w-1/4 text-center font-semibold">01-04 khách</div>
-            <div class="w-1/4 text-center font-semibold">05-10 khách</div>
-            <div class="w-1/4 text-center font-semibold">11-20 khách</div>
-        </div>
-        <div class="flex pt-2">
-            <div class="w-1/4">{{ totalNetPrice | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ totalPrices['01-04'] | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ totalPrices['05-10'] | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ totalPrices['11-20'] | currencyVnd }}</div>
-        </div>
+    <!-- Table Layout with Stripes -->
+    <div class="flex justify-end">
+        <table class="w-3/4 border border-gray-300 rounded-lg bg-gray-50">
+            <thead>
+                <tr class="bg-gray-100 border-b border-gray-300">
+                    <th class="w-1/4 py-2 font-semibold text-left pl-4"></th>
+                    <th *ngFor="let range of priceRanges" class="py-2 font-semibold text-center">{{ range }} khách</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Tổng giá Net dịch vụ -->
+                <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
+                    <td class="w-1/4 py-2 font-semibold text-left pl-4">Tổng giá Net dịch vụ</td>
+                    <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ mintotalNetPrices[range] |
+                        currencyVnd }} - {{ maxtotalNetPrices[range] | currencyVnd }}</td>
+                </tr>
+                <!-- Giá Net 1 khách -->
+                <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
+                    <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá Net (1 khách)</td>
+                    <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestNetPrices[range] |
+                        currencyVnd }}</td>
+                </tr>
+                <!-- Tổng giá bán -->
+                <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
+                    <td class="w-1/4 py-2 font-semibold text-left pl-4">Tổng giá bán</td>
+                    <td *ngFor="let range of priceRanges" class="py-2 text-center">
+                        {{ minsalePrices[range] ? (minsalePrices[range] | currencyVnd) : 'Chưa đặt' }} - {{
+                        maxsalePrices[range] ? (maxsalePrices[range] | currencyVnd) : 'Chưa đặt' }}
+                    </td>
+                </tr>
+                <!-- Giá bán (1 khách) -->
+                <tr class="odd:bg-white even:bg-gray-50">
+                    <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán (1 khách)</td>
+                    <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestPrices[range] |
+                        currencyVnd }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- Price -->
-    <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 mt-4">
-        <div class="flex border-b border-gray-300 pb-2">
-            <div class="w-1/4 font-semibold">Price</div>
-            <div class="w-1/4 text-center font-semibold">01-04 khách</div>
-            <div class="w-1/4 text-center font-semibold">05-10 khách</div>
-            <div class="w-1/4 text-center font-semibold">11-20 khách</div>
-        </div>
-        <div class="flex pt-2">
-            <div class="w-1/4">{{ totalSalePrice | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ salePrices['01-04'] | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ salePrices['05-10'] | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ salePrices['11-20'] | currencyVnd }}</div>
-        </div>
-    </div>
-
-    <!-- Giá bán (1 khách) -->
-    <div class="border border-gray-300 rounded-lg p-4 bg-gray-50 mt-4">
-        <div class="flex border-b border-gray-300 pb-2">
-            <div class="w-1/4 font-semibold">Giá bán (1 khách)</div>
-            <div class="w-1/4 text-center font-semibold">01-04 khách</div>
-            <div class="w-1/4 text-center font-semibold">05-10 khách</div>
-            <div class="w-1/4 text-center font-semibold">11-20 khách</div>
-        </div>
-        <div class="flex pt-2">
-            <div class="w-1/4">{{ perGuestPrice | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ perGuestPrices['01-04'] | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ perGuestPrices['05-10'] | currencyVnd }}</div>
-            <div class="w-1/4 text-center">{{ perGuestPrices['11-20'] | currencyVnd }}</div>
-        </div>
-    </div>
 </div>

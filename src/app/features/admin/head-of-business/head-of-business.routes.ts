@@ -55,4 +55,8 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
       },
     ]
   },
+  {
+    path: 'open-sale-tour',
+    component: OpenTourForSaleComponent
+  }
 ];

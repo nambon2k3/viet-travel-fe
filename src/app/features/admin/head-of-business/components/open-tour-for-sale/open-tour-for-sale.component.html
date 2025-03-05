@@ -1,1 +1,153 @@
-<p>open-tour-for-sale works!</p>
+<div class="flex justify-between items-center mb-4 mt-12">
+    <h1 class="text-2xl font-bold text-red-600">
+        <button type="button"
+            class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-800">
+            <svg class="w-4 h-4 rtl:rotate-180 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 14 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 5H1m0 0 4 4M1 5l4-4"></path>
+            </svg>
+            <span class="sr-only">Icon description</span>
+        </button>
+        MS001 _ Đà Nẵng - Huế - Bà Nà - Hội An
+    </h1>
+</div>
+
+<div class="grid grid-cols-12 h-screen gap-4">
+    <div class="col-span-3 flex flex-col gap-4 mt-20">
+        <h2 class="text-3xl font-semibold text-center mb-5">Thông Tin Chung</h2>
+        <table class="w-80 border-collapse mx-auto my-0">
+            <tbody class="space-y-4">
+                <tr class="pb-4">
+                    <td class="p-2 font-semibold">Loại Tour</td>
+                    <td class="p-2">Riêng Tư</td>
+                </tr>
+                <tr class="pb-4">
+                    <td class="p-2 font-semibold">Thẻ</td>
+                    <td class="p-2">4</td>
+                </tr>
+                <tr class="pb-4">
+                    <td class="p-2 font-semibold">Thời Gian</td>
+                    <td class="p-2">3N2Đ</td>
+                </tr>
+                <tr class="pb-4 border-b">
+                    <td class="p-2 font-semibold">Khởi Hành</td>
+                    <td class="p-2">Hồ Chí Minh</td>
+                </tr>
+                <tr class="pb-4">
+                    <td class="p-2 font-semibold">Tổng Số Đặt Chỗ</td>
+                    <td class="p-2">3</td>
+                </tr>
+                <tr class="pb-4 border-b">
+                    <td class="p-2 font-semibold">Ngày Tạo</td>
+                    <td class="p-2">13/02/2025</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="manage w-full p-8 px-12 bg-white shadow-md rounded-lg overflow-hidden">
+            <full-calendar class="m-auto" #calendar [options]="calendarOptions"></full-calendar>
+        </div>
+    </div>
+    <div class="col-span-9 flex flex-col gap-4 bg-gray-200 p-4">
+        <div class="flex items-center justify-between w-full gap-4 bg-white p-4 rounded-md">
+            <div>
+                <h2 class="text-lg mb-5">Ngày khởi hành đã chọn</h2>
+                <p class="text-2xl font-bold">03/26/2025</p>
+            </div>
+            <button type="button"
+                class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                Tạo đặt chỗ
+            </button>
+        </div>
+        <div class="p-4 bg-white rounded shadow">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <span class="text-sm">Today</span>
+                    <input type="text" value="15/03/2025" class="ml-2 p-1 border rounded" readonly>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-sm mr-2">March, 2025</span>
+                    <input type="month" value="2025-03" class="p-1 border rounded" readonly>
+                </div>
+                <button (click)="openCreateModal()" class="px-4 py-2 bg-black text-white rounded">Create Open Tour's
+                    Day</button>
+            </div>
+
+            <h2 class="text-lg font-semibold mb-2">Open Tour Sale's Days</h2>
+            <div class="manage w-full bg-white p-4 rounded shadow">
+                <full-calendar class="m-auto" #calendar [options]="calendarOptions"
+                    (eventClick)="handleEventClick($event)"></full-calendar>
+            </div>
+        </div>
+
+        <!-- Create Modal -->
+        <div *ngIf="showCreateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded shadow-lg w-96">
+                <h3 class="text-lg font-semibold mb-4">Create Open Tour's Day</h3>
+                <form (ngSubmit)="createTourSaleDay()" #createForm="ngForm">
+                    <div class="mb-4">
+                        <label class="block mb-1">Tour Name:</label>
+                        <input type="text" name="tourName" ngModel value="Đà Nẵng - Huế - Bà Nà - Hội An"
+                            class="w-full p-2 border rounded" readonly>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1">Open Date:</label>
+                        <input type="date" name="openDate" ngModel [(ngModel)]="selectedDate"
+                            class="w-full p-2 border rounded">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1">Number of Seats:</label>
+                        <input type="number" name="seats" ngModel [(ngModel)]="numberOfSeats"
+                            class="w-full p-2 border rounded" min="1">
+                    </div>
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" (click)="closeCreateModal()"
+                            class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-black text-white rounded">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Update Modal -->
+        <div *ngIf="showUpdateModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded shadow-lg w-96">
+                <h3 class="text-lg font-semibold mb-4">Update Seats</h3>
+                <form (ngSubmit)="updateTourSaleDay()" #updateForm="ngForm">
+                    <div class="mb-4">
+                        <label class="block mb-1">Tour Name:</label>
+                        <input type="text" name="tourName" ngModel value="Đà Nẵng - Huế - Bà Nà - Hội An"
+                            class="w-full p-2 border rounded" readonly>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1">Open Date:</label>
+                        <input type="date" name="openDate" ngModel [(ngModel)]="selectedDate"
+                            class="w-full p-2 border rounded" readonly>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-1">Number of Seats:</label>
+                        <input type="number" name="seats" ngModel [(ngModel)]="numberOfSeats"
+                            class="w-full p-2 border rounded" min="1">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-1">Sold:</label>
+                            <input type="number" name="sold" ngModel [(ngModel)]="soldSeats"
+                                class="w-full p-2 border rounded" min="0">
+                        </div>
+                        <div>
+                            <label class="block mb-1">Waiting:</label>
+                            <input type="number" name="waiting" ngModel [(ngModel)]="waitingSeats"
+                                class="w-full p-2 border rounded" min="0">
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" (click)="closeUpdateModal()"
+                            class="px-4 py-2 bg-gray-500 text-white rounded">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-black text-white rounded">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
