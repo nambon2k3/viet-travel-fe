@@ -15,10 +15,10 @@ export const PUBLIC_ROUTES: Route[] = [
         path: 'homepage',
         component: HomepageComponent,
       },
-      {
-        path: 'blog-details/:id',
-        component: BlogDetailComponent,
-      },
+      // {
+      //   path: 'blog-details/:id',
+      //   component: BlogDetailComponent,
+      // },
       {
         path: 'blogs',
         component: BlogComponent,
@@ -31,6 +31,18 @@ export const PUBLIC_ROUTES: Route[] = [
         path: 'tours',
         component: TourComponent,
       },
+      // {
+      //   path: 'tour-details/:id',
+      //   component: TourDetailComponent,
+      // },
+      {
+        path: 'tour-booking',
+        component: TourBookingComponent,
+      }
+      ,{
+        path: 'tour-booking-confirm',
+        component: TourBookingConfirmComponent,
+      }
     ]
   },
 ];

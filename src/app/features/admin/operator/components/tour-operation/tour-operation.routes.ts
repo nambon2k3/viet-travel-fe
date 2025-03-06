@@ -40,10 +40,10 @@ export const TOUROPERATION_ROUTES: Route[] = [
         },
       ]
     },
-    {
-      path: 'service/:id',
-      component: ServiceDetailComponent
-    },
+    // {
+    //   path: 'service/:id',
+    //   component: ServiceDetailComponent
+    // },
     {
       path: 'create-receipt',
       component: PostReceiptComponent
