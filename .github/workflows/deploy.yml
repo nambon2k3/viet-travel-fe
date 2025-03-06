@@ -1,12 +1,13 @@
 name: DEPLOYMENT WORKFLOW V1
 run-name: Deploy to production by @${{ github.actor }}
+
 on:
   workflow_dispatch:
     inputs:
       branch:
         description: "Choose branch to deploy"
         required: true
-        default: "dev
+        default: "dev"
 
 permissions:
   contents: read
