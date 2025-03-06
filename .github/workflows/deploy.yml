@@ -1,5 +1,5 @@
 name: DEPLOYMENT WORKFLOW V1
-run-name: Deploy branch ${{ github.ref_name }} to production
+run-name: Deploy branch ${{ github.inputs.branch }} to production
 
 on:
   workflow_dispatch:
