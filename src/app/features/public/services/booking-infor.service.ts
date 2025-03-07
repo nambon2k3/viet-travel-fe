@@ -8,45 +8,49 @@ import { TourDetail, TourSchedule } from '../../../core/models/tour-detail.model
   providedIn: 'root',
 })
 export class BookingInfoService {
-  private tourId?: number;
-  private scheduleId?: number;
-  private bookingData: any;
   private tourDetails?: TourDetail;
   private tourSchedule?: TourSchedule;
+  private bookingId?: number;
 
   constructor(private http: HttpClient) { }
 
-  setTourData(tourId: number, scheduleId: number) {
-    this.tourId = tourId;
-    this.scheduleId = scheduleId;
-  }
-
   setTourDetails(tourDetails: TourDetail) {
     this.tourDetails = tourDetails;
+    localStorage.setItem('tourDetails', JSON.stringify(tourDetails))
   }
 
   setTourSchedule(tourSchedule?: TourSchedule) {
     this.tourSchedule = tourSchedule
+    localStorage.setItem('tourSchedule', JSON.stringify(tourSchedule))
   }
 
+
+  setBookingId(bookingId: number) {
+    this.bookingId = bookingId;
+    
+  }
+
+  getBookingId() {
+    return this.bookingId;
+  }
+  
   getTourDetails() {
-    return this.tourDetails;
+    return this.tourDetails || JSON.parse(localStorage.getItem('tourDetails') || '{}');
   }
 
   getTourSchedule() {
-    return this.tourSchedule;
+    return this.tourSchedule || JSON.parse(localStorage.getItem('tourSchedule') || '{}');
   }
 
-  setBookingData(formData: any) {
-    this.bookingData = formData;
-  }
 
   submitBooking(bookingData: any): Observable<any> {
-    this.bookingData = bookingData;
     return this.http.post<any>(`${environment.apiUrl}public/booking/submit`, bookingData);
   }
 
 
+  getBookingDetails(bookingId: any): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}public/booking/details/${bookingId}`);
+  }
 
   public getUserInformation(userId: number): Observable<any> {
     return this.http.get<any[]>(`${environment.apiUrl}public/booking/details/user/${userId}`);

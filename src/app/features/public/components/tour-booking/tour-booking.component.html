@@ -1,8 +1,17 @@
-
+@if(isLoading) {
 <div role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
-    <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+    <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+        viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+            fill="currentColor" />
+        <path
+            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+            fill="currentFill" />
+    </svg>
     <span class="sr-only">Loading...</span>
 </div>
+}
 <div class="max-w-7xl mx-auto pt-32 mb-10 block" [class]="isLoading ? 'hidden' : 'block'">
     <!-- Progress Bar -->
     <div class="text-center">
@@ -48,19 +57,34 @@
                         <label class="block font-semibold">Fullname *</label>
                         <input type="text" class="w-full border p-2 rounded mt-1" formControlName="fullName"
                             placeholder="Enter fullname">
-                        <p class="text-red-500 text-sm">Required Information</p>
+                        <p *ngIf="
+                            bookingForm.get('fullName')?.invalid &&
+                            bookingForm.get('fullName')?.touched
+                          " class="text-red-500 text-sm">
+                            Required Information
+                        </p>
                     </div>
                     <div>
                         <label class="block font-semibold">Phone *</label>
                         <input type="text" class="w-full border p-2 rounded mt-1" formControlName="phone"
                             placeholder="Enter phone number">
-                        <p class="text-red-500 text-sm">Required Information</p>
+                        <p *ngIf="
+                            bookingForm.get('phone')?.invalid &&
+                            bookingForm.get('phone')?.touched
+                          " class="text-red-500 text-sm">
+                            Required Information
+                        </p>
                     </div>
                     <div>
                         <label class="block font-semibold">Email *</label>
                         <input type="email" class="w-full border p-2 rounded mt-1" formControlName="email"
                             placeholder="Enter email">
-                        <p class="text-red-500 text-sm">Required Information</p>
+                            <p *ngIf="
+                            bookingForm.get('email')?.invalid &&
+                            bookingForm.get('email')?.touched
+                          " class="text-red-500 text-sm">
+                            Required Information
+                        </p>
                     </div>
                     <div>
                         <label class="block font-semibold">Address</label>
@@ -75,17 +99,21 @@
                     <div class="border p-4 rounded-lg flex justify-between items-center">
                         <span>Adult<br><small class="text-gray-500">12 and up</small></span>
                         <div class="flex items-center space-x-2">
-                            <button type="button" class="border px-3 py-1 rounded" (click)="decrementAldults()">-</button>
+                            <button type="button" class="border px-3 py-1 rounded"
+                                (click)="decrementAldults()">-</button>
                             <span>{{numberAdults}}</span>
-                            <button type="button" class="border px-3 py-1 rounded" (click)="incrementAldults()">+</button>
+                            <button type="button" class="border px-3 py-1 rounded"
+                                (click)="incrementAldults()">+</button>
                         </div>
                     </div>
                     <div class="border p-4 rounded-lg flex justify-between items-center">
                         <span>Children<br><small class="text-gray-500">Under 12</small></span>
                         <div class="flex items-center space-x-2">
-                            <button type="button" class="border px-3 py-1 rounded" (click)="decrementChildren()">-</button>
+                            <button type="button" class="border px-3 py-1 rounded"
+                                (click)="decrementChildren()">-</button>
                             <span>{{numberChildren}}</span>
-                            <button type="button" class="border px-3 py-1 rounded" (click)="incrementChildren()">+</button>
+                            <button type="button" class="border px-3 py-1 rounded"
+                                (click)="incrementChildren()">+</button>
                         </div>
                     </div>
                 </div>
@@ -102,7 +130,14 @@
                             <label class="block font-semibold">Fullname *</label>
                             <input type="text" formControlName="fullName" class="w-full border p-2 rounded mt-1"
                                 placeholder="Enter fullname">
-                            <p class="text-red-500 text-sm">Required Information</p>
+
+
+                            <p *ngIf="
+                                  adultsFormArray.at($index).get('fullName')?.invalid &&
+                                  adultsFormArray.at($index).get('fullName')?.touched
+                                " class="text-red-500 text-sm">
+                                Required Information
+                            </p>
                         </div>
                         <div>
                             <label class="block font-semibold">Gender *</label>
@@ -110,12 +145,16 @@
                                 <option value="MALE">Male</option>
                                 <option value="FEMALE">Female</option>
                             </select>
-                            <p class="text-red-500 text-sm">Required Information</p>
                         </div>
                         <div>
                             <label class="block font-semibold">Date of Birth *</label>
                             <input type="date" formControlName="dateOfBirth" class="w-full border p-2 rounded mt-1">
-                            <p class="text-red-500 text-sm">Required Information</p>
+                            <p *ngIf="
+                                  adultsFormArray.at($index).get('dateOfBirth')?.invalid &&
+                                  adultsFormArray.at($index).get('dateOfBirth')?.touched
+                                " class="text-red-500 text-sm">
+                                Required Information
+                            </p>
                         </div>
                         <div class="flex flex-col justify-center text-center gap-2">
 
@@ -128,7 +167,9 @@
                                 </div>
 
                             </label>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{tourSchedule?.extraHotelCost}} VND</span>
+                            <span
+                                class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{tourSchedule?.extraHotelCost}}
+                                VND</span>
 
                         </div>
                     </div>
@@ -147,21 +188,31 @@
                     <div [formGroupName]="$index" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                         <div>
                             <label class="block font-semibold">Fullname *</label>
-                            <input type="text" formControlName="fullName"  class="w-full border p-2 rounded mt-1" placeholder="Enter fullname">
-                            <p class="text-red-500 text-sm">Required Information</p>
+                            <input type="text" formControlName="fullName" class="w-full border p-2 rounded mt-1"
+                                placeholder="Enter fullname">
+                            <p *ngIf="
+                                childrenFormArray.at($index).get('fullName')?.invalid &&
+                                childrenFormArray.at($index).get('fullName')?.touched
+                              " class="text-red-500 text-sm">
+                                Required Information
+                            </p>
                         </div>
                         <div>
                             <label class="block font-semibold">Gender *</label>
-                            <select formControlName="gender"  class="w-full border p-2 rounded mt-1">
+                            <select formControlName="gender" class="w-full border p-2 rounded mt-1">
                                 <option value="MALE">Male</option>
                                 <option value="FEMALE">Female</option>
                             </select>
-                            <p class="text-red-500 text-sm">Required Information</p>
                         </div>
                         <div>
                             <label class="block font-semibold">Date of Birth *</label>
-                            <input type="date" formControlName="dateOfBirth"  class="w-full border p-2 rounded mt-1">
-                            <p class="text-red-500 text-sm">Required Information</p>
+                            <input type="date" formControlName="dateOfBirth" class="w-full border p-2 rounded mt-1">
+                            <p *ngIf="
+                                  childrenFormArray.at($index).get('dateOfBirth')?.invalid &&
+                                  childrenFormArray.at($index).get('dateOfBirth')?.touched
+                                " class="text-red-500 text-sm">
+                                Required Information
+                            </p>
                         </div>
 
                     </div>
@@ -264,7 +315,7 @@
                     </p>
                 </div>
                 <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Customer</span> <span
-                        class="text-red-600">{{total}}  VND</span></p>
+                        class="text-red-600">{{total}} VND</span></p>
                 <p class="flex justify-between mb-2"><span>🧑 Adult: </span> <span>{{numberAdults}} x
                         {{tourSchedule?.sellingPrice}} VND</span></p>
                 <p class="flex justify-between mb-2">
@@ -275,21 +326,22 @@
                 </p>
                 <p class="flex justify-between mb-2">
                     @if(numberSingleRooms > 0) {
-                        <span>📍 Single Room:</span> <span>{{numberSingleRooms}} x
-                            {{tourSchedule?.extraHotelCost}} VND</span>
+                    <span>📍 Single Room:</span> <span>{{numberSingleRooms}} x
+                        {{tourSchedule?.extraHotelCost}} VND</span>
                     } @else {
-                        <span>📍 Single Room:</span> <span>0 VND</span>
+                    <span>📍 Single Room:</span> <span>0 VND</span>
                     }
                 </p>
                 <hr class="my-4">
-                <input type="text" formControlName="total" class="w-full border p-2 rounded mt-1"
-                   hidden >
-                <p class="font-semibold text-xl flex justify-between"><span>Total amount:</span> <span class="text-red-600">{{total}} VND</span></p>
-                <button [disabled]="!agreeTerms" type="submit" class="w-full bg-red-500 text-white py-3 rounded-lg mt-4">
+                <input type="text" formControlName="total" class="w-full border p-2 rounded mt-1" hidden>
+                <p class="font-semibold text-xl flex justify-between"><span>Total amount:</span> <span
+                        class="text-red-600">{{total}} VND</span></p>
+                <button [disabled]="!agreeTerms" type="submit"
+                    class="w-full bg-red-500 text-white py-3 rounded-lg mt-4">
                     @if(!agreeTerms) {
-                        Enter information to book tour
-                    } @else { 
-                        Book Tour
+                    Enter information to book tour
+                    } @else {
+                    Book Tour
                     }
                 </button>
             </div>

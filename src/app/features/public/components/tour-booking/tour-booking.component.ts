@@ -21,7 +21,6 @@ export class TourBookingComponent implements OnInit{
   userInformation: any;
   bookingForm: FormGroup;
 
-
   numberAdults: number = 1;
   numberChildren: number = 0;
 
@@ -54,7 +53,8 @@ export class TourBookingComponent implements OnInit{
       adults: this.fb.array([]),
       children: this.fb.array([]),
       total: [0],
-
+      sellingPrice: [0, Validators.required],
+      extraHotelCost: [0, Validators.required]
     });
 
     // Dynamically add adult form groups based on numberAdults
@@ -159,8 +159,16 @@ export class TourBookingComponent implements OnInit{
     this.tourDetails = this.bookingInforService.getTourDetails();
     this.tourSchedule = this.bookingInforService.getTourSchedule();
 
+    this.childrenPrice = this.tourSchedule?.sellingPrice! * 0.75;
 
     this.calculateTotal();
+
+    this.bookingForm.patchValue({
+      tourId: this.tourDetails?.id,
+      scheduleId: this.tourSchedule?.scheduleId,
+      sellingPrice: this.tourSchedule?.sellingPrice,
+      extraHotelCost: this.tourSchedule?.extraHotelCost
+    });
 
     this.getUserData();
 
@@ -199,10 +207,7 @@ export class TourBookingComponent implements OnInit{
 
       this.bookingInforService.submitBooking(formData).subscribe({
         next: (response) => {
-          console.log('Booking Successful:', response);
-          alert('Booking successful!');
-          this.bookingInforService.setBookingData(formData)
-          this.router.navigate(['/tour-booking-confirm']);
+          this.router.navigate(['/tour-booking-confirm', response.data]);
         },
         error: (error) => {
           console.error('Booking Failed:', error);
@@ -212,6 +217,7 @@ export class TourBookingComponent implements OnInit{
       });
 
     } else {
+      console.log('Form Submitted:', this.bookingForm.value);
       this.warningMessage = 'Please fill in all required fields';
       this.triggerWarning();
     }
