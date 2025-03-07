@@ -207,7 +207,7 @@ export class TourBookingComponent implements OnInit{
 
       this.bookingInforService.submitBooking(formData).subscribe({
         next: (response) => {
-          this.router.navigate(['/tour-booking-confirm', response.data]);
+          this.router.navigate(['/tour-booking-detail', response.data]);
         },
         error: (error) => {
           console.error('Booking Failed:', error);

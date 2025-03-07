@@ -52,45 +52,45 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block font-semibold">Fullname *</label>
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData.bookedPerson.fullName}}</p>
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.bookedPerson.fullName}}</p>
                 </div>
                 <div>
                     <label class="block font-semibold">Phone *</label>
-                    <p class="w-full p-2 rounded mt-1">{{bookingData.bookedPerson.phone}}</p>
+                    <p class="w-full p-2 rounded mt-1">{{bookingData?.bookedPerson.phone}}</p>
                 </div>
                 <div>
                     <label class="block font-semibold">Email *</label>
-                    <p class="w-full p-2 rounded mt-1">{{bookingData.bookedPerson.email}}</p>
+                    <p class="w-full p-2 rounded mt-1">{{bookingData?.bookedPerson.email}}</p>
                 </div>
                 <div>
                     <label class="block font-semibold">Address</label>
-                    <p class="w-full p-2 rounded mt-1">{{bookingData.bookedPerson.address}}</p>
+                    <p class="w-full p-2 rounded mt-1">{{bookingData?.bookedPerson.address}}</p>
                 </div>
             </div>
 
             <!-- Passenger Information -->
             <h2 class="text-2xl font-semibold mt-12 mb-12">Passenger Information</h2>
             <p class="font-semibold mb-6">👨‍👩‍👧 Adult (12 years and older)</p>
-            @for (num of range(bookingData.adults.length); track $index) {
+            @for (num of range(bookingData?.adults.length); track $index) {
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
                 <div>
                     <label class="block font-semibold">Fullname *</label>
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData.adults.at($index).fullName}}</p>
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.adults.at($index).fullName}}</p>
                 </div>
                 <div>
                     <label class="block font-semibold">Gender *</label>
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData.adults.at($index).gender}}</p>
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.adults.at($index).gender}}</p>
                 </div>
                 <div>
                     <label class="block font-semibold">Date of Birth *</label>
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData.adults.at($index).dateOfBirth | date:
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.adults.at($index).dateOfBirth | date:
                         'dd/MM/yyyy'}}</p>
                 </div>
                 <div class="flex flex-col justify-center text-center gap-2">
 
                     <label class="block font-semibold">🛏️ Single Room</label>
 
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData.adults.at($index).singleRoom ? 'Yes' : 'No'}}</p>
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.adults.at($index).singleRoom ? 'Yes' : 'No'}}</p>
 
                 </div>
             </div>
@@ -101,22 +101,22 @@
 
 
 
-            @for (num of range(bookingData.children.length); track num; let first = $first) {
+            @for (num of range(bookingData?.children.length); track num; let first = $first) {
             @if(first) {
             <p class="font-semibold mt-12 mb-6">👨‍👩‍👧 Children (Under 12)</p>
             }
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                 <div>
                     <label class="block font-semibold">Fullname *</label>
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData.children.at($index).fullName}}</p>
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.children.at($index).fullName}}</p>
                 </div>
                 <div>
                     <label class="block font-semibold">Gender *</label>
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData.gender.at($index).fullName}}</p>
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.children.at($index).gender}}</p>
                 </div>
                 <div>
                     <label class="block font-semibold">Date of Birth *</label>
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData.children.at($index).dateOfBirth | date:
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.children.at($index).dateOfBirth | date:
                         'dd/MM/yyyy'}}</p>
                 </div>
 
@@ -140,27 +140,34 @@
                     <tbody>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Booking code:</td>
-                            <td class="text-red-600 font-semibold p-3">{{bookingData.bookingCode}}</td>
+                            <td class="text-red-600 font-semibold p-3">{{bookingData?.bookingCode}}</td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Date created:</td>
-                            <td class="p-3">{{bookingData.createdAt | date: 'dd/MM/yyyy HH:mm'}}</td>
+                            <td class="p-3">{{bookingData?.createdAt | date: 'dd/MM/yyyy HH:mm'}}</td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Booking value:</td>
-                            <td class="font-semibold p-3">4.760.000 VND</td>
+                            <td class="font-semibold p-3">{{total}} VND</td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Payment method:</td>
                             <td class="p-3">
-                                <span class="font-semibold">Cash</span>
+                                <span class="font-semibold">{{bookingData?.paymentMethod}}</span>
                                 <a href="#" class="text-blue-600 underline ml-2">Change payment method</a>
                             </td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Payment instruction:</td>
                             <td class="p-3 text-blue-600">
-                                Please pay directly at FPT University Hoa Lac.
+                                @if(bookingData?.paymentMethod === 'CASH') {
+                                    Please pay directly at FPT University Hoa Lac.
+                                } @else {
+                                <div class="w-full mt-5">
+                                    <p><strong>Account Number:</strong> 2003883886 - Nguyen Viet Hoai Nam</p>
+                                    <p class="mt-2"><strong>Bank:</strong> MB Bank</p>
+                                </div>
+                                }
                             </td>
                         </tr>
                         <tr class="border-b">
@@ -169,7 +176,7 @@
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Remaining Amount:</td>
-                            <td class="text-red-600 font-semibold p-3">4.760.000 VND</td>
+                            <td class="text-red-600 font-semibold p-3">{{total}} VND</td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Status:</td>
@@ -197,7 +204,7 @@
             <!-- Note Section -->
             <h2 class="text-lg font-semibold mb-2 mt-12">Note</h2>
             <textarea class="w-full border p-3 rounded-md mb-6" rows="4"
-                placeholder="Please enter message here..."></textarea>
+                placeholder="Please enter message here...">{{bookingData?.note}}</textarea>
 
         </div>
 
@@ -206,24 +213,34 @@
             <h2 class="text-lg font-semibold mb-4">Trip Confirmation</h2>
 
             <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
-                <img [src]="bookingData.tour.tourImages.imageUrl" alt="" class="w-full h-full object-cover" />
+                <img [src]="bookingData?.tour.tourImages.imageUrl" alt="" class="w-full h-full object-cover" />
             </div>
 
             <div class="bg-gray-100 p-4 rounded-md mb-4">
-                <p class="font-semibold">📍 {{bookingData.tour.name}}</p>
-                <p class="text-gray-500">🎟️ Depart Date: {{bookingData.tourSchedule.startDate | date: 'dd/MM/yyyy'}}
+                <p class="font-semibold">📍 {{bookingData?.tour.name}}</p>
+                <p class="text-gray-500">🎟️ Depart Date: {{bookingData?.tourSchedule.startDate | date: 'dd/MM/yyyy'}}
                 </p>
-                <p class="text-gray-500">📍 Departure: <strong>{{bookingData.tour.depart_location.name}}</strong></p>
+                <p class="text-gray-500">📍 Departure: <strong>{{bookingData?.tour.depart_location.name}}</strong></p>
                 <p class="text-gray-500">⏳ Time:
-                    <strong>{{bookingData.tour.numberDays}}N{{bookingData.tour.numberNight}}D</strong></p>
+                    <strong>{{bookingData?.tour.numberDays}}N{{bookingData?.tour.numberNight}}D</strong>
+                </p>
             </div>
             <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Customer</span> <span
-                    class="text-red-600">4.760.000 VND</span></p>
-            <p class="flex justify-between mb-2"><span>🧑 Adult: </span> <span>2 x 1.290.000 VND</span></p>
-            <p class="flex justify-between mb-2"><span>👶 Children:</span> <span>2 x 1.090.000 VND</span></p>
-            <p class="flex justify-between mb-2"><span>📍 Single Room:</span> <span>2 x 1.090.000 VND</span></p>
+                    class="text-red-600">{{total}} VND</span></p>
+            <p class="flex justify-between mb-2"><span>🧑 Adult: </span> <span>{{numberAdults}} x
+                    {{bookingData?.sellingPrice}} VND</span></p>
+            <p class="flex justify-between mb-2"><span>👶 Children:</span> <span>{{numberChildren}} x
+                    {{childrenPrice}}VND</span></p>
+            <p class="flex justify-between mb-2">
+                @if(numberSingleRooms > 0) {
+                <span>📍 Single Room:</span> <span>{{numberSingleRooms}} x
+                    {{bookingData?.extraHotelCost}} VND</span>
+                } @else {
+                <span>📍 Single Room:</span> <span>0 VND</span>
+                }
+            </p>
             <hr class="my-4">
-            <p class="font-semibold text-xl">Total amount: <span class="text-red-600">4.760.000 VND</span></p>
+            <p class="font-semibold text-xl flex justify-between"><span>Total amount:</span> <span class="text-red-600">{{total}} VND</span></p>
         </div>
     </div>
 </div>

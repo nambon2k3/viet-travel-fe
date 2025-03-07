@@ -43,7 +43,7 @@ export const PUBLIC_ROUTES: Route[] = [
         component: TourBookingComponent,
       }
       ,{
-        path: 'tour-booking-confirm/:code',
+        path: 'tour-booking-detail/:code',
         component: TourBookingConfirmComponent,
       }
     ]

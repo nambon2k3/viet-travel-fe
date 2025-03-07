@@ -45,8 +45,17 @@ export class TourBookingConfirmComponent {
       next: (response) => {
         this.isLoading = false;
         this.bookingData = response.data
+
+        this.numberSingleRooms = this.bookingData.adults.filter((t: any) => t?.singleRoom === true).length
+
+
+        this.numberAdults = this.bookingData.adults.length;
+        this.numberChildren = this.bookingData.children.length;
+
+        this.calculateTotal();
+
         this.setExpiredDate();
-        console.log(response)
+        
       },
     })
   }
@@ -58,19 +67,22 @@ export class TourBookingConfirmComponent {
     const adultsArray = this.bookingData.adults;
     const childrenArray = this.bookingData.children;
 
-    const adultPrice = this.bookingData.tourSchedule.sellingPrice;
+    const adultPrice = this.bookingData.sellingPrice;
     const childrenPrice = adultPrice * 0.75;
 
-    const adultTotal = adultsArray.controls.length * adultPrice!;
-    const childrenTotal = childrenArray.controls.length * childrenPrice;
+    this.childrenPrice = adultPrice * 0.75;
 
-    const extra = this.numberSingleRooms * this.bookingData.tourSchedule.extraHotelCost!;
+    const adultTotal = adultsArray.length * adultPrice!;
+    const childrenTotal = childrenArray.length * childrenPrice;
+
+    const extra = this.numberSingleRooms * this.bookingData.extraHotelCost!;
 
     this.total = adultTotal + childrenTotal + extra;
 
 
     //this.bookingForm.patchValue({ total: this.total }, { emitEvent: false });
   }
+
 
 
   expiredDate?:Date;
