@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
+import { AddHotelComponent } from "./add-hotel/add-hotel.component";
 
 interface Hotel {
   name: string;
@@ -9,6 +10,7 @@ interface Hotel {
   netPrice: number;
   quantity: number;
   prices: PriceRange;
+  day: number; // New field for tour day
 }
 
 interface Transport {
@@ -17,6 +19,7 @@ interface Transport {
   netPrice: number;
   quantity: number;
   roomPrices: PriceRange;
+  day: number; // New field for tour day
 }
 
 interface Restaurant {
@@ -26,6 +29,7 @@ interface Restaurant {
   netPrice: number;
   quantity: number;
   roomPrices: PriceRange;
+  day: number; // New field for tour day
 }
 
 interface TourGuide {
@@ -34,6 +38,7 @@ interface TourGuide {
   netPrice: number;
   quantity: number;
   roomPrices: PriceRange;
+  day: number; // New field for tour day
 }
 
 interface Activity {
@@ -43,6 +48,7 @@ interface Activity {
   netPrice: number;
   quantity: number;
   roomPrices: PriceRange;
+  day: number; // New field for tour day
 }
 
 interface PriceRange {
@@ -51,11 +57,12 @@ interface PriceRange {
 
 @Component({
   selector: 'app-tour-discount',
-  imports: [CurrencyVndPipe, CommonModule],
+  imports: [CurrencyVndPipe, CommonModule, AddHotelComponent],
   templateUrl: './tour-discount.component.html',
   styleUrl: './tour-discount.component.css'
 })
 export class TourDiscountComponent {
+  @ViewChild('addHotelModal') addHotelModal!: AddHotelComponent;
 
   constructor(
     private router: Router
@@ -71,7 +78,8 @@ export class TourDiscountComponent {
         '01-04': 1500000,
         '05-10': 1400000,
         '11-20': 1300000
-      }
+      },
+      day: 1 // Day 1
     },
     {
       name: 'Daue Hotel Da...',
@@ -82,7 +90,8 @@ export class TourDiscountComponent {
         '01-04': 1600000,
         '05-10': 1500000,
         '11-20': 1400000
-      }
+      },
+      day: 2 // Day 2
     }
   ];
 
@@ -96,7 +105,8 @@ export class TourDiscountComponent {
         '01-04': 290000,
         '05-10': 280000,
         '11-20': 270000
-      }
+      },
+      day: 1 // Day 1
     },
     {
       name: 'Hikari',
@@ -107,7 +117,8 @@ export class TourDiscountComponent {
         '01-04': 700000,
         '05-10': 600000,
         '11-20': 500000
-      }
+      },
+      day: 2 // Day 2
     }
   ];
 
@@ -122,7 +133,8 @@ export class TourDiscountComponent {
         '01-04': 200000,
         '05-10': 200000,
         '11-20': 200000
-      }
+      },
+      day: 1 // Day 1
     },
     {
       name: 'Seafood Jump',
@@ -134,7 +146,8 @@ export class TourDiscountComponent {
         '01-04': 300000,
         '05-10': 300000,
         '11-20': 300000
-      }
+      },
+      day: 2 // Day 2
     },
     {
       name: 'Nét Huế Xưa',
@@ -146,7 +159,8 @@ export class TourDiscountComponent {
         '01-04': 300000,
         '05-10': 300000,
         '11-20': 300000
-      }
+      },
+      day: 3 // Day 3
     },
     {
       name: 'King BBQ',
@@ -158,7 +172,8 @@ export class TourDiscountComponent {
         '01-04': 200000,
         '05-10': 200000,
         '11-20': 200000
-      }
+      },
+      day: 2 // Day 2
     }
   ];
 
@@ -172,7 +187,8 @@ export class TourDiscountComponent {
         '01-04': 300000,
         '05-10': 150000,
         '11-20': 100000
-      }
+      },
+      day: 1 // Day 1
     }
   ];
 
@@ -187,7 +203,8 @@ export class TourDiscountComponent {
         '01-04': 600000,
         '05-10': 600000,
         '11-20': 600000
-      }
+      },
+      day: 2 // Day 2
     },
     {
       name: 'Lặn',
@@ -199,7 +216,8 @@ export class TourDiscountComponent {
         '01-04': 300000,
         '05-10': 300000,
         '11-20': 300000
-      }
+      },
+      day: 3 // Day 3
     },
     {
       name: 'Ba Na Hills',
@@ -211,7 +229,8 @@ export class TourDiscountComponent {
         '01-04': 300000,
         '05-10': 300000,
         '11-20': 300000
-      }
+      },
+      day: 2 // Day 2
     },
     {
       name: 'Kinh thành Huế',
@@ -223,9 +242,29 @@ export class TourDiscountComponent {
         '01-04': 200000,
         '05-10': 200000,
         '11-20': 200000
-      }
+      },
+      day: 3 // Day 3
     }
   ];
+
+  addNewHotel(event: any) {
+    const newHotel: Hotel = {
+      name: event.hotel,
+      location: event.location,
+      netPrice: event.netPrice,
+      quantity: 1, // Default quantity
+      prices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day // Use the selected day
+    };
+    this.hotels.push(newHotel);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
 
   priceRanges: string[] = []; // Will be populated from API
   totalNetPrice: number = 0;
@@ -239,7 +278,7 @@ export class TourDiscountComponent {
   perGuestNetPrice: number = 0;
   perGuestNetPrices: PriceRange = {};
 
-  private fetchPriceRanges(): void { 
+  private fetchPriceRanges(): void {
     // This would be your actual API call
     // For now, simulating with sample data
     this.priceRanges = ['01-04', '05-10', '11-20'];
@@ -262,10 +301,10 @@ export class TourDiscountComponent {
       const [min, max] = range.split('-').map(num => parseInt(num));
       guestRanges[range] = { min, max };
     });
-  
+
     this.priceRanges.forEach(range => {
       let totalForRange = 0;
-  
+
       this.hotels.forEach(hotel => {
         totalForRange += hotel.netPrice * hotel.quantity * guestRanges[range].min;
       });
@@ -281,7 +320,6 @@ export class TourDiscountComponent {
       this.activities.forEach(activity => {
         totalForRange += activity.netPrice * activity.quantity * guestRanges[range].min;
       });
-      
       this.mintotalNetPrices[range] = totalForRange;
 
       totalForRange = 0;
@@ -300,7 +338,6 @@ export class TourDiscountComponent {
       this.activities.forEach(activity => {
         totalForRange += activity.netPrice * activity.quantity * guestRanges[range].max;
       });
-      
       this.maxtotalNetPrices[range] = totalForRange;
     });
   }
@@ -377,12 +414,10 @@ export class TourDiscountComponent {
       minGuests[range] = min;
       maxGuests[range] = max;
     });
-  
     this.priceRanges.forEach(range => {
       if (range === '01-04') {
         // Special case for 1-4 range
         let totalMaxSale = 0;
-  
         // Calculate total max sale price with special tour guide handling
         this.hotels.forEach(hotel => {
           totalMaxSale += (hotel.prices[range] || hotel.netPrice || 0) * hotel.quantity; // Base price, no guest scaling
@@ -399,7 +434,6 @@ export class TourDiscountComponent {
         this.activities.forEach(activity => {
           totalMaxSale += (activity.roomPrices[range] || activity.netPrice || 0) * activity.quantity;
         });
-  
         // Calculate per-guest price: max sale price / min guests (1)
         this.perGuestPrices[range] = Math.ceil(totalMaxSale / minGuests[range]);
       } else {

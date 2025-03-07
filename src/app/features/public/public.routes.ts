@@ -18,10 +18,10 @@ export const PUBLIC_ROUTES: Route[] = [
         path: 'homepage',
         component: HomepageComponent,
       },
-      {
-        path: 'blog-details/:id',
-        component: BlogDetailComponent,
-      },
+      // {
+      //   path: 'blog-details/:id',
+      //   component: BlogDetailComponent,
+      // },
       {
         path: 'blogs',
         component: BlogComponent,

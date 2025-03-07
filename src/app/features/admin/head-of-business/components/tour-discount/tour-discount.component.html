@@ -8,303 +8,311 @@
     </svg>
     <div class="ml-4">
         <h1 class="text-xl font-bold">MS001 - Đà Nẵng - Huế - Bà Nà - Hội An (3N2D)</h1>
-        <p class="text-gray-600">Số khách hàng: 01-04 khách, 05-10 khách, 11-20 khách</p>
+        <div class="text-gray-600 flex mr-2">Số khách hàng: 
+            <div class="ml-2" *ngFor="let pax of priceRanges;">
+                <span class="font-semibold text-black">{{ pax }}</span> khách
+            </div>
+        </div>
     </div>
+    
 </div>
 
 <!-- Hotel -->
 <div class="mb-6">
     <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center">
-            <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">1</div>
-            <h2 class="text-lg font-semibold ml-4">Khách sạn</h2>
-        </div>
-        <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">1</div>
+        <h2 class="text-lg font-semibold ml-4">Khách sạn</h2>
+      </div>
+      <button data-modal-target="addHotelModal" data-modal-toggle="addHotelModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm mới</button>
     </div>
     <table class="w-full border border-gray-300 rounded-lg">
-        <thead>
-            <tr class="bg-gray-100 border-b border-gray-300">
-                <th class="p-2 text-left">Tên khách sạn</th>
-                <th class="p-2 text-left">Địa chỉ</th>
-                <th class="p-2 text-center">Giá Net</th>
-                <th class="p-2 text-center">Số lượng</th>
-                <th class="p-2 text-center">Giá phòng</th>
-                <th class="p-2 text-center">Actions</th>
-            </tr>
-            <tr class="bg-gray-200 border-b border-gray-300">
-                <th colspan="4"></th>
-                <th class="p-2 text-right">
-                    <table class="border-collapse inline-table w-full">
-                        <tr>
-                            <td class="text-center pr-2">01 - 04 khách</td>
-                            <td class="text-center pr-2">05 - 10 khách</td>
-                            <td class="text-center">11 - 20 khách</td>
-                        </tr>
-                    </table>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="border-b border-gray-300" *ngFor="let hotel of hotels; let i = index"
-                [class.bg-gray-50]="i % 2 === 0">
-                <td class="p-2">{{ hotel.name }}</td>
-                <td class="p-2">{{ hotel.location }}</td>
-                <td class="p-2 text-center">{{ hotel.netPrice | currencyVnd }}</td>
-                <td class="p-2 text-center">{{ hotel.quantity }}</td>
-                <td class="p-2 text-right">
-                    <table class="border-collapse inline-table w-full">
-                        <tr>
-                            <td class="text-center pr-2">{{ hotel.prices['01-04'] | currencyVnd }}</td>
-                            <td class="text-center pr-2">{{ hotel.prices['05-10'] | currencyVnd }}</td>
-                            <td class="text-center">{{ hotel.prices['11-20'] | currencyVnd }}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td class="p-2 text-center">
-                    <button class="text-red-500 hover:text-red-700">X</button>
-                </td>
-            </tr>
-        </tbody>
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-left">Tên khách sạn</th>
+          <th class="p-2 text-left">Địa chỉ</th>
+          <th class="p-2 text-center">Giá Net</th>
+          <th class="p-2 text-center">Số lượng</th>
+          <th class="p-2 text-center">Ngày</th> <!-- New column -->
+          <th class="p-2 text-center">Giá phòng</th>
+          <th class="p-2 text-center">Actions</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="5"></th>
+          <th class="p-2 text-right">
+            <table class="border-collapse inline-table w-full">
+              <tr>
+                <td class="text-center pr-2">01 - 04 khách</td>
+                <td class="text-center pr-2">05 - 10 khách</td>
+                <td class="text-center">11 - 20 khách</td>
+              </tr>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-gray-300" *ngFor="let hotel of hotels; let i = index" [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2">{{ hotel.name }}</td>
+          <td class="p-2">{{ hotel.location }}</td>
+          <td class="p-2 text-center">{{ hotel.netPrice | currencyVnd }}</td>
+          <td class="p-2 text-center">{{ hotel.quantity }}</td>
+          <td class="p-2 text-center">{{ hotel.day }}</td> <!-- Display day -->
+          <td class="p-2 text-right">
+            <table class="border-collapse inline-table w-full">
+              <tr>
+                <td class="text-center pr-2">{{ hotel.prices['01-04'] | currencyVnd }}</td>
+                <td class="text-center pr-2">{{ hotel.prices['05-10'] | currencyVnd }}</td>
+                <td class="text-center">{{ hotel.prices['11-20'] | currencyVnd }}</td>
+              </tr>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-red-500 hover:text-red-700">X</button>
+          </td>
+        </tr>
+      </tbody>
     </table>
-</div>
+  </div>
 
 <!-- Transportation Section -->
 <div class="mb-6">
     <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center">
-            <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">2</div>
-            <h2 class="text-lg font-semibold ml-4">Phương tiện</h2>
-        </div>
-        <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">2</div>
+        <h2 class="text-lg font-semibold ml-4">Phương tiện</h2>
+      </div>
+      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
     </div>
     <table class="w-full border border-gray-300 rounded-lg">
-        <thead>
-            <tr class="bg-gray-100 border-b border-gray-300">
-                <th class="p-2 text-left">Tên phương tiện</th>
-                <th class="p-2 text-left">Loại</th>
-                <th class="p-2 text-center">Giá Net</th>
-                <th class="p-2 text-center">Số lượng</th>
-                <th class="p-2 text-center">Giá xe</th>
-                <th class="p-2 text-center">Actions</th>
-            </tr>
-            <tr class="bg-gray-200 border-b border-gray-300">
-                <th colspan="4"></th>
-                <th class="p-2 text-right">
-                    <table class="border-collapse inline-table w-full">
-                        <tr>
-                            <td class="text-center pr-2">01 - 04 khách</td>
-                            <td class="text-center pr-2">05 - 10 khách</td>
-                            <td class="text-center">11 - 20 khách</td>
-                        </tr>
-                    </table>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="border-b border-gray-300" *ngFor="let transport of transports; let i = index"
-                [class.bg-gray-50]="i % 2 === 0">
-                <td class="p-2">{{ transport.name }}</td>
-                <td class="p-2">{{ transport.type }}</td>
-                <td class="p-2 text-center">{{ transport.netPrice | currencyVnd }}</td>
-                <td class="p-2 text-center">{{ transport.quantity }}</td>
-                <td class="p-2 text-right">
-                    <table class="border-collapse inline-table w-full">
-                        <tr>
-                            <td class="text-center pr-2">{{ transport.roomPrices['01-04'] | currencyVnd }}</td>
-                            <td class="text-center pr-2">{{ transport.roomPrices['05-10'] | currencyVnd }}</td>
-                            <td class="text-center">{{ transport.roomPrices['11-20'] | currencyVnd }}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td class="p-2 text-center">
-                    <button class="text-red-500 hover:text-red-700">X</button>
-                </td>
-            </tr>
-        </tbody>
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-left">Tên phương tiện</th>
+          <th class="p-2 text-left">Loại</th>
+          <th class="p-2 text-center">Giá Net</th>
+          <th class="p-2 text-center">Số lượng</th>
+          <th class="p-2 text-center">Ngày</th> <!-- New column -->
+          <th class="p-2 text-center">Giá xe</th>
+          <th class="p-2 text-center">Actions</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="5"></th>
+          <th class="p-2 text-right">
+            <table class="border-collapse inline-table w-full">
+              <tr>
+                <td class="text-center pr-2">01 - 04 khách</td>
+                <td class="text-center pr-2">05 - 10 khách</td>
+                <td class="text-center">11 - 20 khách</td>
+              </tr>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-gray-300" *ngFor="let transport of transports; let i = index" [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2">{{ transport.name }}</td>
+          <td class="p-2">{{ transport.type }}</td>
+          <td class="p-2 text-center">{{ transport.netPrice | currencyVnd }}</td>
+          <td class="p-2 text-center">{{ transport.quantity }}</td>
+          <td class="p-2 text-center">{{ transport.day }}</td> <!-- Display day -->
+          <td class="p-2 text-right">
+            <table class="border-collapse inline-table w-full">
+              <tr>
+                <td class="text-center pr-2">{{ transport.roomPrices['01-04'] | currencyVnd }}</td>
+                <td class="text-center pr-2">{{ transport.roomPrices['05-10'] | currencyVnd }}</td>
+                <td class="text-center">{{ transport.roomPrices['11-20'] | currencyVnd }}</td>
+              </tr>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-red-500 hover:text-red-700">X</button>
+          </td>
+        </tr>
+      </tbody>
     </table>
-</div>
+  </div>
 
 <!-- Restaurants Section -->
 <div class="mb-6">
     <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center">
-            <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">3</div>
-            <h2 class="text-lg font-semibold ml-4">Nhà hàng</h2>
-        </div>
-        <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">3</div>
+        <h2 class="text-lg font-semibold ml-4">Nhà hàng</h2>
+      </div>
+      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
     </div>
     <table class="w-full border border-gray-300 rounded-lg">
-        <thead>
-            <tr class="bg-gray-100 border-b border-gray-300">
-                <th class="p-2 text-left">Tên nhà hàng</th>
-                <th class="p-2 text-left">Địa chỉ</th>
-                <th class="p-2 text-left">Loại</th>
-                <th class="p-2 text-center">Giá Net</th>
-                <th class="p-2 text-center">Số lượng</th>
-                <th class="p-2 text-center">Giá bữa ăn</th>
-                <th class="p-2 text-center">Actions</th>
-            </tr>
-            <tr class="bg-gray-200 border-b border-gray-300">
-                <th colspan="5"></th>
-                <th class="p-2 text-right">
-                    <table class="border-collapse inline-table w-full">
-                        <tr>
-                            <td class="text-center pr-2">01 - 04 khách</td>
-                            <td class="text-center pr-2">05 - 10 khách</td>
-                            <td class="text-center">11 - 20 khách</td>
-                        </tr>
-                    </table>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="border-b border-gray-300" *ngFor="let restaurant of restaurants; let i = index"
-                [class.bg-gray-50]="i % 2 === 0">
-                <td class="p-2">{{ restaurant.name }}</td>
-                <td class="p-2">{{ restaurant.location }}</td>
-                <td class="p-2">{{ restaurant.type }}</td>
-                <td class="p-2 text-center">{{ restaurant.netPrice | currencyVnd }}</td>
-                <td class="p-2 text-center">{{ restaurant.quantity }}</td>
-                <td class="p-2 text-right">
-                    <table class="border-collapse inline-table w-full">
-                        <tr>
-                            <td class="text-center pr-2">{{ restaurant.roomPrices['01-04'] | currencyVnd }}</td>
-                            <td class="text-center pr-2">{{ restaurant.roomPrices['05-10'] | currencyVnd }}</td>
-                            <td class="text-center">{{ restaurant.roomPrices['11-20'] | currencyVnd }}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td class="p-2 text-center">
-                    <button class="text-red-500 hover:text-red-700">X</button>
-                </td>
-            </tr>
-        </tbody>
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-left">Tên nhà hàng</th>
+          <th class="p-2 text-left">Địa chỉ</th>
+          <th class="p-2 text-left">Loại</th>
+          <th class="p-2 text-center">Giá Net</th>
+          <th class="p-2 text-center">Số lượng</th>
+          <th class="p-2 text-center">Ngày</th> <!-- New column -->
+          <th class="p-2 text-center">Giá bữa ăn</th>
+          <th class="p-2 text-center">Actions</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="6"></th>
+          <th class="p-2 text-right">
+            <table class="border-collapse inline-table w-full">
+              <tr>
+                <td class="text-center pr-2">01 - 04 khách</td>
+                <td class="text-center pr-2">05 - 10 khách</td>
+                <td class="text-center">11 - 20 khách</td>
+              </tr>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-gray-300" *ngFor="let restaurant of restaurants; let i = index" [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2">{{ restaurant.name }}</td>
+          <td class="p-2">{{ restaurant.location }}</td>
+          <td class="p-2">{{ restaurant.type }}</td>
+          <td class="p-2 text-center">{{ restaurant.netPrice | currencyVnd }}</td>
+          <td class="p-2 text-center">{{ restaurant.quantity }}</td>
+          <td class="p-2 text-center">{{ restaurant.day }}</td> <!-- Display day -->
+          <td class="p-2 text-right">
+            <table class="border-collapse inline-table w-full">
+              <tr>
+                <td class="text-center pr-2">{{ restaurant.roomPrices['01-04'] | currencyVnd }}</td>
+                <td class="text-center pr-2">{{ restaurant.roomPrices['05-10'] | currencyVnd }}</td>
+                <td class="p-2 text-center">{{ restaurant.roomPrices['11-20'] | currencyVnd }}</td>
+              </tr>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-red-500 hover:text-red-700">X</button>
+          </td>
+        </tr>
+      </tbody>
     </table>
-</div>
+  </div>
 
 <!-- Tour Guides Section -->
 <div class="mb-6">
     <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center">
-            <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">4</div>
-            <h2 class="text-lg font-semibold ml-4">Hướng dẫn viên</h2>
-        </div>
-        <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">4</div>
+        <h2 class="text-lg font-semibold ml-4">Hướng dẫn viên</h2>
+      </div>
+      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
     </div>
     <table class="w-full border border-gray-300 rounded-lg">
-        <thead>
-            <tr class="bg-gray-100 border-b border-gray-300">
-                <th class="p-2 text-left">Tên HDV</th>
-                <th class="p-2 text-left">Nhà cung cấp</th>
-                <th class="p-2 text-center">Giá Net</th>
-                <th class="p-2 text-center">Số lượng</th>
-                <th class="p-2 text-center">Giá HDV</th>
-                <th class="p-2 text-center">Actions</th>
-            </tr>
-            <tr class="bg-gray-200 border-b border-gray-300">
-                <th colspan="4"></th>
-                <th class="p-2 text-right">
-                    <table class="border-collapse inline-table w-full">
-                        <tr>
-                            <td class="text-center pr-2">01 - 04 khách</td>
-                            <td class="text-center pr-2">05 - 10 khách</td>
-                            <td class="text-center">11 - 20 khách</td>
-                        </tr>
-                    </table>
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="border-b border-gray-300" *ngFor="let guide of tourGuides; let i = index"
-                [class.bg-gray-50]="i % 2 === 0">
-                <td class="p-2">{{ guide.name }}</td>
-                <td class="p-2">{{ guide.provider }}</td>
-                <td class="p-2 text-center">{{ guide.netPrice | currencyVnd }}</td>
-                <td class="p-2 text-center">{{ guide.quantity }}</td>
-                <td class="p-2 text-center">
-                    <table class="border-collapse inline-table w-full">
-                        <tr>
-                            <td class="text-center pr-2">{{ guide.roomPrices['01-04'] | currencyVnd }}</td>
-                            <td class="text-center pr-2">{{ guide.roomPrices['05-10'] | currencyVnd }}</td>
-                            <td class="text-center">{{ guide.roomPrices['11-20'] | currencyVnd }}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td class="p-2 text-center">
-                    <button class="text-red-500 hover:text-red-700">X</button>
-                </td>
-            </tr>
-        </tbody>
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-left">Tên HDV</th>
+          <th class="p-2 text-left">Nhà cung cấp</th>
+          <th class="p-2 text-center">Giá Net</th>
+          <th class="p-2 text-center">Số lượng</th>
+          <th class="p-2 text-center">Ngày</th> <!-- New column -->
+          <th class="p-2 text-center">Giá HDV</th>
+          <th class="p-2 text-center">Actions</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="5"></th>
+          <th class="p-2 text-right">
+            <table class="border-collapse inline-table w-full">
+              <tr>
+                <td class="text-center pr-2">01 - 04 khách</td>
+                <td class="text-center pr-2">05 - 10 khách</td>
+                <td class="text-center">11 - 20 khách</td>
+              </tr>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-gray-300" *ngFor="let guide of tourGuides; let i = index" [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2">{{ guide.name }}</td>
+          <td class="p-2">{{ guide.provider }}</td>
+          <td class="p-2 text-center">{{ guide.netPrice | currencyVnd }}</td>
+          <td class="p-2 text-center">{{ guide.quantity }}</td>
+          <td class="p-2 text-center">{{ guide.day }}</td> <!-- Display day -->
+          <td class="p-2 text-center">
+            <table class="border-collapse inline-table w-full">
+              <tr>
+                <td class="text-center pr-2">{{ guide.roomPrices['01-04'] | currencyVnd }}</td>
+                <td class="text-center pr-2">{{ guide.roomPrices['05-10'] | currencyVnd }}</td>
+                <td class="text-center">{{ guide.roomPrices['11-20'] | currencyVnd }}</td>
+              </tr>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-red-500 hover:text-red-700">X</button>
+          </td>
+        </tr>
+      </tbody>
     </table>
-</div>
+  </div>
 
 <!-- Activities Section -->
 <div class="mb-6">
     <div class="flex justify-between items-center mb-4">
-        <div class="flex items-center">
-            <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">5</div>
-            <h2 class="text-lg font-semibold ml-4">Hoạt động</h2>
-        </div>
-        <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">5</div>
+        <h2 class="text-lg font-semibold ml-4">Hoạt động</h2>
+      </div>
+      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
     </div>
-
     <div class="overflow-x-auto">
-        <div class="overflow-x-auto">
-            <table class="w-full border border-gray-300 rounded-lg min-w-[1200px]">
-                <thead>
-                    <tr class="bg-gray-100 border-b border-gray-300">
-                        <th class="p-2 text-left min-w-[150px]">Tên hoạt động</th>
-                        <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
-                        <th class="p-2 text-left min-w-[120px]">Type</th>
-                        <th class="p-2 text-center min-w-[100px]">Giá Net</th>
-                        <th class="p-2 text-center min-w-[90px]">Số lượng</th>
-                        <th class="p-2 text-center min-w-[250px]">Giá vé</th>
-                        <th class="p-2 text-center min-w-[100px]">Actions</th>
-                    </tr>
-                    <tr class="bg-gray-200 border-b border-gray-300">
-                        <th colspan="5"></th>
-                        <th class="p-2 text-right">
-                            <table class="border-collapse inline-table w-full">
-                                <tr>
-                                    <td class="text-center pr-2 min-w-[120px]">01 - 04 khách</td>
-                                    <td class="text-center pr-2 min-w-[120px]">05 - 10 khách</td>
-                                    <td class="text-center min-w-[120px]">11 - 20 khách</td>
-                                </tr>
-                            </table>
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="border-b border-gray-300" *ngFor="let activity of activities; let i = index"
-                        [class.bg-gray-50]="i % 2 === 0">
-                        <td class="p-2 whitespace-nowrap">{{ activity.name }}</td>
-                        <td class="p-2 whitespace-nowrap">{{ activity.provider }}</td>
-                        <td class="p-2 whitespace-nowrap">{{ activity.type }}</td>
-                        <td class="p-2 text-center whitespace-nowrap">{{ activity.netPrice | currencyVnd }}</td>
-                        <td class="p-2 text-center whitespace-nowrap">{{ activity.quantity }}</td>
-                        <td class="p-2 text-right whitespace-nowrap">
-                            <table class="border-collapse inline-table w-full">
-                                <tr>
-                                    <td class="text-center pr-2">{{ activity.roomPrices['01-04'] | currencyVnd }}</td>
-                                    <td class="text-center pr-2">{{ activity.roomPrices['05-10'] | currencyVnd }}</td>
-                                    <td class="text-center">{{ activity.roomPrices['11-20'] | currencyVnd }}</td>
-                                </tr>
-                            </table>
-                        </td>
-                        <td class="p-2 text-center">
-                            <button class="text-red-500 hover:text-red-700">X</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+      <table class="w-full border border-gray-300 rounded-lg min-w-[1200px]">
+        <thead>
+          <tr class="bg-gray-100 border-b border-gray-300">
+            <th class="p-2 text-left min-w-[150px]">Tên hoạt động</th>
+            <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
+            <th class="p-2 text-left min-w-[120px]">Type</th>
+            <th class="p-2 text-center min-w-[100px]">Giá Net</th>
+            <th class="p-2 text-center min-w-[90px]">Số lượng</th>
+            <th class="p-2 text-center min-w-[90px]">Ngày</th> <!-- New column -->
+            <th class="p-2 text-center min-w-[250px]">Giá vé</th>
+            <th class="p-2 text-center min-w-[100px]">Actions</th>
+          </tr>
+          <tr class="bg-gray-200 border-b border-gray-300">
+            <th colspan="6"></th>
+            <th class="p-2 text-right">
+              <table class="border-collapse inline-table w-full">
+                <tr>
+                  <td class="text-center pr-2 min-w-[120px]">01 - 04 khách</td>
+                  <td class="text-center pr-2 min-w-[120px]">05 - 10 khách</td>
+                  <td class="text-center min-w-[120px]">11 - 20 khách</td>
+                </tr>
+              </table>
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-gray-300" *ngFor="let activity of activities; let i = index" [class.bg-gray-50]="i % 2 === 0">
+            <td class="p-2 whitespace-nowrap">{{ activity.name }}</td>
+            <td class="p-2 whitespace-nowrap">{{ activity.provider }}</td>
+            <td class="p-2 whitespace-nowrap">{{ activity.type }}</td>
+            <td class="p-2 text-center whitespace-nowrap">{{ activity.netPrice | currencyVnd }}</td>
+            <td class="p-2 text-center whitespace-nowrap">{{ activity.quantity }}</td>
+            <td class="p-2 text-center whitespace-nowrap">{{ activity.day }}</td> <!-- Display day -->
+            <td class="p-2 text-right whitespace-nowrap">
+              <table class="border-collapse inline-table w-full">
+                <tr>
+                  <td class="text-center pr-2">{{ activity.roomPrices['01-04'] | currencyVnd }}</td>
+                  <td class="text-center pr-2">{{ activity.roomPrices['05-10'] | currencyVnd }}</td>
+                  <td class="text-center">{{ activity.roomPrices['11-20'] | currencyVnd }}</td>
+                </tr>
+              </table>
+            </td>
+            <td class="p-2 text-center">
+              <button class="text-red-500 hover:text-red-700">X</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-</div>
+  </div>
 
 
 <div class="mb-6">
@@ -352,5 +360,10 @@
             </tbody>
         </table>
     </div>
-
 </div>
+
+<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
+<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
+<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
+<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
+<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
