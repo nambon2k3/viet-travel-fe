@@ -52,6 +52,8 @@ export class TourBookingConfirmComponent {
         this.numberAdults = this.bookingData.adults.length;
         this.numberChildren = this.bookingData.children.length;
 
+        console.log(this.bookingData)
+
         this.calculateTotal();
 
         this.setExpiredDate();
