@@ -16,9 +16,4 @@ export class AdminHeaderComponent implements OnInit {
   constructor(public layoutService: layoutService) {}
 
   ngOnInit(): void {}
-
-  public toggleMobileMenu(): void {
-    this.layoutService.showMobileMenu = true;
-  }
-
 }

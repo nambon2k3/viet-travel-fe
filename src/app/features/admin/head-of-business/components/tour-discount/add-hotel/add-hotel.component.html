@@ -9,36 +9,35 @@
                 <div>
                     <label for="day" class="block text-lg font-bold text-gray-700">Ngày:</label>
                     <select id="day" name="day" formControlName="selectedDay"
-                        class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                        (ngModelChange)="onLocationChange()">
+                        class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                         <option *ngFor="let day of days" [value]="day">{{ day }}</option>
                     </select>
                 </div>
                 <div>
                     <label for="location" class="block text-lg font-bold text-gray-700">Địa chỉ:</label>
                     <select id="location" name="location" formControlName="selectedLocation"
-                        class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                        class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        (ngModelChange)="onLocationChange()">
                         <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
                     </select>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="col-span-2">
-                        <label for="hotel" class="block text-lg font-bold text-gray-700">Khách sạn:</label>
-                        <select id="hotel" name="hotel" formControlName="selectedHotel"
-                            class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-                            (change)="onHotelChange()">
-                            <option *ngFor="let hotel of hotels" [value]="hotel.name">{{ hotel.name }}</option>
-                        </select>
-                    </div>
+            </div>
 
-                    <div class="col-span-2">
-                        <div class="mt-1 flex items-center relative">
-                            <label for="netPrice" class="block text-lg font-bold text-gray-700">Giá Net/1 ngày:</label>
-                            <input type="number" id="netPrice" name="netPrice" formControlName="netPrice"
-                                class="w-1/3 ml-4 border border-gray-300 rounded-md p-2 bg-gray-100 text-left pr-12"
-                                readonly>
-                            <span class="absolute right-1 z-10 ml-2 text-sm font-medium text-gray-700">VND</span>
-                        </div>
+            <div class="w-full">
+                <div class="w-2/3">
+                    <label for="hotel" class="block text-lg font-bold text-gray-700">Khách sạn:</label>
+                    <select id="hotel" name="hotel" formControlName="selectedHotel"
+                        class="mt-1 block w-full border border-gray-300 rounded-md p-2" (change)="onHotelChange()">
+                        <option *ngFor="let hotel of hotels" [value]="hotel.name">{{ hotel.name }}</option>
+                    </select>
+                </div>
+
+                <div class="w-fit mt-6">
+                    <div class="mt-1 flex items-center relative">
+                        <label for="netPrice" class="block text-lg font-bold text-gray-700">Giá Net/1 ngày:</label>
+                        <input type="number" id="netPrice" name="netPrice" formControlName="netPrice"
+                            class="ml-4 border border-gray-300 rounded-md p-2 bg-gray-100 text-left pr-16" readonly>
+                        <span class="absolute right-1 z-10 ml-2 text-sm font-medium text-gray-700">VND</span>
                     </div>
                 </div>
             </div>
@@ -53,9 +52,9 @@
                             <th class="p-2 text-left">Giá bán</th>
                         </tr>
                     </thead>
-                    <tbody formArrayName="prices" >
-                        <tr *ngFor="let price of pricesFormArray.controls; let i = index"
-                            [formGroupName]="i" class="border-b border-gray-300">
+                    <tbody formArrayName="prices">
+                        <tr *ngFor="let price of pricesFormArray.controls; let i = index" [formGroupName]="i"
+                            class="border-b border-gray-300">
                             <td class="p-2">{{ price.value.guests }}</td>
                             <td class="p-2 text-left">
                                 <input type="number" formControlName="sellingPrice"
