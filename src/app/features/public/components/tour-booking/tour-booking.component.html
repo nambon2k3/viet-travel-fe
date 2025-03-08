@@ -21,7 +21,7 @@
                 <div class="w-12 h-12 bg-black text-white flex items-center justify-center rounded-full">
                     📋
                 </div>
-                <p class="font-semibold mt-2">Enter Information</p>
+                <p class="font-semibold mt-2">Nhập thông tin</p>
             </div>
             <div class="border-t-2 border-gray-400 w-12"></div>
             <div class="flex flex-col items-center text-gray-400">
@@ -35,7 +35,7 @@
                 <div class="w-12 h-12 border-2 border-gray-400 flex items-center justify-center rounded-full">
                     💰
                 </div>
-                <p class="mt-2">Payment</p>
+                <p class="mt-2">Thanh toán</p>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
             <!-- Left Section: Contact Information -->
             <div class="md:col-span-2 bg-white p-6 rounded-lg shadow">
-                <h2 class="text-2xl mb-12 font-semibold mb-4">Contact Information</h2>
+                <h2 class="text-2xl mb-12 font-semibold mb-4">Thông tin liên hệ</h2>
                 <!-- <div class="bg-blue-100 text-blue-700 p-3 rounded-md mb-4">
                     <a href="#" class="font-semibold">🔑 Sign in</a> to receive offers, earn points, and manage orders more
                     easily!
@@ -54,25 +54,25 @@
                 <!-- Form Fields -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block font-semibold">Fullname *</label>
+                        <label class="block font-semibold">Họ và Tên *</label>
                         <input type="text" class="w-full border p-2 rounded mt-1" formControlName="fullName"
                             placeholder="Enter fullname">
                         <p *ngIf="
                             bookingForm.get('fullName')?.invalid &&
                             bookingForm.get('fullName')?.touched
                           " class="text-red-500 text-sm">
-                            Required Information
+                            Thông tin bắt buộc
                         </p>
                     </div>
                     <div>
-                        <label class="block font-semibold">Phone *</label>
+                        <label class="block font-semibold">Điện thoại *</label>
                         <input type="text" class="w-full border p-2 rounded mt-1" formControlName="phone"
                             placeholder="Enter phone number">
                         <p *ngIf="
                             bookingForm.get('phone')?.invalid &&
                             bookingForm.get('phone')?.touched
                           " class="text-red-500 text-sm">
-                            Required Information
+                            Thông tin bắt buộc
                         </p>
                     </div>
                     <div>
@@ -83,21 +83,21 @@
                             bookingForm.get('email')?.invalid &&
                             bookingForm.get('email')?.touched
                           " class="text-red-500 text-sm">
-                            Required Information
+                            Thông tin bắt buộc
                         </p>
                     </div>
                     <div>
-                        <label class="block font-semibold">Address</label>
+                        <label class="block font-semibold">Địa chỉ</label>
                         <input type="text" class="w-full border p-2 rounded mt-1" formControlName="address"
                             placeholder="Enter address">
                     </div>
                 </div>
 
                 <!-- Passenger Selection -->
-                <h2 class="text-lg font-semibold mt-6 mb-2">Passenger</h2>
+                <h2 class="text-lg font-semibold mt-6 mb-2">Hành khách</h2>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="border p-4 rounded-lg flex justify-between items-center">
-                        <span>Adult<br><small class="text-gray-500">12 and up</small></span>
+                        <span>Người lớn<br><small class="text-gray-500">Lớn hơn 12 tuổi</small></span>
                         <div class="flex items-center space-x-2">
                             <button type="button" class="border px-3 py-1 rounded"
                                 (click)="decrementAldults()">-</button>
@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="border p-4 rounded-lg flex justify-between items-center">
-                        <span>Children<br><small class="text-gray-500">Under 12</small></span>
+                        <span>Trẻ em<br><small class="text-gray-500">Dưới 12 tuổi</small></span>
                         <div class="flex items-center space-x-2">
                             <button type="button" class="border px-3 py-1 rounded"
                                 (click)="decrementChildren()">-</button>
@@ -119,15 +119,15 @@
                 </div>
 
                 <!-- Passenger Information -->
-                <h2 class="text-2xl font-semibold mt-12 mb-12">Passenger Information</h2>
-                <p class="font-semibold mb-6">👨‍👩‍👧 Adult (12 years and older)</p>
+                <h2 class="text-2xl font-semibold mt-12 mb-12">Thông tin đoàn</h2>
+                <p class="font-semibold mb-6">👨‍👩‍👧 Người lớn (12 tuổi trở lên)</p>
 
 
                 <div formArrayName="adults">
                     @for (num of range(numberAdults); track num) {
                     <div [formGroupName]="$index" class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
                         <div>
-                            <label class="block font-semibold">Fullname *</label>
+                            <label class="block font-semibold">Họ và tên *</label>
                             <input type="text" formControlName="fullName" class="w-full border p-2 rounded mt-1"
                                 placeholder="Enter fullname">
 
@@ -136,29 +136,29 @@
                                   adultsFormArray.at($index).get('fullName')?.invalid &&
                                   adultsFormArray.at($index).get('fullName')?.touched
                                 " class="text-red-500 text-sm">
-                                Required Information
+                                Thông tin bắt buộc
                             </p>
                         </div>
                         <div>
-                            <label class="block font-semibold">Gender *</label>
+                            <label class="block font-semibold">Giới tính *</label>
                             <select formControlName="gender" class="w-full border p-2 rounded mt-1">
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option>
+                                <option value="MALE">Nam</option>
+                                <option value="FEMALE">Nữ</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block font-semibold">Date of Birth *</label>
+                            <label class="block font-semibold">Ngày sinh *</label>
                             <input type="date" formControlName="dateOfBirth" class="w-full border p-2 rounded mt-1">
                             <p *ngIf="
                                   adultsFormArray.at($index).get('dateOfBirth')?.invalid &&
                                   adultsFormArray.at($index).get('dateOfBirth')?.touched
                                 " class="text-red-500 text-sm">
-                                Required Information
+                                Thông tin bắt buộc
                             </p>
                         </div>
                         <div class="flex flex-col justify-center text-center gap-2">
 
-                            <label class="block font-semibold">🛏️ Single Room</label>
+                            <label class="block font-semibold">🛏️ Phòng đơn</label>
 
                             <label class="inline-flex items-center cursor-pointer justify-center">
                                 <input type="checkbox" value="" class="sr-only peer" formControlName="singleRoom">
@@ -183,35 +183,35 @@
                 <div formArrayName="children">
                     @for (num of range(numberChildren); track num; let first = $first) {
                     @if(first) {
-                    <p class="font-semibold mt-12 mb-6">👨‍👩‍👧 Children (Under 12)</p>
+                    <p class="font-semibold mt-12 mb-6">👨‍👩‍👧 Trẻ em (Dưới 12 tuổi)</p>
                     }
                     <div [formGroupName]="$index" class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                         <div>
-                            <label class="block font-semibold">Fullname *</label>
+                            <label class="block font-semibold">Họ và tên *</label>
                             <input type="text" formControlName="fullName" class="w-full border p-2 rounded mt-1"
                                 placeholder="Enter fullname">
                             <p *ngIf="
                                 childrenFormArray.at($index).get('fullName')?.invalid &&
                                 childrenFormArray.at($index).get('fullName')?.touched
                               " class="text-red-500 text-sm">
-                                Required Information
+                                Thông tin bắt buộc
                             </p>
                         </div>
                         <div>
-                            <label class="block font-semibold">Gender *</label>
+                            <label class="block font-semibold">Giới tính *</label>
                             <select formControlName="gender" class="w-full border p-2 rounded mt-1">
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option>
+                                <option value="MALE">Nam</option>
+                                <option value="FEMALE">Nữ</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block font-semibold">Date of Birth *</label>
+                            <label class="block font-semibold">Ngày sinh *</label>
                             <input type="date" formControlName="dateOfBirth" class="w-full border p-2 rounded mt-1">
                             <p *ngIf="
                                   childrenFormArray.at($index).get('dateOfBirth')?.invalid &&
                                   childrenFormArray.at($index).get('dateOfBirth')?.touched
                                 " class="text-red-500 text-sm">
-                                Required Information
+                                Thông tin bắt buộc
                             </p>
                         </div>
 
@@ -226,13 +226,13 @@
 
 
                 <!-- Note Section -->
-                <h2 class="text-lg font-semibold mb-2 mt-12">Note</h2>
-                <p class="text-gray-600 text-sm mb-2">If you have any notes, please let us know</p>
+                <h2 class="text-lg font-semibold mb-2 mt-12">Ghi chú</h2>
+                <p class="text-gray-600 text-sm mb-2">Nếu bạn có bất kỳ yêu cầu nào, vui lòng cho chúng tôi biết</p>
                 <textarea class="w-full border p-3 rounded-md mb-6" rows="4" formControlName="note"
-                    placeholder="Please enter message here..."></textarea>
+                    placeholder="Vui lòng nhập tin nhắn tại đây..."></textarea>
 
                 <!-- Payment Methods -->
-                <h2 class="text-lg font-semibold mb-4">Payment Methods</h2>
+                <h2 class="text-lg font-semibold mb-4">Phương thức thanh toán</h2>
 
                 <ul class="grid w-full gap-6 md:grid-cols-1">
                     <li>
@@ -241,8 +241,8 @@
                         <label for="hosting-small"
                             class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             <div class="block">
-                                <div class="w-full text-lg font-semibold">Cash</div>
-                                <div class="w-full">Please pay directly at FPT University Hoa Lac</div>
+                                <div class="w-full text-lg font-semibold">Tiền mặt</div>
+                                <div class="w-full">Vui lòng thanh toán tại cơ sở FPT University Hoà Lạc</div>
                             </div>
                         </label>
                     </li>
@@ -252,12 +252,11 @@
                         <label for="hosting-big"
                             class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
                             <div class="block">
-                                <div class="w-full text-lg font-semibold">Bank Account</div>
-                                <div class="w-full">After making the transfer, please send an email a.com to receive
-                                    confirmation from us.</div>
+                                <div class="w-full text-lg font-semibold">Banking</div>
+                                <div class="w-full">Sau khi chuyển khoản, vui lòng gửi email đến a&#64;gmail.com để nhận xác nhận từ chúng tôi.</div>
                                 <div class="w-full mt-5">
-                                    <p><strong>Account Number:</strong> 2003883886 - Nguyen Viet Hoai Nam</p>
-                                    <p class="mt-2"><strong>Bank:</strong> MB Bank</p>
+                                    <p><strong>STK:</strong> 2003883886 - Nguyen Viet Hoai Nam</p>
+                                    <p class="mt-2"><strong>Ngân hàng:</strong> MB Bank</p>
                                 </div>
                             </div>
                         </label>
@@ -265,7 +264,7 @@
                 </ul>
 
                 <!-- Mandatory Terms -->
-                <h2 class="text-lg font-semibold mb-4">Mandatory Terms</h2>
+                <h2 class="text-lg font-semibold mb-4 mt-5">Điều khoản bắt buộc</h2>
                 <p class="max-h-[350px] border p-3 rounded-md mb-4" rows="3">
                     ĐIỀU KHOẢN THỎA THUẬN SỬ DỤNG DỊCH VỤ DU LỊCH NỘI ĐỊA
 
@@ -288,8 +287,7 @@
 
                 <label class="flex items-center space-x-2 mt-12">
                     <input type="checkbox" (click)="confirmAgreeTerms()" class="w-5 h-5">
-                    <span class="text-gray-700 text-sm">I agree to the Personal Data Protection and the above
-                        terms</span>
+                    <span class="text-gray-700 text-sm">Tôi đồng ý với Chính sách Bảo vệ Dữ liệu Cá nhân và các điều khoản trên.</span>
                 </label>
 
 
@@ -298,7 +296,7 @@
 
             <!-- Right Section: Trip Summary -->
             <div class="bg-white p-6 rounded-lg shadow h-fit z-30 sticky top-32">
-                <h2 class="text-lg font-semibold mb-4">Trip Summary</h2>
+                <h2 class="text-lg font-semibold mb-4">Tóm tắt chuyến đi</h2>
 
                 <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
                     <img [src]="tourDetails?.tourImages?.at(0)?.imageUrl" alt="" class="w-full h-full object-cover" />
@@ -314,34 +312,34 @@
                         <strong>{{tourDetails?.numberDays}}D{{tourDetails?.numberNight}}N</strong>
                     </p>
                 </div>
-                <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Customer</span> <span
+                <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Khách hàng</span> <span
                         class="text-red-600">{{total}} VND</span></p>
-                <p class="flex justify-between mb-2"><span>🧑 Adult: </span> <span>{{numberAdults}} x
+                <p class="flex justify-between mb-2"><span>🧑 Người lớn: </span> <span>{{numberAdults}} x
                         {{tourSchedule?.sellingPrice}} VND</span></p>
                 <p class="flex justify-between mb-2">
                     @if(numberChildren > 0) {
-                    <span>👶 Children:</span> <span>{{numberChildren}} x {{childrenPrice}} VND</span>
+                    <span>👶 Trẻ em:</span> <span>{{numberChildren}} x {{childrenPrice}} VND</span>
 
                     }
                 </p>
                 <p class="flex justify-between mb-2">
                     @if(numberSingleRooms > 0) {
-                    <span>📍 Single Room:</span> <span>{{numberSingleRooms}} x
+                    <span>📍 Phòng đơn:</span> <span>{{numberSingleRooms}} x
                         {{tourSchedule?.extraHotelCost}} VND</span>
                     } @else {
-                    <span>📍 Single Room:</span> <span>0 VND</span>
+                    <span>📍 Phòng đơn:</span> <span>0 VND</span>
                     }
                 </p>
                 <hr class="my-4">
                 <input type="text" formControlName="total" class="w-full border p-2 rounded mt-1" hidden>
-                <p class="font-semibold text-xl flex justify-between"><span>Total amount:</span> <span
+                <p class="font-semibold text-xl flex justify-between"><span>Tổng số tiền:</span> <span
                         class="text-red-600">{{total}} VND</span></p>
                 <button [disabled]="!agreeTerms" type="submit"
                     class="w-full bg-red-500 text-white py-3 rounded-lg mt-4">
                     @if(!agreeTerms) {
-                    Enter information to book tour
+                        Nhập thông tin để đặt tour
                     } @else {
-                    Book Tour
+                        Đặt tour
                     }
                 </button>
             </div>
