@@ -212,16 +212,16 @@
             <h2 class="text-lg font-semibold mb-4">Xác nhận chuyến đi</h2>
 
             <div class="bg-gray-200 w-full h-40 flex items-center justify-center">
-                <img [src]="bookingData?.tour.tourImages.imageUrl" alt="" class="w-full h-full object-cover" />
+                <img [src]="bookingData?.tour?.tourImage.imageUrl" alt="" class="w-full h-full object-cover" />
             </div>
 
             <div class="bg-gray-100 p-4 rounded-md mb-4">
-                <p class="font-semibold">📍 {{bookingData?.tour.name}}</p>
+                <p class="font-semibold">📍 {{bookingData?.tour?.name}}</p>
                 <p class="text-gray-500">🎟️ Ngày đi: {{bookingData?.tourSchedule.startDate | date: 'dd/MM/yyyy'}}
                 </p>
-                <p class="text-gray-500">📍 Điểm xuất phát: <strong>{{bookingData?.tour.depart_location.name}}</strong></p>
+                <p class="text-gray-500">📍 Điểm xuất phát: <strong>{{bookingData?.tour?.departLocation?.name}}</strong></p>
                 <p class="text-gray-500">⏳ Thời lượng:
-                    <strong>{{bookingData?.tour.numberDays}}N{{bookingData?.tour.numberNight}}D</strong>
+                    <strong>{{bookingData?.tour.numberDays}}N{{bookingData?.tour?.numberNights}}D</strong>
                 </p>
             </div>
             <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Khách hàng</span> <span
