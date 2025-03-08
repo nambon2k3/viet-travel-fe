@@ -8,7 +8,7 @@ export interface Tour {
   note?: string | null;
   locations: Location[];
   tags: Tag[];
-  depart_location: Location;
+  departlocation: Location;
   tickets: Ticket[];
   priceFrom: number;
   tourImages: TourImage[];

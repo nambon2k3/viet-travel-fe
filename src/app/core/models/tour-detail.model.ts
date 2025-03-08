@@ -8,7 +8,7 @@ export interface TourDetail {
     privacy: string;
     locations: Location[];
     tags: Tag[];
-    depart_location: Location;
+    departlocation: Location;
     tourSchedules: TourSchedule[];
     tourImages: TourImage[];
     otherTours: OtherTour[];
@@ -21,7 +21,7 @@ export interface TourDetail {
     numberDays: number;
     numberNight: number;
     privacy: string;
-    depart_location: Location;
+    departlocation: Location;
     tourSchedules: TourSchedule;
     tourImage: TourImage;
   }
@@ -69,7 +69,7 @@ export interface TourDetail {
     numberDays: number;
     numberNight: number;
     tags: Tag[];
-    depart_location: Location;
+    departlocation: Location;
     tourImages: TourImage[];
     priceFrom: number;
   }
