@@ -83,7 +83,8 @@
         <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">2</div>
         <h2 class="text-lg font-semibold ml-4">Phương tiện</h2>
       </div>
-      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <button data-modal-target="addTransportationModal" data-modal-toggle="addTransportationModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm mới</button>
     </div>
     <table class="w-full border border-gray-300 rounded-lg">
       <thead>
@@ -141,7 +142,8 @@
         <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">3</div>
         <h2 class="text-lg font-semibold ml-4">Nhà hàng</h2>
       </div>
-      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <button data-modal-target="addRestaurantModal" data-modal-toggle="addRestaurantModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm mới</button>
     </div>
     <table class="w-full border border-gray-300 rounded-lg">
       <thead>
@@ -201,7 +203,8 @@
         <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">4</div>
         <h2 class="text-lg font-semibold ml-4">Hướng dẫn viên</h2>
       </div>
-      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <button data-modal-target="addTourGuideModal" data-modal-toggle="addTourGuideModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm mới</button>
     </div>
     <table class="w-full border border-gray-300 rounded-lg">
       <thead>
@@ -259,7 +262,8 @@
         <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">5</div>
         <h2 class="text-lg font-semibold ml-4">Hoạt động</h2>
       </div>
-      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Thêm mới</button>
+      <button data-modal-target="addActivityModal" data-modal-toggle="addActivityModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm mới</button>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full border border-gray-300 rounded-lg min-w-[1200px]">
@@ -363,7 +367,7 @@
 </div>
 
 <app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
+<app-add-transportation #addTransportationModal (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
+<app-add-restaurant #addRestaurantModal (RestaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
+<app-add-tourguide #addTourGuideModal (tourGuideAdded)="addNewTourGuide($event)"></app-add-tourguide>
+<app-add-activity #addActivityModal (activityAdded)="addNewActivity($event)"></app-add-activity>

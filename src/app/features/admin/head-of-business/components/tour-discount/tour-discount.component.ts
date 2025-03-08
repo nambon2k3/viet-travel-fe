@@ -3,6 +3,10 @@ import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
 import { AddHotelComponent } from "./add-hotel/add-hotel.component";
+import { AddTransportationComponent } from './add-transportation/add-transportation.component';
+import { AddRestaurantComponent } from "./add-restaurant/add-restaurant.component";
+import { AddTourGuideComponent } from "./add-tour-guide/add-tour-guide.component";
+import { AddActivityComponent } from "./add-activity/add-activity.component";
 
 interface Hotel {
   name: string;
@@ -57,12 +61,23 @@ interface PriceRange {
 
 @Component({
   selector: 'app-tour-discount',
-  imports: [CurrencyVndPipe, CommonModule, AddHotelComponent],
+  imports: [CurrencyVndPipe,
+     CommonModule, 
+     AddHotelComponent, 
+     AddTransportationComponent, 
+     AddRestaurantComponent, 
+     AddTourGuideComponent,
+     AddActivityComponent
+    ],
   templateUrl: './tour-discount.component.html',
   styleUrl: './tour-discount.component.css'
 })
 export class TourDiscountComponent {
   @ViewChild('addHotelModal') addHotelModal!: AddHotelComponent;
+  @ViewChild('addTransportationModal') addTransportationModal!: AddTransportationComponent;
+  @ViewChild('addRestaurantnModal') addRestaurantModal!: AddRestaurantComponent;
+  @ViewChild('addTourGuidenModal') addTourGuideModal!: AddTourGuideComponent;
+  @ViewChild('addActivityModal') addActivityModal!: AddActivityComponent;
 
   constructor(
     private router: Router
@@ -249,7 +264,7 @@ export class TourDiscountComponent {
 
   addNewHotel(event: any) {
     const newHotel: Hotel = {
-      name: event.hotel,
+      name: event.name,
       location: event.location,
       netPrice: event.netPrice,
       quantity: 1, // Default quantity
@@ -260,6 +275,84 @@ export class TourDiscountComponent {
       day: event.day // Use the selected day
     };
     this.hotels.push(newHotel);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
+
+  addNewTransportation(event: any) {
+    const newTransportation: Transport = {
+      name: event.name,
+      type: event.type,
+      netPrice: event.netPrice,
+      quantity: 1, // Default quantity
+      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day // Use the selected day
+    };
+    this.transports.push(newTransportation);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
+
+  addNewTourGuide(event: any) {
+    const newTourGuide: TourGuide = {
+      name: event.name,
+      provider: event.provider,
+      netPrice: event.netPrice,
+      quantity: 1, // Default quantity
+      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day // Use the selected day
+    };
+    this.tourGuides.push(newTourGuide);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
+
+  addNewRestaurant(event: any) {
+    const newRestaurant: Restaurant = {
+      name: event.name,
+      location: event.location,
+      type: event.type,
+      netPrice: event.netPrice,
+      quantity: 1, // Default quantity
+      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day // Use the selected day
+    };
+    this.restaurants.push(newRestaurant);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
+
+  addNewActivity(event: any) {
+    const newActivity: Activity = {
+      name: event.name,
+      provider: event.provider,
+      type: event.type,
+      netPrice: event.netPrice,
+      quantity: 1, // Default quantity
+      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day // Use the selected day
+    };
+    this.activities.push(newActivity);
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
     this.calculatePerGuestPrices();
@@ -401,8 +494,6 @@ export class TourDiscountComponent {
 
       // Assign to totalPrices
       this.maxsalePrices[range] = total;
-      console.log('Sale price for range', range, 'is', this.minsalePrices[range]);
-      console.log('Sale price for range max', range, 'is', this.maxsalePrices[range]);
     });
   }
 

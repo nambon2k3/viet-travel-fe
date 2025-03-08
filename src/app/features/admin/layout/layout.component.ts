@@ -3,6 +3,7 @@ import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AdminSidebarComponent } from '../../../shared/components/admin-sidebar/admin-sidebar.component';
 import { AdminHeaderComponent } from '../../../shared/components/admin-header/admin-header.component';
+import { AdminFooterComponent } from "../../../shared/components/admin-footer/admin-footer.component";
 
 @Component({
   selector: 'app-layout',
@@ -10,8 +11,9 @@ import { AdminHeaderComponent } from '../../../shared/components/admin-header/ad
     CommonModule,
     RouterOutlet,
     AdminSidebarComponent,
-    AdminHeaderComponent
-  ],
+    AdminHeaderComponent,
+    AdminFooterComponent
+],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'
 })
