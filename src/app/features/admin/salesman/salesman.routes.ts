@@ -1,7 +1,6 @@
 import { Route } from "@angular/router";
 import { LayoutComponent } from "../layout/layout.component";
 import { ListBookingComponent } from "./components/list-booking/list-booking.component";
-import { AddBlogComponent } from "../marketer/components/add-blog/add-blog.component";
 import { AddBookingComponent } from "./components/add-booking/add-booking.component";
 import { BookingDetailComponent } from "./components/booking-detail/booking-detail.component";
 import { TourListBookingComponent } from "./components/tour-list-booking/tour-list-booking.component";
