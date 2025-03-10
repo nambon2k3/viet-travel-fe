@@ -4,8 +4,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe";
-import { TourService } from '../../../services/tour.service';
-import { Tour } from '../../../../../../core/models/tour.model';
+import { TourSchedule } from '../../../../../../core/models/tour-operator.model';
 @Component({
   selector: '[app-table-row]',
   imports: [FormsModule, AngularSvgIconModule, CommonModule, FormatDatePipe],
@@ -14,24 +13,24 @@ import { Tour } from '../../../../../../core/models/tour.model';
 })
 export class TableRowComponent {
 
-  @Input() tour: Tour = <Tour>{};
+  @Input() tour: TourSchedule = <TourSchedule>{};
 
   authorName: string = 'Loading...';
   tags: string[] = [];
 
-  constructor(private tourService: TourService,
+  constructor(
     private router: Router
   ) { }
 
-  openDetail(tour: Tour): void {
+  openDetail(tour: TourSchedule): void {
     this.router.navigate(['/operator/tour-operation'],  {
-      queryParams: { id: tour.id }
+      queryParams: { id: tour.scheduleId }
     });
   }
 
-  openTourOperation(tour: Tour): void {
+  openTourOperation(tour: TourSchedule): void {
     this.router.navigate(['/operator/tour-operation'],  {
-      queryParams: { id: tour.id }
+      queryParams: { id: tour.scheduleId }
     });
   }
 }
