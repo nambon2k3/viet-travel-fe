@@ -5,6 +5,8 @@ import { AddBlogComponent } from "../marketer/components/add-blog/add-blog.compo
 import { AddBookingComponent } from "./components/add-booking/add-booking.component";
 import { BookingDetailComponent } from "./components/booking-detail/booking-detail.component";
 import { TourListBookingComponent } from "./components/tour-list-booking/tour-list-booking.component";
+import { ListTourPrivateComponent } from "./components/list-tour-private/list-tour-private.component";
+import { ListTourPublicComponent } from "./components/list-tour-public/list-tour-public.component";
 
 export const SALESMAN_ROUTES: Route[] = [
   {
@@ -18,6 +20,14 @@ export const SALESMAN_ROUTES: Route[] = [
       {
         path: 'add-booking',
         component: AddBookingComponent
+      },
+      {
+        path: 'list-tour-private',
+        component: ListTourPrivateComponent
+      },
+      {
+        path: 'list-tour-public',
+        component: ListTourPublicComponent
       }
     ]
   },

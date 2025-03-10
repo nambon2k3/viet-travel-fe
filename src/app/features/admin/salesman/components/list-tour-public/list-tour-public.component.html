@@ -4,19 +4,13 @@
     <div class="inline-block">
       <h3 class="text-foreground font-semibold">Bán hàng</h3>
       <div class="text-muted-foreground space-x-1 text-xs font-medium">
-        <a href="" class="hover:text-primary">Tất cả đặt chỗ:</a>
+        <a href="" class="hover:text-primary">Tất cả Tour S.I.C:</a>
         <span class="text-foreground">{{ totalItems }}</span>
       </div>
     </div>
     <app-spinner [isLoading]="isLoading"></app-spinner>
   
-    <div class="inline-block space-x-4">
-      <button (click)="addBooking()"
-        class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-        >
-        Tạo đặt chỗ
-      </button>
-    </div>
+    
   </div>
   
   <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2  bg-white">
@@ -26,14 +20,14 @@
       <table
         class="text-muted-foreground table w-full table-auto border-collapse border-0 text-left align-middle leading-5">
         <thead class="border-muted/20 text-muted-foreground border text-xs">
-          <tr app-table-header (onCheck)="toggleBlogs($event)"></tr>
+          <tr app-table-header></tr>
         </thead>
         <tbody>
           @for (tourBooking of tourBookings; track $index) {
             <tr class="hover:bg-card/50" app-table-row [tourBookingDetail]="tourBooking"></tr>
             } @empty {
             <tr>
-              <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy bài viết nào</td>
+              <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy kết quả nào</td>
             </tr>
             }
         </tbody>
