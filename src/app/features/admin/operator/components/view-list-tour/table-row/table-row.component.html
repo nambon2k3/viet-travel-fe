@@ -6,11 +6,11 @@
   </td>
 
   <td>
-    {{ tour.slot }} / 40
+    {{ tour.availableSeats }} / {{ tour.maxPax}}
   </td>
 
   <td>
-    {{ tour.Operator.fullName }}
+    {{ tour.operator ? tour.operator : 'Chưa cập nhật' }}
   </td>
 
   <td>
@@ -18,7 +18,7 @@
   </td>
 
   <td>
-    {{ tour.TourGuide.fullName }}
+    {{ tour.tourGuide ? tour.tourGuide : 'Chưa cập nhật' }}
   </td>
 
   <td>

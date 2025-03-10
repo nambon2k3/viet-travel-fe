@@ -14,35 +14,25 @@ export class TourService {
     page: number = 0,
     size: number = 10,
     keyword?: string,
-    isDeleted?: boolean,
-    sortField: string = 'createdAt',
-    sortDirection: string = 'desc'
+    status?: boolean,
+    orderDate: string = 'desc'
   ): Observable<any> {
     let params = new HttpParams()
       .set('page', page)
       .set('size', size)
-      .set('sortField', sortField)
-      .set('sortDirection', sortDirection);
+      .set('orderDate', orderDate);
 
     if (keyword) {
       params = params.set('keyword', keyword);
     }
-    if (isDeleted !== undefined) {
-      params = params.set('isDeleted', isDeleted);
+    if (status !== undefined) {
+      params = params.set('status', status);
     }
 
-    return this.http.get(`${environment.apiUrl}marketing/blog/list`, { params });
-  }
-
-  updateTourStatus(id: number, isDeleted: boolean): Observable<any> {
-    return this.http.post(`${environment.apiUrl}marketing/blog/change-status/${id}`, isDeleted);
+    return this.http.get(`${environment.apiUrl}operator/list-tour`, { params });
   }
 
   getTourById(id: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}marketing/blog/details/${id}`);
-  }
-
-  update(formData: any, id: number): Observable<any> {
-    return this.http.put(`${environment.apiUrl}marketing/blog/update/${id}`, formData);
+    return this.http.get(`${environment.apiUrl}operator/list-tour/${id}`);
   }
 }
