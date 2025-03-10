@@ -1,4 +1,8 @@
 <div class="mt-6 p-6 bg-white rounded-md">
+  <div class="flex justify-end gap-2 mb-4">
+    <button (click)="openCreateLog()" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">Tạo Nhật Ký</button>
+  </div>
+
   <div class="rounded-md">
     <table class="w-full text-left bg-white rounded-md">
       <thead class="bg-gray-200">
@@ -11,8 +15,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let log of logs" class="border-b">
-          <td class="p-2">{{ log.id }}</td>
+        <tr *ngFor="let log of listLogs; let i = index" class="border-b">
+          <td class="p-2">{{ i + 1 }}</td>
           <td class="p-2">{{ log.title }}</td>
           <td class="p-2">{{ log.date }}</td>
           <td class="p-2">{{ log.action }}</td>
@@ -22,5 +26,3 @@
     </table>
   </div>
 </div>
-
-<app-post-advance-payment #paymentModal></app-post-advance-payment>

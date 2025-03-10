@@ -1,35 +1,51 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { PostAdvancePaymentComponent } from "./post-advance-payment/post-advance-payment.component";
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { TourService } from '../../../services/tour.service';
 
 @Component({
   selector: 'app-log-table',
   standalone: true,
   imports: [
     CommonModule,
-    PostAdvancePaymentComponent
   ],
   templateUrl: './log.component.html',
   styleUrls: ['./log.component.css']
 })
 export class LogComponent {
-  @ViewChild('paymentModal') paymentModal!: PostAdvancePaymentComponent;
+  listLogs: any[] = [];
 
-  logs = [
-    { id: 1, title: "Lu’s Lunch", date: "20/03/2025", action: "Pay", logContent: "This is order lunch service for Lan Than" },
-    { id: 2, title: "Lu’s Dinner", date: "20/03/2025", action: "Change service", logContent: "This is order lunch service for Lan Than" }
-  ];
+  constructor(private route: ActivatedRoute, private tourService: TourService) { }
 
-  constructor(
-    private router: Router
-  ) { }
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const id = params['id'];
+      if (id) {
+        this.loadLogs(id);
+      }
+    });
+  }
+
+  loadLogs(id: number): void {
+    this.tourService.getLogs(id).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.listLogs = response.data;
+        } else {
+          console.error('Lỗi:', response.message);
+        }
+      },
+      error: (error: any) => {
+        console.error('Lỗi khi tải danh sách khách hàng:', error);
+      }
+    });
+  }
+
 
   async ngAfterViewInit() {
     const { Modal } = await import('flowbite');
 
   }
-  openPostReceipt() {
-    this.router.navigate(['/operator/tour-operation/create-receipt']);
+  openCreateLog() {
   }
 }

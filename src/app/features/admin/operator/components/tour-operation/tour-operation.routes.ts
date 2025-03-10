@@ -6,7 +6,7 @@ import { ServiceComponent } from "./service/service.component";
 import { SummaryComponent } from "./summary/summary.component";
 import { TourOperationLayoutComponent } from "./tour-operation-layout/tour-operation-layout.component";
 import { TourOperationComponent } from "./tour-operation.component";
-import { PostReceiptComponent } from "./log/post-receipt/post-receipt.component";
+import { PostReceiptComponent } from "./transaction/post-receipt/post-receipt.component";
 import { TransactionComponent } from "./transaction/transaction.component";
 
 export const TOUROPERATION_ROUTES: Route[] = [

@@ -14,44 +14,46 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let booking of bookings" class="border border-gray-300">
-                <td class="border border-gray-300 p-2 text-center">{{ booking.id }}</td>
-                <td class="border border-gray-300 p-2">{{ booking.customer }}</td>
+            <tr *ngFor="let booking of listBookings; let i = index" class="border border-gray-300">
+                <td class="border border-gray-300 p-2 text-center">{{ i + 1 }}</td>
+                <td class="border border-gray-300 p-2">{{ booking.bookedBy }}</td>
                 <td class="border border-gray-300 p-2">
-                    Tổng: {{ booking.slot.total }} chỗ<br>
-                    Người lớn: {{ booking.slot.adult }} chỗ<br>
-                    Trẻ em: {{ booking.slot.child }} chỗ
+                    Tổng: {{ booking.customerCount }} chỗ<br>
+                    Người lớn: {{ booking.adultCount }} chỗ<br>
+                    Trẻ em: {{ booking.childCount }} chỗ
                 </td>
-                <td class="border border-gray-300 p-2">{{ booking.from }}</td>
+                <td class="border border-gray-300 p-2">{{ booking.bookingCategory }}</td>
                 <td class="border border-gray-300 p-2">
                     <span class="text-gray-700">Tổng: </span>
-                    <span class="text-green-600 font-bold">{{ booking.payment.total | currencyVnd }}</span><br>
+                    <span class="text-green-600 font-bold">{{ booking.totalAmount | currencyVnd }}</span><br>
 
                     <span class="text-gray-700">Đã nhận: </span>
-                    <span class="text-green-500 font-bold">{{ booking.payment.received | currencyVnd }}</span><br>
+                    <span class="text-green-500 font-bold">{{ booking.receiptAmount | currencyVnd }}</span><br>
 
                     <span class="text-gray-700">Còn lại: </span>
-                    <span [ngClass]="booking.payment.remain > 0 ? 'text-red-500 font-bold' : 'text-green-500'">
-                        {{ booking.payment.remain | currencyVnd }}
+                    <span [ngClass]="booking.remainingAmount > 0 ? 'text-red-500 font-bold' : 'text-green-500'">
+                        {{ booking.remainingAmount | currencyVnd }}
                     </span><br>
 
                     <span class="text-gray-700">HDV thu: </span>
-                    <span [ngClass]="booking.payment.guideCollect > 0 ? 'text-red-500 font-bold' : 'text-green-500'">
-                        {{ booking.payment.guideCollect | currencyVnd }}
+                    <span [ngClass]="booking.collectionAmount > 0 ? 'text-red-500 font-bold' : 'text-green-500'">
+                        {{ booking.collectionAmount | currencyVnd }}
                     </span>
                 </td>
-                <td class="border border-gray-300 p-2">{{ booking.createDate }}</td>
-                <td class="border border-gray-300 p-2">{{ booking.status }}</td>
-                <td class="border border-gray-300 p-2">{{ booking.salesman || 'N/A' }}</td>
+                <td class="border border-gray-300 p-2">{{ booking.bookedAt | date: 'dd/MM/yyyy' }}</td>
+                <td class="border border-gray-300 p-2">{{ booking.bookingStatus }}</td>
+                <td class="border border-gray-300 p-2">{{ booking.saleName || 'N/A' }}</td>
                 <td class="border-0">
                     <div class="flex">
-                        <svg class="ml-4 w-6 h-6 text-gray-800 dark:text-green-700 cursor-pointer" aria-hidden="true"
+                        <svg (click)="editBooking(booking)"
+                            class="ml-4 w-6 h-6 text-gray-800 dark:text-green-700 cursor-pointer" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
                         </svg>
 
-                        <svg class="ml-2 w-6 h-6 text-gray-800 dark:text-red-600 cursor-pointer" aria-hidden="true"
+                        <svg (click)="deleteBooking(booking.bookingId)"
+                            class="ml-2 w-6 h-6 text-gray-800 dark:text-red-600 cursor-pointer" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18 17.94 6M18 18 6.06 6" />
