@@ -60,27 +60,7 @@ export class HomepageComponent {
   }
 
   ngOnInit() {
-    const document = this.ssrService.getDocument();
-    if (document) {
-      const cachedTimestamp = localStorage.getItem('homepageDataTimestamp');
-      const cacheExpiration = 30 * 60 * 1000;
-
-      const cachedData = localStorage.getItem('homepageData');
-      if (cachedData && cachedTimestamp) {
-        const now = new Date().getTime();
-        if (now - parseInt(cachedTimestamp) < cacheExpiration) {
-          const data = JSON.parse(cachedData);
-          this.trendingTours = data.trendingTours;
-          this.topTourOfYear = data.topTourOfYear;
-          this.blogs = data.newBlogs.slice(0, 3);
-          this.blog = data.newBlogs[data.newBlogs.length - 1];
-          this.activities = data.recommendedActivities;
-          this.locations = data.recommendedLocations;
-          return; // Sử dụng cache, không gọi API
-        }
-      }
       this.fetchHomepageData();
-    }
   }
 
   fetchHomepageData() {

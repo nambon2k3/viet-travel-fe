@@ -7,6 +7,7 @@ import { User } from '../../../../../core/models/user.model';
 import { CommonModule } from '@angular/common';
 import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AdminService } from '../../../admin.service';
+import e from 'express';
 
 @Component({
   selector: 'app-staff-detail',
@@ -30,7 +31,17 @@ export class PostStaffDetailComponent {
   staff: User = <User>{};
 
   dropdownList: any = [];
-  dropdownSettings: IDropdownSettings = {};
+  dropdownSettings: IDropdownSettings = {
+    singleSelection: false,
+    idField: 'item_id',
+    textField: 'item_text',
+    selectAllText: 'Chọn tất cả',
+    unSelectAllText: 'Bỏ chọn tất cả',
+    itemsShowLimit: 5,
+    searchPlaceholderText: 'Tìm kiếm tên vai trò',
+    allowSearchFilter: true
+  };
+
   selectedItems: any = [];
 
   constructor(
@@ -124,6 +135,7 @@ export class PostStaffDetailComponent {
       fullName: ['', Validators.required],
       username: ['', Validators.required],
       password: ['', Validators.required],
+      rePassword: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       gender: ['MALE', Validators.required],
       phone: ['', Validators.required],
@@ -152,11 +164,10 @@ export class PostStaffDetailComponent {
             status: this.staff.deleted ? 'inactive' : 'active'
           });
 
-          this.selectedItems = this.staff.roleNames.map((role: string) => ({
+          this.selectedItems = this.staff.roleNames ? this.staff.roleNames.map((role: string) => ({
             item_id: role,
             item_text: role
-          }));
-
+          })) : [];
           this.getStaffRoles();
 
           if (this.staff.avatarImage) {
@@ -177,8 +188,8 @@ export class PostStaffDetailComponent {
   }
 
   saveChanges(): void {
+    const formData = new FormData();
     if (this.selectedFile) {
-      const formData = new FormData();
       formData.append('file', this.selectedFile);
       this.adminService.uploadImage(formData).subscribe({
         next: (response) => {
@@ -193,14 +204,25 @@ export class PostStaffDetailComponent {
           this.errorMessage = err.message;
         }
       });
+    } else {
+      if (this.staffId) {
+        this.updateStaff();
+      } else {
+        this.createStaff();
+      }
     }
   }
 
   updateStaff(): void {
-    if (this.editUserForm.get('password')?.value !== null) { 
-      this.editUserForm.get('password')?.setValue(this.staff.password);
+    if (this.editUserForm.get('password')?.value !== null) {
+      this.editUserForm.get('rePassword')?.setValue(this.editUserForm.get('password')?.value);
     }
-    this.editUserForm.get('roleNames')?.setValue(this.editUserForm.get('roleNames')?.value.map((role: any) => role.item_text));
+    const roles = this.editUserForm.get('roleNames')?.value;
+    if (roles && Array.isArray(roles)) {
+      this.editUserForm.get('roleNames')?.setValue(roles.map((role: any) => role?.item_text || role));
+    } else {
+      this.editUserForm.get('roleNames')?.setValue([]);
+    }
     const formData = this.editUserForm.getRawValue();
 
     this.staffService.updateStaff(formData)
@@ -212,7 +234,7 @@ export class PostStaffDetailComponent {
         })
       )
       .subscribe((response: any) => {
-        if (response?.code === 0) {
+        if (response?.code === 200) {
           this.successMessage = response?.message;
           this.errorMessage = null;
         } else {
@@ -237,7 +259,7 @@ export class PostStaffDetailComponent {
         })
       )
       .subscribe((response: any) => {
-        if (response?.code === 200) {
+        if (response?.code === 201) {
           this.successMessage = response?.message;
           this.errorMessage = null;
           this.router.navigate(['/admin/user']);

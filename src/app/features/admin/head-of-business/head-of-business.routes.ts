@@ -11,6 +11,8 @@ import { UpdateTourDayComponent } from "./components/tour-details/update-tour-da
 import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
 import { OpenTourForSaleComponent } from "./components/open-tour-for-sale/open-tour-for-sale.component";
 import { TourDiscountComponent } from "./components/tour-discount/tour-discount.component";
+import { TourListBookingComponent } from "./components/open-tour-for-sale/tour-list-booking/tour-list-booking.component";
+import { CustomerBookingDetailsComponent } from "./components/open-tour-for-sale/customer-booking-details/customer-booking-details.component";
 
 export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
   {
@@ -58,5 +60,13 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
   {
     path: 'open-sale-tour',
     component: OpenTourForSaleComponent
+  },
+  {
+    path: 'tour-list-booking',
+    component: TourListBookingComponent
+  },
+  {
+    path: 'booking-details',
+    component: CustomerBookingDetailsComponent
   }
 ];
