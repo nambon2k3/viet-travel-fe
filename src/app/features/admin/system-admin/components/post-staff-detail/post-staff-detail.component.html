@@ -45,9 +45,9 @@
             placeholder="Nhập địa chỉ" />
 
         <label class="block mb-2 mt-3 text-sm font-medium text-gray-700">Vai trò</label>
-        <ng-multiselect-dropdown id="selector" formControlName="roleNames" [settings]="dropdownSettings"
-            [data]="dropdownList" [ngModel]="selectedItems" (onSelect)="onItemSelect($event)"
-            (onSelectAll)="onSelectAll($event)" (onDeSelect)="onDeSelect($event)">
+        <ng-multiselect-dropdown *ngIf="dropdownSettings && dropdownList.length" id="selector"
+            formControlName="roleNames" [settings]="dropdownSettings" [data]="dropdownList"
+            (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="onDeSelect($event)">
         </ng-multiselect-dropdown>
 
         <label class=" mt-4 block mb-2 text-sm font-medium text-gray-700">Trạng thái</label>

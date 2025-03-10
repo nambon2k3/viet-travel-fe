@@ -61,7 +61,7 @@
                 <h3 class="font-bold text-lg leading-snug h-12">{{ tour.name }}</h3>
                 <div class="text-sm text-gray-700 space-y-1 mb-2">
                     <p><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Khởi hành: <span
-                            class="text-blue-600 font-medium">{{ tour.departlocation.name }}</span></p>
+                            class="text-blue-600 font-medium">{{ tour.departLocation.name }}</span></p>
                     <p><i class="fas fa-clock text-yellow-500 mr-1"></i> Thời lượng: {{ tour.numberDays }}N{{
                         tour.numberNight }}Đ</p>
                     <div *ngFor="let tag of tour.tags" class="flex mr-2">

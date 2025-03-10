@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Modal } from 'flowbite';
+import { SsrService } from '../../../../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-create-open-tour-day',
@@ -18,13 +19,20 @@ export class CreateOpenTourDayComponent {
   private modalInstance!: Modal;
 
   numberOfSeats: number = 0;
-  name : string = '';
+  name: string = '';
+
+  constructor(
+    private ssrService: SsrService,
+  ) { }
 
   ngAfterViewInit() {
-    const modalEl = document.getElementById('createOpenTourDayModal');
+    const document = this.ssrService.getDocument();
+    if (document) {
+      const modalEl = document.getElementById('createOpenTourDayModal');
 
-    if (modalEl) {
-      this.modalInstance = new Modal(modalEl);
+      if (modalEl) {
+        this.modalInstance = new Modal(modalEl);
+      }
     }
   }
 

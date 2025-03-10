@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { catchError, of } from 'rxjs';
 import { UserStorageService } from '../../services/user-storage/user-storage.service';
 import { CommonModule } from '@angular/common';
+import { SsrService } from '../../services/ssr.service';
 
 @Component({
   selector: 'app-login',
@@ -38,11 +39,13 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private ssrService: SsrService
   ) { }
 
   ngOnInit() {
-    const rememberedUsername = localStorage.getItem('rememberedUser')?.replaceAll('"', '');
+
+    const rememberedUsername = this.ssrService.getLocalStorage()?.getItem('rememberedUser')?.replaceAll('"', '');
 
     // Initialize the login form
     this.loginForm = this.formBuilder.group({
