@@ -28,8 +28,8 @@ export class Menu {
           route: '/salesman',
           children: [
             { label: 'Danh sách booking', route: '/salesman/list-booking' },
-            { label: 'Tour mở bán (SIC)', route: '/salesman/service' },
-            { label: 'Tour đặt riêng', route: '/salesman/review-service' },
+            { label: 'Tour mở bán (SIC)', route: '/salesman/list-tour-public' },
+            { label: 'Tour đặt riêng', route: '/salesman/list-tour-private' },
             { label: 'Đánh giá', route: '/salesman/booking-service' },
           ],
         },

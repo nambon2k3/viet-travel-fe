@@ -17,11 +17,13 @@ export class TourService {
         keyword?: string,
         isDeleted?: boolean,
         sortField: string = 'createdAt',
-        sortDirection: string = 'desc'
+        sortDirection: string = 'desc',
+        tourType: string = 'SIC'
     ): Observable<any> {
         let params = new HttpParams()
             .set('page', page)
             .set('size', size)
+            .set('tourType', tourType)
             .set('sortField', sortField)
             .set('sortDirection', sortDirection);
 
@@ -32,7 +34,7 @@ export class TourService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${environment.apiUrl}salesman/tours/list-public`, { params });
+        return this.http.get(`${environment.apiUrl}salesman/tours/list`, { params });
     }
 
 

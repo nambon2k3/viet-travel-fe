@@ -23,8 +23,10 @@
           <tr app-table-header></tr>
         </thead>
         <tbody>
-          @for (tourBooking of tourBookings; track $index) {
-            <tr class="hover:bg-card/50" app-table-row [tourBookingDetail]="tourBooking"></tr>
+          @for (tourData of tourDatas; track $index) {
+              
+            <tr class="hover:bg-card/50" app-table-row [tourData]="tourData"></tr>
+
             } @empty {
             <tr>
               <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy kết quả nào</td>

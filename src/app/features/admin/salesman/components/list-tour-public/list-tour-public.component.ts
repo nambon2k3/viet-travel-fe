@@ -25,7 +25,7 @@ export class ListTourPublicComponent {
     totalPages = signal(0)
     isLoading: boolean = false;
   
-    tourBookings: any;
+    tourDatas: any;
   
   
     // Store filters to persist data across pages
@@ -42,16 +42,28 @@ export class ListTourPublicComponent {
     }
   
     ngOnInit(): void {
-      
+      this.loadTours();
     }
   
     
+
+    loadTours() {
+      this.tourService.getTourByPage().subscribe({
+        next: (response) => {
+          this.tourDatas = response.data.items;
+        },
+        error: (error) => {
+          console.log(error);
+          this.isLoading = false;
+        }
+      });
+    }
   
   
     onPageChange(newPage: number): void {
       if (newPage >= 0 && newPage < this.totalPages()) {
         this.page = newPage;
-        //this.loadBookings();
+        this.loadTours();
       }
     }
   
@@ -59,7 +71,7 @@ export class ListTourPublicComponent {
     onPageSizeChange(newSize: number): void {
       this.size = newSize;
       this.page = 0; // Reset to first page
-      //this.loadBookings();
+      this.loadTours();
     }
   
     onSearch(filters: any): void {
@@ -67,7 +79,7 @@ export class ListTourPublicComponent {
       this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
       this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
       this.page = 0; // Reset to first page on new search
-      //this.loadBookings();
+      this.loadTours();
     }
   
 

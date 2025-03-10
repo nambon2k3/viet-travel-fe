@@ -9,10 +9,10 @@ import { CommonModule, DatePipe } from '@angular/common';
   styleUrl: './table-row.component.css',
 })
 export class TableRowComponent {
-  @Input() tourBookingDetail: any = <any>{};
+  @Input() tourData: any = <any>{};
 
   ngOnInit(): void {
-    console.log(this.tourBookingDetail)
+    console.log(this.tourData)
   }
   
 }
