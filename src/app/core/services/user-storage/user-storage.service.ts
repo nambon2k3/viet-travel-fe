@@ -104,9 +104,8 @@ export class UserStorageService {
     return user?.role || '';
   }
 
-  public static signOut(): void {
-    const userStorage = inject(UserStorageService);
-    userStorage.deleteCookie(TOKEN);
-    userStorage.deleteCookie(USER);
+  static signOut(userStorageService: UserStorageService): void {
+    userStorageService.deleteCookie('TOKEN');
+    userStorageService.deleteCookie('USER');
   }
 }

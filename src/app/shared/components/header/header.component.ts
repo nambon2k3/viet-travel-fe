@@ -24,11 +24,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     private userStorageService: UserStorageService,
     public router: Router,
     private ssrService: SsrService,
-    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.ssrService.getDocument()) {
       this.checkLoginStatus();
 
       this.router.events.subscribe((event) => {
@@ -73,7 +72,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.ssrService.isBrowser)) {
       const doc = this.ssrService.getDocument();
       if (doc) {
         this.mainContent = doc.getElementById('main-content');
@@ -85,7 +84,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngOnDestroy(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.ssrService.isBrowser)) {
       if (this.mainContent) {
         this.mainContent.removeEventListener('scroll', this.onScroll);
       }
@@ -100,7 +99,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
 
   @HostListener('window:scroll', [])
   onScroll = () => {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.ssrService.isBrowser)) {
       if (this.mainContent && this.isHomepage) {
         const isModalOpen = document.body.classList.contains('modal-open');
         if (!isModalOpen) {
@@ -112,7 +111,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   };
 
   onLogout() {
-    UserStorageService.signOut();
+    UserStorageService.signOut(this.userStorageService);
     this.isLoggedIn = false;
     this.router.navigate(['/homepage']);
   }
