@@ -32,7 +32,7 @@ export const PUBLIC_ROUTES: Route[] = [
         component: HotelComponent,
       },
       {
-        path: 'hotel-details',
+        path: 'hotel-details/:id',
         component: HotelDetailComponent,
       },
       {

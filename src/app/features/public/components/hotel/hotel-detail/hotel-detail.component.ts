@@ -1,73 +1,148 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FooterComponent } from "../../../../../shared/components/footer/footer.component";
+import { ActivatedRoute } from '@angular/router';
+import { Hotel } from '../../../../../core/models/hotel.model';
+import { HotelService } from '../../../services/hotel.service';
+import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
+import { SsrService } from '../../../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-hotel-detail',
   standalone: true,
   imports: [
     CommonModule,
-    FooterComponent
+    FooterComponent,
+    CurrencyVndPipe
   ],
   templateUrl: './hotel-detail.component.html',
   styleUrls: [],
 })
 export class HotelDetailComponent {
   isShow: boolean = false;
-  hotelDetails = {
-    highlights: `<p>Không chỉ nằm trong tầm tay với nhiều điểm tham quan hấp dẫn dành cho chuyến phiêu lưu của bạn, 
-    mà nghỉ dưỡng tại Melia Ba Vì Mountain Retreat cũng sẽ mang đến cho bạn một kỳ nghỉ dễ chịu. 
-    Khu nghỉ dưỡng này là lựa chọn hoàn hảo cho các cặp đôi tìm kiếm một kỳ nghỉ lãng mạn hoặc một kỳ nghỉ trăng mật. 
-    Tận hưởng những đêm đáng nhớ nhất và người thương yêu của bạn bằng cách lưu trú tại Melia Ba Vì Mountain Retreat.</p>
-    <p>Nơi đây còn mang lại nhiều tiện ích như hồ bơi vô cực, spa thư giãn, và những hoạt động ngoài trời lý thú như trekking, yoga, hay đơn giản chỉ là nhâm nhi tách cà phê bên khung cửa sổ ngập tràn ánh nắng.</p>
-    <p>Đừng bỏ lỡ cơ hội trải nghiệm kỳ nghỉ hoàn hảo giữa thiên nhiên hùng vĩ của Ba Vì.</p>`
-  };
+  hotelDetails!: Hotel;
+  rooms: any[] = [];
+  allRooms: any[] = [];
+  selectedRoom: any = null;
+  otherServices: any[] = [];
+  price: number = 0;
+  private map!: L.Map;
+
+  constructor(
+    private route: ActivatedRoute,
+    private hotelService: HotelService,
+    private ssrService: SsrService,
+  ) { }
+
+  // ngOnInit() {
+  //   const hotelId = Number(this.route.snapshot.paramMap.get('id'));
+  //   if (hotelId) {
+  //     this.loadHotelDetail(hotelId);
+  //   }
+  // }
+
+  ngOnInit() {
+    // Dữ liệu test cứng thay vì gọi API
+    this.hotelDetails = {
+      id: 1,
+      name: "Khách sạn Test",
+      location: {
+        name: "Hà Nội, Việt Nam",
+        id: 0,
+        description: '',
+        image: ''
+      },
+      star: 4.5,
+      website: "https://example.com",
+      imageUrl: "https://via.placeholder.com/300x200?text=Hotel+Image",
+      abbreviation: "KS",
+      address: "KS",
+      email: "info@example.com",
+      phone: "0123456789",
+      geoPosition: {
+        id: 0,
+        latitude: 21.028511,
+        longitude: 105.804817
+      }
+    };
+  
+    this.allRooms = [
+      {
+        name: "Phòng đôi",
+        sellingPrice: 800000,
+        imageUrl: "https://via.placeholder.com/300x200?text=Phòng+đôi",
+      },
+      {
+        name: "Single Room",
+        sellingPrice: 600000,
+        imageUrl: "https://via.placeholder.com/300x200?text=Single+Room",
+      },
+      {
+        name: "Phòng 3 người",
+        sellingPrice: 900000,
+        imageUrl: "https://via.placeholder.com/300x200?text=Phòng+3+người",
+      }, // Phòng này sẽ bị ẩn vì không phải phòng đôi hoặc đơn
+    ];
+  
+    
+    this.rooms = [...this.allRooms];
+    this.price = this.rooms[0]?.sellingPrice || 0;
+  }
+  
+
+  loadHotelDetail(id: number) {
+    this.hotelService.getHotelDetail(id).subscribe({
+      next: (response: any) => {
+        if (response.code === 200 && response.data) {
+          this.hotelDetails = response.data.serviceProvider;
+          this.rooms = response.data.rooms.filter((room: any) => 
+            room.name.toLowerCase().includes('double') || room.name.toLowerCase().includes('single')
+          );
+          this.price = response.data.minRoomPrice;
+        }
+      },
+      error: (err: any) => console.error('Error fetching hotel details', err),
+    });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.ssrService.isBrowser) {
+      this.initMap();
+    }
+  }
+
+  selectRoom(room: any) {
+    if (this.selectedRoom === room) {
+      // Nếu ấn đổi phòng, hiển thị lại danh sách ban đầu
+      this.selectedRoom = null;
+      this.rooms = [...this.allRooms];
+      this.price = 0;
+    } else {
+      // Chọn phòng, ẩn các phòng khác
+      this.selectedRoom = room;
+      this.rooms = [room];
+      this.price = room.sellingPrice;
+    }
+  }
+
+  private async initMap(): Promise<void> {
+    const L = await import('leaflet');
+  
+    this.map = L.map('map').setView(
+      [this.hotelDetails.geoPosition.latitude, this.hotelDetails.geoPosition.longitude], 
+      13
+    );
+  
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(this.map);
+  
+    L.marker([this.hotelDetails.geoPosition.latitude, this.hotelDetails.geoPosition.longitude])
+      .addTo(this.map);
+  }
+  
 
   showOrHide() {
     this.isShow = !this.isShow;
   }
-
-  rooms = [
-    {
-      type: 'Phòng đôi',
-      guests: 2,
-      price: 800000,
-      availability: 4,
-      image: 'assets/room1.jpg',
-    },
-    {
-      type: 'Single Room',
-      guests: 1,
-      price: 600000,
-      availability: 7,
-      image: 'assets/room2.jpg',
-    },
-  ];
-
-  hotels = [
-    {
-      name: 'Deluxe Room',
-      imageUrl: 'https://sakos.vn/wp-content/uploads/2022/12/WTTC-Gives-Seven-More-Countries-Safe-Travel-Stamp-2-2.jpg',
-      location: 'Hà Nội',
-      code: 'DLX001',
-      duration: '2 Days 1 Night',
-      price: '750.000 đ',
-    },
-    {
-      name: 'Suite Room',
-      imageUrl: 'https://sakos.vn/wp-content/uploads/2022/12/WTTC-Gives-Seven-More-Countries-Safe-Travel-Stamp-2-2.jpg',
-      location: 'Hà Nội',
-      code: 'DLX001',
-      duration: '2 Days 1 Night',
-      price: '750.000 đ',
-    },
-    {
-      name: 'Family Room',
-      imageUrl: 'https://sakos.vn/wp-content/uploads/2022/12/WTTC-Gives-Seven-More-Countries-Safe-Travel-Stamp-2-2.jpg',
-      location: 'Hà Nội',
-      code: 'DLX001',
-      duration: '2 Days 1 Night',
-      price: '750.000 đ',
-    }
-  ];
 }
