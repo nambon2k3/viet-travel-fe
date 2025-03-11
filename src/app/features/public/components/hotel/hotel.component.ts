@@ -6,6 +6,7 @@ import { Hotel } from '../../../../core/models/hotel.model';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../core/services/ssr.service';
 import { shareReplay } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hotel',
@@ -37,6 +38,7 @@ export class HotelComponent implements OnInit {
 
   constructor(
       private hotelService: HotelService, private ssrService: SsrService,
+      private router : Router
     ) {
       this.hotelData$ = this.hotelService.getHotels(
         this.currentPage,
@@ -70,6 +72,10 @@ export class HotelComponent implements OnInit {
       }
       this.getHotels();
     }
+  }
+
+  goToDetail(id : number): void {
+    this.router.navigate(['/hotel-details', id]);
   }
 
   getHotels(): void {
