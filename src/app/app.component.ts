@@ -1,7 +1,6 @@
-import { Component, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, OnInit, AfterViewInit } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',

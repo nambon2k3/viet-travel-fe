@@ -8,6 +8,8 @@ import { TourComponent } from "./components/tour/tour.component";
 import { TourDetailComponent } from "./components/tour/tour-detail/tour-detail.component";
 import { TourBookingComponent } from "./components/tour-booking/tour-booking.component";
 import { TourBookingConfirmComponent } from "./components/tour-booking/tour-booking-confirm/tour-booking-confirm.component";
+import { PlanComponent } from "./components/plan/plan.component";
+import { LocationComponent } from "./components/plan/location/location.component";
 
 export const PUBLIC_ROUTES: Route[] = [
   {
@@ -45,7 +47,12 @@ export const PUBLIC_ROUTES: Route[] = [
       ,{
         path: 'tour-booking-detail/:code',
         component: TourBookingConfirmComponent,
-      }
+      },
+      
     ]
   },
+  {
+    path: 'plan',
+    component: LocationComponent,
+  }
 ];

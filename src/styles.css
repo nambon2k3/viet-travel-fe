@@ -4,6 +4,7 @@
 @plugin "flowbite-typography";
 @plugin "flowbite";
 
+
 body {
   font-family: 'Museo Moderno', sans-serif;
 }
@@ -70,6 +71,9 @@ body.modal-open {
   background-color: #137236 !important;
 }
 
+.full-calendar{
+  min-height: 40vh;
+}
 
 /* Remove borders around the entire calendar */
 .fc {
@@ -219,3 +223,11 @@ body.modal-open {
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
+
+
+
+
+
+
+
