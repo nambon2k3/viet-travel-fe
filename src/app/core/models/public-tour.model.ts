@@ -33,7 +33,7 @@ export interface ApiResponse<T> {
     numberDays: number;
     numberNight: number;
     tags: Tag[];
-    departlocation: Location;
+    departLocation: Location;
     tourImages: TourImage[];
     priceFrom: number;
   }

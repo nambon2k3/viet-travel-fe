@@ -6,6 +6,7 @@ import { Hotel } from '../../../../core/models/hotel.model';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../core/services/ssr.service';
 import { Router } from '@angular/router';
+import { Locations } from '../../../../core/models/location.model';
 
 @Component({
   selector: 'app-hotel',
@@ -35,17 +36,17 @@ export class HotelComponent implements OnInit {
   hotelClassFilter = 0;
 
   constructor(
-      private hotelService: HotelService, 
-      private ssrService: SsrService,
-      private router : Router
-    ) {
-    }
-
-  ngOnInit(): void {
-      this.getHotels();
+    private hotelService: HotelService,
+    private ssrService: SsrService,
+    private router: Router
+  ) {
   }
 
-  goToDetail(id : number): void {
+  ngOnInit(): void {
+    this.getHotels();
+  }
+
+  goToDetail(id: number): void {
     this.router.navigate(['/hotel-details', id]);
   }
 
@@ -73,8 +74,8 @@ export class HotelComponent implements OnInit {
   }
 
   filteredHotels = computed(() => {
-      return this.hotels();
-    });
+    return this.hotels();
+  });
 
   clearFilters(): void {
     this.minPrice = 0;
@@ -86,6 +87,11 @@ export class HotelComponent implements OnInit {
     this.applyFilters();
     this.updateSlider();
   }
+
+  onLocationInput(): void {
+    this.applyFilters();
+  }
+
 
   changeHotelClassFilter(selectedClass: number): void {
     this.hotelClassFilter = selectedClass;
@@ -128,7 +134,7 @@ export class HotelComponent implements OnInit {
 
   ngAfterViewInit(): void {
     if (this.ssrService.isBrowser) {
-    this.initMap();
+      this.initMap();
     }
   }
 
