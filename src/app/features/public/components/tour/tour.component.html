@@ -55,9 +55,14 @@
                     <span>{{ maxPrice | currencyVnd }}</span>
                 </div>
 
+                <p class="font-bold mt-4">Vị trí</p>
+                <input type="text" placeholder="Nhập vị trí..." [(ngModel)]="keyword" (input)="onLocationInput()"
+                    class="w-full px-4 mt-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent">
+
+
                 <div class="mt-4">
                     <h3 class="font-semibold text-lg">Lọc Tour</h3>
-                    <div class="mt-4"> Thời lượng:
+                    <div class="mt-4"> Thời lượng (Ngày):
                         <input type="number" id="tourDuration"
                             class="w-full p-2 border rounded-md focus:ring focus:ring-green-300" min="1"
                             (input)="onDurationChange($event)" [value]="duration">
@@ -110,7 +115,7 @@
                             </p>
                             <p class="flex items-center gap-2">
                                 <span>📍</span> Địa điểm khởi hành: <strong class="text-green-700">
-                                    {{tour.departlocation.name}} </strong>
+                                    {{tour.departLocation.name}} </strong>
                             </p>
                         </div>
 

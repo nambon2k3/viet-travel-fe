@@ -8,10 +8,12 @@ import { TourDetailService } from '../../../services/tour-detail.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import interactionPlugin from '@fullcalendar/interaction';
 import { BookingInfoService } from '../../../services/booking-infor.service';
+import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
+import { TruncatePipe } from "../../../../../shared/pipes/truncate.pipe";
 
 @Component({
   selector: 'app-tour-detail',
-  imports: [FullCalendarModule, CommonModule],
+  imports: [FullCalendarModule, CommonModule, CurrencyVndPipe, TruncatePipe],
   templateUrl: './tour-detail.component.html',
   styleUrl: './tour-detail.component.css',
   providers: [DatePipe]

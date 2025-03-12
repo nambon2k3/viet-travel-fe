@@ -38,44 +38,14 @@ export class TourComponent implements OnInit {
 
   duration = 0;
   fromDate = new Date('2021-01-01');
-  tourData$;
 
   constructor(
     private tourService: TourService, private ssrService: SsrService, private router: Router
   ) {
-    this.tourData$ = this.tourService.getTours(
-      this.currentPage,
-      this.size,
-      this.keyword,
-      this.minPrice,
-      this.maxPrice,
-      this.duration,
-      this.fromDate
-    ).pipe(
-      shareReplay(1)
-    );
   }
 
   ngOnInit(): void {
-    const document = this.ssrService.getDocument();
-    if (document) {
-      const cachedTimestamp = localStorage.getItem('tourDataTimestamp');
-      const cacheExpiration = 24 * 60 * 60 * 1000;
-
-      const cachedData = localStorage.getItem('tourData');
-      if (cachedData && cachedTimestamp) {
-        const now = new Date().getTime();
-        if (now - parseInt(cachedTimestamp) < cacheExpiration) {
-          const data = JSON.parse(cachedData);
-          this.tours.set(data.items);
-          this.totalItems = data.total;
-          this.currentPage = 0;
-          this.size = data.size;
-          return;
-        }
-      }
       this.getTours();
-    }
   }
 
   getTours(): void {
@@ -90,18 +60,12 @@ export class TourComponent implements OnInit {
       //sortBy ?: string
     ).subscribe({
       next: (response) => {
+        console.log(response.data);
         this.tours.set(response.data.items);
         this.totalItems = response.data.total;
         this.currentPage = response.data.page;
         this.size = response.data.size;
         this.totalPages = (Math.ceil(this.totalItems / this.size));
-
-        // Cache the data
-        const local = this.ssrService.getLocalStorage();
-        if (local) {
-          localStorage.setItem('tourData', JSON.stringify(response.data));
-          localStorage.setItem('tourDataTimestamp', new Date().getTime().toString());
-        }
       },
       error: (err) => {
         console.error('Failed to load tours:', err);
@@ -126,6 +90,10 @@ export class TourComponent implements OnInit {
 
   changeTourDuration(durationInput: number): void {
     this.duration = durationInput;
+    this.applyFilters();
+  }
+
+  onLocationInput(): void {
     this.applyFilters();
   }
 
