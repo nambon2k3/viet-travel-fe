@@ -103,7 +103,7 @@
 
         <div class="w-full md:w-4/5">
             @for (hotel of filteredHotels(); track $index){
-            <div class="bg-gray-100 p-4 rounded-lg flex items-start gap-4 mb-4">
+            <div class="bg-gray-100 p-4 rounded-lg flex items-start gap-4 mb-4" (click)="goToDetail(hotel.id)">
                 <div name="image" class="w-1/3 h-48 bg-gray-300 rounded-lg"></div>
                 <div class="w-2/3">
                     <div class="flex justify-between items-start">
@@ -129,9 +129,7 @@
                                 ưu đãi</button>
                         </div>
                         <div class="w-2/3">
-                            <p class="text-sm text-gray-500">Hà Nội: Thủ đô của Việt Nam ở phía bắc mang đến một
-                                bầu không khí nội tâm và nhịp độ chậm hơn. Bắt nguồn từ lịch sử, Hà Nội mời bạn khám phá
-                                những con đường rợp bóng cây, chùa cổ và chợ nhộn nhịp.</p>
+                            <p class="text-sm text-gray-500">{{ hotel.abbreviation }}</p>
                         </div>
                     </div>
                 </div>

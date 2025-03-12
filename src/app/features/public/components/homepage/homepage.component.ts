@@ -21,19 +21,20 @@ import { SsrService } from '../../../../core/services/ssr.service';
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent {
-  selectedCategory: string = 'Search All';
-  searchPlaceholder: string = 'Search...';
-  searchTitle: string = 'Where to?';
+  selectedCategory: string = 'Tìm kiếm tất cả';
+  searchPlaceholder: string = 'Tim kiếm...';
+  searchTitle: string = 'Đi đâu?';
   userProfile: any;
 
   categories = [
-    { name: 'Search All', title: "Where to?", placeholder: 'Places to go, things to do, hotels...' },
-    { name: 'Hotels', title: "Stay somewhere great", placeholder: 'Hotel name or destination' },
-    { name: 'Restaurants', title: "Find places to eat", placeholder: 'Restaurant or destination' },
-    { name: 'Flights', title: "Find the best flight", placeholder: 'Search for Flights...' },
-    { name: 'Activity', title: "Exprience something new", placeholder: 'Attraction, activity or destination' },
-    { name: 'Tours', title: "Explore the best tours", placeholder: 'Tour or destination' }
-  ];
+    { name: 'Tìm kiếm tất cả', title: "Đi đâu?", placeholder: 'Địa điểm, hoạt động, khách sạn...' },
+    { name: 'Khách sạn', title: "Nghỉ ngơi ở nơi tuyệt vời", placeholder: 'Tên khách sạn hoặc điểm đến' },
+    { name: 'Nhà hàng', title: "Tìm địa điểm ăn uống", placeholder: 'Nhà hàng hoặc điểm đến' },
+    { name: 'Chuyến bay', title: "Tìm chuyến bay tốt nhất", placeholder: 'Tìm kiếm chuyến bay...' },
+    { name: 'Hoạt động', title: "Trải nghiệm điều mới mẻ", placeholder: 'Điểm tham quan, hoạt động hoặc điểm đến' },
+    { name: 'Tour', title: "Khám phá những tour du lịch tuyệt vời", placeholder: 'Tour hoặc điểm đến' }
+];
+
 
   selectCategory(category: any) {
     this.selectedCategory = category.name;

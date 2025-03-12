@@ -5,7 +5,7 @@ import { HotelService } from '../../services/hotel.service';
 import { Hotel } from '../../../../core/models/hotel.model';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../core/services/ssr.service';
-import { shareReplay } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hotel',
@@ -33,43 +33,20 @@ export class HotelComponent implements OnInit {
   minPercent = 0;
   maxPercent = 100;
   hotelClassFilter = 0;
-  hotelData$;
 
   constructor(
-      private hotelService: HotelService, private ssrService: SsrService,
+      private hotelService: HotelService, 
+      private ssrService: SsrService,
+      private router : Router
     ) {
-      this.hotelData$ = this.hotelService.getHotels(
-        this.currentPage,
-      this.size,
-      this.keyword,
-      this.hotelClassFilter,
-      this.maxPrice,
-      this.minPrice,
-      ).pipe(
-        shareReplay(1)
-      );
     }
 
   ngOnInit(): void {
-    const document = this.ssrService.getDocument();
-    if (document) {
-      const cachedTimestamp = localStorage.getItem('hotelDataTimestamp');
-      const cacheExpiration = 24 * 60 * 60 * 1000;
-
-      const cachedData = localStorage.getItem('hotelData');
-      if (cachedData && cachedTimestamp) {
-        const now = new Date().getTime();
-        if (now - parseInt(cachedTimestamp) < cacheExpiration) {
-          const data = JSON.parse(cachedData);
-          this.hotels.set(data.items);
-          this.totalItems = data.total;
-          this.currentPage = 0;
-          this.size = data.size;
-          return;
-        }
-      }
       this.getHotels();
-    }
+  }
+
+  goToDetail(id : number): void {
+    this.router.navigate(['/hotel-details', id]);
   }
 
   getHotels(): void {
@@ -88,13 +65,6 @@ export class HotelComponent implements OnInit {
         this.currentPage = response.data.page;
         this.size = response.data.size;
         this.totalPages = (Math.ceil(this.totalItems / this.size));
-
-        // Cache the data
-        const local = this.ssrService.getLocalStorage();
-        if (local) {
-          localStorage.setItem('hotelData', JSON.stringify(response.data));
-          localStorage.setItem('hotelDataTimestamp', new Date().getTime().toString());
-        }
       },
       error: (err) => {
         console.error('Failed to load hotels:', err);

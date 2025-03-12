@@ -33,6 +33,23 @@ export class TourService {
   }
 
   getTourById(id: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}operator/list-tour/${id}`);
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}`);
   }
+
+  operateTour(id: number | null): Observable<any> {
+    return this.http.put(`${environment.apiUrl}operator/operate-tour/${id}`, {});
+  }
+
+  getTourCustomers(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-customer`);
+  }  
+
+  getTourBookings(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-booking`);
+  }
+  
+  getLogs(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-operation-log`);
+  }
+  
 }

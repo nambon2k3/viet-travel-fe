@@ -1,75 +1,53 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { TourService } from '../../../services/tour.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
-interface Customer {
-  id: number;
-  fullname: string;
-  phone?: string;
-  email?: string;
-  birthdate: string;
-  gender: string;
-  pickup: string;
-}
-
-interface BookingGroup {
-  salesman: string;
-  bookingId: number;
-  groupLeader: string;
-  customers: Customer[];
-}
+import { BirthDate } from "../../../../../../shared/pipes/birthdate.pipe";
 
 @Component({
   selector: 'app-list-customer',
+  standalone: true,
   imports: [
-    CommonModule
-  ],
+    CommonModule,
+    BirthDate
+],
   templateUrl: './list-customer.component.html',
   styleUrl: './list-customer.component.css'
 })
-export class ListCustomerComponent {
-  bookingGroups: BookingGroup[] = [
-    {
-      salesman: 'Như Hoa',
-      bookingId: 234,
-      groupLeader: 'Lan Than',
-      customers: [
-        {
-          id: 1,
-          fullname: 'Lan Than',
-          phone: '0723647838',
-          email: 'lanthan@gmail.com',
-          birthdate: '20/03/2003',
-          gender: 'Female',
-          pickup: 'Viet Yen',
-        },
-        { id: 2, fullname: 'Con Vit 1', birthdate: '20/03/2003', gender: 'Female', pickup: 'Viet Yen' },
-        { id: 3, fullname: 'Con Vit 2', birthdate: '20/03/2003', gender: 'Female', pickup: 'Viet Yen' },
-      ],
-    },
-    {
-      salesman: 'Online',
-      bookingId: 122,
-      groupLeader: 'Dai Hinh',
-      customers: [
-        {
-          id: 4,
-          fullname: 'Dai Hinh',
-          phone: '0723647836',
-          email: 'bom@gmail.com',
-          birthdate: '24/08/2003',
-          gender: 'Male',
-          pickup: 'Kim Quan',
-        },
-        { id: 5, fullname: 'Con Vit 3', birthdate: '24/08/2003', gender: 'Male', pickup: 'Kim Quan' },
-      ],
-    },
-  ];
+export class ListCustomerComponent implements OnInit {
+  listCustomers: any[] = [];
 
-  onEditCustomer(customer: Customer) {
-    console.log(customer);
+  constructor(private route: ActivatedRoute, private tourService: TourService) { }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const id = params['id'];
+      if (id) {
+        this.loadCustomers(id);
+      }
+    });
   }
 
-  onDeleteCustomer(customer: Customer) {
-    console.log(customer);
+  loadCustomers(id: number): void {
+    this.tourService.getTourCustomers(id).subscribe({
+      next: (response : any) => {
+        if (response.code === 200) {
+          this.listCustomers = response.data;
+        } else {
+          console.error('Lỗi:', response.message);
+        }
+      },
+      error: (error : any) => {
+        console.error('Lỗi khi tải danh sách khách hàng:', error);
+      }
+    });
   }
+
+  onEditCustomer(customer: any) {
+    console.log('Chỉnh sửa:', customer);
+  }
+  
+  onDeleteCustomer(customer: any) {
+    console.log('Xóa:', customer);
+  }  
 }

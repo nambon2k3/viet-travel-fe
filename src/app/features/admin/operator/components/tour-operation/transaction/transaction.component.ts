@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { PostAdvancePaymentComponent } from '../log/post-advance-payment/post-advance-payment.component';
+import { PostAdvancePaymentComponent } from './post-advance-payment/post-advance-payment.component';
 import { Router } from '@angular/router';
 
 @Component({

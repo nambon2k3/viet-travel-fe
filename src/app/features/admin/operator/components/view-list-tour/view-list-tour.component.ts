@@ -1,11 +1,11 @@
 import { Component, computed, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { TourService } from '../../services/tour.service';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { TableActionComponent } from './table-action/table-action.component';
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableRowComponent } from './table-row/table-row.component';
 import { TourSchedule } from '../../../../../core/models/tour-operator.model';
+import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-view-list-tour',
@@ -14,8 +14,8 @@ import { TourSchedule } from '../../../../../core/models/tour-operator.model';
     TableFooterComponent,
     TableHeaderComponent,
     TableRowComponent,
-    //SpinnerComponent
-  ],
+    SpinnerComponent
+],
   templateUrl: './view-list-tour.component.html',
   styleUrl: './view-list-tour.component.css'
 })

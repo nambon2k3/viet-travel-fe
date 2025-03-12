@@ -1,17 +1,8 @@
 import { Component } from '@angular/core';
 import { CurrencyVndPipe } from "../../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
-
-interface Booking {
-  id: number;
-  customer: string;
-  slot: { total: number; adult: number; child: number };
-  from: string;
-  payment: { total: number; received: number; remain: number; guideCollect: number };
-  createDate: string;
-  status: string;
-  salesman?: string;
-}
+import { ActivatedRoute } from '@angular/router';
+import { TourService } from '../../../services/tour.service';
 
 @Component({
   selector: 'app-list-booking',
@@ -23,34 +14,39 @@ interface Booking {
   styleUrl: './list-booking.component.css'
 })
 export class ListBookingComponent {
-  bookings: Booking[] = [
-    {
-      id: 1,
-      customer: 'Lan Than',
-      slot: { total: 9, adult: 7, child: 2 },
-      from: 'Sale',
-      payment: { total: 5000000, received: 2000000, remain: 3000000, guideCollect: 3000000 },
-      createDate: '20/03/2025',
-      status: 'Completed',
-      salesman: 'Như Hoa',
-    },
-    {
-      id: 2,
-      customer: 'Con Vit 1',
-      slot: { total: 9, adult: 7, child: 2 },
-      from: 'Online',
-      payment: { total: 5000000, received: 2000000, remain: 3000000, guideCollect: 3000000 },
-      createDate: '20/03/2025',
-      status: 'Completed',
-    },
-  ];
+  listBookings: any[] = [];
+  
+    constructor(private route: ActivatedRoute, private tourService: TourService) { }
+  
+    ngOnInit(): void {
+      this.route.queryParams.subscribe(params => {
+        const id = params['id'];
+        if (id) {
+          this.loadBookings(id);
+        }
+      });
+    }
+  
+    loadBookings(id: number): void {
+      this.tourService.getTourBookings(id).subscribe({
+        next: (response : any) => {
+          if (response.code === 200) {
+            this.listBookings = response.data;
+          } else {
+            console.error('Lỗi:', response.message);
+          }
+        },
+        error: (error : any) => {
+          console.error('Lỗi khi tải danh sách khách hàng:', error);
+        }
+      });
+    }
 
-  editBooking(booking: Booking) {
+  editBooking(booking: any) {
     console.log('Edit booking:', booking);
-    // Add logic to edit booking
   }
 
   deleteBooking(id: number) {
-    this.bookings = this.bookings.filter((booking) => booking.id !== id);
+    console.log('Delete booking:', id);
   }
 }

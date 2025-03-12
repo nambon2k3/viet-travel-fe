@@ -33,7 +33,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 401) {
-        UserStorageService.signOut();
+        UserStorageService.signOut(inject(UserStorageService));
         router.navigate(['/login']);
       } else if (error.status === 403) {
         console.error('Access denied:', errorMessage);
