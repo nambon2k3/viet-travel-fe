@@ -60,7 +60,6 @@ export class TourComponent implements OnInit {
       //sortBy ?: string
     ).subscribe({
       next: (response) => {
-        console.log(response.data);
         this.tours.set(response.data.items);
         this.totalItems = response.data.total;
         this.currentPage = response.data.page;
@@ -156,23 +155,35 @@ export class TourComponent implements OnInit {
 
   ngAfterViewInit(): void {
     if (this.ssrService.isBrowser) {
-      this.initMap();
+      setTimeout(() => this.initMap(), 100);
     }
   }
 
-  private async initMap(): Promise<void> {
-    const L = await import('leaflet');
-
-    this.map = L.map('map').setView([21.0285, 105.8542], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(this.map);
-
-    L.marker([21.0285, 105.8542]).addTo(this.map)
+  initMap(): void {
+    setTimeout(async () => {
+      const mapElement = document.getElementById('map');
+      if (!mapElement) {
+        console.warn('Map element not found');
+        return;
+      }
+  
+      const L = await import('leaflet');
+  
+      this.map = L.map('map').setView([21.0285, 105.8542], 13);
+  
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(this.map);
+  
+      L.marker([21.0285, 105.8542]).addTo(this.map);
+    }, 200);
   }
 
   openMap(): void {
-    this.map.invalidateSize();
-  }
+    const latitude = 21.0285;
+    const longitude = 105.8542;
+    const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+  
+    window.open(googleMapsUrl, '_blank'); // Mở trong tab mới
+  } 
 }

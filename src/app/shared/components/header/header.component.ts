@@ -1,41 +1,44 @@
-import { Component, AfterViewInit, OnDestroy, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, NavigationEnd } from '@angular/router';
-import { SsrService } from '../../../core/services/ssr.service';
+import { Component, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
 import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
-import { isPlatformBrowser } from '@angular/common';
+import { CustomerService } from '../../../features/customer/services/customer.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { SsrService } from '../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './header.component.html',
-  imports: [CommonModule]
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   userProfile: any;
   isScrolled = false;
-  private mainContent: HTMLElement | null = null;
-  isProfileOpen = false;
-  isLoggedIn = false;
-  username = '';
-  isHomepage = false;
+  private mainContent: HTMLElement | null | undefined;
+  isProfileOpen: boolean = false;
+  isLoggedIn: boolean = false;
+  username: string = '';
+  isHomepage: boolean = false;
 
   constructor(
+    private customerService: CustomerService,
     private userStorageService: UserStorageService,
-    public router: Router,
     private ssrService: SsrService,
-  ) {}
+    public router: Router
+  ) { }
 
   ngOnInit(): void {
+    this.checkLoginStatus();
+    this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        window.scrollTo(0, 0);
+        this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
+      }
+    });
+
     if (this.ssrService.getDocument()) {
-      this.checkLoginStatus();
-
-      this.router.events.subscribe((event) => {
-        if (event instanceof NavigationEnd) {
-          this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
-        }
-      });
-
       const doc = this.ssrService.getDocument();
       if (doc) {
         doc.addEventListener('show.bs.modal', () => {
@@ -54,9 +57,23 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     if (user) {
       this.isLoggedIn = true;
       this.username = user.username;
+      this.loadUserProfile();
     } else {
       this.isLoggedIn = false;
     }
+  }
+
+  loadUserProfile(): void {
+    this.customerService.getUserProfile().subscribe({
+      next: (data) => {
+        if (data?.data) {
+          this.userProfile = data.data;
+        }
+      },
+      error: (err) => {
+        console.error('Error loading user profile', err);
+      },
+    });
   }
 
   toggleProfileMenu() {
@@ -71,35 +88,28 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     this.router.navigate(['/homepage']);
   }
 
-  ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.ssrService.isBrowser)) {
-      const doc = this.ssrService.getDocument();
-      if (doc) {
-        this.mainContent = doc.getElementById('main-content');
-        if (this.mainContent) {
-          this.mainContent.addEventListener('scroll', this.onScroll);
-        }
+  ngAfterViewInit() {
+    if (this.ssrService.isBrowser) {
+      this.mainContent = document.getElementById('main-content');
+      if (this.mainContent) {
+        this.mainContent.addEventListener('scroll', this.onScroll);
       }
     }
   }
 
   ngOnDestroy(): void {
-    if (isPlatformBrowser(this.ssrService.isBrowser)) {
+    if (this.ssrService.isBrowser) {
       if (this.mainContent) {
         this.mainContent.removeEventListener('scroll', this.onScroll);
       }
-
-      const doc = this.ssrService.getDocument();
-      if (doc) {
-        doc.removeEventListener('show.bs.modal', () => {});
-        doc.removeEventListener('hide.bs.modal', () => {});
-      }
+      document.removeEventListener('show.bs.modal', () => { });
+      document.removeEventListener('hide.bs.modal', () => { });
     }
   }
 
-  @HostListener('window:scroll', [])
+
   onScroll = () => {
-    if (isPlatformBrowser(this.ssrService.isBrowser)) {
+    if (this.ssrService.isBrowser) {
       if (this.mainContent && this.isHomepage) {
         const isModalOpen = document.body.classList.contains('modal-open');
         if (!isModalOpen) {

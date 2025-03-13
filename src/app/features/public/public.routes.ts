@@ -16,6 +16,11 @@ export const PUBLIC_ROUTES: Route[] = [
     component: PublicLayoutComponent,
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'homepage',
+      },
+      {
         path: 'homepage',
         component: HomepageComponent,
       },
