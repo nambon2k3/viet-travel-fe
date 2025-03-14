@@ -76,8 +76,8 @@ export class AddHotelComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const document = this.ssrService.getDocument();
-    if (document) {
+    const doc = this.ssrService.getDocument();
+    if (doc) {
       const modalElement = document.getElementById('addHotelModal');
       if (modalElement) {
         this.modal = new Modal(modalElement);

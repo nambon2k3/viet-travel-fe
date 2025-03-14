@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SsrService } from '../../../../../../../core/services/ssr.service';
+import { Modal } from 'flowbite';
 
 @Component({
   selector: 'app-post-advance-payment',
@@ -11,8 +13,11 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 })
 export class PostAdvancePaymentComponent {
   paymentForm: FormGroup;
+  modal: Modal | null = null;
   
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+    private ssrService: SsrService
+  ) {
     this.paymentForm = this.fb.group({
       amount: ['2.000.000', Validators.required],
       method: ['Transfer', Validators.required],
