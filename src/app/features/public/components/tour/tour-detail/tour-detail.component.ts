@@ -57,7 +57,7 @@ export class TourDetailComponent {
 
           this.events = this.tourDetails?.tourSchedules.map(schedule => ({
             scheduleId: schedule.scheduleId,
-            title: `${schedule.sellingPrice}K`, // Show price in title
+            title: `${schedule.sellingPrice/1000}K`, // Show price in title
             start: schedule.startDate.split("T")[0] // Extract only YYYY-MM-DD
           }));
 

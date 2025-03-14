@@ -3,10 +3,11 @@ import { UserStorageService } from '../../../../../core/services/user-storage/us
 import { BookingInfoService } from '../../../services/booking-infor.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 
 @Component({
   selector: 'app-tour-booking-confirm',
-  imports: [CommonModule],
+  imports: [CommonModule, CurrencyVndPipe],
   templateUrl: './tour-booking-confirm.component.html',
   styleUrl: './tour-booking-confirm.component.css'
 })

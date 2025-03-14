@@ -121,7 +121,7 @@
       } @else {
       <h2 class="text-lg font-semibold">Giá từ</h2>
       <p class="text-red-600 text-2xl font-bold">
-        {{ minPrice }} đ <span class="text-sm">/ Người</span>
+        {{ minPrice|currencyVnd}} đ <span class="text-sm">/ Người</span>
       </p>
       <div class="mt-4 flex gap-2">
         <button type="button" (click)="scrollToSchedule('schedule2')"
