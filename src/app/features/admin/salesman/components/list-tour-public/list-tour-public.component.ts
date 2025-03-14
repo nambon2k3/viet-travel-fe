@@ -48,7 +48,14 @@ export class ListTourPublicComponent {
     
 
     loadTours() {
-      this.tourService.getTourByPage().subscribe({
+      this.tourService.getTourByPage(
+        this.page,
+        this.size,
+        this.keyword,
+        this.isDeleted,
+        this.sortField,
+        this.sortDirection
+      ).subscribe({
         next: (response) => {
           this.tourDatas = response.data.items;
         },
