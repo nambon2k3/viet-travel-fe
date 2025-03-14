@@ -1,74 +1,119 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TourService } from '../../../services/tour.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-assign-tour-guide',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule
-  ],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './assign-tour-guide.component.html',
-  styleUrl: './assign-tour-guide.component.css'
+  styleUrls: ['./assign-tour-guide.component.css']
 })
 export class AssignTourGuideComponent {
+  @Input() scheduleId!: number;
+  @Output() tourGuideAssigned = new EventEmitter<void>();
+
   assignForm!: FormGroup;
-
-  showDropdown = false;
+  tourGuides: any[] = []; // Khởi tạo mặc định là mảng rỗng
   id: number = 0;
-  searchText = '';
-  departureLocation = '';
-  departureTime = '';
-  notes = '';
-  tourGuides: any[] = [];
+  showDropdown: boolean = false;
+  filteredTourGuides: any[] = []; // Khởi tạo mặc định là mảng rỗng
 
-  constructor(private route: ActivatedRoute,
-    private tourService: TourService) { }
+  constructor(
+    private route: ActivatedRoute,
+    private tourService: TourService,
+    private fb: FormBuilder
+  ) { }
 
   ngOnInit() {
+    this.assignForm = this.fb.group({
+      searchText: [''],
+      tourGuideId: [null, Validators.required],
+      meetingLocation: ['', Validators.required],
+      departureHour: [0, [Validators.required, Validators.min(0), Validators.max(23)]],
+      departureMinute: [0, [Validators.required, Validators.min(0), Validators.max(59)]],
+      departureSecond: [0, [Validators.required, Validators.min(0), Validators.max(59)]],
+      departureNano: [0]
+    });
+
     this.route.queryParams.subscribe(params => {
-      this.id = params['id'];
-      if (this.id) {
+      this.scheduleId = params['id'];
+      if (this.scheduleId) {
         this.fetchTourGuides();
-        // this.showModal();
       }
+    });
+
+    this.assignForm.get('searchText')?.valueChanges.subscribe(value => {
+      this.filterGuides(value);
+      this.showDropdown = true;
     });
   }
 
   fetchTourGuides(): void {
-    this.tourService.getListTourGuide(this.id).subscribe({
+    this.tourService.getListTourGuide(this.scheduleId).subscribe({
       next: (response: any) => {
-        if (response.code === 200) {
+        // Kiểm tra và xử lý response để đảm bảo là mảng
+        if (Array.isArray(response)) {
+          this.tourGuides = response;
+        } else if (response && Array.isArray(response.data)) {
+          // Trường hợp response là object chứa mảng trong thuộc tính 'data'
           this.tourGuides = response.data;
         } else {
-          console.error('Error:', response.message);
+          // Nếu không có dữ liệu hợp lệ, gán mảng rỗng
+          this.tourGuides = [];
+          console.warn('No valid tour guide data received from API');
         }
+        this.filteredTourGuides = [...this.tourGuides]; // Sao chép mảng an toàn
       },
       error: (error: any) => {
         console.error('Error fetching tour guides:', error);
+        this.tourGuides = []; // Gán mảng rỗng trong trường hợp lỗi
+        this.filteredTourGuides = [];
       }
     });
   }
 
+  filterGuides(query: string): void {
+    const searchText = query?.toLowerCase() || '';
+    this.filteredTourGuides = this.tourGuides.filter(guide =>
+      guide.fullName?.toLowerCase().includes(searchText)
+    );
+  }
+
+  selectGuide(guide: any) {
+    this.assignForm.patchValue({
+      searchText: guide.fullName,
+      tourGuideId: guide.id
+    });
+    this.showDropdown = false;
+  }
+
   assignGuide() {
     if (this.assignForm.valid) {
-      const formData = this.assignForm.value;
-      this.tourService.assignTourGuide(this.id, formData).subscribe({
+      const { departureHour, departureMinute, departureSecond } = this.assignForm.value;
+
+      const departureTime = `${departureHour.toString().padStart(2, '0')}:${departureMinute.toString().padStart(2, '0')}:${departureSecond.toString().padStart(2, '0')}`;
+
+      const formData = {
+        departureTime: departureTime,
+        tourGuideId: this.assignForm.value.tourGuideId,
+        meetingLocation: this.assignForm.value.meetingLocation
+      };
+
+      this.tourService.assignTourGuide(this.scheduleId, formData).subscribe({
         next: (response: any) => {
           if (response.code === 200) {
-            console.log('Tour guide assigned successfully');
+            this.tourGuideAssigned.emit();
+            this.assignForm.reset();
           } else {
             console.error('Error:', response.message);
           }
+        },
+        error: (error: any) => {
+          console.error('Error assigning tour guide:', error);
         }
-      }
-      );
-      this.assignForm.reset({
-        departureLocation: '',
-        departureTime: '',
-        notes: ''
       });
     } else {
       console.error('Invalid form data');
@@ -77,10 +122,5 @@ export class AssignTourGuideComponent {
 
   toggleDropdown() {
     this.showDropdown = !this.showDropdown;
-  }
-
-  selectGuide(guide: any) {
-    this.searchText = guide.name;
-    this.showDropdown = false;
   }
 }

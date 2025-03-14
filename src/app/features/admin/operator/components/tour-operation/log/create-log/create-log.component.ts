@@ -24,7 +24,6 @@ export class CreateLogComponent {
   }
 
   onSave() {
-    console.log('Log ID:', this.scheduleId);
     if (this.logForm.valid) {
       const formData = { ...this.logForm.value };
       this.tourService.createLog(formData, this.scheduleId).subscribe({

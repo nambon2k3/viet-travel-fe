@@ -1,46 +1,53 @@
 <div id="assignTourGuideModal" tabindex="-1" aria-hidden="true"
-    class="hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50 hidden">
+    class="hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50">
     <div class="relative w-full max-w-lg bg-white rounded-lg shadow-lg">
         <div class="flex items-center justify-between px-6 py-4 border-b">
             <h3 class="text-lg font-bold text-center mb-4">Phân công hướng dẫn viên</h3>
-            <button data-modal-hide="assignTourGuideModal" class="text-gray-500 hover:text-gray-700">
+            <button type="button" data-modal-hide="assignTourGuideModal" class="text-gray-500 hover:text-gray-700">
                 ✖
             </button>
         </div>
 
         <form [formGroup]="assignForm">
             <div class="p-6 space-y-4">
-                <!-- Search Box -->
-                <label class="block font-medium mb-1">Tên Hướng dẫn viên</label>
-                <input type="text" class="w-full px-3 py-2 border rounded-md" (click)="toggleDropdown()"
-                    formControlName="searchText" placeholder="Tìm kiếm hướng dẫn viên" />
+                <!-- Ô tìm kiếm hướng dẫn viên -->
+                <label class="block font-medium mb-1">Chọn Hướng dẫn viên</label>
+                <input type="text" class="w-full px-3 py-2 border rounded-md" formControlName="searchText" 
+                    (focus)="showDropdown = true" placeholder="Nhập tên hướng dẫn viên..." />
 
-                <!-- Dropdown -->
-                <div *ngIf="showDropdown" class="bg-white border rounded-md shadow-md mt-2">
-                    <div *ngFor="let guide of tourGuides" class="p-2 cursor-pointer hover:bg-gray-200"
-                        (click)="selectGuide(guide)">
-                        {{ guide.name }}
+                <!-- Dropdown danh sách hướng dẫn viên -->
+                <div *ngIf="showDropdown && filteredTourGuides.length > 0"
+                    class="bg-white border rounded-md shadow-md mt-2 max-h-40 overflow-y-auto absolute w-full z-10">
+                    <div *ngFor="let guide of filteredTourGuides" 
+                        class="p-2 cursor-pointer hover:bg-gray-200"
+                        (mousedown)="selectGuide(guide)">
+                        {{ guide.fullName }}
                     </div>
                 </div>
 
-                <!-- Departure Location -->
+                <!-- Meeting Location -->
                 <label class="block font-medium mt-4 mb-1">Địa điểm khởi hành</label>
-                <input type="text" class="w-full px-3 py-2 border rounded-md" formControlName="departureLocation" />
+                <input type="text" class="w-full px-3 py-2 border rounded-md" formControlName="meetingLocation" />
 
-                <!-- Departure Time -->
-                <label class="block font-medium mt-4 mb-1">Thời gian khởi hành</label>
-                <input type="text" class="w-full px-3 py-2 border rounded-md" formControlName="departureTime" />
+                <!-- Ô chọn giờ -->
+                <label class="block font-medium mt-4 mb-1">Giờ khởi hành</label>
+                <input type="number" class="w-full px-3 py-2 border rounded-md" formControlName="departureHour" min="0" max="23" />
 
-                <!-- Notes -->
-                <label class="block font-medium mt-4 mb-1">Ghi chú</label>
-                <textarea class="w-full px-3 py-2 border rounded-md" formControlName="notes"></textarea>
+                <!-- Ô chọn phút -->
+                <label class="block font-medium mt-4 mb-1">Phút khởi hành</label>
+                <input type="number" class="w-full px-3 py-2 border rounded-md" formControlName="departureMinute" min="0" max="59" />
+
+                <!-- Ô chọn giây -->
+                <label class="block font-medium mt-4 mb-1">Giây khởi hành</label>
+                <input type="number" class="w-full px-3 py-2 border rounded-md" formControlName="departureSecond" min="0" max="59" />
             </div>
+
             <div class="flex justify-end px-6 py-4 border-t">
                 <button type="button" data-modal-hide="assignTourGuideModal"
                     class="px-4 py-2 mr-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
                     Hủy Bỏ
                 </button>
-                <button type="submit" data-modal-hide="assignTourGuideModal" (click)="assignGuide()"
+                <button type="button" (click)="assignGuide()" data-modal-hide="assignTourGuideModal"
                     class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
                     Lưu
                 </button>

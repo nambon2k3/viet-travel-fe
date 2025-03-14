@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../services/tour.service';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
@@ -7,28 +7,28 @@ import { AssignTourGuideComponent } from './assign-tour-guide/assign-tour-guide.
 
 @Component({
   selector: 'app-tour-operation',
+  standalone: true,
   templateUrl: './tour-operation.component.html',
-  styleUrl: './tour-operation.component.css',
-  imports: [CurrencyVndPipe,
-    CommonModule
-  ]
+  styleUrls: ['./tour-operation.component.css'],
+  imports: [CurrencyVndPipe, CommonModule, AssignTourGuideComponent]
 })
-export class TourOperationComponent implements OnInit {
+export class TourOperationComponent {
   @ViewChild('assignTourGuideModal') assignTourGuideModal!: AssignTourGuideComponent;
-  tour: any = null;
+  tour: any;
   tags: string = '';
   errorMessage: string = '';
+  id: number = 0;
 
   constructor(
     private route: ActivatedRoute,
     private tourService: TourService
-  ) {}
+  ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      const id = params['id'];
-      if (id) {
-        this.getTourDetails(id);
+      this.id = params['id'];
+      if (this.id) {
+        this.getTourDetails(this.id);
       }
     });
   }
@@ -39,9 +39,12 @@ export class TourOperationComponent implements OnInit {
         this.tour = response.data;
         this.tags = this.tour.tags?.map((tag: any) => tag.name).join(', ') || '';
       } else {
-        // Handle error
         this.errorMessage = response.message;
       }
     });
+  }
+
+  onTourGuideAssigned(): void {
+    this.getTourDetails(this.id);
   }
 }
