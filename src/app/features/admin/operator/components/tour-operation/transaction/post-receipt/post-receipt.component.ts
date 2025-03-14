@@ -38,7 +38,6 @@ export class PostReceiptComponent {
       paymentRows: this.fb.array([]) // Initialize FormArray
     });
 
-    // Add default payment rows
     this.addPaymentRow('Pay for Hotel Service', 10000000);
     this.addPaymentRow('Pay for Restaurant Service', 5000000);
   }
@@ -63,7 +62,7 @@ export class PostReceiptComponent {
   }
 
   onCancel() {
-    this.router.navigate(['/operator/tour-operation/log']);
+    this.router.navigate(['/operator/tour-operation/transaction']);
   }
 
   onSave() {

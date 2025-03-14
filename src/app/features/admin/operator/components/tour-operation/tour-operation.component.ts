@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../services/tour.service';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
+import { AssignTourGuideComponent } from './assign-tour-guide/assign-tour-guide.component';
 
 @Component({
   selector: 'app-tour-operation',
@@ -13,6 +14,7 @@ import { CommonModule } from '@angular/common';
   ]
 })
 export class TourOperationComponent implements OnInit {
+  @ViewChild('assignTourGuideModal') assignTourGuideModal!: AssignTourGuideComponent;
   tour: any = null;
   tags: string = '';
   errorMessage: string = '';

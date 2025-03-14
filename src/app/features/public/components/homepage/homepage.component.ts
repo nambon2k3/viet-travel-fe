@@ -21,12 +21,12 @@ import { SsrService } from '../../../../core/services/ssr.service';
 })
 export class HomepageComponent {
   selectedCategory: string = 'Tìm kiếm tất cả';
-  searchPlaceholder: string = 'Tim kiếm...';
-  searchTitle: string = 'Đi đâu?';
+  searchPlaceholder: string = 'Địa điểm, hoạt động, khách sạn...';
+  searchTitle: string = 'Hiện thực hóa chuyến du lịch trong mơ';
   userProfile: any;
 
   categories = [
-    { name: 'Tìm kiếm tất cả', title: "Đi đâu?", placeholder: 'Địa điểm, hoạt động, khách sạn...' },
+    { name: 'Tìm kiếm tất cả', title: "Hiện thực hóa chuyến du lịch trong mơ", placeholder: 'Địa điểm, hoạt động, khách sạn...' },
     { name: 'Khách sạn', title: "Nghỉ ngơi ở nơi tuyệt vời", placeholder: 'Tên khách sạn hoặc điểm đến' },
     { name: 'Nhà hàng', title: "Tìm địa điểm ăn uống", placeholder: 'Nhà hàng hoặc điểm đến' },
     { name: 'Chuyến bay', title: "Tìm chuyến bay tốt nhất", placeholder: 'Tìm kiếm chuyến bay...' },
