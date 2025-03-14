@@ -38,4 +38,13 @@ export class TourService {
     }
 
 
+
+    getListBooking(tourId: number, scheduleId?:number) : Observable<any> {
+        const url = scheduleId 
+            ? `${environment.apiUrl}salesman/tours/list-booking/${tourId}/${scheduleId}` 
+            : `${environment.apiUrl}salesman/tours/list-booking/${tourId}`;
+
+        return this.http.get(url);
+    }
+
 }

@@ -225,21 +225,21 @@
                 </p>
             </div>
             <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Khách hàng</span> <span
-                    class="text-red-600">{{total}} VND</span></p>
+                    class="text-red-600">{{total |currencyVnd}} VND</span></p>
             <p class="flex justify-between mb-2"><span>🧑 Người lớn: </span> <span>{{numberAdults}} x
-                    {{bookingData?.sellingPrice}} VND</span></p>
+                    {{bookingData?.sellingPrice |currencyVnd}} </span></p>
             <p class="flex justify-between mb-2"><span>👶 Trẻ em:</span> <span>{{numberChildren}} x
-                    {{childrenPrice}}VND</span></p>
+                    {{childrenPrice |currencyVnd}}</span></p>
             <p class="flex justify-between mb-2">
                 @if(numberSingleRooms > 0) {
                 <span>📍 Phòng đơn:</span> <span>{{numberSingleRooms}} x
-                    {{bookingData?.extraHotelCost}} VND</span>
+                    {{bookingData?.extraHotelCost |currencyVnd}} </span>
                 } @else {
                 <span>📍 Phòng đơn:</span> <span>0 VND</span>
                 }
             </p>
             <hr class="my-4">
-            <p class="font-semibold text-xl flex justify-between"><span>Tổng số tiền:</span> <span class="text-red-600">{{total}} VND</span></p>
+            <p class="font-semibold text-xl flex justify-between"><span>Tổng số tiền:</span> <span class="text-red-600">{{total |currencyVnd}} </span></p>
         </div>
     </div>
 </div>

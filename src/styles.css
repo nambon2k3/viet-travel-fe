@@ -5,7 +5,6 @@
 @plugin "flowbite-typography";
 @plugin "flowbite";
 
-
 #editor a {
   color: oklch(.546 .245 262.881);
   font-weight: 500;
@@ -67,6 +66,9 @@ body.modal-open {
   background-color: #137236 !important;
 }
 
+.full-calendar{
+  min-height: 40vh;
+}
 
 /* Remove borders around the entire calendar */
 .fc {
@@ -216,3 +218,11 @@ body.modal-open {
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
+
+
+
+
+
+
+
+

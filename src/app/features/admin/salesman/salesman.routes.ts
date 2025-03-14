@@ -35,7 +35,7 @@ export const SALESMAN_ROUTES: Route[] = [
     component: BookingDetailComponent
   }, 
   {
-    path: 'tour-list-booking',
+    path: 'tour-list-booking/:id',
     component: TourListBookingComponent
   },
 ];

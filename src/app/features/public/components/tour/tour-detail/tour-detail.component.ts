@@ -62,8 +62,8 @@ export class TourDetailComponent implements AfterViewInit {
 
           this.events = this.tourDetails?.tourSchedules.map(schedule => ({
             scheduleId: schedule.scheduleId,
-            title: `${schedule.sellingPrice}K`,
-            start: schedule.startDate.split("T")[0]
+            title: `${schedule.sellingPrice/1000}K`, // Show price in title
+            start: schedule.startDate.split("T")[0] // Extract only YYYY-MM-DD
           }));
 
           if (this.tourDetails?.tourSchedules.length) {

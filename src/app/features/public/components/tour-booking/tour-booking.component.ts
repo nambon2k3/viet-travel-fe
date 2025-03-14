@@ -5,10 +5,11 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 
 @Component({
   selector: 'app-tour-booking',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CurrencyVndPipe],
   templateUrl: './tour-booking.component.html',
   styleUrl: './tour-booking.component.css',
   providers: [DatePipe]

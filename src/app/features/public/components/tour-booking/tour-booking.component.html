@@ -168,8 +168,8 @@
 
                             </label>
                             <span
-                                class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{tourSchedule?.extraHotelCost}}
-                                VND</span>
+                                class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{tourSchedule?.extraHotelCost |currencyVnd}}
+                                </span>
 
                         </div>
                     </div>
@@ -304,28 +304,28 @@
 
                 <div class="bg-gray-100 p-4 rounded-md mb-4">
                     <p class="font-semibold">📍 {{tourDetails?.name}}</p>
-                    <p class="text-gray-500">🎟️ Depart Date: {{tourSchedule?.startDate | date:
+                    <p class="text-gray-500">🎟️ Ngày đi: {{tourSchedule?.startDate | date:
                         'dd/MM/yyyy'}}</p>
-                    <p class="text-gray-500">📍 Departure: <strong>{{tourDetails?.departLocation?.name}}</strong>
+                    <p class="text-gray-500">📍 Điểm xuất phát: <strong>{{tourDetails?.departLocation?.name}}</strong>
                     </p>
-                    <p class="text-gray-500">⏳ Time:
-                        <strong>{{tourDetails?.numberDays}}D{{tourDetails?.numberNight}}N</strong>
+                    <p class="text-gray-500">⏳ Thời Lượng:
+                        <strong>{{tourDetails?.numberDays}}N{{tourDetails?.numberNight}}Đ</strong>
                     </p>
                 </div>
                 <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Khách hàng</span> <span
-                        class="text-red-600">{{total}} VND</span></p>
+                        class="text-red-600">{{total | currencyVnd}}</span></p>
                 <p class="flex justify-between mb-2"><span>🧑 Người lớn: </span> <span>{{numberAdults}} x
-                        {{tourSchedule?.sellingPrice}} VND</span></p>
+                        {{tourSchedule?.sellingPrice |currencyVnd}}</span></p>
                 <p class="flex justify-between mb-2">
                     @if(numberChildren > 0) {
-                    <span>👶 Trẻ em:</span> <span>{{numberChildren}} x {{childrenPrice}} VND</span>
+                    <span>👶 Trẻ em:</span> <span>{{numberChildren}} x {{childrenPrice |currencyVnd}}</span>
 
                     }
                 </p>
                 <p class="flex justify-between mb-2">
                     @if(numberSingleRooms > 0) {
                     <span>📍 Phòng đơn:</span> <span>{{numberSingleRooms}} x
-                        {{tourSchedule?.extraHotelCost}} VND</span>
+                        {{tourSchedule?.extraHotelCost |currencyVnd}} </span>
                     } @else {
                     <span>📍 Phòng đơn:</span> <span>0 VND</span>
                     }
@@ -333,7 +333,7 @@
                 <hr class="my-4">
                 <input type="text" formControlName="total" class="w-full border p-2 rounded mt-1" hidden>
                 <p class="font-semibold text-xl flex justify-between"><span>Tổng số tiền:</span> <span
-                        class="text-red-600">{{total}} VND</span></p>
+                        class="text-red-600">{{total |currencyVnd}} </span></p>
                 <button [disabled]="!agreeTerms" type="submit"
                     class="w-full bg-red-500 text-white py-3 rounded-lg mt-4">
                     @if(!agreeTerms) {
