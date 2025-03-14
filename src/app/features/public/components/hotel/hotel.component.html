@@ -1,9 +1,10 @@
-<div class="mt-24 container mx-auto px-4 py-6">
+<div class="mt-24 container mx-auto px-4 py-6 pb-0">
     <div
-        class="mx-auto w-full bg-gray-200 p-6 rounded-lg flex flex-col md:flex-row gap-20 justify-center items-start md:items-center">
+        class="mx-auto w-11/12 bg-gray-200 p-6 rounded-lg flex flex-col md:flex-row gap-20 justify-center items-start md:items-center">
         <div id="map" (click)="openMap()"
-            class="relative w-full md:w-1/3 h-56 flex items-center justify-center font-bold text-lg rounded-lg shadow">
+            class="relative z-10 w-1/4 h-56 flex items-center justify-center font-bold text-lg rounded-lg shadow cursor-pointer">
         </div>
+
         <div class="">
             <div class="font-bold text-3xl mb-16">Tất cả khách sạn tại {{ keyword }}</div>
             <div class="flex flex-col gap-4 md:flex-row mt-4 md:mt-0">

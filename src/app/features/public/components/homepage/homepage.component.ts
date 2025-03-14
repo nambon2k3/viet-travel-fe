@@ -4,7 +4,6 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FooterComponent } from "../../../../shared/components/footer/footer.component";
 import { HomepageService } from '../../services/homepage.service';
 import { Activity, Blog, Tour, Location } from '../../../../core/models/homepage.model';
-import { shareReplay } from 'rxjs';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../core/services/ssr.service';
@@ -48,16 +47,12 @@ export class HomepageComponent {
   blog: Blog | undefined;
   activities: Activity[] = [];
   topTourOfYear: Tour | undefined;
-  homepageData$;
 
   constructor(
     private homepageService: HomepageService,
     private router: Router,
     private ssrService: SsrService,
   ) {
-    this.homepageData$ = this.homepageService.getHomepageData(6, 4, 3, 7).pipe(
-      shareReplay(1)
-    );
   }
 
   ngOnInit() {
@@ -77,13 +72,6 @@ export class HomepageComponent {
         this.blog = res.data.newBlogs[res.data.newBlogs.length - 1];
         this.activities = res.data.recommendedActivities;
         this.locations = res.data.recommendedLocations;
-
-        // Cache the data
-        const local = this.ssrService.getLocalStorage();
-        if (local) {
-          localStorage.setItem('homepageData', JSON.stringify(res.data));
-          localStorage.setItem('homepageDataTimestamp', new Date().getTime().toString());
-        }
       },
       error: (err) => {
         console.error('Fetching homepage data:', err);
