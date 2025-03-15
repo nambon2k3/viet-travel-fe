@@ -7,8 +7,9 @@
         </div>
     </div>
     <div class="inline-block space-x-4">
-        <button class="bg-green-800 text-white text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold"
-        (click)="openAddTourModal()">
+        <button
+            class="bg-green-800 text-white text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold"
+            (click)="openAddTourModal()">
             Tạo tour
         </button>
     </div>
@@ -17,9 +18,7 @@
 <app-spinner [isLoading]="isLoading"></app-spinner>
 
 <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2 bg-white">
-    <app-table-action [totalItems]="totalItems" 
-    [size]="size" 
-    (searchFilters)="onSearch($event)">"></app-table-action>
+    <app-table-action [totalItems]="totalItems" [size]="size" (searchFilters)="onSearch($event)">"></app-table-action>
     <div
         class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
         <table
@@ -29,7 +28,8 @@
             </thead>
             <tbody>
                 <ng-container *ngIf="filteredTour().length > 0; else noLocations">
-                    <tr class="hover:bg-card/50" app-table-row *ngFor="let tour of filteredTour()" [tour]="tour">
+                    <tr class="hover:bg-card/50" app-table-row *ngFor="let tour of filteredTour()" [tour]="tour"
+                        (tourUpdated)="loadTour()">
                     </tr>
                 </ng-container>
                 <ng-template #noLocations>
