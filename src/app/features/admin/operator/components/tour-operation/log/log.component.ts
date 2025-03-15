@@ -53,4 +53,19 @@ export class LogComponent {
   onLogCreated(): void {
     this.loadLogs(this.id);
   }
+
+  onDeleteLog(logId: number): void {
+    this.tourService.deleteLog(logId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.loadLogs(this.id);
+        } else {
+          console.error('Lỗi:', response.message);
+        }
+      },
+      error: (error: any) => {
+        console.error('Lỗi khi xóa log:', error.message);
+      }
+    });
+  }
 }

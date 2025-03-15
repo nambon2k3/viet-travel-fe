@@ -45,17 +45,18 @@ export class Menu {
       ],
     },
     {
-      group: 'Operations',
+      group: 'Điều hành',
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Operations',
-          children: [
-            { label: 'Request Service', route: '/ceo/staff' },
-            { label: 'Operation', route: '/ceo/customer' },
-            { label: 'Tour Operation', route: '/ceo/customer' },
-          ],
+          label: 'Điều hành Tour',
+          route: '/operator/view-list-tour',
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Xử lý yêu cầu',
+          route: '/operator/view-list-request',
         }
       ],
     },

@@ -51,10 +51,12 @@ export class TourService {
   getLogs(id: number): Observable<any> {
     return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-operation-log`);
   }
+
+  getTransactions(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-transaction`);
+  }
   
   createLog(formData: any, id: number): Observable<any> {
-    console.log('formData', formData);
-    console.log('id', id);
     return this.http.post(`${environment.apiUrl}operator/tour-detail/${id}/create-operation-log`, formData);
   }
 
@@ -64,5 +66,9 @@ export class TourService {
 
   assignTourGuide(id: number, formData: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}operator/tour-detail/${id}/assign-tour-guide`, formData);
+  }
+
+  deleteLog(id: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}operator/tour-detail/operation-log/change-status/${id}`);
   }
 }

@@ -1,5 +1,6 @@
+// assign-tour-guide.component.ts
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TourService } from '../../../services/tour.service';
 import { ActivatedRoute } from '@angular/router';
@@ -11,15 +12,16 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './assign-tour-guide.component.html',
   styleUrls: ['./assign-tour-guide.component.css']
 })
-export class AssignTourGuideComponent {
+export class AssignTourGuideComponent implements OnChanges {
   @Input() scheduleId!: number;
+  @Input() tour: any; // Input for tour data
   @Output() tourGuideAssigned = new EventEmitter<void>();
 
   assignForm!: FormGroup;
-  tourGuides: any[] = []; // Khởi tạo mặc định là mảng rỗng
+  tourGuides: any[] = [];
   id: number = 0;
   showDropdown: boolean = false;
-  filteredTourGuides: any[] = []; // Khởi tạo mặc định là mảng rỗng
+  filteredTourGuides: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -47,29 +49,58 @@ export class AssignTourGuideComponent {
 
     this.assignForm.get('searchText')?.valueChanges.subscribe(value => {
       this.filterGuides(value);
-      this.showDropdown = true;
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['tour'] && this.tour) {
+      this.populateFormWithTourData();
+    }
+  }
+
+  populateFormWithTourData() {
+    if (this.tour) {
+      if (this.tour.meetingLocation && this.tour.meetingLocation !== 'null') {
+        this.assignForm.patchValue({ meetingLocation: this.tour.meetingLocation });
+      }
+
+      if (this.tour.tourGuideName && this.tour.tourGuideName !== 'null') {
+        this.assignForm.patchValue({
+          searchText: this.tour.tourGuideName,
+          tourGuideId: this.tour.tourGuideId || null 
+        });
+      }
+
+      if (this.tour.departureTime && this.tour.departureTime !== 'null') {
+        const [hour, minute, second] = this.tour.departureTime.split(':').map(Number);
+        this.assignForm.patchValue({
+          departureHour: hour || 0,
+          departureMinute: minute || 0,
+          departureSecond: second || 0
+        });
+      }
+      this.showDropdown = false;
+    }
   }
 
   fetchTourGuides(): void {
     this.tourService.getListTourGuide(this.scheduleId).subscribe({
       next: (response: any) => {
-        // Kiểm tra và xử lý response để đảm bảo là mảng
         if (Array.isArray(response)) {
           this.tourGuides = response;
         } else if (response && Array.isArray(response.data)) {
-          // Trường hợp response là object chứa mảng trong thuộc tính 'data'
           this.tourGuides = response.data;
         } else {
-          // Nếu không có dữ liệu hợp lệ, gán mảng rỗng
           this.tourGuides = [];
           console.warn('No valid tour guide data received from API');
         }
-        this.filteredTourGuides = [...this.tourGuides]; // Sao chép mảng an toàn
+        this.filteredTourGuides = [...this.tourGuides];
+        // After fetching, ensure the existing tour guide is still set
+        this.populateFormWithTourData();
       },
       error: (error: any) => {
         console.error('Error fetching tour guides:', error);
-        this.tourGuides = []; // Gán mảng rỗng trong trường hợp lỗi
+        this.tourGuides = [];
         this.filteredTourGuides = [];
       }
     });
@@ -87,18 +118,19 @@ export class AssignTourGuideComponent {
       searchText: guide.fullName,
       tourGuideId: guide.id
     });
-    this.showDropdown = false;
+    this.toggleDropdown();
   }
 
   assignGuide() {
     if (this.assignForm.valid) {
-      const { departureHour, departureMinute, departureSecond } = this.assignForm.value;
-
+      const { departureHour, departureMinute, departureSecond, tourGuideId } = this.assignForm.value;
       const departureTime = `${departureHour.toString().padStart(2, '0')}:${departureMinute.toString().padStart(2, '0')}:${departureSecond.toString().padStart(2, '0')}`;
+
+      const finalTourGuideId = tourGuideId || (this.tour?.tourGuideId && this.tour.tourGuideId !== 'null' ? this.tour.tourGuideId : null);
 
       const formData = {
         departureTime: departureTime,
-        tourGuideId: this.assignForm.value.tourGuideId,
+        tourGuideId: finalTourGuideId,
         meetingLocation: this.assignForm.value.meetingLocation
       };
 

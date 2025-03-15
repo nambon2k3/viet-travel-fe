@@ -1,3 +1,4 @@
+// tour-operation.component.ts
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../services/tour.service';
@@ -14,7 +15,7 @@ import { AssignTourGuideComponent } from './assign-tour-guide/assign-tour-guide.
 })
 export class TourOperationComponent {
   @ViewChild('assignTourGuideModal') assignTourGuideModal!: AssignTourGuideComponent;
-  tour: any;
+  tour: any; // Ensure this is initialized properly
   tags: string = '';
   errorMessage: string = '';
   id: number = 0;
@@ -36,7 +37,7 @@ export class TourOperationComponent {
   getTourDetails(id: number) {
     this.tourService.getTourById(id).subscribe(response => {
       if (response.code === 200) {
-        this.tour = response.data;
+        this.tour = response.data; // Ensure tour is set here
         this.tags = this.tour.tags?.map((tag: any) => tag.name).join(', ') || '';
       } else {
         this.errorMessage = response.message;
@@ -45,6 +46,6 @@ export class TourOperationComponent {
   }
 
   onTourGuideAssigned(): void {
-    this.getTourDetails(this.id);
+    this.getTourDetails(this.id); // Refresh tour data after assignment
   }
 }
