@@ -55,7 +55,7 @@ body.modal-open {
 
 /* Change background color of events */
 .fc-event {
-  background-color: #15803d !important;
+  /* background-color: #15803d !important; */
   border-color: #ff5733 !important;
   color: white !important;
   text-align: center;
@@ -63,7 +63,7 @@ body.modal-open {
 
 .fc-event:hover {
   cursor: pointer;
-  background-color: #137236 !important;
+  /* background-color: #137236 !important; */
 }
 
 .full-calendar{
@@ -91,6 +91,27 @@ body.modal-open {
   box-shadow: none !important;
 }
 
+.fc-daygrid-event-dot,
+.fc-daygrid-block-event,
+.fc-daygrid-event-main {
+  border-radius: 5px !important;
+}
+
+.fc-daygrid-event {
+  margin: 1px 0 !important;
+  /* Bo góc cho tất cả các đoạn của sự kiện */
+  border-radius: 5px !important;
+  height: auto !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+/* Đặt sự kiện ở bottom của ô ngày */
+.fc-daygrid-day-frame {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important;
+}
 
 .fc .fc-toolbar {
   display: flex;
@@ -178,6 +199,13 @@ body.modal-open {
   width: 60%;
   aspect-ratio: 1/1;
   margin: auto;
+}
+
+.fc-event-title {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 2px !important;
 }
 
 .fc tr td {

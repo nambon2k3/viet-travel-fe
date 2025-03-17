@@ -80,4 +80,8 @@ export const routes: Routes = [
         path: 'accountant',
         loadChildren: () => import('./features/admin/accountant/accountant.routes').then(m => m.ACCOUNTANT_ROUTES),
     },
+    {
+        path: 'error',
+        loadChildren: () => import('./core/pages/error-page/error-page.routes').then(m => m.ERROR_ROUTES),
+    },
 ];
