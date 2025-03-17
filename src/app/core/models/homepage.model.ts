@@ -1,17 +1,45 @@
+export interface ApiResponse {
+  code: number;
+  message: string;
+  data: {
+    topTourOfYear: Tour;
+    trendingTours: Tour[];
+    newBlogs: Blog[];
+    recommendedActivities: Activity[];
+    recommendedLocations: Location[];
+  };
+}
+
 export interface Tour {
   id: number;
   name: string;
-  highlights: string;
-  numberSeats: number;
   numberDays: number;
   numberNight: number;
-  note?: string | null;
-  locations: Location[];
   tags: Tag[];
-  depart_location: Location;
-  tickets: Ticket[];
+  departLocation: Location;
   tourSchedules: TourSchedule[];
   tourImages: TourImage[];
+  priceFrom: number;
+}
+
+export interface TourSchedule {
+  scheduleId: number;
+  startDate: string;
+  endDate: string;
+  sellingPrice: number;
+  minPax: number;
+  maxPax: number;
+  availableSeats: number;
+  meetingLocation: string;
+  departureTime: Time;
+  extraHotelCost: number;
+}
+
+export interface Time {
+  hour: number;
+  minute: number;
+  second: number;
+  nano: number;
 }
 
 export interface Location {
@@ -19,15 +47,6 @@ export interface Location {
   name: string;
   description: string;
   image: string;
-  deleted: boolean;
-  geoPosition: GeoPosition;
-}
-
-export interface GeoPosition {
-  id: number;
-  latitude: number;
-  longitude: number;
-  deleted: boolean;
 }
 
 export interface Tag {
@@ -35,23 +54,9 @@ export interface Tag {
   name: string;
 }
 
-export interface Ticket {
-  id: number;
-  type: string;
-  price: number;
-  deleted: boolean;
-}
-
-export interface TourSchedule {
-  id: number;
-  date: string;
-  deleted: boolean;
-}
-
 export interface TourImage {
   id: number;
   imageUrl: string;
-  deleted: boolean;
 }
 
 export interface Blog {
@@ -76,23 +81,23 @@ export interface Author {
 export interface Activity {
   id: number;
   title: string;
-  content: string | null;
+  content: string;
   imageUrl: string;
   pricePerPerson: number;
   geoPosition: GeoPosition;
-  locationId: number | null;
-  activityCategoryId: number | null;
+  location: Location;
+  activityCategory: ActivityCategory;
   deleted: boolean;
 }
 
-export interface ApiResponse {
-  code: number;
-  message: string;
-  data: {
-    topTourOfYear: Tour;
-    trendingTours: Tour[];
-    newBlogs: Blog[];
-    recommendedActivities: Activity[];
-    recommendedLocations: Location[];
-  };
+export interface GeoPosition {
+  id: number;
+  latitude: number;
+  longitude: number;
+}
+
+export interface ActivityCategory {
+  id: number;
+  name: string;
+  deleted: boolean;
 }

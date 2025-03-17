@@ -30,7 +30,7 @@ export class ConfirmEmailComponent implements OnInit {
     if (this.token) {
       this.confirmEmail();
     } else {
-      this.errorMessage = 'Invalid token or URL.';
+      this.errorMessage = 'Token hoặc liên kết không hợp lệ.';
       this.isLoading = false;
     }
   }
@@ -41,7 +41,7 @@ export class ConfirmEmailComponent implements OnInit {
   confirmEmail(): void {
     this.confirmEmailService.confirmEmail(this.token!).subscribe({
       next: (response) => {
-        this.successMessage = 'Your email has been successfully confirmed! You will be redirected to the login page in 5 seconds.';
+        this.successMessage = 'Email của bạn đã được xác nhận thành công! Bạn sẽ được chuyển đến trang đăng nhập trong 5 giây.';
         this.isLoading = false;
         // Optionally redirect after a 5 seconds
         setTimeout(() => {
@@ -49,7 +49,7 @@ export class ConfirmEmailComponent implements OnInit {
         }, 5000);
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Failed to confirm email.';
+        this.errorMessage = error?.error?.message || 'Lỗi khi xác nhận email.';
         this.isLoading = false;
       },
     });

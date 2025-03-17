@@ -1,1 +1,165 @@
-<p>hotel works!</p>
+<div class="mt-24 container mx-auto px-4 py-6 pb-0">
+    <div
+        class="mx-auto w-11/12 bg-gray-200 p-6 rounded-lg flex flex-col md:flex-row gap-20 justify-center items-start md:items-center">
+        <div id="map" (click)="openMap()"
+            class="relative z-10 w-1/4 h-56 flex items-center justify-center font-bold text-lg rounded-lg shadow cursor-pointer">
+        </div>
+
+        <div class="">
+            <div class="font-bold text-3xl mb-16">Tất cả khách sạn tại {{ keyword }}</div>
+            <div class="flex flex-col gap-4 md:flex-row mt-4 md:mt-0">
+                <div class="bg-white p-4 rounded-lg shadow flex items-center gap-2">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <p class="text-sm">Nhận phòng</p>
+                        <p class="font-bold">Chủ nhật, 02/02</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow flex items-center gap-2">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div>
+                        <p class="text-sm">Trả phòng</p>
+                        <p class="font-bold">Chủ nhật, 02/02</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow flex items-center gap-2">
+                    <i class="fas fa-user"></i>
+                    <div>
+                        <p class="text-sm">Phòng/Khách</p>
+                        <p class="font-bold">Chủ nhật, 02/02</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-between items-center mx-20 mt-10 h-fit">
+        <div class="flex gap-1">
+            <p class="font-bold">{{ totalItems }}</p>
+            <p>khách sạn tại Hà Nội</p>
+        </div>
+        <div>
+            <p class="font-bold inline-block mr-2">Sắp xếp theo:</p>
+            <select class="w-40 h-8 bg-gray-100 rounded px-2" [(ngModel)]="sortBy" (change)="onSort()">
+                <option value="">Không</option>
+                <option value="priceAsc">Giá: Thấp đến Cao</option>
+                <option value="priceDesc">Giá: Cao đến Thấp</option>
+                <option value="classAsc">Hạng khách sạn: Thấp đến Cao</option>
+                <option value="classDesc">Hạng khách sạn: Cao đến Thấp</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-7 container mx-auto px-20 py-6">
+        <div class="flex flex-col md:flex-row gap-6 w-1/5">
+            <div class="w-full max-w-md">
+
+                <h2 class="text-2xl font-bold mb-4">Khoảng giá</h2>
+
+                <div class="relative mt-4 slider-container">
+                    <input type="range" min="0" max="200000000" [(ngModel)]="minPrice" (input)="updateSlider()"
+                        class="absolute w-full opacity-0 z-10">
+                    <input type="range" min="0" max="200000000" [(ngModel)]="maxPrice" (input)="updateSlider()"
+                        class="absolute w-full opacity-0 z-10">
+
+                    <div class="relative w-full h-2 bg-gray-200 rounded-md">
+                        <div class="absolute h-2 bg-gradient-to-r from-green-900 to-green-400 rounded-md"
+                            [style.left.%]="minPercent" [style.right.%]="100 - maxPercent"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-3 text-gray-600">
+                    <span>{{ minPrice | currencyVnd }}</span>
+                    <span>{{ maxPrice | currencyVnd }}</span>
+                </div>
+
+                <p class="font-bold mt-4">Vị trí</p>
+                <input type="text" placeholder="Nhập vị trí..." [(ngModel)]="keyword" (input)="onLocationInput()"
+                    class="w-full px-4 mt-2 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent">
+
+
+                <p class="font-bold mt-4">Hạng khách sạn</p>
+                <div class="mt-2 space-y-2">
+                    <ul class="w-full">
+                        <li *ngFor="let star of [5, 4, 3, 2, 1]" class="mb-4">
+                            <input type="radio" [id]="'hotel-class-' + star" name="hotelClass" [value]="star"
+                                [(ngModel)]="hotelClassFilter" class="hidden peer" required />
+                            <label [for]="'hotel-class-' + star"
+                                class="inline-flex items-center justify-between w-full px-5 py-2 text-black bg-white border border-gray-200 rounded-lg cursor-pointer peer-checked:border-green-600 peer-checked:text-green-600 hover:text-white-600 hover:bg-gray-100">
+                                <div class="block">
+                                    <div class="w-full text-lg font-semibold">{{ star }} Sao</div>
+                                </div>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <button class="bg-white border border-black-500 text-black px-4 py-2 rounded-lg mt-4 w-full"
+                    (click)="clearFilters()">
+                    Xóa tất cả bộ lọc
+                </button>
+
+
+                <button class="bg-green-700 text-white hover:bg-green-800 px-4 py-2 rounded-lg mt-4 w-full"
+                    (click)="applyFilters()">Lọc</button>
+            </div>
+        </div>
+
+        <div class="w-full md:w-4/5">
+            @for (hotel of filteredHotels(); track $index){
+            <div class="bg-gray-100 p-4 rounded-lg flex items-start gap-4 mb-4" (click)="goToDetail(hotel.id)">
+                <div name="image" class="w-1/3 h-48 bg-gray-300 rounded-lg"></div>
+                <div class="w-2/3">
+                    <div class="flex justify-between items-start">
+                        <p class="font-bold mb-4">{{ hotel.id }}. {{ hotel.name }} Hà Nội: Thủ đô của Việt Nam ở phía
+                            bắc
+                        </p>
+                        <div class="flex items-center">
+                            <ng-container>
+                                @for (star of getStars(hotel.star); track $index){
+                                <svg class="w-4 h-4 ml-1 text-green-700" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                                </svg>}
+                            </ng-container>
+                        </div>
+
+                    </div>
+                    <div class=" flex items-center my-auto gap-10">
+                        <div class="gap-4 mt-2 items-center justify-center ml-4">
+                            <button class="bg-green-700 text-white hover:bg-green-800 px-4 py-2 rounded-lg mx-auto">Xem
+                                ưu đãi</button>
+                        </div>
+                        <div class="w-2/3">
+                            <p class="text-sm text-gray-500">{{ hotel.abbreviation }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+            <div class="py-8 mt-4 text-center">
+                <ul class="inline-flex space-x-2">
+                    <li *ngIf="currentPage > 0">
+                        <a (click)="changePage(currentPage - 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">«</a>
+                    </li>
+
+                    <li *ngFor="let page of [].constructor(totalPages); let i = index">
+                        <a (click)="changePage(i)" class="px-3 py-2 rounded-md border cursor-pointer"
+                            [class.bg-black]="i === currentPage" [class.text-white]="i === currentPage">
+                            {{ i + 1 }}
+                        </a>
+                    </li>
+
+                    <li *ngIf="currentPage < totalPages - 1">
+                        <a (click)="changePage(currentPage + 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">»</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

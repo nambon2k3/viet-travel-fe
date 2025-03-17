@@ -18,18 +18,6 @@ export class RegistrationConfirmationComponent implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-      // Subscribe to query parameters immediately
-      // this.route.queryParams.subscribe(params => {
-      //     const encodedError = params['error'];
-      //     if (encodedError) {
-      //         // Decode the error message
-      //         this.errorMessage = decodeURIComponent(encodedError);
-      //     } else {
-      //         this.errorMessage = null; // No error message provided
-      //     }
-      //     this.isLoading = false; // Stop loading once data is processed
-      // });
-
       setTimeout(() => {
         this.route.queryParams.subscribe(params => {
           const encodedError = params['error'];

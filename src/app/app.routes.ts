@@ -6,7 +6,6 @@ import { ConfirmEmailComponent } from './core/pages/confirm-email/confirm-email.
 import { ResetPasswordComponent } from './features/common/components/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './features/common/components/forgot-password/forgot-password.component';
 import { RegistrationConfirmationComponent } from './core/pages/registration-confirmation/registration-confirmation.component';
-import { HomepageComponent } from './features/public/components/homepage/homepage.component';
 
 export const routes: Routes = [
     {
@@ -68,5 +67,17 @@ export const routes: Routes = [
     {
         path: 'head-business',
         loadChildren: () => import('./features/admin/head-of-business/head-of-business.routes').then(m => m.HEAD_OF_BUSINESS_ROUTES),
+    },
+    {
+        path: 'operator',
+        loadChildren: () => import('./features/admin/operator/operator.routes').then(m => m.OPERATOR_ROUTES),
+    },
+    {
+        path: 'salesman',
+        loadChildren: () => import('./features/admin/salesman/salesman.routes').then(m => m.SALESMAN_ROUTES),
+    },
+    {
+        path: 'accountant',
+        loadChildren: () => import('./features/admin/accountant/accountant.routes').then(m => m.ACCOUNTANT_ROUTES),
     },
 ];

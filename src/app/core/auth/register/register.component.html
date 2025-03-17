@@ -7,11 +7,11 @@
                 <div class="flex items-center justify-center">
                     <img src="assets/images/logo/logo.png" alt="logo" class="w-25 h-20" />
                 </div>
-                <h3 class="text-gray-800 text-3xl font-bold">Sign up</h3>
+                <h3 class="text-gray-800 text-3xl font-bold">Đăng ký</h3>
             </div>
 
             <div class="relative flex items-center mt-2">
-                <input type="text" formControlName="username" placeholder="Username" required
+                <input type="text" formControlName="username" placeholder="Tên đăng nhập" required
                     (focus)="onFocus('username')" (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333"
@@ -23,14 +23,14 @@
                 <!-- Username Criteria Popup -->
                 <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
                     *ngIf="activeField === 'username'">
-                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.minLength">✔ Minimum 8 characters</p>
-                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.maxLength">✔ Maximum 30 characters</p>
-                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.pattern">✔ Only alphanumeric characters</p>
+                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.minLength">✔ Ít nhất 8 ký tự</p>
+                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.maxLength">✔ Tối đa 30 ký tự</p>
+                    <p class="m-0 text-xs" [class.valid]="usernameCriteria.pattern">✔ Ký tự alphabetic</p>
                 </div>
             </div>
 
             <div class="relative flex items-center mt-4">
-                <input type="text" formControlName="fullName" placeholder="Fullname" required
+                <input type="text" formControlName="fullName" placeholder="Họ tên" required
                     (focus)="onFocus('fullName')" (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333"
@@ -42,7 +42,7 @@
                 <!-- Full Name Criteria Popup -->
                 <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
                     *ngIf="activeField === 'fullName'">
-                    <p class="m-0 text-xs" [class.valid]="fullNameCriteria.pattern">✔ Only letters and spaces</p>
+                    <p class="m-0 text-xs" [class.valid]="fullNameCriteria.pattern">✔ Ký tự alphabetic và khoảng trắng</p>
                 </div>
             </div>
 
@@ -60,7 +60,7 @@
                 <!-- Email Criteria Popup -->
                 <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
                     *ngIf="activeField === 'email'">
-                    <p class="m-0 text-xs" [class.valid]="emailCriteria.validFormat">✔ Must be a valid email</p>
+                    <p class="m-0 text-xs" [class.valid]="emailCriteria.validFormat">✔ Email hợp lệ</p>
                 </div>
             </div>
 
@@ -68,19 +68,19 @@
             <div class="relative flex items-center mt-4">
                 <select required formControlName="gender" (focus)="onFocus('gender')" (blur)="onBlur()"
                   class="bg-transparent w-full text-sm border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none text-gray-800">
-                  <option value="" disabled selected>Select Gender</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
+                  <option value="" disabled selected>Chọn giới tính</option>
+                  <option value="MALE">Nam</option>
+                  <option value="FEMALE">Nữ</option>
                 </select>
                 <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
                   *ngIf="activeField === 'gender'">
-                  <p class="m-0 text-xs" [class.valid]="gendersCriteria.validFormat">✔ Must select a gender</p>
+                  <p class="m-0 text-xs" [class.valid]="gendersCriteria.validFormat">✔ Chọn giới tính</p>
                 </div>
               </div>
 
               <!-- Phone Number Field -->
             <div class="relative flex items-center mt-4">
-                <input type="tel" formControlName="phone" placeholder="Phone Number" required (focus)="onFocus('phone')"
+                <input type="tel" formControlName="phone" placeholder="Số điện thoại" required (focus)="onFocus('phone')"
                     (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333"
@@ -91,13 +91,13 @@
                 <!-- Phone Criteria Popup -->
                 <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
                     *ngIf="activeField === 'phone'">
-                    <p class="m-0 text-xs" [class.valid]="phoneCriteria.validFormat">✔ Must be a valid phone</p>
+                    <p class="m-0 text-xs" [class.valid]="phoneCriteria.validFormat">✔ Số điện thoại hợp lệ</p>
                 </div>
             </div>
 
             <!-- Address Field -->
             <div class="relative flex items-center mt-4">
-                <input formControlName="address" placeholder="Address" required (focus)="onFocus('address')" type="text"
+                <input formControlName="address" placeholder="Địa chỉ" required (focus)="onFocus('address')" type="text"
                     (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333"
@@ -108,13 +108,13 @@
                 <!-- Address Criteria Popup -->
                 <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
                     *ngIf="activeField === 'address'">
-                    <p class="m-0 text-xs" [class.valid]="addressCriteria.validFormat">✔ Must be a valid address</p>
+                    <p class="m-0 text-xs" [class.valid]="addressCriteria.validFormat">✔ Địa chỉ hợp lệ</p>
                 </div>
             </div>
 
             <!-- Password Field -->
             <div class="relative flex items-center mt-4">
-                <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" placeholder="Password"
+                <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" placeholder="Mật khẩu"
                     required (focus)="onFocus('password')" (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333" (click)="togglePasswordVisibility()"
@@ -126,18 +126,17 @@
                 <!-- Password Criteria Popup -->
                 <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
                     *ngIf="activeField === 'password'">
-                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.minLength">✔ Minimum 8 characters</p>
-                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.uppercase">✔ At least 1 uppercase letter</p>
-                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.lowercase">✔ At least 1 lowercase letter</p>
-                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.specialChar">✔ At least 1 special character
-                    </p>
+                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.minLength">✔ Ít nhất 8 ký tự</p>
+                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.uppercase">✔ Ít nhất 1 ký tự in hoa</p>
+                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.lowercase">✔ Ít nhất 1 ký tự thường</p>
+                    <p class="m-0 text-xs" [class.valid]="passwordCriteria.specialChar">✔ Ít nhất 1 ký tự đặc biệt</p>
                 </div>
             </div>
 
 
             <div class="relative flex items-center mt-4">
                 <input [type]="hidePassword ? 'password' : 'text'" formControlName="rePassword"
-                    placeholder="Confirm Password" required (focus)="onFocus('rePassword')" (blur)="onBlur()"
+                    placeholder="Nhập lại mật khẩu" required (focus)="onFocus('rePassword')" (blur)="onBlur()"
                     class="bg-transparent w-full text-sm text-gray-800 border-b border-gray-400 focus:border-gray-800 pl-2 pr-8 py-3 outline-none placeholder:text-gray-800" />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#333" stroke="#333" (click)="togglePasswordVisibility()"
                     class="w-[18px] h-[18px] absolute right-2 cursor-pointer" viewBox="0 0 128 128">
@@ -148,18 +147,18 @@
                 <!-- Confirm Password Criteria Popup -->
                 <div class="popup absolute bg-white border border-gray-300 p-2 w-72 left-[450px] z-10 shadow-lg"
                     *ngIf="activeField === 'rePassword'">
-                    <p class="m-0 text-xs" [class.valid]="!confirmPasswordMismatch">✔ Must match the password</p>
+                    <p class="m-0 text-xs" [class.valid]="!confirmPasswordMismatch">✔ Mật khẩu trùng khớp</p>
                 </div>
             </div>
 
             <div class="mt-8">
                 <button type="submit" (click)="onSubmit()"
                     class="w-full py-2.5 px-4 text-sm font-semibold tracking-wider rounded text-white bg-gray-800 hover:bg-[#222] focus:outline-none">
-                    Sign up
+                    Đăng ký
                 </button>
-                <p class="text-gray-800 text-sm text-center mt-4">Have an account <a href="/login"
-                        class="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Sign in
-                        here</a></p>
+                <p class="text-gray-800 text-sm text-center mt-4">Đã có tài khoản <a href="/login"
+                        class="text-blue-600 font-semibold hover:underline ml-1 whitespace-nowrap">Đăng nhập ngay
+                        </a></p>
             </div>
 
             <!-- Error Message -->
@@ -177,7 +176,7 @@
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
             </svg>
-            <p class="text-blue-600 mt-4">Registering, please wait...</p>
+            <p class="text-blue-600 mt-4">Đang đăng ký, vui lòng đợi...</p>
         </div>
     </div>
 </div>

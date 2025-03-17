@@ -1,0 +1,79 @@
+<div id="addTourGuideModal" tabindex="-1" aria-hidden="true"
+    class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
+        <h2 class="text-xl font-bold mb-4 border-b pb-2">Tạo mới Hướng dẫn viên</h2>
+
+        <!-- Form Section -->
+        <form [formGroup]="addTourGuideForm">
+            <div class="grid grid-cols-2 gap-4 my-6">
+                <div>
+                    <label for="day" class="block text-lg font-bold text-gray-700">Ngày:</label>
+                    <select id="day" name="day" formControlName="selectedDay"
+                        class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                        <option *ngFor="let day of days" [value]="day">{{ day }}</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="provider" class="block text-lg font-bold text-gray-700">Nhà cung cấp:</label>
+                    <select id="provider" name="provider" formControlName="selectedProvider"
+                        class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+                        (ngModelChange)="onProviderChange()">
+                        <option *ngFor="let loc of providers" [value]="loc">{{ loc }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="w-full">
+                <div class="w-2/3">
+                    <label for="tourguide" class="block text-lg font-bold text-gray-700">Tên hướng dẫn viên:</label>
+                    <select id="tourguide" name="tourguide" formControlName="selectedTourGuide"
+                        class="mt-1 block w-full border border-gray-300 rounded-md p-2" (change)="onTourGuideChange()">
+                        <option *ngFor="let tourguide of tourguides" [value]="tourguide.name">{{
+                            tourguide.name }}</option>
+                    </select>
+                </div>
+
+                <div class="w-fit mt-6">
+                    <div class="mt-1 flex items-center relative">
+                        <label for="netPrice" class="block text-lg font-bold text-gray-700">Giá Net/1 ngày:</label>
+                        <input type="number" id="netPrice" name="netPrice" formControlName="netPrice"
+                            class="ml-4 border border-gray-300 rounded-md p-2 bg-gray-100 text-left pr-16" readonly>
+                        <span class="absolute right-1 z-10 ml-2 text-sm font-medium text-gray-700">VND</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Section -->
+            <div class="mt-4">
+                <h3 class="text-lg font-semibold mb-2">Số khách hàng</h3>
+                <table class="w-full border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100 border-b border-gray-300">
+                            <th class="p-2 text-left">Số khách</th>
+                            <th class="p-2 text-left">Giá bán</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="prices">
+                        <tr *ngFor="let price of pricesFormArray.controls; let i = index" [formGroupName]="i"
+                            class="border-b border-gray-300">
+                            <td class="p-2">{{ price.value.guests }}</td>
+                            <td class="p-2 text-left">
+                                <input type="number" formControlName="sellingPrice"
+                                    class="w-32 border border-gray-300 rounded-md p-1 text-right">
+                                <span class="ml-2 text-sm font-medium text-gray-700">VND</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-6 flex justify-end space-x-4">
+                <button type="button" data-modal-hide="addTourGuideModal"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Hủy</button>
+                <button type="submit" data-modal-hide="addTourGuideModal"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Xác nhận</button>
+            </div>
+        </form>
+    </div>
+</div>

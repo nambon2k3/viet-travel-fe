@@ -1,32 +1,71 @@
-import { Component } from '@angular/core';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-import { Event, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { Component, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import { Router, Event, NavigationEnd, RouterOutlet } from '@angular/router';
+import { SsrService } from '../../../../core/services/ssr.service';
+import { Modal } from 'flowbite';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 
 @Component({
   selector: 'app-public-layout',
+  templateUrl: './public-layout.component.html',
+  styleUrls: ['./public-layout.component.css'],
   imports: [
     RouterOutlet,
-    AngularSvgIconModule,
-    HeaderComponent,
+    HeaderComponent
   ],
-  templateUrl: './public-layout.component.html',
-  styleUrl: './public-layout.component.css'
 })
-export class PublicLayoutComponent {
+export class PublicLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   private mainContent: HTMLElement | null = null;
+  private modal: Modal | null = null;
 
-  constructor(private router: Router) {
-    this.router.events.subscribe((event: Event) => {
-      if (event instanceof NavigationEnd) {
-        if (this.mainContent) {
-          this.mainContent.scrollTop = 0; // Scroll to top on navigation
-        }
-      }
-    });
-  }
+  constructor(
+    private router: Router,
+    private ssrService: SsrService
+  ) {}
 
   ngOnInit(): void {
-    this.mainContent = document.getElementById('main-content');
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      setTimeout(() => {
+        this.mainContent = doc.getElementById('main-content');
+      }, 100);
+      this.router.events.subscribe((event: Event) => {
+        if (event instanceof NavigationEnd && this.mainContent && doc.body.classList.contains('modal-open')) {
+          this.mainContent.scrollTop = 0;
+        }
+      });
+    }
+  }
+
+  ngAfterViewInit(): void {
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      this.mainContent = doc.getElementById('main-content');
+
+      const modalEl = doc.getElementById('default-modal');
+      if (modalEl) {
+        this.modal = new Modal(modalEl);
+
+        modalEl.addEventListener('show.bs.modal', () => {
+          document.body.classList.add('modal-open');
+          this.mainContent?.classList.add('overflow-hidden');
+        });
+
+        modalEl.addEventListener('hide.bs.modal', () => {
+          document.body.classList.remove('modal-open');
+          this.mainContent?.classList.remove('overflow-hidden');
+        });
+      }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.modal) {
+      this.modal.hide();
+    }
+    
+    const doc = this.ssrService.getDocument();
+    if(doc){
+      doc.body.classList.remove('modal-open');
+    }
   }
 }

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Blog } from '../../../../../core/models/blog.model';
 import { DatePipe } from '@angular/common';
-import { BlogService } from '../../../../admin/marketer/services/blog.service';
 import { BlogLoadingComponent } from "../../../../../shared/components/blog-loading/blog-loading.component";
 import { ActivatedRoute } from '@angular/router';
+import { BlogService } from '../../../services/blog.service';
 
 @Component({
   selector: 'app-blog-detail',

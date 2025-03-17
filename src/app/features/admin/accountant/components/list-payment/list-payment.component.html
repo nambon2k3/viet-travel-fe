@@ -1,0 +1,43 @@
+<div class="mb-2 flex justify-between">
+
+
+  <div class="inline-block">
+    <h3 class="text-foreground font-semibold">Kế toán</h3>
+    <div class="text-muted-foreground space-x-1 text-xs font-medium">
+      <a href="" class="hover:text-primary">Tất cả phiếu thu:</a>
+      <span class="text-foreground">{{ totalItems }}</span>
+    </div>
+  </div>
+  <div class="inline-block space-x-4">
+    <button
+      class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+      (click)="addPayment()">
+      Thêm phiếu chi
+    </button>
+  </div>
+  <!-- <app-spinner [isLoading]="!isLoading"></app-spinner> -->
+</div>
+
+<div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2 bg-white">
+  <app-table-action [totalItems]="totalItems" [size]="size" (searchFilters)="onSearch($event)">"></app-table-action>
+  <div
+    class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
+    <table
+      class="text-muted-foreground table w-full table-auto border-collapse border-0 text-left align-middle leading-5">
+      <thead class="border-muted/20 text-muted-foreground border text-xs">
+        <tr app-table-header (onCheck)="togglePayments($event)"></tr>
+      </thead>
+      <tbody>
+        @for (payments of filteredPayments(); track $index) {
+        <tr class="hover:bg-card/50" app-table-row [payment]="payments"></tr>
+        } @empty {
+        <tr>
+          <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy phiếu thu nào</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <app-table-footer [totalPages]="totalPages()" [currentPage]="page" (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"></app-table-footer>
+</div>

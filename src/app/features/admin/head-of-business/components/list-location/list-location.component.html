@@ -1,22 +1,22 @@
 <div class="mb-2 flex justify-between">
     <div class="inline-block">
-        <h3 class="text-foreground font-semibold">Head Of Business</h3>
+        <h3 class="text-foreground font-semibold">Trưởng phòng kinh doanh</h3>
         <div class="text-muted-foreground space-x-1 text-xs font-medium">
-            <a href="" class="hover:text-primary">All Locations:</a>
+            <a href="" class="hover:text-primary">Tất cả địa điểm:</a>
             <span class="text-foreground">{{ totalItems}}</span>
         </div>
     </div>
     <div class="inline-block space-x-4">
         <button class="bg-green-800 text-white text-primary-foreground flex-none rounded-md px-4 py-2.5 text-xs font-semibold"
         (click)="openAddLocationModal()">
-            Add Location
+            Thêm địa điểm
         </button>
     </div>
 </div>
 
 <app-spinner [isLoading]="isLoading"></app-spinner>
 
-<div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2">
+<div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2 bg-white">
     <app-table-action [totalItems]="totalItems" 
     [size]="size" 
     (searchFilters)="onSearch($event)">"></app-table-action>
@@ -35,7 +35,7 @@
                 <ng-template #noLocations>
                     <tr>
                         <td class="py-4 text-center text-sm" colspan="7">
-                            No location found
+                            Không tìm thấy địa điểm nào
                         </td>
                     </tr>
                 </ng-template>

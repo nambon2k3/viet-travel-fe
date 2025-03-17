@@ -3,12 +3,25 @@ import { PublicLayoutComponent } from "./layout/public-layout/public-layout.comp
 import { HomepageComponent } from "./components/homepage/homepage.component";
 import { BlogDetailComponent } from "./components/blog/blog-detail/blog-detail.component";
 import { BlogComponent } from "./components/blog/blog.component";
+import { HotelComponent } from "./components/hotel/hotel.component";
+import { TourComponent } from "./components/tour/tour.component";
+import { TourDetailComponent } from "./components/tour/tour-detail/tour-detail.component";
+import { TourBookingComponent } from "./components/tour-booking/tour-booking.component";
+import { TourBookingConfirmComponent } from "./components/tour-booking/tour-booking-confirm/tour-booking-confirm.component";
+import { HotelDetailComponent } from "./components/hotel/hotel-detail/hotel-detail.component";
+import { PlanComponent } from "./components/plan/plan.component";
+import { LocationComponent } from "./components/plan/location/location.component";
 
 export const PUBLIC_ROUTES: Route[] = [
   {
     path: '',
-    component: PublicLayoutComponent, 
+    component: PublicLayoutComponent,
     children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'homepage',
+      },
       {
         path: 'homepage',
         component: HomepageComponent,
@@ -21,6 +34,35 @@ export const PUBLIC_ROUTES: Route[] = [
         path: 'blogs',
         component: BlogComponent,
       },
+      {
+        path: 'hotels',
+        component: HotelComponent,
+      },
+      {
+        path: 'hotel-details/:id',
+        component: HotelDetailComponent,
+      },
+      {
+        path: 'tours',
+        component: TourComponent,
+      },
+      {
+        path: 'tour-details/:id',
+        component: TourDetailComponent,
+      },
+      {
+        path: 'tour-booking',
+        component: TourBookingComponent,
+      }
+      ,{
+        path: 'tour-booking-detail/:code',
+        component: TourBookingConfirmComponent,
+      },
+      {
+        path: 'plan',
+        component: LocationComponent,
+      }
     ]
   },
+  
 ];

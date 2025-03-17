@@ -21,6 +21,10 @@ export class BlogService {
     );
   }  
 
+  getBlogById(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}public/blog/details/${id}`);
+}
+
   getFoodBlogs(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}public/blog/food-and-drinks`);
   }

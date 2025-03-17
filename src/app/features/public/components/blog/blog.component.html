@@ -6,11 +6,12 @@
 
                 <div *ngFor="let article of randomBlogs" class="min-w-full bg-cover bg-center"
                     [style.backgroundImage]="'url(' + article.thumbnailImageUrl + ')'">
-                    <div (click)="openBlogDetail(article?.id)" class="bg-gradient-to-t from-black to-transparent h-full w-full p-8 flex flex-col justify-end">
+                    <div (click)="openBlogDetail(article?.id)"
+                        class="bg-gradient-to-t from-black to-transparent h-full w-full p-8 flex flex-col justify-end">
                         <h2 class="text-3xl font-bold text-white mb-2">{{ article.title }}</h2>
                         <p class="text-white mb-4">{{ article.description }}</p>
                         <button class="bg-white w-40 text-blue-600 px-4 py-2 rounded-md font-semibold">
-                            Read more
+                            Đọc thêm
                         </button>
                     </div>
                 </div>
@@ -32,14 +33,12 @@
 </section>
 <section class="py-12">
     <div class="max-w-[1280px] mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-2">Food and Drink</h2>
-        <p class="text-gray-600 mb-8">Dig into the best restaurants and bars, street food, and culinary hotspots around
-            the world. Who's hungry?</p>
+        <h2 class="text-3xl font-bold mb-2">Đồ ăn và thức uống</h2>
+        <p class="text-gray-600 mb-8">Khám phá những nhà hàng và quán bar tốt nhất, ẩm thực đường phố và các điểm nóng ẩm thực trên khắp thế giới. Ai đang đói bụng?</p>
 
         <div *ngIf="foodAndDrinkBlogs.length > 0; else noData"
             class="grid grid-cols-1 sm:grid-cols-12 gap-4 h-[400px] sm:h-[500px]">
-            <!-- Blog chính (Lớn) -->
-            <div (click)="openBlogDetail(foodAndDrinkBlogs[0].id)" 
+            <div (click)="openBlogDetail(foodAndDrinkBlogs[0].id)"
                 class="relative bg-gray-300 cursor-pointer rounded-xl flex items-end  justify-center text-base sm:text-md font-semibold col-span-1 sm:col-span-8 row-span-1">
                 <img [src]="foodAndDrinkBlogs[0].thumbnailImageUrl" alt="{{foodAndDrinkBlogs[0].title}}"
                     class="w-full h-full object-cover rounded-xl">
@@ -48,7 +47,6 @@
                 </div>
             </div>
 
-            <!-- Các blog nhỏ hơn (4 blog kế bên) -->
             <div class="grid grid-cols-1 sm:grid-cols-1 gap-4 col-span-1 sm:col-span-4">
                 <div *ngFor="let blog of foodAndDrinkBlogs.slice(1, 3)" (click)="openBlogDetail(blog.id)"
                     class="bg-gray-300 cursor-pointer rounded-xl flex items-end justify-center text-base sm:text-md font-semibold relative">
@@ -60,30 +58,25 @@
                 </div>
             </div>
         </div>
-
-        <!-- Nếu không có dữ liệu -->
         <ng-template #noData>
-            <p class="text-gray-500">No food & drink blogs found.</p>
+            <p>Không có blog về đồ ăn và thức uống nào.</p>
         </ng-template>
     </div>
 </section>
 
 <section class="mt-8 text-center py-16">
-    <h2 class="text-3xl font-bold mb-2">Places to Visit</h2>
+    <h2 class="text-3xl font-bold mb-2">Những địa điểm nên ghé thăm</h2>
     <p class="text-gray-600 mb-8">
-        The most exciting destinations, experiences, hidden gems, and traveler faves to check out now.
+        Những điểm đến, trải nghiệm thú vị nhất, những viên ngọc ẩn và những địa điểm yêu thích của du khách để khám phá ngay bây giờ.
     </p>
     <div class="max-w-[1280px] mx-auto flex flex-wrap gap-4">
-        <!-- Blog 1 - Cao hơn (350px) -->
         <div class="bg-gray-300 cursor-pointer rounded-lg h-[350px] flex-1 mt-32 min-w-[300px] flex items-center justify-center text-white font-bold relative"
             *ngIf="adventureBlogs[0]" [style.backgroundImage]="'url(' + adventureBlogs[0].thumbnailImageUrl + ')'"
-            (click)="openBlogDetail(adventureBlogs[0].id)"
-            style="background-size: cover; background-position: center;">
+            (click)="openBlogDetail(adventureBlogs[0].id)" style="background-size: cover; background-position: center;">
             <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
             <span class="relative">{{ adventureBlogs[0].title }}</span>
         </div>
 
-        <!-- 2 blogs bên phải -->
         <div class="flex flex-col gap-4">
             <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] min-w-[300px] flex items-center justify-center text-white font-bold relative"
                 *ngIf="adventureBlogs[1]" [style.backgroundImage]="'url(' + adventureBlogs[1].thumbnailImageUrl + ')'"
@@ -102,7 +95,6 @@
             </div>
         </div>
 
-        <!-- 2 blogs bên trái -->
         <div class="flex flex-col gap-4">
             <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] min-w-[300px] flex items-center justify-center text-white font-bold relative"
                 *ngIf="adventureBlogs[3]" [style.backgroundImage]="'url(' + adventureBlogs[3].thumbnailImageUrl + ')'"
@@ -121,29 +113,25 @@
             </div>
         </div>
 
-        <!-- Blog cuối - Cao hơn (350px) -->
         <div class="bg-gray-300 cursor-pointer rounded-lg h-[350px] flex-1 min-w-[300px] mt-32 flex items-center justify-center text-white font-bold relative"
             *ngIf="adventureBlogs[5]" [style.backgroundImage]="'url(' + adventureBlogs[5].thumbnailImageUrl + ')'"
-            style="background-size: cover; background-position: center;"
-            (click)="openBlogDetail(adventureBlogs[5].id)">
+            style="background-size: cover; background-position: center;" (click)="openBlogDetail(adventureBlogs[5].id)">
             <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
             <span class="relative">{{ adventureBlogs[5].title }}</span>
         </div>
     </div>
 </section>
 
-<!-- Travel Creators -->
 <section class="max-w-6xl mx-auto mt-16 sm:mt-32 text-center">
-    <h2 class="text-2xl sm:text-3xl font-bold">Passport. Keys. Wallet.</h2>
+    <h2 class="text-2xl sm:text-3xl font-bold">Hộ chiếu. Chìa khóa. Ví tiền.</h2>
     <p class="text-base sm:text-lg text-gray-600 mt-4 sm:mt-6">
-        See a new place from the driver's seat
+        Ngắm nhìn một địa điểm mới từ ghế lái
     </p>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mt-10 sm:mt-32">
         <div *ngFor="let blog of culturalBlogs"
             class="bg-gray-200 h-[200px] sm:h-[280px] flex cursor-pointer justify-center items-center text-base sm:text-xl font-semibold rounded-xl relative"
-            (click)="openBlogDetail(blog?.id)"
-            [style.backgroundImage]="'url(' + blog.thumbnailImageUrl + ')'"
+            (click)="openBlogDetail(blog?.id)" [style.backgroundImage]="'url(' + blog.thumbnailImageUrl + ')'"
             style="background-size: cover; background-position: center;">
             <div class="absolute inset-0 bg-black bg-opacity-50 rounded-xl"></div>
             <span class="relative text-white">{{ blog.title }}</span>
@@ -152,22 +140,18 @@
 </section>
 
 <section class="max-w-6xl mx-auto mt-16 sm:mt-32 text-center">
-    <h2 class="text-2xl sm:text-3xl font-bold">Keep Exploring</h2>
+    <h2 class="text-2xl sm:text-3xl font-bold">Tiếp tục khám phá</h2>
     <div class="flex flex-wrap justify-center gap-6 max-w-[1200px] mx-auto mt-10 sm:mt-32">
-        <div *ngFor="let articl of newestBlogs; index as i"
-            (click)="openBlogDetail(articl?.id)"
+        <div *ngFor="let articl of newestBlogs; index as i" (click)="openBlogDetail(articl?.id)"
             class="relative bg-gray-300 rounded-lg w-[350px] overflow-hidden h-[450px] cursor-pointer">
-            <!-- Ảnh nền -->
             <img [src]="articl.thumbnailImageUrl" alt="{{ articl.title }}" class="w-full h-full object-cover" />
 
-            <!-- Overlay & Tiêu đề -->
             <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent text-white p-4">
                 <p class="text-lg font-bold">{{ articl.title }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Pagination -->
     <div class="py-8 mt-4 text-center">
         <ul class="inline-flex space-x-2">
             <li *ngIf="currentPage > 0">

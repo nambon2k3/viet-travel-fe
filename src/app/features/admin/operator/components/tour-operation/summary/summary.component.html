@@ -1,0 +1,65 @@
+<div class="flex flex-wrap gap-6 p-6 mt-6 bg-white rounded-lg shadow-lg">
+    <div class="w-full flex gap-6">
+        <div class="w-1/2 rounded-t-lg overflow-hidden"> <table class="w-full">
+                <tbody>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Tổng số thu</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.total | number }}</td>
+                    </tr>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Công ty thu</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.companyCollect | number }}</td>
+                    </tr>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Hướng dẫn viên thu</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.travelGuideCollect | number }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Còn lại</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.remain | number }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="w-1/2 rounded-t-lg overflow-hidden"> <table class="w-full">
+                <tbody>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Tổng số đã trả</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.total | number }}</td>
+                    </tr>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Công ty đã trả</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.companyPaid | number }}</td>
+                    </tr>
+                    <tr class="mb-2">
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Hướng dẫn viên đã trả</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.travelGuidePaid | number }}</td>
+                    </tr>
+                    <tr>
+                        <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Còn lại</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.remain | number }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="w-full rounded-t-lg overflow-hidden"> <table class="w-full">
+            <thead>
+                <tr class="font-semibold mb-2">
+                    <th class="bg-gray-200 border border-gray-300 p-2 text-left">Nội dung</th>
+                    <th class="bg-gray-200 border border-gray-300 p-2 text-center">Ước tính</th>
+                    <th class="bg-gray-200 border border-gray-300 p-2 text-center">Tóm tắt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of summary" class="mb-2">
+                    <td class="bg-white border border-gray-300 p-2">{{ item.content }}</td>
+                    <td class="bg-white border border-gray-300 p-2 text-center">{{ item.estimate | currencyVnd }}</td>
+                    <td class="bg-white border border-gray-300 p-2 text-center">{{ item.summary | currencyVnd }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

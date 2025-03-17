@@ -12,6 +12,7 @@ import FontFamily from '@tiptap/extension-font-family';
 import { Color } from '@tiptap/extension-color';
 import Bold from '@tiptap/extension-bold';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { SsrService } from '../../../../../../core/services/ssr.service';
 
 
 @Component({
@@ -32,13 +33,20 @@ export class BlogContentComponent implements OnInit {
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
   editor!: Editor;
 
+  constructor(
+    private ssrService: SsrService,
+  ) { }
+
   ngOnInit(): void {
-    this.initializeEditor();
+    const document = this.ssrService.getDocument();
+    if (document) {
+      this.initializeEditor();
+    }
   }
 
   // ControlValueAccessor Callbacks
-  onChange = (value: any) => {};
-  onTouched = () => {};
+  onChange = (value: any) => { };
+  onTouched = () => { };
 
   // Implement ControlValueAccessor Methods
   writeValue(value: any): void {
@@ -120,12 +128,12 @@ export class BlogContentComponent implements OnInit {
       onUpdate: ({ editor }) => {
         this.onChange(editor.getHTML());
       },
-        editorProps: {
-            attributes: {
-                class: 'format lg:format-lg dark:format-invert focus:outline-none format-blue max-w-none',
-            },
-        }
-        
+      editorProps: {
+        attributes: {
+          class: 'format lg:format-lg dark:format-invert focus:outline-none format-blue max-w-none',
+        },
+      }
+
     });
   }
 
@@ -147,7 +155,7 @@ export class BlogContentComponent implements OnInit {
 
   toggleHighlight(): void {
     const isHighlighted = this.editor.isActive('highlight');
-    this.editor.chain().focus().toggleHighlight(isHighlighted ?  undefined : { color: '#ffc078'}).run();
+    this.editor.chain().focus().toggleHighlight(isHighlighted ? undefined : { color: '#ffc078' }).run();
   }
 
   toggleLink(): void {
@@ -156,10 +164,10 @@ export class BlogContentComponent implements OnInit {
       this.editor.chain().focus().toggleLink({ href: url }).run()
       console.log("nam")
     }
-    }
+  }
 
 
-  
+
 
   toggleHRButton(): void {
     this.editor.chain().focus().setHorizontalRule().run();

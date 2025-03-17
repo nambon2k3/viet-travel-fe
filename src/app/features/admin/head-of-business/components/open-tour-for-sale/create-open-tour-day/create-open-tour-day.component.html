@@ -1,0 +1,28 @@
+<div id="createOpenTourDayModal" tabindex="-1" aria-hidden="true"
+    class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96">
+        <h3 class="text-lg font-semibold mb-4">Thêm ngày mở bán</h3>
+        <form #createForm="ngForm">
+            <div class="mb-4">
+                <label class="block mb-1">Tên Tour:</label>
+                <input type="text" name="tourName" ngModel [(ngModel)]="name" value="Đà Nẵng - Huế - Bà Nà - Hội An"
+                    class="w-full p-2 border rounded" readonly>
+            </div>
+            <div class="mb-4">
+                <label class="block mb-1">Ngày mở:</label>
+                <input type="date" name="openDate" ngModel [(ngModel)]="selectedDate" class="w-full p-2 border rounded">
+            </div>
+            <div class="mb-4">
+                <label class="block mb-1">Số lượng chỗ:</label>
+                <input type="number" name="seats" ngModel [(ngModel)]="numberOfSeats" class="w-full p-2 border rounded"
+                    min="1">
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button type="button" data-modal-hide="createOpenTourDayModal" (click)="close()"
+                    class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Huỷ</button>
+                <button type="submit" data-modal-hide="createOpenTourDayModal" (click)="createTourSaleDay()"
+                    class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded">Xác nhận</button>
+            </div>
+        </form>
+    </div>
+</div>

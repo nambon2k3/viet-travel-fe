@@ -4,10 +4,9 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FooterComponent } from "../../../../shared/components/footer/footer.component";
 import { HomepageService } from '../../services/homepage.service';
 import { Activity, Blog, Tour, Location } from '../../../../core/models/homepage.model';
-import { shareReplay } from 'rxjs';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
-import { FormatDatePipe } from "../../../../shared/pipes/format-date.pipe";
+import { SsrService } from '../../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-homepage',
@@ -16,25 +15,25 @@ import { FormatDatePipe } from "../../../../shared/pipes/format-date.pipe";
     CommonModule,
     FooterComponent,
     CurrencyVndPipe,
-    FormatDatePipe
-],
+  ],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent {
-  selectedCategory: string = 'Search All';
-  searchPlaceholder: string = 'Search...';
-  searchTitle: string = 'Where to?';
+  selectedCategory: string = 'Tìm kiếm tất cả';
+  searchPlaceholder: string = 'Địa điểm, hoạt động, khách sạn...';
+  searchTitle: string = 'Hiện thực hóa chuyến du lịch trong mơ';
   userProfile: any;
 
   categories = [
-    { name: 'Search All', title: "Where to?", placeholder: 'Places to go, things to do, hotels...' },
-    { name: 'Hotels', title: "Stay somewhere great", placeholder: 'Hotel name or destination' },
-    { name: 'Restaurants', title: "Find places to eat", placeholder: 'Restaurant or destination' },
-    { name: 'Flights', title: "Find the best flight", placeholder: 'Search for Flights...' },
-    { name: 'Activity', title: "Exprience something new", placeholder: 'Attraction, activity or destination' },
-    { name: 'Tours', title: "Explore the best tours", placeholder: 'Tour or destination' }
-  ];
+    { name: 'Tìm kiếm tất cả', title: "Hiện thực hóa chuyến du lịch trong mơ", placeholder: 'Địa điểm, hoạt động, khách sạn...' },
+    { name: 'Khách sạn', title: "Nghỉ ngơi ở nơi tuyệt vời", placeholder: 'Tên khách sạn hoặc điểm đến' },
+    { name: 'Nhà hàng', title: "Tìm địa điểm ăn uống", placeholder: 'Nhà hàng hoặc điểm đến' },
+    { name: 'Chuyến bay', title: "Tìm chuyến bay tốt nhất", placeholder: 'Tìm kiếm chuyến bay...' },
+    { name: 'Hoạt động', title: "Trải nghiệm điều mới mẻ", placeholder: 'Điểm tham quan, hoạt động hoặc điểm đến' },
+    { name: 'Tour', title: "Khám phá những tour du lịch tuyệt vời", placeholder: 'Tour hoặc điểm đến' }
+];
+
 
   selectCategory(category: any) {
     this.selectedCategory = category.name;
@@ -48,30 +47,16 @@ export class HomepageComponent {
   blog: Blog | undefined;
   activities: Activity[] = [];
   topTourOfYear: Tour | undefined;
-  homepageData$;
 
   constructor(
     private homepageService: HomepageService,
-    private router: Router
+    private router: Router,
+    private ssrService: SsrService,
   ) {
-    this.homepageData$ = this.homepageService.getHomepageData(6, 4, 3, 7).pipe(
-      shareReplay(1)
-    );
   }
 
   ngOnInit() {
-    const cachedData = localStorage.getItem('homepageData');
-    if (cachedData) {
-      const data = JSON.parse(cachedData);
-      this.trendingTours = data.trendingTours;
-      this.topTourOfYear = data.topTourOfYear;
-      this.blogs = data.newBlogs.slice(0, 3);
-      this.blog = data.newBlogs[data.newBlogs.length - 1];
-      this.activities = data.recommendedActivities;
-      this.locations = data.recommendedLocations;
-    } else {
       this.fetchHomepageData();
-    } 
   }
 
   fetchHomepageData() {
@@ -87,20 +72,12 @@ export class HomepageComponent {
         this.blog = res.data.newBlogs[res.data.newBlogs.length - 1];
         this.activities = res.data.recommendedActivities;
         this.locations = res.data.recommendedLocations;
-        console.log(this.locations);
-
-        // Cache the data
-        localStorage.setItem('homepageData', JSON.stringify(res.data));
       },
       error: (err) => {
         console.error('Fetching homepage data:', err);
       }
     });
   }
-
-  getTotalPrice(tickets: any[]): number {
-    return tickets.reduce((total, ticket) => total + ticket.price, 0);
-  }  
 
   openBlogDetail(blogid: number | undefined) {
     if (blogid) {
@@ -109,5 +86,5 @@ export class HomepageComponent {
       console.error('Invalid blog id');
     }
   }
-  
+
 }

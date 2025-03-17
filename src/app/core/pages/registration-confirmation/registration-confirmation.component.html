@@ -12,21 +12,19 @@
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                     </svg>
                 </div>
-                <p class="text-blue-600 mt-4">Creating your account, please wait...</p>
+                <p class="text-blue-600 mt-4">Đang tạo tài khoản của bạn, vui lòng chờ...</p>
             </div>
 
-            <!-- Success Message -->
             <div *ngIf="!isLoading && !errorMessage" class="text-gray-600">
                 <svg class="h-16 w-16 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
                 <p class="text-lg font-semibold mt-4">
-                    Thank you for your registration, please check your email to complete verification.
+                    Cảm ơn bạn đã đăng ký, vui lòng kiểm tra email để hoàn tất xác minh.
                 </p>
             </div>
 
-            <!-- Error Message -->
             <div *ngIf="!isLoading && errorMessage" class="text-gray-600">
                 <svg class="h-16 w-16 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">

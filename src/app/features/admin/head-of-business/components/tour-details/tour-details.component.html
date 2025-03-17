@@ -1,0 +1,108 @@
+<div class="rounded-md p-6 bg-white mt-4">
+    <form class="space-y-4" [formGroup]="editTourForm" (ngSubmit)="onSubmit()">
+        <!-- Hidden field for tour ID -->
+        <input type="hidden" formControlName="id">
+
+        <div>
+            <label class="block mb-1 font-bold">Tên tour</label>
+            <input type="text" formControlName="tourName" placeholder="Nhập tên tour" class="w-full p-2 border rounded"
+                [class.border-red-500]="editTourForm.get('tourName')?.invalid && editTourForm.get('tourName')?.touched">
+            <span *ngIf="editTourForm.get('tourName')?.invalid && editTourForm.get('tourName')?.touched"
+                class="text-red-500 text-sm">
+                Tên tour là bắt buộc
+            </span>
+        </div>
+
+        <div class="flex space-x-4">
+            <div class="w-1/2">
+                <label class="block mb-1 font-bold">Tên người tạo</label>
+                <input type="text" formControlName="authorName" placeholder="Nhập tên người tạo"
+                    class="w-full p-2 border rounded">
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-1 font-bold">Địa điểm</label>
+                <!-- Hidden input to bind destination for form validation -->
+                <input type="hidden" formControlName="destination"
+                    [class.border-red-500]="editTourForm.get('destination')?.invalid && editTourForm.get('destination')?.touched">
+                <ng-multiselect-dropdown [placeholder]="'Chọn địa điểm'" [settings]="dropdownSettings"
+                    [data]="dropdownList" [(ngModel)]="selectedItems" (onFilterChange)="onSearch($event)"
+                    (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)"
+                    [ngModelOptions]="{ standalone: true }" class="w-full"></ng-multiselect-dropdown>
+                <span *ngIf="editTourForm.get('destination')?.invalid && editTourForm.get('destination')?.touched"
+                    class="text-red-500 text-sm">
+                    Địa điểm là bắt buộc
+                </span>
+            </div>
+        </div>
+
+        <div class="flex space-x-4">
+            <div class="w-1/2">
+                <label class="block mb-1 font-bold">Ngày bắt đầu</label>
+                <input type="date" formControlName="startDate" class="w-full p-2 border rounded"
+                    [class.border-red-500]="editTourForm.get('startDate')?.invalid && editTourForm.get('startDate')?.touched">
+                <span *ngIf="editTourForm.get('startDate')?.invalid && editTourForm.get('startDate')?.touched"
+                    class="text-red-500 text-sm">
+                    Ngày bắt đầu là bắt buộc
+                </span>
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-1 font-bold">Ngày kết thúc</label>
+                <input type="date" formControlName="endDate" class="w-full p-2 border rounded"
+                    [class.border-red-500]="editTourForm.get('endDate')?.invalid && editTourForm.get('endDate')?.touched">
+                <span *ngIf="editTourForm.get('endDate')?.invalid && editTourForm.get('endDate')?.touched"
+                    class="text-red-500 text-sm">
+                    Ngày kết thúc là bắt buộc
+                </span>
+            </div>
+        </div>
+
+        <div class="flex space-x-4">
+            <div class="w-1/2">
+                <label class="block mb-1 font-bold">Số ngày</label>
+                <input type="number" formControlName="duration" placeholder="Nhập số ngày"
+                    class="w-full p-2 border rounded"
+                    [class.border-red-500]="editTourForm.get('duration')?.invalid && editTourForm.get('duration')?.touched">
+                <span *ngIf="editTourForm.get('duration')?.invalid && editTourForm.get('duration')?.touched"
+                    class="text-red-500 text-sm">
+                    Số ngày là bắt buộc
+                </span>
+            </div>
+            <div class="w-1/2 mb-6">
+                <label class="block mb-1 font-bold">Số đêm</label>
+                <input type="number" formControlName="nights" placeholder="Nhập số đêm"
+                    class="w-full p-2 border rounded"
+                    [class.border-red-500]="editTourForm.get('nights')?.invalid && editTourForm.get('nights')?.touched">
+                <span *ngIf="editTourForm.get('nights')?.invalid && editTourForm.get('nights')?.touched"
+                    class="text-red-500 text-sm">
+                    Số đêm là bắt buộc
+                </span>
+            </div>
+        </div>
+
+        <div>
+            <label class="block mb-1 font-bold">Điểm nổi bật</label>
+            <app-blog-content [content]="highlight" formControlName="highlights"></app-blog-content>
+            <span *ngIf="editTourForm.get('highlights')?.invalid && editTourForm.get('highlights')?.touched"
+                class="text-red-500 text-sm">
+                Điểm nổi bật là bắt buộc
+            </span>
+        </div>
+
+        <div>
+            <label class="block mb-1 font-bold">Ghi chú</label>
+            <textarea formControlName="note" class="w-full p-2 border rounded" rows="3"
+                placeholder="Ghi chú ở đây..."></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-4">
+            <button type="button" (click)="onCancel()"
+                class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
+                Hủy bỏ
+            </button>
+            <button type="submit" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded"
+                [disabled]="editTourForm.invalid">
+                Cập nhật tour
+            </button>
+        </div>
+    </form>
+</div>

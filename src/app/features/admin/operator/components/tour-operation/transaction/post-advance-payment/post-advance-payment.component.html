@@ -1,0 +1,74 @@
+<div id="paymentModal" tabindex="-1" aria-hidden="true"
+     class="hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50 hidden">
+    <div class="relative w-full max-w-lg bg-white rounded-lg shadow-lg">
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Yêu Cầu Thanh Toán</h3>
+            <button data-modal-hide="paymentModal" class="text-gray-500 hover:text-gray-700">
+                ✖
+            </button>
+        </div>
+
+        <form [formGroup]="paymentForm" (ngSubmit)="sendPayment()">
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="amount" class="block text-sm font-medium text-gray-700">Số Tiền</label>
+                        <input type="text" id="amount" formControlName="amount"
+                               class="w-full px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300" />
+                    </div>
+
+                    <div>
+                        <label for="method" class="block text-sm font-medium text-gray-700">Phương Thức</label>
+                        <select id="method" formControlName="method"
+                                class="w-full px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300">
+                            <option>Chuyển Khoản</option>
+                            <option>Tiền Mặt</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="provider" class="block text-sm font-medium text-gray-700">Nhà Cung Cấp Dịch Vụ</label>
+                        <input type="text" id="provider" formControlName="provider"
+                               class="w-full px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300" />
+                    </div>
+
+                    <div>
+                        <label for="paymentTerm" class="block text-sm font-medium text-gray-700">Thời Hạn Thanh Toán</label>
+                        <input type="date" id="paymentTerm" formControlName="paymentTerm"
+                               class="w-full px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300" />
+                    </div>
+                </div>
+
+                <div>
+                    <label for="reason" class="block text-sm font-medium text-gray-700">Lý Do Thanh Toán</label>
+                    <textarea id="reason" rows="2" formControlName="reason"
+                              class="w-full px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"></textarea>
+                </div>
+
+                <div>
+                    <label for="bank" class="block text-sm font-medium text-gray-700">Tài Khoản Ngân Hàng</label>
+                    <input type="text" id="bank" formControlName="bank"
+                           class="w-full px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300" />
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email Thông Báo</label>
+                    <input type="email" id="email" formControlName="email"
+                           class="w-full px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300" />
+                </div>
+            </div>
+
+            <div class="flex justify-end px-6 py-4 border-t">
+                <button type="button" data-modal-hide="paymentModal"
+                        class="px-4 py-2 mr-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                    Hủy Bỏ
+                </button>
+                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                    Gửi Yêu Cầu
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

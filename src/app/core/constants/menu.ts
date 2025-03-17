@@ -18,43 +18,45 @@ export class Menu {
           ],
         },
       ],
-    },
-    {
-      group: 'Operations',
+    },{
+      group: 'Bán hàng',
       separator: true,
       items: [
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Operations',
+          icon: 'assets/icons/heroicons/outline/cart.svg',
+          label: 'Tour',
+          route: '/salesman',
           children: [
-            { label: 'Request Service', route: '/ceo/staff' },
-            { label: 'Operation', route: '/ceo/customer' },
-            { label: 'Tour Operation', route: '/ceo/customer' },
+            { label: 'Danh sách booking', route: '/salesman/list-booking' },
+            { label: 'Tour mở bán (SIC)', route: '/salesman/list-tour-public' },
+            { label: 'Tour đặt riêng', route: '/salesman/list-tour-private' },
+            { label: 'Đánh giá', route: '/salesman/booking-service' },
           ],
-        }
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/ticket.svg',
+          label: 'Dịch vụ bán lẻ',
+          route: '/salesman',
+          children: [
+            { label: 'Danh sách dịch vụ', route: '/salesman/list-booking' },
+            { label: 'Tour mở bán (SIC)', route: '/salesman/service' },
+          ],
+        },
       ],
     },
     {
-      group: 'Salesman',
+      group: 'Điều hành',
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Tour',
-          children: [
-            { label: 'Booking Tours', route: '/marketer/blog' },
-            { label: 'Review Tours', route: '/marketer/blog' },
-          ],
+          label: 'Điều hành Tour',
+          route: '/operator/view-list-tour',
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Retail Services',
-          route: '/marketer/blog',
-        },
-        {
-          icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Reports',
-          route: '/marketer/blog',
+          label: 'Xử lý yêu cầu',
+          route: '/operator/view-list-request',
         }
       ],
     },
