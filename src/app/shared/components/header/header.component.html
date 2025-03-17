@@ -58,7 +58,7 @@
               </a>
             </li>
             <li>
-              <button type="button" data-modal-toggle="wishlistModal" data-modal-target="wishlistModal"
+              <button type="button" data-modal-toggle="wishlistModal" data-modal-target="wishlistModal" data-dropdown-hide="dropdown"
                 class="cursor-pointer block px-4 pr-8 py-2 text-gray-700 hover:bg-gray-100 hover:text-black transition duration-200">
                 Danh sách yêu thích
               </button>
@@ -71,7 +71,9 @@
             </li>
           </ul>
         </div>
-        <app-wishlist #wishlistModal></app-wishlist>
+        <div >
+          <app-wishlist #wishlistModal></app-wishlist>
+        </div>
         <ng-template #signIn>
           <button (click)="router.navigate(['/login'])"
             class="px-4 py-2 text-white bg-green-700 rounded-full hover:bg-green-800 transition duration-300">

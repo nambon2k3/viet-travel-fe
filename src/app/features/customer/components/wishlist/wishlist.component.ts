@@ -1,22 +1,18 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SsrService } from '../../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-wishlist',
   standalone: true,
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   templateUrl: './wishlist.component.html',
   styleUrl: './wishlist.component.css',
 })
-export class WishlistComponent {
+export class WishlistComponent implements OnInit {
   wishlist: any[] = [];
 
-  constructor(
-    private ssrService: SsrService
-  ) { }
+  constructor(private ssrService: SsrService) {}
 
   ngOnInit() {
     const loc = this.ssrService.getLocalStorage();
