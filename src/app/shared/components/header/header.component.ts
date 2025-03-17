@@ -1,17 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
 import { CustomerService } from '../../../features/customer/services/customer.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { SsrService } from '../../../core/services/ssr.service';
+import { WishlistComponent } from '../../../features/customer/components/wishlist/wishlist.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    WishlistComponent
+  ],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
+  @ViewChild('wishlistModal') wishlistModal!: WishlistComponent;
+  
   userProfile: any;
   isScrolled = false;
   private mainContent: HTMLElement | null | undefined;

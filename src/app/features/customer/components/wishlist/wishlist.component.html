@@ -1,0 +1,35 @@
+<div id="wishlistModal" tabindex="-1" aria-hidden="true"
+    class="fixed inset-0 z-50 flex h-96 w-full items-center justify-center bg-black bg-opacity-50 hidden">
+    <!-- Popup Container -->
+    <div class="bg-white w-96 h-full shadow-lg p-6 relative">
+
+        <!-- Close Button -->
+        <button data-modal-hide="wishlistModal" class="absolute top-4 right-4 text-gray-600 hover:text-black">
+            ✕
+        </button>
+
+        <!-- Popup Title -->
+        <h2 class="text-lg font-semibold">Tour yêu thích</h2>
+        <hr class="my-4 border-gray-300">
+
+        <!-- List Title -->
+        <h3 class="text-md font-medium text-gray-700 mb-4">Lưu vào danh sách yêu thích</h3>
+
+        <!-- Wishlist Items -->
+        <div *ngFor="let tour of wishlist; let i = index" class="flex items-center bg-gray-100 rounded-lg p-4 mb-3">
+            <!-- Placeholder Image -->
+            <img [src]="tour.imageUrl" alt="Tour Image" class="w-16 h-16 object-cover rounded-md bg-blue-300" />
+
+            <!-- Tour Details -->
+            <div class="ml-4 flex-1">
+                <p class="text-sm font-semibold">{{ tour.name }}</p>
+                <p class="text-xs text-gray-500">{{ tour.location }}</p>
+            </div>
+
+            <!-- Remove Button -->
+            <button (click)="removeFromWishlist(i)" class="text-gray-500 hover:text-black">
+                <span class="text-lg">🚫</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -32,8 +32,22 @@ export class HomepageComponent {
     { name: 'Chuyến bay', title: "Tìm chuyến bay tốt nhất", placeholder: 'Tìm kiếm chuyến bay...' },
     { name: 'Hoạt động', title: "Trải nghiệm điều mới mẻ", placeholder: 'Điểm tham quan, hoạt động hoặc điểm đến' },
     { name: 'Tour', title: "Khám phá những tour du lịch tuyệt vời", placeholder: 'Tour hoặc điểm đến' }
-];
+  ];
 
+  addToWishlist(tour: any) {
+    let wishlist = localStorage.getItem('wishlist');
+    let wishlistArray = wishlist ? JSON.parse(wishlist) : [];
+
+    if (!wishlistArray.find((item: any) => item.name === tour.name)) {
+      wishlistArray.push({
+        name: tour.name,
+        location: tour.departLocation.name,
+        imageUrl: tour.tourImages[0].imageUrl,
+      });
+
+      localStorage.setItem('wishlist', JSON.stringify(wishlistArray));
+    }
+  }
 
   selectCategory(category: any) {
     this.selectedCategory = category.name;
@@ -56,7 +70,7 @@ export class HomepageComponent {
   }
 
   ngOnInit() {
-      this.fetchHomepageData();
+    this.fetchHomepageData();
   }
 
   fetchHomepageData() {
