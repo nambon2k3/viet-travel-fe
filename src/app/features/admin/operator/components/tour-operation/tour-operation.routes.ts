@@ -9,7 +9,7 @@ import { TourOperationComponent } from "./tour-operation.component";
 import { PostReceiptComponent } from "./transaction/post-receipt/post-receipt.component";
 import { TransactionComponent } from "./transaction/transaction.component";
 
-export const TOUROPERATION_ROUTES: Route[] = [
+export const TOUR_OPERATION_ROUTES: Route[] = [
   {
       path: '',
       component: TourOperationLayoutComponent,
