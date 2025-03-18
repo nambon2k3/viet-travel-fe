@@ -6,11 +6,14 @@
         <span class="ml-4 font-bold">Thời gian khởi hành: 02/02/2025</span>
     </div>
     <nav class=" flex justify-between px-32 space-x-6 mt-4 text-gray-600">
-        <a [routerLink]="['/head-business/tour-details']" routerLinkActive="border-b-4 border-green-700 font-semibold" class=" hover:text-black">Chi tiết</a>
+        <a [routerLink]="['/head-business/tour-details']" [queryParams]="{ id: tourId }"
+            routerLinkActive="border-b-4 border-green-700 font-semibold" class=" hover:text-black">Chi tiết</a>
         <p class="text-gray-400">|</p>
-        <a [routerLink]="['/head-business/tour-day']" routerLinkActive="border-b-4 border-b-green-700 font-semibold" class="hover:text-black">Ngày tour</a>
+        <a [routerLink]="['/head-business/tour-day']" [queryParams]="{ id: tourId }"
+            routerLinkActive="border-b-4 border-b-green-700 font-semibold" class="hover:text-black">Ngày tour</a>
         <p class="text-gray-400">|</p>
-        <a [routerLink]="['/head-business/pax']" routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Khoảng khách hàng</a>
+        <a [routerLink]="['/head-business/pax']" [queryParams]="{ id: tourId }"
+            routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Khoảng khách hàng</a>
     </nav>
 </div>
 <router-outlet></router-outlet>

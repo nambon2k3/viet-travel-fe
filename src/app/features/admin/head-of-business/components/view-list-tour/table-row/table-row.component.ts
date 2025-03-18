@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Router } from '@angular/router';
 import { TourHOB } from '../../../../../../core/models/tour.model';
 import { TourService } from '../../../services/tour.service';
+
 @Component({
   selector: '[app-table-row]',
   imports: [FormsModule, AngularSvgIconModule],
@@ -12,6 +13,7 @@ import { TourService } from '../../../services/tour.service';
 })
 export class TableRowComponent {
   @Input() tour: TourHOB = <TourHOB>{};
+  @Output() tourUpdated = new EventEmitter<void>();
 
   constructor(
     private tourService: TourService,
@@ -23,6 +25,7 @@ export class TableRowComponent {
       next: (response) => {
         if (response.code === 200) {
           this.tour.deleted = true;
+          this.tourUpdated.emit(); // Notify parent to reload
         }
       },
       error: (err) => {
@@ -33,7 +36,10 @@ export class TableRowComponent {
 
   openDetail(tour: TourHOB): void {
     this.router.navigate(['/head-business/tour-details'], {
-      queryParams: { id: tour.id }
+      queryParams: {
+        id: tour.id,
+        authorName: tour.createdUserName, // Pass the createdUserName
+      },
     });
   }
 
@@ -48,6 +54,7 @@ export class TableRowComponent {
       next: (response) => {
         if (response.code === 200) {
           this.tour.deleted = false;
+          this.tourUpdated.emit();
         }
       },
       error: (err) => {

@@ -14,9 +14,9 @@ export class AuthGuard implements CanActivate {
     return this.userStorageService.getTokenAsync().pipe(
       map((token) => {
         if (token) {
-          return true; // Allow access if token exists
+          return true;
         }
-        this.router.navigate(['/login']); // Redirect to login if no token
+        this.router.navigate(['/login']);
         return false;
       })
     );

@@ -7,7 +7,6 @@ import { environment } from '../../../../../environments/environment';
   providedIn: 'root'
 })
 export class TourService {
-
   constructor(private http: HttpClient) { }
 
   getTourByPage(
@@ -15,143 +14,47 @@ export class TourService {
     size: number = 10,
     keyword?: string,
     isDeleted?: boolean,
-    orderDate: string = 'desc'
+    isOpen?: boolean,
+    sortBy: string = 'createdAt',
+    sortDirection: string = 'desc'
   ): Observable<any> {
     let params = new HttpParams()
-      .set('page', page)
-      .set('size', size)
-      .set('orderDate', orderDate)
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sortBy', sortBy)
+      .set('sortDirection', sortDirection);
 
     if (keyword) {
       params = params.set('keyword', keyword);
     }
     if (isDeleted !== undefined) {
-      params = params.set('isDeleted', isDeleted);
+      params = params.set('isDeleted', isDeleted.toString());
+    }
+    if (isOpen !== undefined) {
+      params = params.set('isOpen', isOpen.toString());
     }
 
-    return this.http.get(`${environment.apiUrl}head-business/tour/list`, { params });
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/list`, { params });
   }
-
-  getTourExampleByPage(page: number, size: number, keyword: string, isDeleted: boolean | undefined, sortDirection: string): Observable<any> {
-    const mockData = [
-      {
-        id: 1,
-        tourName: 'Hà Nội - Hạ Long 3N2Đ',
-        authorName: 'Nguyễn Văn A',
-        duration: 3,
-        slot: 20,
-        price: 5000000,
-        status: 'available',
-        deleted: false
-      },
-      {
-        id: 2,
-        tourName: 'Đà Nẵng - Hội An 4N3Đ',
-        authorName: 'Trần Thị B',
-        duration: 4,
-        slot: 15,
-        price: 6500000,
-        status: 'available',
-        deleted: false
-      },
-      {
-        id: 3,
-        tourName: 'Sapa - Fansipan 2N1Đ',
-        authorName: 'Lê Văn C',
-        duration: 2,
-        slot: 10,
-        price: 4000000,
-        status: 'full',
-        deleted: true
-      },
-      {
-        id: 2,
-        tourName: 'Đà Nẵng - Hội An 4N3Đ',
-        authorName: 'Trần Thị B',
-        duration: 4,
-        slot: 15,
-        price: 6500000,
-        status: 'available',
-        deleted: false
-      },
-      {
-        id: 3,
-        tourName: 'Sapa - Fansipan 2N1Đ',
-        authorName: 'Lê Văn C',
-        duration: 2,
-        slot: 10,
-        price: 4000000,
-        status: 'full',
-        deleted: true
-      },
-      {
-        id: 2,
-        tourName: 'Đà Nẵng - Hội An 4N3Đ',
-        authorName: 'Trần Thị B',
-        duration: 4,
-        slot: 15,
-        price: 6500000,
-        status: 'available',
-        deleted: false
-      },
-      {
-        id: 3,
-        tourName: 'Sapa - Fansipan 2N1Đ',
-        authorName: 'Lê Văn C',
-        duration: 2,
-        slot: 10,
-        price: 4000000,
-        status: 'full',
-        deleted: true
-      },
-      {
-        id: 2,
-        tourName: 'Đà Nẵng - Hội An 4N3Đ',
-        authorName: 'Trần Thị B',
-        duration: 4,
-        slot: 15,
-        price: 6500000,
-        status: 'available',
-        deleted: false
-      },
-      {
-        id: 3,
-        tourName: 'Sapa - Fansipan 2N1Đ',
-        authorName: 'Lê Văn C',
-        duration: 2,
-        slot: 10,
-        price: 4000000,
-        status: 'full',
-        deleted: true
-      }
-    ];
-
-    return of({
-      data: {
-        items: mockData,
-        total: mockData.length,
-        page: page,
-        size: size
-      }
-    }).pipe(delay(500)); // Giả lập độ trễ API
-  }
-
-
 
   getTourById(id: string): Observable<any> {
-    return this.http.get(`${environment.apiUrl}head-business/tour/details/${id}`);
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/detail/${id}`);
+  }
+
+  getTourDayById(tourId: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days`);
   }
 
   updateTour(formData: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}head-business/tour/update/${formData.id}`, formData);
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/update/${formData.id}`, formData);
   }
 
   createTour(formData: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}head-business/tour`, formData);
+    return this.http.put(`${environment.apiUrl}head-of-business/tour`, formData);
   }
 
   deleteTour(id: number): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}head-business/tour/change-status/${id}` + '?isDeleted=true');
+    return this.http.delete(`${environment.apiUrl}head-of-business/tour/change-status/${id}` + '?isDeleted=true');
   }
 
   recoverTour(id: number): Observable<any> {

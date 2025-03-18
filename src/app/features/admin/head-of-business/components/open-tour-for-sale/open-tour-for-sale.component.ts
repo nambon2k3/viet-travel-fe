@@ -7,7 +7,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { FormsModule } from '@angular/forms';
 import { CreateOpenTourDayComponent } from './create-open-tour-day/create-open-tour-day.component';
 import { UpdateOpenTourDayComponent } from './update-open-tour-day/update-open-tour-day.component';
-import e from 'express';
 
 @Component({
   selector: 'app-open-tour-for-sale',
@@ -55,6 +54,30 @@ export class OpenTourForSaleComponent {
       backgroundColor: '#000',
       borderColor: '#000',
       extendedProps: { name: 'Đà Nẵng - Huế - Bà Nà - Hội An', seats: 40, sold: 4, waiting: 8 }
+    },
+    {
+      title: 'Open',
+      start: '2025-03-26',
+      end: '2025-03-29',
+      backgroundColor: '#000',
+      borderColor: '#000',
+      extendedProps: { name: 'Đà Nẵng - Huế - Bà Nà - Hội An', seats: 40, sold: 4, waiting: 8 }
+    },
+    {
+      title: 'Open',
+      start: '2025-03-26',
+      end: '2025-03-29',
+      backgroundColor: '#000',
+      borderColor: '#000',
+      extendedProps: { name: 'Đà Nẵng - Huế - Bà Nà - Hội An', seats: 40, sold: 4, waiting: 8 }
+    },
+    {
+      title: 'Open',
+      start: '2025-03-22',
+      end: '2025-03-27',
+      backgroundColor: '#000',
+      borderColor: '#000',
+      extendedProps: { name: 'Đà Nẵng - Huế - Bà Nà - Hội An', seats: 40, sold: 4, waiting: 8 }
     }
   ];
 
@@ -71,15 +94,32 @@ export class OpenTourForSaleComponent {
       center: 'title',
       right: 'next'
     },
+    eventMinHeight: 30,
+    eventDisplay: 'block',
+    dayMaxEvents: 2,
+    eventDidMount: (arg) => {
+      const eventEl = arg.el;
+      const props = arg.event.extendedProps;
+
+      eventEl.innerHTML = `
+          <div style="padding: 4px; font-size: 12px; line-height: 1.2;">
+            Seats: ${props['seats']} | Sold: ${props['sold']}
+          </div>
+        `;
+
+      eventEl.style.whiteSpace = 'nowrap';
+      eventEl.style.overflow = 'visible';
+      eventEl.style.minWidth = '100%';
+    },
     dateClick: this.handleDateClick.bind(this),
     eventClick: this.handleEventClick.bind(this)
   };
-  
+
   handleDateClick(arg: any) {
     this.createOpenTourDayModal.openModal(arg.dateStr, this.tourSaleEvents[0]?.extendedProps?.['name'] || '');
   }
-  
+
   handleEventClick(arg: any) {
     this.updateOpenTourDayModal.openModal(arg.event);
-  }  
+  }
 }

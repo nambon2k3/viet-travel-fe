@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+// tour-operation.component.ts
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../services/tour.service';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
@@ -7,28 +8,28 @@ import { AssignTourGuideComponent } from './assign-tour-guide/assign-tour-guide.
 
 @Component({
   selector: 'app-tour-operation',
+  standalone: true,
   templateUrl: './tour-operation.component.html',
-  styleUrl: './tour-operation.component.css',
-  imports: [CurrencyVndPipe,
-    CommonModule
-  ]
+  styleUrls: ['./tour-operation.component.css'],
+  imports: [CurrencyVndPipe, CommonModule, AssignTourGuideComponent]
 })
-export class TourOperationComponent implements OnInit {
+export class TourOperationComponent {
   @ViewChild('assignTourGuideModal') assignTourGuideModal!: AssignTourGuideComponent;
-  tour: any = null;
+  tour: any; // Ensure this is initialized properly
   tags: string = '';
   errorMessage: string = '';
+  id: number = 0;
 
   constructor(
     private route: ActivatedRoute,
     private tourService: TourService
-  ) {}
+  ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      const id = params['id'];
-      if (id) {
-        this.getTourDetails(id);
+      this.id = params['id'];
+      if (this.id) {
+        this.getTourDetails(this.id);
       }
     });
   }
@@ -36,12 +37,15 @@ export class TourOperationComponent implements OnInit {
   getTourDetails(id: number) {
     this.tourService.getTourById(id).subscribe(response => {
       if (response.code === 200) {
-        this.tour = response.data;
+        this.tour = response.data; // Ensure tour is set here
         this.tags = this.tour.tags?.map((tag: any) => tag.name).join(', ') || '';
       } else {
-        // Handle error
         this.errorMessage = response.message;
       }
     });
+  }
+
+  onTourGuideAssigned(): void {
+    this.getTourDetails(this.id); // Refresh tour data after assignment
   }
 }

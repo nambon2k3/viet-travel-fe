@@ -1,7 +1,7 @@
 <div class="mt-6 p-6 bg-white rounded-md">
   <div class="flex justify-end gap-2 mb-4">
     <button data-modal-target="logModal" data-modal-toggle="logModal"
-     class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">Tạo Nhật Ký</button>
+      class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">Tạo Nhật Ký</button>
   </div>
 
   <div class="rounded-md">
@@ -12,6 +12,7 @@
           <th class="p-2">Ngày</th>
           <th class="p-2">Hành động</th>
           <th class="p-2">Nội dung nhật ký</th>
+          <th class="p-2">Thao tác</th>
         </tr>
       </thead>
       <tbody>
@@ -20,6 +21,15 @@
           <td class="p-2">{{ log.createdAt | formatDate }}</td>
           <td class="p-2">{{ log.action }}</td>
           <td class="p-2">{{ log.content }}</td>
+          <td class="p-2">
+            <button (click)="onDeleteLog(log.id)">
+              <svg class="ml-2 w-6 h-6 text-red-800 dark:text-red-600 cursor-pointer"
+                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 18 17.94 6M18 18 6.06 6" />
+              </svg>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -27,5 +37,3 @@
 </div>
 
 <app-create-log [scheduleId]="id" (logCreated)="onLogCreated()"></app-create-log>
-
-

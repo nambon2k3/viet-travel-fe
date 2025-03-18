@@ -1,5 +1,4 @@
 <div class="rounded-md bg-white p-6 shadow mt-4">
-
   <table class="w-full border-opacity-0">
     <thead>
       <tr class="bg-gray-100">
@@ -10,14 +9,21 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="border" *ngFor="let day of tourDays">
-        <td class="p-2 text-center">{{ day.day }}</td>
+      <tr class="border" *ngFor="let day of tourDays; let i = index">
+        <td class="p-2 text-center">{{ i + 1 }}</td>
         <td class="p-2">{{ day.title }}</td>
-        <td class="p-2">{{ day.services }}</td>
+        <td class="p-2">{{ getServicesString(day) | truncate: 30 }}</td> <!-- Use getter and pipe -->
         <td class="p-2 text-center">
-          <button (click)="openUpdateTourDay()" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded">Cập
-            Nhật</button>
+          <button
+            (click)="openUpdateTourDay()"
+            class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded"
+          >
+            Cập Nhật
+          </button>
         </td>
+      </tr>
+      <tr *ngIf="tourDays.length === 0">
+        <td colspan="4" class="p-2 text-center">Không có ngày tour nào</td>
       </tr>
     </tbody>
   </table>

@@ -1,3 +1,4 @@
+<button data-modal-target="wishlistModal"></button>
 <div [class.transition-all]="isHomepage">
   <nav class="fixed top-0 left-0 w-full bg-white shadow-md z-50">
     <div class="flex justify-between items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -40,21 +41,27 @@
           </svg>
           <span class="text-base sm:text-lg">VND</span>
           <div class="" *ngIf="isLoggedIn else signIn">
-            <img (click)="toggleProfileMenu()"
-              class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full cursor-pointer overflow-clip"
-              [src]="userProfile?.avatarImg || 'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg'"
-              alt="Ảnh Hồ Sơ" />
+            <button id="dropdownProfileButton" data-dropdown-toggle="dropdown" type="button">
+              <img class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-300 rounded-full cursor-pointer overflow-clip"
+                [src]="userProfile?.avatarImg || 'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg'"
+                alt="Ảnh Hồ Sơ" />
+            </button>
           </div>
         </div>
-        <div *ngIf="isProfileOpen"
-          class="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg z-50"
-          (mouseleave)="closeProfileMenu()">
-          <ul class="py-2">
+        <div id="dropdown"
+          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+          <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownProfileButton">
             <li>
               <a href="/customer/user-profile"
                 class="cursor-pointer block px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-black transition duration-200">
                 Hồ Sơ Người Dùng
               </a>
+            </li>
+            <li>
+              <button type="button" data-modal-toggle="wishlistModal" data-modal-target="wishlistModal" data-dropdown-hide="dropdown"
+                class="cursor-pointer block px-4 pr-8 py-2 text-gray-700 hover:bg-gray-100 hover:text-black transition duration-200">
+                Danh sách yêu thích
+              </button>
             </li>
             <li>
               <a (click)="onLogout()"
@@ -63,6 +70,9 @@
               </a>
             </li>
           </ul>
+        </div>
+        <div >
+          <app-wishlist #wishlistModal></app-wishlist>
         </div>
         <ng-template #signIn>
           <button (click)="router.navigate(['/login'])"

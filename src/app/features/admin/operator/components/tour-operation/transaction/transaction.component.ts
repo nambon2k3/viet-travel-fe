@@ -1,49 +1,59 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { PostAdvancePaymentComponent } from './post-advance-payment/post-advance-payment.component';
-import { Router } from '@angular/router';
-import { Modal } from 'flowbite';
-import { SsrService } from '../../../../../../core/services/ssr.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TourService } from '../../../services/tour.service';
+import { TruncatePipe } from "../../../../../../shared/pipes/truncate.pipe";
+import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe";
 
 @Component({
   selector: 'app-transaction',
   standalone: true,
   imports: [
     CommonModule,
-    PostAdvancePaymentComponent
-  ],
+    PostAdvancePaymentComponent,
+    TruncatePipe,
+    FormatDatePipe
+],
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.css']
 })
 export class TransactionComponent {
   @ViewChild('paymentModal') paymentModal!: PostAdvancePaymentComponent;
-
-  logs = [
-    { id: 1, title: "Lu’s Lunch", date: "20/03/2025", action: "Pay", logContent: "This is order lunch service for Lan Than" },
-    { id: 2, title: "Lu’s Dinner", date: "20/03/2025", action: "Change service", logContent: "This is order lunch service for Lan Than" }
-  ];
-
-  private modalInstance: Modal | null = null;
+  listTransactions: any[] = [];
+  id: number = 0;
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,
-    private ssrService: SsrService
+    private tourService: TourService,
   ) { }
 
-  ngAfterViewInit(): void {
-    this.initModal();
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.id = params['id'];
+      if (this.id) {
+        this.loadTransactions(this.id);
+      }
+    });
+  }
+
+  loadTransactions(id: number): void {
+    this.tourService.getTransactions(id).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.listTransactions = response.data;
+        } else {
+          console.error('Lỗi:', response.message);
+        }
+      },
+      error: (error: any) => {
+        console.error('Lỗi khi tải danh sách transaction:', error.message);
+      }
+    });
   }
 
   openPostReceipt(): void {
     this.router.navigate(['/operator/tour-operation/create-receipt']);
-  }
-
-  initModal(): void {
-    if (this.ssrService.isBrowser) {
-      const modalElement = document.getElementById('paymentModal');
-      if (modalElement && !this.modalInstance) {
-        this.modalInstance = new Modal(modalElement);
-      }
-    }
   }
 }

@@ -37,6 +37,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         router.navigate(['/login']);
       } else if (error.status === 403) {
         console.error('Access denied:', errorMessage);
+      }else if (error.status === 404) {
+        console.error('Not Found:', errorMessage);
       } else if (error.status === 500) {
         console.error('Server error:', errorMessage);
       }

@@ -39,7 +39,7 @@ export class ViewListRequestComponent {
     page = 0;
     size = 10;
     totalPages = signal(0)
-    isLoading: boolean = true;
+    isLoading: boolean = false;
   
     
     // Store filters to persist data across pages
@@ -67,6 +67,7 @@ export class ViewListRequestComponent {
         this.sortDirection
       ).subscribe({
         next: (response) => {
+          console.log('Requests loaded:', response.data);
           this.requests.set(response.data.items);
           this.totalItems = response.data.total;
           this.page = response.data.page;
@@ -76,6 +77,7 @@ export class ViewListRequestComponent {
         },
         error: (err) => {
           console.error('Failed to load requests:', err);
+          this.isLoading = false;
         }
       });
     }

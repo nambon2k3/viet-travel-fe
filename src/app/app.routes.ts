@@ -40,7 +40,7 @@ export const routes: Routes = [
     {
         path: 'customer',
         loadChildren: () => import('./features/customer/customer.routes').then(m => m.CUSTOMER_ROUTES),
-        canActivate: [AuthGuard]
+        // canActivate: [AuthGuard]
     },
     {
         path: 'ceo',
@@ -79,5 +79,9 @@ export const routes: Routes = [
     {
         path: 'accountant',
         loadChildren: () => import('./features/admin/accountant/accountant.routes').then(m => m.ACCOUNTANT_ROUTES),
+    },
+    {
+        path: 'error',
+        loadChildren: () => import('./core/pages/error-page/error-page.routes').then(m => m.ERROR_ROUTES),
     },
 ];
