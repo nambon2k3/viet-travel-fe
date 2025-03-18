@@ -71,4 +71,8 @@ export class TourService {
   deleteLog(id: number): Observable<any> {
     return this.http.delete(`${environment.apiUrl}operator/tour-detail/operation-log/change-status/${id}`);
   }
+
+  getServices(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-service`);
+  }
 }
