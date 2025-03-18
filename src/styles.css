@@ -58,6 +58,10 @@ body.modal-open {
   overflow: hidden;
 }
 
+body {
+  font-family: 'Roboto';
+}
+
 .no-scroll {
   overflow: hidden;
 }
