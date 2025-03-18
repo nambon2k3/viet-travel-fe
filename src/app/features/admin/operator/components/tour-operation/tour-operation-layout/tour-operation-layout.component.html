@@ -12,8 +12,7 @@
             class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Nhận điều hành</button>
     </div>
 </div>
-
-<div class="bg-[#FFF5DF] shadow-md w-full mt-6 py-4">
+<div class="bg-yellow-100 shadow-md w-full mt-2 py-4">
     <div class="ml-7 text-lg font-semibold">
         <span class="text-red-600 font-bold">MS001</span>
         <span class="font-bold">_ Đà Nẵng -
@@ -22,28 +21,29 @@
     </div>
     <nav class="flex justify-between px-8 space-x-6 mt-4 text-green-700 font-semibold">
         <a [routerLink]="['/operator/tour-operation/overview']" [queryParams]="{ id: tourId }"
-            routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Tổng quan</a>
+            routerLinkActive="border-b-4 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Tổng quan</a>
 
         <a [routerLink]="['/operator/tour-operation/list-customer']" [queryParams]="{ id: tourId }"
-            routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Danh sách khách
+            routerLinkActive="border-b-4 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Danh sách
+            khách
             hàng</a>
 
         <a [routerLink]="['/operator/tour-operation/list-booking']" [queryParams]="{ id: tourId }"
-            routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Danh sách đặt
+            routerLinkActive="border-b-4 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Danh sách đặt
             chỗ</a>
 
         <a [routerLink]="['/operator/tour-operation/service']" [queryParams]="{ id: tourId }"
-            routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Dịch vụ</a>
+            routerLinkActive="border-b-4 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Dịch vụ</a>
 
         <a [routerLink]="['/operator/tour-operation/transaction']" [queryParams]="{ id: tourId }"
-            routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Giao dịch</a>
+            routerLinkActive="border-b-4 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Giao dịch</a>
 
         <a [routerLink]="['/operator/tour-operation/log']" [queryParams]="{ id: tourId }"
-            routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Nhật ký hoạt
+            routerLinkActive="border-b-4 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Nhật ký hoạt
             động</a>
 
         <a [routerLink]="['/operator/tour-operation/summary']" [queryParams]="{ id: tourId }"
-            routerLinkActive="border-b-4 border-green-700 font-semibold" class="hover:text-black">Tổng kết</a>
+            routerLinkActive="border-b-4 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Tổng kết</a>
     </nav>
 
 </div>
@@ -82,4 +82,6 @@
         </div>
     </div>
 </div>
-<router-outlet></router-outlet>
+<div class="">
+    <router-outlet></router-outlet>
+</div>
