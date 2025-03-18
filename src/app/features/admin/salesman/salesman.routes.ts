@@ -28,20 +28,20 @@ export const SALESMAN_ROUTES: Route[] = [
       {
         path: 'list-tour-public',
         component: ListTourPublicComponent
+      }, 
+      {
+        path: 'tour-list-booking/:tourId',
+        component: TourListBookingComponent
+      },
+      {
+        path: 'tour-list-booking/:tourId/:scheduleId',
+        component: TourListBookingComponent
       }
     ]
   },
   {
     path: 'booking-detail/:id',
     component: BookingDetailComponent
-  }, 
-  {
-    path: 'tour-list-booking/:tourId',
-    component: TourListBookingComponent
-  },
-  {
-    path: 'tour-list-booking/:tourId/:scheduleId',
-    component: TourListBookingComponent
   },
   {
     path: 'create-public-booking',
