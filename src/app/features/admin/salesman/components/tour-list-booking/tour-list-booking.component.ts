@@ -2,18 +2,18 @@ import { Component, ViewChild } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { TourDetailService } from '../../../../public/services/tour-detail.service';
 import interactionPlugin from '@fullcalendar/interaction';
 import { BookingService } from '../../services/booking.service';
 import { TourService } from '../../services/tour.service';
-
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-tour-list-booking',
-  imports: [FullCalendarModule, CommonModule, RouterModule],
+  imports: [FullCalendarModule, CommonModule, RouterModule, DatePipe],
   templateUrl: './tour-list-booking.component.html',
-  styleUrl: './tour-list-booking.component.css'
+  styleUrl: './tour-list-booking.component.css',
+  providers: [DatePipe]
 })
 export class TourListBookingComponent {
 
@@ -46,6 +46,11 @@ export class TourListBookingComponent {
       console.log(selectedScheduleId)
 
       this.getTourDetails(this.tourId!, selectedScheduleId);
+
+      const modal = document.getElementById("close");
+      if (modal) {
+        modal.click();
+      }
     }
   }
 
@@ -59,21 +64,33 @@ export class TourListBookingComponent {
   selectedSchedule: any;
   isLoading: boolean = true;
 
+  uniqueMonths = new Set<string>();
+
   constructor(
     private router: Router,
-  private bookingService: BookingService,
-  private tourService: TourService
-) {
+    private route: ActivatedRoute,
+    private tourService: TourService,
+    private datePipe: DatePipe,
+  ) {
   }
 
 
   ngOnInit(): void {
-    const tourId = Number(this.router.url.split('/').pop());
+    this.route.paramMap.subscribe(params => {
+      const tourId = Number(params.get('tourId'));
+      const scheduleId = params.get('scheduleId') ? Number(params.get('scheduleId')) : undefined;
+    
+      console.log(tourId, scheduleId)
 
-    if (tourId) {
-      this.tourId = tourId;
-      this.getTourDetails(tourId);
-    }
+      if (tourId) {
+        this.getTourDetails(tourId, scheduleId);
+      }
+    });
+  }
+
+  goToMonth(month: string, year: string) {
+    const calendarApi = this.calendarComponent.getApi();
+    calendarApi.gotoDate(`${year}-${month.padStart(2, '0')}-01`);
   }
 
   getTourDetails(tourId: number, scheduleId?: number) {
@@ -83,16 +100,22 @@ export class TourListBookingComponent {
 
         console.log(this.tourDetails);
 
-        
-        if(!scheduleId) {
+
+        if (!scheduleId) {
           this.selectedSchedule = this.tourDetails?.tour.tourSchedules.at(0);
         } else {
-          this.selectedSchedule = this.tourDetails?.tour.tourSchedules.find((schedule:any) => schedule.id === scheduleId);
+          this.selectedSchedule = this.tourDetails?.tour.tourSchedules.find((schedule: any) => schedule.id === scheduleId);
         }
 
 
         console.log(this.selectedSchedule)
 
+        this.tourDetails?.tour?.tourSchedules.forEach((schedule: any) => {
+          const formattedDate = this.datePipe.transform(schedule.startDate, 'MM/yyyy');
+          if (formattedDate) {
+            this.uniqueMonths.add(formattedDate);
+          }
+        })
 
         this.events = this.tourDetails?.tour.tourSchedules.map((schedule: any) => ({
           scheduleId: schedule.id,
@@ -120,7 +143,7 @@ export class TourListBookingComponent {
   }
 
 
-  loadCalendar:boolean = false;
+  loadCalendar: boolean = false;
 
   isLoadCalendar() {
     this.loadCalendar = true;

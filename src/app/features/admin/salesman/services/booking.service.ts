@@ -36,4 +36,19 @@ export class BookingService {
     }
 
 
+
+    getBookingCustomers(tourBookingId: number) : Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/bookings/customers/list/${tourBookingId}`);
+    }
+
+    updateCustomerStatus(customerId: number) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/customers/change-status`, customerId);
+    }
+
+
+    updateCustomers(customerFormData: any) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/customers/update`, customerFormData);
+    }
+
+
 }

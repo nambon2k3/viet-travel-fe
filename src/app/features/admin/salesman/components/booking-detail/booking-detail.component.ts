@@ -1,11 +1,366 @@
-import { Component } from '@angular/core';
-
+import { AfterViewInit, Component } from '@angular/core';
+import { TourService } from '../../services/tour.service';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule, DatePipe } from '@angular/common';
+import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { BookingService } from '../../services/booking.service';
+import { Modal } from 'flowbite';
 @Component({
   selector: 'app-booking-detail',
-  imports: [],
+  imports: [DatePipe, CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule],
   templateUrl: './booking-detail.component.html',
   styleUrl: './booking-detail.component.css'
 })
-export class BookingDetailComponent {
+export class BookingDetailComponent implements AfterViewInit {
+
+
+  tourBookingId?: number;
+
+  bookingDetail: any;
+
+  bookedPerson: any;
+
+  tourCustomers: any;
+
+  remainingAmount: number = 0.0;
+
+
+  customerForm: FormGroup;
+
+
+
+  showWarning: boolean = false;
+
+  maxPax: number = 0;
+
+
+  transactionDetailModal: Modal | null = null;
+
+
+
+  ngAfterViewInit(): void {
+    this.transactionDetailModal = new Modal(document.getElementById('transaction-modal'));
+  }
+
+
+  transactionForm: FormGroup;
+
+  selectedTransaction: any;
+
+  openTransactionDetailModal(transaction: any): void {
+    this.transactionDetailModal?.show();
+    this.selectedTransaction = transaction;
+    this.loadTransactionData(transaction);
+  }
+
+  closeTransactionDetailModal(): void {
+    this.transactionDetailModal?.hide();
+  }
+
+
+  showConfirmModal(index: number): void {
+    const customerGroup = this.customersFormArray.at(index);
+    const id = customerGroup.get('id')?.value;
+    if (id) {
+      this.showWarning = true;
+    } else {
+      this.customersFormArray.removeAt(index);
+    }
+  }
+
+  closeConfirmModal(): void {
+    this.showWarning = false;
+  }
+
+  constructor(
+    private tourService: TourService,
+    private router: Router,
+    private fb: FormBuilder,
+    private bookingService: BookingService
+  ) {
+    this.customerForm = this.fb.group({
+      customers: this.fb.array([]),
+      bookingId: [null],
+    });
+
+    this.transactionForm = this.fb.group({
+      id: [{ value: '', disabled: true }],
+      amount: ['', Validators.required],
+      category: ['', Validators.required],
+      paidBy: ['', Validators.required],
+      receivedBy: ['', Validators.required],
+      paymentMethod: ['', Validators.required],
+      notes: [''],
+      createdAt: [{ value: '', disabled: true }],
+      costAccount: this.fb.array([]) // Array chứa các dòng cost
+    });
+    
+  }
+
+
+
+  ngOnInit() {
+    const tourBookingId = Number(this.router.url.split('/').pop());
+
+    //const tourBookingId = 71;
+
+    if (tourBookingId) {
+      this.tourBookingId = tourBookingId;
+      this.getBookingDetail(tourBookingId);
+    }
+  }
+
+  createCustomerGroup(): FormGroup {
+    return this.fb.group({
+      id: [null],
+      fullName: [null, Validators.required],
+      address: [null],
+      email: [null, [Validators.email]],
+      dateOfBirth: [null, [Validators.required]],
+      phoneNumber: [null],
+      pickUpLocation: [null],
+      note: [null],
+      gender: ['MALE', Validators.required],
+      ageType: ['ADULT', Validators.required],
+      singleRoom: [false],
+      deleted: [false],
+      bookedPerson: [false],
+    });
+  }
+
+  addCustomer(count: number): void {
+    const adultsArray = this.customersFormArray;
+    for (let i = 0; i < count; i++) {
+      adultsArray.push(this.createCustomerGroup());
+    }
+  }
+
+  addCostItem(): void {
+    this.costAccount.push(this.fb.group({
+      id: [''],
+      content: ['', Validators.required],
+      amount: [0, Validators.required],
+      discount: [0],
+      quantity: [1],
+      finalAmount: [0],
+      status: ['UNPAID']
+    }));
+  }
+
+  removeCostItem(index: number): void {
+    this.costAccount.removeAt(index);
+  }
+
+  get customersFormArray(): FormArray {
+    return this.customerForm.get('customers') as FormArray;
+  }
+
+  get costAccount(): FormArray {
+    return this.transactionForm.get('costAccount') as FormArray;
+  }
+
+  getBookingDetail(tourBookingId: number) {
+    this.tourService.getBookingDetail(tourBookingId).subscribe({
+      next: (response) => {
+        this.bookingDetail = response.data;
+        this.bookedPerson = response.data.customers.filter((customer: any) => customer.bookedPerson)[0];
+        this.tourCustomers = response.data.customers.filter((customer: any) => !customer.bookedPerson);
+        this.remainingAmount = this.bookingDetail.total - this.bookingDetail.paid;
+
+        this.maxPax = this.bookingDetail.schedule.availableSeats + this.tourCustomers.length;
+
+        this.setTourCustomersForm(this.tourCustomers);
+
+        this.customerForm.patchValue({
+          bookingId: this.bookingDetail.id
+        });
+
+        this.transactionForm.patchValue({
+          bookingCode: this.bookingDetail.bookingCode
+        });
+
+        console.log(this.bookingDetail);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+
+  loadTransactionData(data: any): void {
+    this.transactionForm.patchValue({
+      id: data.id,
+      amount: data.amount,
+      category: data.category,
+      paidBy: data.paidBy,
+      receivedBy: data.receivedBy,
+      paymentMethod: data.paymentMethod,
+      notes: data.notes,
+      createdAt: data.createdAt
+    });
+
+    this.costAccount.clear();
+    data.costAccount.forEach((item: any) => {
+      this.costAccount.push(this.fb.group({
+        id: [item.id],
+        content: [item.content, Validators.required],
+        amount: [item.amount, Validators.required],
+        discount: [item.discount],
+        quantity: [item.quantity],
+        finalAmount: [item.finalAmount],
+        status: [item.status]
+      }));
+    });
+  }
+
+
+  setTourCustomersForm(customers: any[]): void {
+    const customersFormArray = this.customersFormArray;
+    customersFormArray.clear(); // Clear existing controls if needed
+
+    customers.forEach(customer => {
+      const group = this.createCustomerGroup();
+      group.patchValue({
+        id: customer.id || null,
+        fullName: customer.fullName || '',
+        address: customer.address || '',
+        email: customer.email || '',
+        dateOfBirth: customer.dateOfBirth || '',
+        phoneNumber: customer.phoneNumber || '',
+        pickUpLocation: customer.pickUpLocation || '',
+        note: customer.note || '',
+        gender: customer.gender || 'MALE',
+        ageType: customer.ageType || 'ADULT',
+        singleRoom: customer.singleRoom || false,
+        deleted: customer.deleted || false,
+        bookedPerson: customer.bookedPerson || false,
+      });
+      const isDeleted = group.get('deleted')?.value;
+      if (isDeleted) {
+        group.disable();
+      }
+      customersFormArray.push(group);
+    });
+
+    this.customerForm.patchValue({
+      customers: customers.map(customer => ({
+        ...customer,
+        dateOfBirth: this.formatDate(customer.dateOfBirth)
+      }))
+    });
+
+    this.customersFormArray.controls.forEach((customerGroup) => {
+      customerGroup.get('deleted')?.valueChanges.subscribe((isDeleted) => {
+        if (isDeleted) {
+          customerGroup.disable();
+        } else {
+          customerGroup.enable();
+        }
+      });
+    });
+  }
+
+
+
+  fetchCustomers(tourBookingId: number) {
+    this.bookingService.getBookingCustomers(tourBookingId).subscribe({
+      next: (response) => {
+
+        const customers = response.data;
+
+        this.tourCustomers = customers.filter((customer: any) => !customer.bookedPerson);
+
+        this.setTourCustomersForm(this.tourCustomers);
+
+        console.log(customers);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+  }
+
+
+  deleteCustomer(index: number): void {
+    const customerGroup = this.customersFormArray.at(index);
+    const id = customerGroup.get('id')?.value;
+    if (id) {
+      this.bookingService.updateCustomerStatus(id).subscribe({
+        next: (response) => {
+
+
+
+          this.customersFormArray.at(index).get('deleted')?.setValue(response.data.deleted);
+
+          console.log(response)
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
+    } else {
+      this.customersFormArray.removeAt(index);
+    }
+    this.closeConfirmModal();
+  }
+
+  changeStatus(index: number): void {
+    const customerGroup = this.customersFormArray.at(index);
+    const deleted = customerGroup.get('deleted');
+    customerGroup.get('deleted')?.setValue(!deleted)
+  }
+
+  getRemainingAmount(transaction: any): number {
+    if (!transaction) {
+      return 0;
+    }
+
+    const paidAmount = (transaction.costAccount || [])
+      .filter((ca: any) => ca.status === 'PAID')
+      .reduce((sum: number, ca: any) => sum + (ca.amount || 0), 0);
+
+
+    return (transaction.amount || 0) - paidAmount;
+  }
+
+
+
+  onSubmit(): void {
+    if (this.customerForm.valid) {
+
+      const formData = this.customerForm.value;
+
+      console.log('Form Submitted success:', formData);
+
+      this.bookingService.updateCustomers(formData).subscribe({
+        next: (response) => {
+          console.log('Booking Success:', response);
+          this.tourCustomers = response.data
+          this.setTourCustomersForm(this.tourCustomers);
+
+        },
+        error: (error) => {
+          console.error('Booking Failed:', error);
+        }
+      });
+
+    } else {
+      console.log('Form Submitted failed:', this.customerForm.value);
+
+    }
+  }
+
+
+  onTransactionSubmit(): void {
+    if (this.transactionForm.valid) {
+    }
+  }
+
+
+  private formatDate(dateString: string): string {
+    return dateString ? new Date(dateString).toISOString().substring(0, 10) : '';
+  }
 
 }

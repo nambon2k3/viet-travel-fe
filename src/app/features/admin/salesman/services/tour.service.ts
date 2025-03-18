@@ -47,4 +47,9 @@ export class TourService {
         return this.http.get(url);
     }
 
+
+    getBookingDetail(tourBookingId: number) : Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/bookings/detail/${tourBookingId}`);
+    }
+
 }
