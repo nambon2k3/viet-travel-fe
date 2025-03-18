@@ -11,25 +11,25 @@ export const OPERATOR_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       { 
-        path: '',
-        component: DashBoardComponent
-      },
-      {
-        path: 'view-list-request',
-        component: ViewListRequestComponent
-      },
-      {
-        path: 'request-details',
-        component: ViewRequestDetailComponent
-      },
-      {
-        path: 'view-list-tour',
-        component: ViewListTourComponent
-      },
-      {
-        path: 'tour-operation',
-        loadChildren: () => import('./components/tour-operation/tour-operation.routes').then(m => m.TOUROPERATION_ROUTES),
-      }
+    path: '',
+    component: DashBoardComponent
+  },
+  {
+    path: 'view-list-request',
+    component: ViewListRequestComponent
+  },
+  {
+    path: 'request-details',
+    component: ViewRequestDetailComponent
+  },
+  {
+    path: 'view-list-tour',
+    component: ViewListTourComponent
+  },
+  {
+    path: 'tour-operation',
+    loadChildren: () => import('./components/tour-operation/tour-operation.routes').then(m => m.TOUR_OPERATION_ROUTES),
+  }
     ]
   },
 ];
