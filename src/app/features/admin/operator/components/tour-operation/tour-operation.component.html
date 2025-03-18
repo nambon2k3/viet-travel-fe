@@ -1,8 +1,9 @@
 <div class="mt-6 grid grid-cols-3 gap-4">
   <!-- Thông tin chung -->
-  <div class="col-span-2 rounded-md bg-white p-6 shadow-md">
+  <div class="col-span-2  bg-white p-6 shadow-md">
     <h2 class="mt-2 text-lg font-bold">Thông tin chung</h2>
-    <div class="mt-8 grid grid-cols-2 gap-x-4 gap-y-5">
+    <hr class="mt-4 col-span-2 w-full">
+    <div class="mt-4 grid grid-cols-2 gap-x-4 gap-y-7">
       <p><strong>Loại tour:</strong></p>
       <p>{{ tour?.tourType === 'SIC' ? 'Tour đoàn' : 'Tour riêng' }}</p>
 
@@ -35,25 +36,26 @@
 
   <!-- Thông tin số chỗ -->
   <div class="space-y-4">
-    <div class="bg-white p-4 rounded-md shadow-md">
+    <div class="bg-white p-4  shadow-md">
       <h3 class="font-bold">Số chỗ còn lại</h3>
+      <hr class="my-4 col-span-2 w-full">
       <div class="grid grid-cols-2 gap-x-4 gap-y-4">
         <p><strong>Tổng số:</strong></p>
         <p>{{ tour?.maxPax }} chỗ</p>
 
-        <p><strong>Đã bán:</strong></p>
+        <p class="text-blue-600"><strong>Đã bán:</strong></p>
         <p>{{ tour?.soldSeats }} chỗ</p>
 
-        <p><strong>Còn lại:</strong></p>
+        <p class="text-green-600"><strong>Còn lại:</strong></p>
         <p>{{ tour?.remainingSeats }} chỗ</p>
 
-        <p><strong>Đang xử lý:</strong></p>
+        <p class="text-red-500"><strong>Đang xử lý:</strong></p>
         <p>{{ tour?.pendingSeats }} chỗ</p>
       </div>
     </div>
 
     <!-- Điều hành tour -->
-    <div class="grid bg-white p-4 rounded-md shadow-md gap-y-4">
+    <div class="grid bg-white p-4 shadow-md gap-y-4">
       <h3 class="font-bold flex justify-between">
         Điều hành tour
         <button data-modal-target="assignTourGuideModal" data-modal-toggle="assignTourGuideModal">
@@ -66,36 +68,40 @@
       </h3>
 
       <p><strong>Người điều hành:</strong></p>
-      <p class="text-green-700">{{ (tour?.operatorName && tour?.operatorName !== 'null') ? tour?.operatorName : 'Chưa có người điều hành' }}</p>
+      <p
+        [ngClass]="{'text-green-700': tour?.operatorName && tour?.operatorName !== 'null', 'text-red-600': !tour?.operatorName || tour?.operatorName === 'null'}">
+        {{ (tour?.operatorName && tour?.operatorName !== 'null') ? tour?.operatorName : 'Chưa có người điều hành' }}
+      </p>
 
       <p><strong>Thời gian khởi hành:</strong></p>
-      <p class="text-green-700">
-        {{ tour?.departureTime ? (tour?.departureTime) : 'Chưa cập nhật' }}
+      <p [ngClass]="{'text-green-700': tour?.departureTime, 'text-red-600': !tour?.departureTime}">
+        {{ tour?.departureTime ? tour?.departureTime : 'Chưa cập nhật' }}
       </p>
 
       <p><strong>Hướng dẫn viên:</strong></p>
-      <p class="text-green-700">
+      <p
+        [ngClass]="{'text-green-700': tour?.tourGuideName && tour?.tourGuideName !== 'null', 'text-red-600': !tour?.tourGuideName || tour?.tourGuideName === 'null'}">
         {{ (tour?.tourGuideName && tour?.tourGuideName !== 'null') ? tour?.tourGuideName : 'Chưa có HDV' }}
       </p>
 
       <p><strong>Địa điểm gặp mặt:</strong></p>
-      <p class="text-green-700">
+      <p
+        [ngClass]="{'text-green-700': tour?.meetingLocation && tour?.meetingLocation !== 'null', 'text-red-600': !tour?.meetingLocation || tour?.meetingLocation === 'null'}">
         {{ (tour?.meetingLocation && tour?.meetingLocation !== 'null') ? tour?.meetingLocation : 'Chưa cập nhật' }}
       </p>
     </div>
   </div>
 </div>
 <!-- Thông tin tài chính -->
-<div
-  class="mt-6 bg-white w-full p-4 shadow-md rounded-md grid grid-cols-4 border-t-4 border-green-700 text-center font-bold">
+<div class="mt-6 bg-white w-full p-4 shadow-md  grid grid-cols-4 text-center font-bold">
   <div>Tổng chi phí tour</div>
   <div>Thu trong tour</div>
   <div>Còn lại</div>
   <div>Doanh thu</div>
   <div class="font-normal">{{ tour?.totalTourCost ? tour?.totalTourCost : 0 | currencyVnd }}</div>
-  <div class="font-normal">{{ tour?.paidTourCost | currencyVnd }}</div>
-  <div class="font-normal">{{ tour?.remainingTourCost | currencyVnd }}</div>
-  <div class="font-normal">{{ tour?.revenueCost | currencyVnd }}</div>
+  <div class="font-normal text-green-600">{{ tour?.paidTourCost | currencyVnd }}</div>
+  <div class="font-normal text-red-500">{{ tour?.remainingTourCost | currencyVnd }}</div>
+  <div class="font-normal text-blue-600">{{ tour?.revenueCost | currencyVnd }}</div>
 </div>
 
 

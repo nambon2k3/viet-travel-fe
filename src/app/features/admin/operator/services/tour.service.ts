@@ -32,7 +32,7 @@ export class TourService {
     return this.http.get(`${environment.apiUrl}operator/list-tour`, { params });
   }
 
-  getTourById(id: number): Observable<any> {
+  getTourById(id: number | null): Observable<any> {
     return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}`);
   }
 
