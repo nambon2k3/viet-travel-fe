@@ -83,6 +83,8 @@ export class TourListBookingComponent {
       console.log(tourId, scheduleId)
 
       if (tourId) {
+        this.tourId = tourId;
+
         this.getTourDetails(tourId, scheduleId);
       }
     });
@@ -93,12 +95,15 @@ export class TourListBookingComponent {
     calendarApi.gotoDate(`${year}-${month.padStart(2, '0')}-01`);
   }
 
+  pendingSeats: number = 0;
+  bookedSeats: number = 0;
+
   getTourDetails(tourId: number, scheduleId?: number) {
     this.tourService.getListBooking(tourId, scheduleId).subscribe({
       next: (response) => {
         this.tourDetails = response.data;
 
-        console.log(this.tourDetails);
+        console.log('Response', this.tourDetails);
 
 
         if (!scheduleId) {
@@ -106,9 +111,20 @@ export class TourListBookingComponent {
         } else {
           this.selectedSchedule = this.tourDetails?.tour.tourSchedules.find((schedule: any) => schedule.id === scheduleId);
         }
+        this.loadCalendar = false;
 
 
-        console.log(this.selectedSchedule)
+        const bookings = this.tourDetails?.bookings;
+
+        const pendingBookings = bookings.filter((booking: any) => booking.status === 'PENDING');
+
+        const successBookins = bookings.filter((booking: any) => booking.status === 'SUCCESS');
+
+        this.pendingSeats = pendingBookings.reduce((acc: number, booking: any) => acc + booking.seats, 0);
+        this.bookedSeats = successBookins.reduce((acc: number, booking: any) => acc + booking.seats, 0);
+
+
+        console.log('Selected Schedule: ', this.selectedSchedule)
 
         this.tourDetails?.tour?.tourSchedules.forEach((schedule: any) => {
           const formattedDate = this.datePipe.transform(schedule.startDate, 'MM/yyyy');

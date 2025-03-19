@@ -2,32 +2,48 @@
     class="bg-yellow-100 p-4 rounded pb-6 flex flex-col md:flex-row md:items-center md:justify-between space-y-2 md:space-y-0">
     <div>
         <div class="flex items-center text-2xl gap-4 font-semibold mb-5">
-            <h1 class=" text-gray-800">Tour E Min Em Bợn ></h1>
-            <div class="text-gray-600">Mã Booking: 123123123123| Khởi hành:
-                24-08-2003</div>
+            <h1 class=" text-gray-800">{{tourDetails?.tour?.name}} <span class="px-3">></span></h1>
+            <div class="text-gray-600">Mã ID: {{tourDetails?.tour?.id}}</div>
         </div>
         <div class="flex space-x-2 text-md text-gray-600 mt-1">
-            <span class="pr-5">Ngày tạo: 24-08-2003</span> |
-            <span class="px-5">Loại Booking: ONLINE</span> |
+            <span class="pr-5">Ngày tạo: {{tourDetails?.tour?.createdAt | date: 'dd-MM-yyyy'}}</span> |
+            <span class="px-5">Loại Tour: ONLINE</span> |
             <span class="px-5">Trạng thái:
+                <span [class]="tourDetails?.tour?.tourStatus === 'OPENED' ? 'bg-green-100' : 'bg-red-100'"
+                    class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full text-center">
+                    <span class="w-2 h-2 me-1 rounded-full"
+                        [class]="tourDetails?.tour?.tourStatus === 'OPENED' ? 'bg-green-500' : 'bg-red-500'"></span>
+                    {{tourDetails?.tour?.tourStatus}}
+                </span>
+            </span> |
+            <span class="px-5">
+                Điều hành:
+                @if(selectedSchedule?.operator) {
                 <span
                     class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                     <span class="w-2 h-2 me-1 bg-blue-500 rounded-full"></span>
-                    PENDING
+                    {{selectedSchedule?.operator?.fullName}}
                 </span>
-            </span> |
-            <span class="px-5">Điều hành: ONLINE</span>
+
+                } @else {
+                <span
+                    class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                    <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                    Chưa có điều hành
+                </span>
+                }
+            </span>
         </div>
     </div>
     <div class="text-right">
-        <button 
-        [routerLink]="tourDetails?.tour?.tourType === 'SIC'? ['../../list-tour-public'] : ['../../list-tour-private']"
-        class="flex items-center px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300">
+        <button
+            [routerLink]="tourDetails?.tour?.tourType === 'SIC'? ['../../list-tour-public'] : ['../../list-tour-private']"
+            class="flex items-center px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300">
             &lt; Quay lại danh sách
         </button>
     </div>
 </div>
-    
+
 
 <div class="grid grid-cols-12 bg-gray-200 h-screen gap-4">
 
@@ -46,7 +62,7 @@
                     </button>
                     <div id="default-modal" tabindex="-1" aria-hidden="true"
                         class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                        <div class="relative p-4 w-full max-w-4xl max-h-full">
+                        <div class="relative p-4 w-full max-w-5xl max-h-full">
                             <!-- Modal content -->
                             <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
                                 <!-- Modal header -->
@@ -68,7 +84,7 @@
                                 </div>
                                 <!-- Modal body -->
                                 <div id="salesman-calendar" class="p-4">
-                                    <div class="max-h-[80rem] w-full flex items-stretch gap-8">
+                                    <div class="h-full w-full flex items-stretch gap-8">
                                         <div
                                             class="max-h-[80rem] w-[15%] flex flex-col justify-start items-center shadow-md rounded-lg overflow-y-auto relative flex-grow pb-8">
                                             <div
@@ -86,12 +102,12 @@
                                             </div>
                                         </div>
                                         <div
-                                            class="public w-[85%] p-8 px-12 bg-white shadow-md rounded-lg overflow-hidden">
-                                            @if(!isLoading) {
-                                            <full-calendar *ngIf="loadCalendar" class="min-h-full" #calendar
-                                                [options]="calendarOptions"></full-calendar>
-
-                                            }
+                                            class="public w-[95%] min-h-[120rem]! bg-white p-4 rounded-lg overflow-hidden">
+                                                @if(!isLoading) {
+                                                    <full-calendar *ngIf="loadCalendar" class="min-h-full" #calendar
+                                                        [options]="calendarOptions"></full-calendar>
+        
+                                                    }
                                         </div>
                                     </div>
 
@@ -143,7 +159,7 @@
                             <tr class="border-t">
                                 <td class="p-2">{{booking.bookingCode}}</td>
                                 <td class="p-2">{{customer.fullName}}</td>
-                                <td class="p-2">{{booking.customers.length}}</td>
+                                <td class="p-2">{{booking.customers.length - 1}}</td>
                                 <td class="p-2">{{booking.total}} VND</td>
                                 <td class="p-2" [innerText]="(booking.total - booking.paid) + ' VND'"></td>
                                 <td class="p-2">
@@ -182,9 +198,9 @@
     </div>
 
 
-    <div class="col-span-3 flex flex-col gap-4  p-4">
+    <div class="col-span-3 flex flex-col gap-4  py-4">
         <div class="bg-white p-4">
-            <h2 class="text-2xl text-gray-500 font-semibold mb-5 border-b pb-4 px-1.5">Thông tin chung</h2>
+            <h2 class="text-xl text-gray-500 font-semibold mb-5 border-b pb-4 px-1.5">Thông tin chung</h2>
             <table class="w-full border-collapse mx-auto my-0">
                 <tbody class="space-y-4">
                     <tr class="pb-4">
@@ -222,26 +238,36 @@
                         </td>
                     </tr>
 
-                    <tr class="pb-4 border-b">
-                        <td class="p-2 font-semibold">Điểm đến</td>
+                    <tr class="pb-4">
+                        <td class="p-2 font-semibold">Điểm xuất phát</td>
                         <td class="p-2">
                             {{tourDetails?.tour?.departLocation.name}}
                         </td>
                     </tr>
-                    
-                    <tr class="pb-4">
-                        <td class="p-2 font-semibold">Tổng số đặt chỗ</td>
-                        <td class="p-2" [innerText]="tourDetails?.bookings?.length">
 
-                        </td>
-                    </tr>
-                    <tr class="pb-4">
-                        <td class="p-2 font-semibold">Ngày tạo</td>
+                    <tr class="pb-4 border-b">
+                        <td class="p-2 font-semibold">Điểm đến</td>
                         <td class="p-2">
-                            {{tourDetails?.tour?.createdAt | date: 'dd-MM-yyyy'}}
+                            <div class="flex flex-wrap">
+                                @for( location of tourDetails?.tour?.locations; track $index) {
+                                    <span>{{location.name}}</span>
+
+                                    @if($index !== tourDetails?.tour?.locations?.length - 1) {
+                                        ,&nbsp;
+                                    }
+                                }
+                            </div>
+                            
                         </td>
                     </tr>
-                    
+
+                    <tr class="pb-4">
+                        <td class="p-2 font-semibold">Ngày hoàn thành</td>
+                        <td class="p-2">
+                            --:--:-- --:--
+                        </td>
+                    </tr>
+
                 </tbody>
             </table>
         </div>
@@ -249,31 +275,32 @@
 
 
         <div class="bg-white p-4">
-            <h2 class="text-3xl font-semibold text-center mb-5 mt-5">Tình trạng chỗ</h2>
+            <h2 class="text-xl font-semibold text-left mb-5 border-b pb-5 text-gray-500">Tình trạng chỗ</h2>
             <table class="w-80 border-collapse mx-auto my-0">
                 <tbody class="space-y-4">
-                    <tr class="pb-4">
-                        <td class="p-2 w-full" colspan="2">
-                            <img [src]="selectedSchedule?.operator?.avatarImage" class="w-40 h-40 m-auto" alt="">
-                        </td>
 
-                    </tr>
                     <tr class="pb-4">
-                        <td class="p-2 font-semibold">Họ và tên: </td>
+                        <td class="p-2 font-semibold">Tổng số chỗ: </td>
                         <td class="p-2">
-                            {{selectedSchedule?.operator?.fullName}}
+                            {{selectedSchedule?.tourPax?.maxPax}}
                         </td>
                     </tr>
-                    <tr class="pb-4">
-                        <td class="p-2 font-semibold">Email:</td>
+                    <tr class="pb-4 text-blue-700 font-semibold">
+                        <td class="p-2 font-semibold">Đã bán:</td>
                         <td class="p-2">
-                            {{selectedSchedule?.operator?.email}}
+                            {{bookedSeats}}
                         </td>
                     </tr>
-                    <tr class="pb-4">
-                        <td class="p-2 font-semibold">Điện Thoại</td>
+                    <tr class="pb-4 text-green-700 font-semibold">
+                        <td class="p-2 font-semibold">Còn lại:</td>
                         <td class="p-2">
-                            {{selectedSchedule?.operator?.phone}}
+                            {{selectedSchedule?.tourPax?.maxPax - bookedSeats}}
+                        </td>
+                    </tr>
+                    <tr class="pb-4 text-red-700 font-semibold">
+                        <td class="p-2 ">Đang xử lí: (24h)</td>
+                        <td class="p-2 ">
+                            {{pendingSeats}}
                         </td>
                     </tr>
                 </tbody>
