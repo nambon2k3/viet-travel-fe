@@ -12,7 +12,6 @@ import { AdminFooterComponent } from "../../../shared/components/admin-footer/ad
     RouterOutlet,
     AdminSidebarComponent,
     AdminHeaderComponent,
-    AdminFooterComponent
 ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css'

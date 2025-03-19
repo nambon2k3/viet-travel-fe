@@ -3,13 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { RouterLink } from '@angular/router';
+import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-menu',
   imports: [
     CommonModule,
     AngularSvgIconModule,
-    RouterLink
   ],
   templateUrl: './profile-menu.component.html',
   styleUrl: './profile-menu.component.css',
@@ -38,29 +39,26 @@ import { RouterLink } from '@angular/router';
 })
 export class ProfileMenuComponent implements OnInit {
   public isOpen = false;
-  public profileMenu = [
-    {
-      title: 'Your Profile',
-      icon: './assets/icons/heroicons/outline/user-circle.svg',
-      link: '/profile',
-    },
-    {
-      title: 'Settings',
-      icon: './assets/icons/heroicons/outline/cog.svg',
-      link: '/settings',
-    },
-    {
-      title: 'Log out',
-      icon: './assets/icons/heroicons/outline/logout.svg',
-      link: '/auth',
-    },
-  ];
+  public isLoggedIn = true;
+  userRole: string [] = [];
+  user: any;
 
-  constructor() {}
+  constructor(
+    private userStorageService: UserStorageService,
+    private router : Router
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.user = this.userStorageService.getUser();
+  }
 
   public toggleMenu(): void {
     this.isOpen = !this.isOpen;
   }
+
+  onLogout() {
+      UserStorageService.signOut(this.userStorageService);
+      this.isLoggedIn = false;
+      this.router.navigate(['/homepage']);
+    }
 }

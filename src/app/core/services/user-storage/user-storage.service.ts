@@ -101,7 +101,7 @@ export class UserStorageService {
 
   public getUserRole(): string {
     const user = this.getUser();
-    return user?.role || '';
+    return user?.roles || '';
   }
 
   static signOut(userStorageService: UserStorageService): void {

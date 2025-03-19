@@ -22,6 +22,17 @@ export class TourOperationLayoutComponent {
     this.route.queryParams.subscribe(params => {
       this.tourId = params['id'] ? Number(params['id']) : null;
     });
+
+    this.tourService.getTourById(this.tourId).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.tourId = response.data.id;
+        }
+      },
+      error: (error) => {
+        console.error('Failed to get tour:', error);
+      }
+    });
   }
 
   backToList() {

@@ -8,6 +8,7 @@ import { TourOperationLayoutComponent } from "./tour-operation-layout/tour-opera
 import { TourOperationComponent } from "./tour-operation.component";
 import { PostReceiptComponent } from "./transaction/post-receipt/post-receipt.component";
 import { TransactionComponent } from "./transaction/transaction.component";
+import { ServiceDetailComponent } from "./service/service-detail/service-detail.component";
 
 export const TOUR_OPERATION_ROUTES: Route[] = [
   {
@@ -32,7 +33,7 @@ export const TOUR_OPERATION_ROUTES: Route[] = [
           component: ListBookingComponent
         },
         {
-          path: 'service',
+          path: 'list-service',
           component: ServiceComponent
         },
         {
@@ -49,10 +50,10 @@ export const TOUR_OPERATION_ROUTES: Route[] = [
         },
       ]
     },
-    // {
-    //   path: 'service/:id',
-    //   component: ServiceDetailComponent
-    // },
+    {
+      path: 'service/:id',
+      component: ServiceDetailComponent
+    },
     {
       path: 'create-receipt',
       component: PostReceiptComponent

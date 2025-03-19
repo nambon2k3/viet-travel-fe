@@ -32,7 +32,7 @@ export class TourService {
     return this.http.get(`${environment.apiUrl}operator/list-tour`, { params });
   }
 
-  getTourById(id: number): Observable<any> {
+  getTourById(id: number | null): Observable<any> {
     return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}`);
   }
 
@@ -70,5 +70,9 @@ export class TourService {
 
   deleteLog(id: number): Observable<any> {
     return this.http.delete(`${environment.apiUrl}operator/tour-detail/operation-log/change-status/${id}`);
+  }
+
+  getServices(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-service`);
   }
 }

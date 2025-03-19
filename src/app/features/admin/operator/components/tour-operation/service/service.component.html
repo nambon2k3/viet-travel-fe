@@ -1,3 +1,7 @@
+<button data-modal-target="tourGuidePayModal"></button>
+<button data-modal-target="orderModal"></button>
+
+<button data-dropdown-toggle="textSizeDropdown"></button>
 <div class="mt-6 p-6 bg-white rounded-md shadow-md">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Danh sách dịch vụ</h2>
@@ -28,9 +32,9 @@
                     <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.type }}</td>
                     <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.bookingId }}</td>
                     <td class="p-2" (click)="openServiceDetail(service.id)">
-                        <span [class]="getStatusClass(service.status)">{{ service.date }}</span>
+                        <span [class]="getStatusClass(service.status)">{{ service.date | formatDate}}</span>
                     </td>
-                    <td class="p-2" (click)="openServiceDetail(service.id)">{{ service.quantity }}</td>
+                    <td class="p-2" (click)="openServiceDetail(service.id)">{{ service.quantity }} slots</td>
                     <td class="p-2 relative">
                         <button id="dropdownOrderButton-{{ service.id }}"
                             class="cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1"
@@ -92,9 +96,9 @@
 
     <div class="mt-6 bg-gray-300 h-24 p-4 rounded-md grid grid-cols-4 place-items-center text-center">
         <span><strong>Dịch vụ </strong> <br> {{ totalService }}</span>
-        <span><strong>Đã thanh toán </strong> <br> {{ paid }}</span>
-        <span><strong>Còn lại </strong> <br> {{ remain }}</span>
-        <span><strong>Tổng chi phí </strong><br> {{ totalCost }}</span>
+        <span><strong>Đã thanh toán </strong> <br> {{ paid | currencyVnd }}</span>
+        <span><strong>Còn lại </strong> <br> {{ remain | currencyVnd }}</span>
+        <span><strong>Tổng chi phí </strong><br> {{ totalCost | currencyVnd }}</span>
     </div>
 
     <div class="mt-6 bg-gray-100 w-fit p-4 rounded-md">
