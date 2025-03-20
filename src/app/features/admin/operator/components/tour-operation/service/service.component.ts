@@ -61,7 +61,7 @@ export class ServiceComponent implements AfterViewInit {
             id: service.serviceId,
             name: service.serviceName,
             type: service.serviceCategory,
-            bookingId: service.bookingId,
+            bookingId: service.bookingCode,
             date: service.usingDate,
             quantity: service.requestQuantity,
             order: service.bookingStatus,

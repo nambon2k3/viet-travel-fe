@@ -1,8 +1,8 @@
 <button data-modal-target="tourGuidePayModal"></button>
 <button data-modal-target="orderModal"></button>
-
 <button data-dropdown-toggle="textSizeDropdown"></button>
-<div class="mt-6 p-6 bg-white rounded-md shadow-md">
+
+<div class="p-6 bg-white rounded-md shadow-md">
     <div class="flex justify-between items-center mb-4">
         <h2 class="text-lg font-semibold">Danh sách dịch vụ</h2>
         <button data-modal-target="chooseServiceModal" data-modal-toggle="chooseServiceModal"
@@ -16,8 +16,8 @@
                 <tr>
                     <th class="p-2">STT</th>
                     <th class="p-2">Tên dịch vụ</th>
-                    <th class="p-2">Loại</th>
-                    <th class="p-2">Mã đặt chỗ</th>
+                    <th class="p-2">Loại booking</th>
+                    <th class="p-2">Mã booking</th>
                     <th class="p-2">Ngày</th>
                     <th class="p-2">Số lượng</th>
                     <th class="p-2">Đơn hàng</th>
@@ -25,9 +25,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let service of services"
+                <tr *ngFor="let service of services, let i = index"
                     class="border-b cursor-pointer hover:font-bold hover:text-green-700">
-                    <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.id }}</td>
+                    <td (click)="openServiceDetail(service.id)" class="p-2">{{ i + 1 }}</td>
                     <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.name }}</td>
                     <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.type }}</td>
                     <td (click)="openServiceDetail(service.id)" class="p-2">{{ service.bookingId }}</td>

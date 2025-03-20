@@ -29,6 +29,7 @@
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",
+    "@ng-select/ng-select": "^14.2.4",
     "@tiptap/core": "^2.11.5",
     "@tiptap/extension-color": "^2.11.5",
     "@tiptap/extension-font-family": "^2.11.5",

@@ -1,3 +1,5 @@
+import { GeoPosition } from "./homepage.model";
+
 export interface ApiResponse<T> {
     code: number;
     message: string;
@@ -15,11 +17,12 @@ export interface ApiResponse<T> {
     name: string;
   }
   
-  export interface Location {
+  export interface Locations {
     id: number;
     name: string;
     description: string;
     image: string;
+    geoPosition: GeoPosition;
   }
   
   export interface TourImage {
@@ -33,15 +36,21 @@ export interface ApiResponse<T> {
     numberDays: number;
     numberNight: number;
     tags: Tag[];
-    departLocation: Location;
+    departLocation: Locations;
     tourImages: TourImage[];
     priceFrom: number;
   }
   
-  export interface TourListResponse {
+  export interface Items {
     page: number;
     size: number;
     total: number;
     items: Tour[];
+  }
+
+  
+  export interface TourListResponse {
+    locations : Locations[];
+    tours: Items;
   }
   

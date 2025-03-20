@@ -1,4 +1,4 @@
-<div class="w-full">
+<div class="w-full bg-white p-4 rounded-md">
     <h2 class="text-lg font-bold mb-3">Thay đổi dịch vụ</h2>
     <input type="text" [(ngModel)]="searchTerm" placeholder="Tìm kiếm dịch vụ..." class="border p-2 mb-4 w-full" />
 
@@ -15,7 +15,7 @@
                 <tr *ngFor="let service of filteredServices; let i = index"
                     [class.bg-blue-200]="i === selectedServiceIndex" (click)="addService(service); selectService(i)"
                     class="border-t cursor-pointer">
-                    <td>{{ service.name }}</td>
+                    <td class="pl-4">{{ service.name }}</td>
                     <td>{{ service.type }}</td>
                     <td>
                         <button class="text-xl" [ngClass]="{

@@ -17,7 +17,8 @@ export class TourService {
     budgetFrom?: number,
     budgetTo?: number,
     duration?: number,
-    fromDate?: Date
+    fromDate?: Date,
+    departLocationId?: number
   ): Observable<ApiResponse<TourListResponse>> {
     let params = new HttpParams()
       .set('page', page.toString())
@@ -28,6 +29,7 @@ export class TourService {
     if (budgetTo !== undefined) params = params.set('budgetTo', budgetTo.toString());
     if (duration !== undefined) params = params.set('duration', duration.toString());
     if (fromDate) params = params.set('fromDate', fromDate.toISOString().split('T')[0]);
+    if (departLocationId) params = params.set('departLocationId', departLocationId);
 
     return this.http.get<ApiResponse<TourListResponse>>(`${environment.apiUrl}public/list-tour`, { params });
   }

@@ -16,7 +16,7 @@
       <ng-container *ngFor="let group of listCustomers">
         <tr class="bg-gray-100">
           <td colspan="8" class="text-left font-semibold p-2">
-            Mã đặt chỗ: {{ group.tourBookingId }} | Loại đặt chỗ: {{ group.tourBookingCategory }}
+            Mã booking: {{ group.tourBookingId }} | Loại booking: {{ group.tourBookingCategory || 'TRỰC TIẾP' }} 
           </td>
         </tr>
         <tr *ngFor="let customer of group.listCustomer" class="border border-gray-300">
