@@ -1,4 +1,5 @@
 import { GeoPosition } from "./homepage.model";
+import { Locations } from "./location.model";
 
 export interface ApiResponse<T> {
     code: number;
@@ -15,14 +16,6 @@ export interface ApiResponse<T> {
   export interface Tag {
     id: number;
     name: string;
-  }
-  
-  export interface Locations {
-    id: number;
-    name: string;
-    description: string;
-    image: string;
-    geoPosition: GeoPosition;
   }
   
   export interface TourImage {
