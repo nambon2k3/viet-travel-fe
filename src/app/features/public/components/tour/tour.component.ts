@@ -13,7 +13,7 @@ import { Locations } from '../../../../core/models/location.model';
 @Component({
   selector: 'app-tour',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyVndPipe, FooterComponent, NgSelectModule], // Đảm bảo thêm NgSelectModule
+  imports: [CommonModule, FormsModule, CurrencyVndPipe, FooterComponent, NgSelectModule],
   templateUrl: './tour.component.html',
   styleUrl: './tour.component.css'
 })
@@ -22,7 +22,7 @@ export class TourComponent implements OnInit {
   locations = signal<Locations[]>([]);
   totalItems = 0;
   size = 10;
-  keyword = '';
+  keyword : any = null;
   currentPage: number = 0;
   totalPages: number = 0;
   private map: any;
@@ -33,7 +33,7 @@ export class TourComponent implements OnInit {
   minPercent = 0;
   maxPercent = 100;
   duration = 0;
-  departLocationId = 0;
+  departLocationId : any = null;
   sortBy = '';
   fromDate = new Date('2021-01-01');
 
@@ -44,7 +44,7 @@ export class TourComponent implements OnInit {
     private tourService: TourService,
     private ssrService: SsrService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getTours();
@@ -53,6 +53,11 @@ export class TourComponent implements OnInit {
   getDestinationName(): string {
     const selectedLocation = this.locations().find(loc => loc.id === Number(this.keyword));
     return selectedLocation?.name || '';
+  }
+
+  getDestinationDescription(): string {
+    const selectedLocation = this.locations().find(loc => loc.id === Number(this.keyword));
+    return selectedLocation?.description || '';
   }
 
   getDepartLocationName(): string {
@@ -79,7 +84,9 @@ export class TourComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
+          console.log('Tours:', response.data);
           this.tours.set(response.data.tours.items);
+          this.locations.set(response.data.locations);
           this.totalItems = response.data.tours.total;
           this.currentPage = response.data.tours.page;
           this.size = response.data.tours.size;
@@ -170,7 +177,6 @@ export class TourComponent implements OnInit {
     }
     this.minPercent = (this.minPrice / 200000000) * 100;
     this.maxPercent = (this.maxPrice / 200000000) * 100;
-    this.applyFilters();
   }
 
   ngAfterViewInit(): void {
