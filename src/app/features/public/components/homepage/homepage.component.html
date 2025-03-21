@@ -75,6 +75,9 @@
                     <i class="fas fa-clock text-yellow-500 mr-1"></i> Thời lượng: {{ tour.numberDays }}N{{
                     tour.numberNight }}Đ
                 </p>
+                <span *ngFor="let tag of tour.tags" class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1">
+                    {{ tag.name }}
+                </span>
                 <div class="border-t flex justify-between items-center mt-4 pt-4">
                     <p class="text-red-600 font-bold text-xl">{{ tour.priceFrom | currencyVnd }}</p>
                     <button

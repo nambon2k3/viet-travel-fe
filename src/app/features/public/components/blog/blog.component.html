@@ -70,7 +70,7 @@
         Những điểm đến, trải nghiệm thú vị nhất, những viên ngọc ẩn và những địa điểm yêu thích của du khách để khám phá ngay bây giờ.
     </p>
     <div class="max-w-[1280px] mx-auto flex flex-wrap gap-4">
-        <div class="bg-gray-300 cursor-pointer rounded-lg h-[350px] flex-1 mt-32 min-w-[300px] flex items-center justify-center text-white font-bold relative"
+        <div class="bg-gray-300 cursor-pointer rounded-lg h-[350px] flex-1 mt-32 max-w-[350px] flex items-center justify-center text-white font-bold relative"
             *ngIf="adventureBlogs[0]" [style.backgroundImage]="'url(' + adventureBlogs[0].thumbnailImageUrl + ')'"
             (click)="openBlogDetail(adventureBlogs[0].id)" style="background-size: cover; background-position: center;">
             <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
@@ -78,7 +78,7 @@
         </div>
 
         <div class="flex flex-col gap-4">
-            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] min-w-[300px] flex items-center justify-center text-white font-bold relative"
+            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] max-w-[320px] flex items-center justify-center text-white font-bold relative"
                 *ngIf="adventureBlogs[1]" [style.backgroundImage]="'url(' + adventureBlogs[1].thumbnailImageUrl + ')'"
                 style="background-size: cover; background-position: center;"
                 (click)="openBlogDetail(adventureBlogs[1].id)">
@@ -86,7 +86,7 @@
                 <span class="relative">{{ adventureBlogs[1].title }}</span>
             </div>
 
-            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] min-w-[300px] flex items-center justify-center text-white font-bold relative"
+            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] max-w-[320px] flex items-center justify-center text-white font-bold relative"
                 *ngIf="adventureBlogs[2]" [style.backgroundImage]="'url(' + adventureBlogs[2].thumbnailImageUrl + ')'"
                 style="background-size: cover; background-position: center;"
                 (click)="openBlogDetail(adventureBlogs[2].id)">
@@ -96,7 +96,7 @@
         </div>
 
         <div class="flex flex-col gap-4">
-            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] min-w-[300px] flex items-center justify-center text-white font-bold relative"
+            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] max-w-[320px] flex items-center justify-center text-white font-bold relative"
                 *ngIf="adventureBlogs[3]" [style.backgroundImage]="'url(' + adventureBlogs[3].thumbnailImageUrl + ')'"
                 style="background-size: cover; background-position: center;"
                 (click)="openBlogDetail(adventureBlogs[3].id)">
@@ -104,7 +104,7 @@
                 <span class="relative">{{ adventureBlogs[3].title }}</span>
             </div>
 
-            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] min-w-[300px] flex items-center justify-center text-white font-bold relative"
+            <div class="bg-gray-300 cursor-pointer rounded-lg h-[300px] max-w-[320px] flex items-center justify-center text-white font-bold relative"
                 *ngIf="adventureBlogs[4]" [style.backgroundImage]="'url(' + adventureBlogs[4].thumbnailImageUrl + ')'"
                 style="background-size: cover; background-position: center;"
                 (click)="openBlogDetail(adventureBlogs[4].id)">
@@ -113,7 +113,7 @@
             </div>
         </div>
 
-        <div class="bg-gray-300 cursor-pointer rounded-lg h-[350px] flex-1 min-w-[300px] mt-32 flex items-center justify-center text-white font-bold relative"
+        <div class="bg-gray-300 cursor-pointer rounded-lg h-[350px] flex-1 max-w-[320px] mt-32 flex items-center justify-center text-white font-bold relative"
             *ngIf="adventureBlogs[5]" [style.backgroundImage]="'url(' + adventureBlogs[5].thumbnailImageUrl + ')'"
             style="background-size: cover; background-position: center;" (click)="openBlogDetail(adventureBlogs[5].id)">
             <div class="absolute inset-0 bg-black bg-opacity-50 rounded-lg"></div>
