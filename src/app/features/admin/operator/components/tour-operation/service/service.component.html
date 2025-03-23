@@ -1,6 +1,5 @@
 <button data-modal-target="tourGuidePayModal"></button>
 <button data-modal-target="orderModal"></button>
-<button data-dropdown-toggle="textSizeDropdown"></button>
 
 <div class="p-6 bg-white rounded-md shadow-md">
     <div class="flex justify-between items-center mb-4">
@@ -16,12 +15,13 @@
                 <tr>
                     <th class="p-2">STT</th>
                     <th class="p-2">Tên dịch vụ</th>
-                    <th class="p-2">Loại booking</th>
+                    <th class="p-2">Loại dịch vụ</th>
                     <th class="p-2">Mã booking</th>
                     <th class="p-2">Ngày</th>
                     <th class="p-2">Số lượng</th>
                     <th class="p-2">Đơn hàng</th>
                     <th class="p-2">Thanh toán</th>
+                    <th class="p-2">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,16 +46,14 @@
                             class="z-10 hidden absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-36 dark:bg-white">
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                                 <li>
-                                    <button data-modal-target="orderModal" data-modal-toggle="orderModal"
-                                        class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-1"
-                                        (click)="changeOrderStatus(service, 'Waiting For Accept')">
+                                    <button (click)="openOrderModal(service)"
+                                        class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-1">
                                         Đặt hàng
                                     </button>
                                 </li>
                                 <li>
-                                    <button
-                                        class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-3"
-                                        (click)="changeOrderStatus(service, 'Cancel Order')">
+                                    <button (click)="changeOrderStatus(service, 'Cancel Order')"
+                                        class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-3">
                                         Hủy đơn hàng
                                     </button>
                                 </li>
@@ -74,20 +72,23 @@
                             class="z-10 hidden absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-36 dark:bg-white">
                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
                                 <li>
-                                    <button data-modal-target="tourGuidePayModal" data-modal-toggle="tourGuidePayModal"
+                                    <button (click)="openTourGuidePayModal(service)"
                                         class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-1">
-                                        Hướng dẫn viên thanh toán 
+                                        Hướng dẫn viên thanh toán
                                     </button>
                                 </li>
                                 <li>
                                     <button
-                                        class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-3"
-                                        (click)="changePaymentStatus(service, 'Paid')">
+                                        class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-3">
                                         Thanh toán
                                     </button>
                                 </li>
                             </ul>
                         </div>
+                    </td>
+                    <td class="p-2">
+                        <button class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md"
+                            (click)="deleteService(service.id)">Xóa</button>
                     </td>
                 </tr>
             </tbody>
@@ -96,9 +97,9 @@
 
     <div class="mt-6 bg-gray-300 h-24 p-4 rounded-md grid grid-cols-4 place-items-center text-center">
         <span><strong>Dịch vụ </strong> <br> {{ totalService }}</span>
-        <span><strong>Đã thanh toán </strong> <br> {{ paid | currencyVnd }}</span>
+        <span><strong>Đã thanh toán </strong> <br> {{ totalService | currencyVnd }}</span>
         <span><strong>Còn lại </strong> <br> {{ remain | currencyVnd }}</span>
-        <span><strong>Tổng chi phí </strong><br> {{ totalCost | currencyVnd }}</span>
+        <span><strong>Tổng chi phí </strong><br> {{ totalService | currencyVnd }}</span>
     </div>
 
     <div class="mt-6 bg-gray-100 w-fit p-4 rounded-md">
@@ -116,5 +117,5 @@
 </div>
 
 <app-post-service #chooseServiceModal></app-post-service>
-<app-tour-guide-pay #tourGuidePayModal></app-tour-guide-pay>
+<app-tour-guide-pay [tourGuide]="tourGuide" #tourGuidePayModal></app-tour-guide-pay>
 <app-order-service [selectedService]="selectedService" #orderModal></app-order-service>
