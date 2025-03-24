@@ -75,4 +75,12 @@ export class TourService {
   getServices(id: number): Observable<any> {
     return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-service`);
   }
+
+  deleteService(id: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}operator/tour-detail/service/change-status/${id}`);
+  }
+
+  sendOrder(formData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/operator/send-mail-to-provider`, formData)
+  }
 }

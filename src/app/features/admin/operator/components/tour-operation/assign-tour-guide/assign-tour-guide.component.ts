@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AssignTourGuideComponent implements OnChanges {
   @Input() scheduleId!: number;
-  @Input() tour: any; // Input for tour data
+  @Input() tour: any;
   @Output() tourGuideAssigned = new EventEmitter<void>();
 
   assignForm!: FormGroup;

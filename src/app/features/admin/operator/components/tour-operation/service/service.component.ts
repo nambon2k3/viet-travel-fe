@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { SsrService } from '../../../../../../core/services/ssr.service';
-import { Modal } from 'flowbite';
 import { TourGuidePayComponent } from './tour-guide-pay/tour-guide-pay.component';
-import { PostServiceComponent } from "./post-service/post-service.component";
+import { PostServiceComponent } from './post-service/post-service.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrderServiceComponent } from "./order-service/order-service.component";
+import { OrderServiceComponent } from './order-service/order-service.component';
+import { CurrencyVndPipe } from '../../../../../../shared/pipes/currency-vnd.pipe';
+import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe';
 import { TourService } from '../../../services/tour.service';
-import { CurrencyVndPipe } from "../../../../../../shared/pipes/currency-vnd.pipe";
-import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe";
 
 @Component({
   selector: 'app-service',
@@ -21,16 +20,16 @@ import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe"
     OrderServiceComponent,
     CurrencyVndPipe,
     FormatDatePipe
-]
+  ]
 })
-export class ServiceComponent implements AfterViewInit {
+export class ServiceComponent {
   selectedService: any = null;
   services: any[] = [];
   totalService: number = 0;
   paid: number = 0;
   remain: number = 0;
   totalCost: number = 0;
-  modal: Modal | null = null;
+  tourGuide: any = null;
 
   @ViewChild('chooseServiceModal') chooseServiceModal!: PostServiceComponent;
   @ViewChild('tourGuidePayModal') tourGuidePayModal!: TourGuidePayComponent;
@@ -46,16 +45,31 @@ export class ServiceComponent implements AfterViewInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const id = params['id'];
-      console.log('id:', id);
       if (id) {
         this.fetchServices(id);
+        this.fetchTourGuide(id);
       }
     });
   }
 
-  fetchServices(id : number) {
+  fetchTourGuide(id: number) {
+    this.tourService.getTourById(id).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.tourGuide = response.data.tourGuideName;
+        } else {
+          console.error('Lỗi:', response.message);
+        }
+      },
+      error: (error: any) => {
+        console.error('Lỗi khi tải chi tiết tour:', error);
+      }
+    });
+  }
+
+  fetchServices(id: number) {
     this.tourService.getServices(id).subscribe({
-      next: (response : any) => {
+      next: (response: any) => {
         if (response.code === 200) {
           this.services = response.data.services.map((service: any) => ({
             id: service.serviceId,
@@ -72,11 +86,13 @@ export class ServiceComponent implements AfterViewInit {
           this.paid = response.data.paidAmount;
           this.remain = response.data.remainingAmount;
           this.totalCost = response.data.totalAmount;
+
+          this.inits(); // Initialize dropdowns and modals after data is fetched
         } else {
           console.error('Lỗi:', response.message);
         }
       },
-      error: (error : any) => {
+      error: (error: any) => {
         console.error('Lỗi khi tải danh sách dịch vụ:', error);
       }
     });
@@ -84,11 +100,52 @@ export class ServiceComponent implements AfterViewInit {
 
   mapStatus(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'Waiting For Accept': 'continuing',
+      'APPROVED': 'continuing', // Updated to match your CSS classes
       'Paid': 'completed',
       'Not Ordered': 'not-started'
     };
     return statusMap[status] || 'not-started';
+  }
+
+  async inits() {
+    const { Dropdown } = await import('flowbite');
+    const doc = this.ssrService.getDocument();
+
+    if (doc) {
+      this.services.forEach(service => {
+        const orderButton = doc.getElementById(`dropdownOrderButton-${service.id}`);
+        const orderDropdown = doc.getElementById(`dropdownOrder-${service.id}`);
+        if (orderButton && orderDropdown) {
+          new Dropdown(orderDropdown, orderButton);
+        } else {
+          console.error(`Order dropdown elements not found for service ${service.id}`);
+        }
+
+        const paymentButton = doc.getElementById(`dropdownPaymentButton-${service.id}`);
+        const paymentDropdown = doc.getElementById(`dropdownPayment-${service.id}`);
+        if (paymentButton && paymentDropdown) {
+          new Dropdown(paymentDropdown, paymentButton);
+        } else {
+          console.error(`Payment dropdown elements not found for service ${service.id}`);
+        }
+      });
+    }
+  }
+
+  deleteService(serviceId: number) {
+    this.tourService.deleteService(serviceId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.services = this.services.filter(service => service.id !== serviceId);
+          this.inits(); // Re-initialize after DOM changes
+        } else {
+          console.error('Lỗi:', response.message);
+        }
+      },
+      error: (error: any) => {
+        console.error('Lỗi khi xóa dịch vụ:', error);
+      }
+    });
   }
 
   changeOrderStatus(service: any, status: string) {
@@ -104,32 +161,21 @@ export class ServiceComponent implements AfterViewInit {
     this.router.navigate(['/operator/tour-operation/service', serviceId]);
   }
 
+  openOrderModal(service: any) {
+    this.selectedService = service;
+    this.orderModal.open();
+  }
+
+  openTourGuidePayModal(service: any) {
+    this.selectedService = service;
+    this.tourGuidePayModal.open();
+  }
+
   getStatusClass(status: string): string {
     return {
       'continuing': 'bg-blue-400 text-white px-2 py-1 rounded-md',
       'completed': 'bg-green-300 text-black px-2 py-1 rounded-md',
       'not-started': 'bg-gray-200 text-black px-2 py-1 rounded-md'
     }[status] || '';
-  }
-
-  async ngAfterViewInit() {
-    const { Dropdown } = await import('flowbite');
-    const doc = this.ssrService.getDocument();
-
-    if (doc) {
-      this.services.forEach(service => {
-        const orderButton = doc.getElementById(`dropdownOrderButton-${service.id}`);
-        const orderDropdown = doc.getElementById(`dropdownOrder-${service.id}`);
-        if (orderButton && orderDropdown) {
-          new Dropdown(orderDropdown, orderButton);
-        }
-
-        const paymentButton = doc.getElementById(`dropdownPaymentButton-${service.id}`);
-        const paymentDropdown = doc.getElementById(`dropdownPayment-${service.id}`);
-        if (paymentButton && paymentDropdown) {
-          new Dropdown(paymentDropdown, paymentButton);
-        }
-      });
-    }
   }
 }

@@ -6,17 +6,19 @@ import { Hotel } from '../../../../core/models/hotel.model';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../core/services/ssr.service';
 import { Router } from '@angular/router';
+import { NgSelectComponent } from '@ng-select/ng-select';
 import { Locations } from '../../../../core/models/location.model';
 
 @Component({
   selector: 'app-hotel',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyVndPipe],
+  imports: [CommonModule, FormsModule, CurrencyVndPipe, NgSelectComponent],
   templateUrl: './hotel.component.html',
   styleUrl: './hotel.component.css'
 })
 export class HotelComponent implements OnInit {
   hotels = signal<Hotel[]>([]);
+  locations = signal<Locations[]>([]);
 
   // Pagination
   totalItems = 0;
