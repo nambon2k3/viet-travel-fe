@@ -25,7 +25,6 @@ export class TourOperationComponent {
   ) { }
 
   ngOnInit(): void {
-    
     this.route.queryParams.subscribe(params => {
       this.id = params['id'];
       if (this.id) {

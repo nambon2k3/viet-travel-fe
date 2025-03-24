@@ -30,6 +30,7 @@ export class ServiceComponent {
   remain: number = 0;
   totalCost: number = 0;
   tourGuide: any = null;
+  scheduleId: number | null = null;
 
   @ViewChild('chooseServiceModal') chooseServiceModal!: PostServiceComponent;
   @ViewChild('tourGuidePayModal') tourGuidePayModal!: TourGuidePayComponent;
@@ -46,6 +47,7 @@ export class ServiceComponent {
     this.route.queryParams.subscribe(params => {
       const id = params['id'];
       if (id) {
+        this.scheduleId = id;
         this.fetchServices(id);
         this.fetchTourGuide(id);
       }
@@ -73,21 +75,22 @@ export class ServiceComponent {
         if (response.code === 200) {
           this.services = response.data.services.map((service: any) => ({
             id: service.serviceId,
+            uniqueId: `${service.serviceId}-${service.bookingId}`,
             name: service.serviceName,
-            type: service.serviceCategory,
+            type: this.mapCategory(service.serviceCategory),
             bookingId: service.bookingCode,
             date: service.usingDate,
             quantity: service.requestQuantity,
-            order: service.bookingStatus,
-            payment: service.paymentStatus,
-            status: this.mapStatus(service.bookingStatus)
+            order: this.mapOrderStatus(service.bookingStatus),
+            payment: this.mapPaymentStatus(service.paymentStatus),
+            status: this.mapOrderStatus(service.bookingStatus)
           }));
           this.totalService = response.data.totalNumOfService;
           this.paid = response.data.paidAmount;
           this.remain = response.data.remainingAmount;
           this.totalCost = response.data.totalAmount;
-
-          this.inits(); // Initialize dropdowns and modals after data is fetched
+  
+          this.inits();
         } else {
           console.error('Lỗi:', response.message);
         }
@@ -98,35 +101,70 @@ export class ServiceComponent {
     });
   }
 
-  mapStatus(status: string): string {
+  // Map booking status to Vietnamese and for display
+  mapOrderStatus(status: string): string {
     const statusMap: { [key: string]: string } = {
-      'APPROVED': 'continuing', // Updated to match your CSS classes
-      'Paid': 'completed',
-      'Not Ordered': 'not-started'
+      'APPROVED': 'Đã phê duyệt',
+      'NOT_ORDERED': 'Chưa đặt hàng',
+      'CANCEL_REQUEST': 'Bị từ chối',
+      'ADD_REQUEST': 'Chờ phê duyệt'
     };
-    return statusMap[status] || 'not-started';
+    return statusMap[status] || 'Chưa đặt hàng';
+  }
+
+  mapCategory(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      'Hotel': 'Khách sạn',
+      'Restaurant': 'Nhà hàng',
+      'Transport': 'Phương tiện'
+    };
+    return statusMap[status] || 'Nhà hàng';
+  }
+
+  // Map payment status to Vietnamese
+  mapPaymentStatus(status: string): string {
+    const paymentStatusMap: { [key: string]: string } = {
+      'UNPAID': 'Chưa thanh toán',
+      'PAID': 'Đã thanh toán',
+      'PARTIALLY_PAID': 'Thanh toán một phần'
+    };
+    return paymentStatusMap[status] || 'Chưa thanh toán';
+  }
+
+  // Map status to colors for both order and payment
+  getStatusColor(status: string): string {
+    const colorMap: { [key: string]: string } = {
+      'Đã phê duyệt': 'bg-green-500/20 text-green-800',
+      'Chưa đặt hàng': 'bg-yellow-500/20 text-yellow-800',
+      'Bị từ chối': 'bg-red-500/20 text-red-800',
+      'Chờ phê duyệt': 'bg-blue-500/20 text-blue-800',
+      'Đã thanh toán': 'bg-green-500/20 text-green-800',
+      'Chưa thanh toán': 'bg-yellow-500/20 text-yellow-800',
+      'Thanh toán một phần': 'bg-orange-500/20 text-orange-800'
+    };
+    return colorMap[status] || 'bg-gray-500/20 text-gray-800';
   }
 
   async inits() {
     const { Dropdown } = await import('flowbite');
     const doc = this.ssrService.getDocument();
-
+  
     if (doc) {
       this.services.forEach(service => {
-        const orderButton = doc.getElementById(`dropdownOrderButton-${service.id}`);
-        const orderDropdown = doc.getElementById(`dropdownOrder-${service.id}`);
+        const orderButton = doc.getElementById(`dropdownOrderButton-${service.uniqueId}`);
+        const orderDropdown = doc.getElementById(`dropdownOrder-${service.uniqueId}`);
         if (orderButton && orderDropdown) {
           new Dropdown(orderDropdown, orderButton);
         } else {
-          console.error(`Order dropdown elements not found for service ${service.id}`);
+          console.error(`Order dropdown elements not found for service ${service.uniqueId}`);
         }
-
-        const paymentButton = doc.getElementById(`dropdownPaymentButton-${service.id}`);
-        const paymentDropdown = doc.getElementById(`dropdownPayment-${service.id}`);
+  
+        const paymentButton = doc.getElementById(`dropdownPaymentButton-${service.uniqueId}`);
+        const paymentDropdown = doc.getElementById(`dropdownPayment-${service.uniqueId}`);
         if (paymentButton && paymentDropdown) {
           new Dropdown(paymentDropdown, paymentButton);
         } else {
-          console.error(`Payment dropdown elements not found for service ${service.id}`);
+          console.error(`Payment dropdown elements not found for service ${service.uniqueId}`);
         }
       });
     }
@@ -150,11 +188,11 @@ export class ServiceComponent {
 
   changeOrderStatus(service: any, status: string) {
     this.selectedService = service;
-    service.order = status;
+    service.order = this.mapOrderStatus(status); // Update to Vietnamese
   }
 
   changePaymentStatus(service: any, status: string) {
-    service.payment = status;
+    service.payment = this.mapPaymentStatus(status); // Update to Vietnamese
   }
 
   openServiceDetail(serviceId: number) {
@@ -169,13 +207,5 @@ export class ServiceComponent {
   openTourGuidePayModal(service: any) {
     this.selectedService = service;
     this.tourGuidePayModal.open();
-  }
-
-  getStatusClass(status: string): string {
-    return {
-      'continuing': 'bg-blue-400 text-white px-2 py-1 rounded-md',
-      'completed': 'bg-green-300 text-black px-2 py-1 rounded-md',
-      'not-started': 'bg-gray-200 text-black px-2 py-1 rounded-md'
-    }[status] || '';
   }
 }

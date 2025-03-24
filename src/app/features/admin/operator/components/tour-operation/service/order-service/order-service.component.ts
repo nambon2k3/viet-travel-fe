@@ -4,6 +4,7 @@ import { TourService } from '../../../../services/tour.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Modal } from 'flowbite';
+import { SsrService } from '../../../../../../../core/services/ssr.service';
 
 @Component({
   selector: 'app-order-service',
@@ -22,12 +23,18 @@ export class OrderServiceComponent implements AfterViewInit {
   content: string = '';
   private modal: Modal | null = null;
 
-  constructor(private tourService: TourService) {}
+  constructor(
+    private tourService: TourService,
+    private ssrService: SsrService
+  ) { }
 
   ngAfterViewInit() {
-    const modalElement = document.getElementById('orderModal');
-    if (modalElement) {
-      this.modal = new Modal(modalElement);
+    const document = this.ssrService.getDocument();
+    if (document) {
+      const modalElement = document.getElementById('orderModal');
+      if (modalElement) {
+        this.modal = new Modal(modalElement);
+      }
     }
   }
 

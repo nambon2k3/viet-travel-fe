@@ -22,6 +22,7 @@ export class TransactionComponent {
   @ViewChild('paymentModal') paymentModal!: PostAdvancePaymentComponent;
   listTransactions: any[] = [];
   id: number = 0;
+  status: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -43,6 +44,9 @@ export class TransactionComponent {
       next: (response: any) => {
         if (response.code === 200) {
           this.listTransactions = response.data;
+          this.listTransactions = response.data.map((service: any) => ({
+            status: this.mapPaymentStatus(service.bookingStatus)
+          }));
         } else {
           console.error('Lỗi:', response.message);
         }
@@ -51,6 +55,15 @@ export class TransactionComponent {
         console.error('Lỗi khi tải danh sách transaction:', error.message);
       }
     });
+  }
+  
+  mapPaymentStatus(status: string): string {
+    const paymentStatusMap: { [key: string]: string } = {
+      'UNPAID': 'Chưa thanh toán',
+      'PAID': 'Đã thanh toán',
+      'PARTIALLY_PAID': 'Thanh toán một phần'
+    };
+    return paymentStatusMap[status] || 'Chưa thanh toán';
   }
 
   openPostReceipt(): void {

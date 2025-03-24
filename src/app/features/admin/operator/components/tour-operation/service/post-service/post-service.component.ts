@@ -1,35 +1,47 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { Modal } from 'flowbite';
 import { SsrService } from '../../../../../../../core/services/ssr.service';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from "../../../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { TourService } from '../../../../services/tour.service';
 
 @Component({
   selector: 'app-post-service',
   standalone: true,
-  imports: [FormsModule, CommonModule, CurrencyVndPipe],
+  imports: [FormsModule, CommonModule, CurrencyVndPipe, NgSelectModule],
   templateUrl: './post-service.component.html',
-  styleUrl: './post-service.component.css'
+  styleUrls: ['./post-service.component.css']
 })
 export class PostServiceComponent {
+  @Output() serviceAdded = new EventEmitter<any[]>();
+  @Input() scheduleId: number | null = null;
   modal: Modal | null = null;
-  services = [
-    { name: 'Peridot Grand Luxury Boutique Hotel', type: 'Hotel', unitPrice: 5000000 },
-    { name: 'Le Jardin Hotel & Spa', type: 'Restaurant', unitPrice: 3000000 },
-    { name: 'JM Marvel Hotel & Spa', type: 'Hotel', unitPrice: 4000000 }
-  ];
 
-  startDate = '2025-02-01';
-  endDate = '2025-02-01';
-  roomCount = 0;
+  locations = signal<any[]>([]);
+  categories = signal<any[]>([]);
+  providers = signal<any[]>([]);
+  services = signal<any[]>([]);
+  bookings = signal<any[]>([]);
 
-  // Track selected services
-  selectedServiceIndex: number | null = null;
-  servicePrices = [] as any[];
-  finalServiceList = [] as any[];
+  selectedLocationId: number | null = null;
+  selectedCategoryId: number | null = null;
+  selectedProviderId: number | null = null;
+  selectedBookingId: number | null = null;
 
-  constructor(private ssrService: SsrService) {}
+  servicePrices: any[] = [];
+  finalServiceList: any[] = [];
+
+  constructor(
+    private ssrService: SsrService,
+    private tourService: TourService
+  ) { }
+
+  ngOnInit() {
+    this.fetchLocationsAndCategories();
+    this.fetchListBookings();
+  }
 
   ngAfterViewInit() {
     const document = this.ssrService.getDocument();
@@ -41,74 +53,223 @@ export class PostServiceComponent {
     }
   }
 
-  // Calculate total price for all services
-  getTotalPrice(): number {
-    return this.servicePrices.reduce((sum, item) => sum + item.unitPrice * item.quantity * item.nights, 0);
-  }
-
-  // Increment room count
-  incrementRoom() {
-    this.roomCount++;
-  }
-
-  // Decrement room count
-  decrementRoom() {
-    if (this.roomCount > 0) this.roomCount--;
-  }
-
-  // Select a service from the list
-  selectService(index: number) {
-    this.selectedServiceIndex = index;
-    const selectedService = this.servicePrices[index];
-    this.startDate = selectedService.startDate || this.startDate;
-    this.endDate = selectedService.endDate || this.endDate;
-    this.roomCount = selectedService.quantity || this.roomCount;
-  }
-
-  // Add service to the servicePrices array
-  addData(service?: any) {
-    if (!service) return; // Prevent adding undefined service
-    const nights = this.calculateNights(this.startDate, this.endDate);
-    this.servicePrices.push({
-      type: service.name,
-      unitPrice: service.unitPrice,
-      quantity: 1, // Default quantity
-      nights: nights,
-      startDate: this.startDate,
-      endDate: this.endDate,
+  fetchListBookings() {
+    this.tourService.getListBooking(this.scheduleId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          // Transform the data to match ng-select requirements
+          const formattedBookings = response.data.map((booking: any) => ({
+            id: booking.bookingId,
+            name: `${booking.customerName} (${booking.bookingCode || 'No Code'})`
+          }));
+          this.bookings.set(formattedBookings);
+        } else {
+          console.error('Error fetching bookings:', response.message);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching bookings:', error);
+      }
     });
   }
 
-  // Update the selected service's details
-  updateSelectedService() {
-    if (this.selectedServiceIndex !== null) {
-      const selectedService = this.servicePrices[this.selectedServiceIndex];
-      selectedService.quantity = this.roomCount;
-      selectedService.startDate = this.startDate;
-      selectedService.endDate = this.endDate;
-      selectedService.nights = this.calculateNights(this.startDate, this.endDate);
+  fetchLocationsAndCategories() {
+    this.tourService.getLocationsAndCategories().subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          const locationsArray = Object.entries(response.data.locations).map(([id, name]) => ({
+            id: Number(id),
+            name
+          }));
+          const categoriesArray = Object.entries(response.data.serviceCategories).map(([id, name]) => ({
+            id: Number(id),
+            name
+          }));
+          this.locations.set(locationsArray);
+          this.categories.set(categoriesArray);
+        } else {
+          console.error('Error fetching locations and categories:', response.message);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching locations and categories:', error);
+      }
+    });
+  }
+
+  fetchServiceProviders() {
+    if (this.selectedLocationId && this.selectedCategoryId) {
+      this.tourService.getServiceProviders(this.selectedLocationId, this.selectedCategoryId).subscribe({
+        next: (response: any) => {
+          if (response.code === 200) {
+            const providersArray = Object.entries(response.data).map(([id, name]) => ({
+              id: Number(id),
+              name
+            }));
+            this.providers.set(providersArray);
+            this.selectedProviderId = null;
+            this.services.set([]);
+          } else {
+            console.error('Error fetching providers:', response.message);
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching providers:', error);
+        }
+      });
+    } else {
+      this.providers.set([]);
+      this.services.set([]);
     }
   }
 
-  // Add all services to the final list
-  addServicesToFinalList() {
-    this.finalServiceList = [...this.servicePrices]; // Copy servicePrices to finalServiceList
-    console.log('Final Service List:', this.finalServiceList);
+  fetchServices() {
+    if (this.selectedProviderId) {
+      this.tourService.getServicesByProvider(this.selectedProviderId).subscribe({
+        next: (response: any) => {
+          if (response.code === 200) {
+            const servicesArray = Array.isArray(response.data)
+              ? response.data.map((service: any) => ({ id: service.id, name: service.name }))
+              : Object.values(response.data).map((service: any) => ({ id: service.id, name: service.name }));
+
+            this.services.set(servicesArray);
+
+            this.services().forEach(service => {
+              this.fetchServiceDetails(service.id);
+            });
+          } else {
+            console.error('Error fetching services:', response.message);
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching services:', error);
+        }
+      });
+    } else {
+      this.services.set([]);
+    }
   }
 
-  // Calculate number of nights based on start and end dates
-  calculateNights(startDate: string, endDate: string): number {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const timeDiff = end.getTime() - start.getTime();
-    return Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) || 1; // Ensure at least 1 night
+  fetchServiceDetails(serviceId: number) {
+    this.tourService.getServiceDetails(serviceId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          const updatedServices = this.services().map(service => {
+            if (service.id === serviceId) {
+              return {
+                ...service,
+                serviceId: service.id,
+                unitPrice: response.data?.sellingPrice || 0,
+                type: response.data?.serviceCategory,
+                room: response.data?.room || null,
+                meal: response.data?.meal || null
+              };
+            }
+            return service;
+          });
+          this.services.set(updatedServices);
+        } else {
+          console.error('Error fetching service details:', response.message);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching service details:', error);
+      }
+    });
   }
 
-  // Remove a service from the list
+  getTotalPrice(): number {
+    return this.servicePrices.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+  }
+
+  addData(service: any) {
+    if (!service) return;
+    this.servicePrices.push({
+      serviceId: service.id,
+      type: service.name,
+      unitPrice: service.unitPrice || 0,
+      quantity: 1,
+      requestDate: new Date().toISOString().split('T')[0]
+    });
+  }
+
+  increaseQuantity(index: number) {
+    this.servicePrices[index].quantity = Number(this.servicePrices[index].quantity) + 1;
+  }
+
+  decreaseQuantity(index: number) {
+    const currentQuantity = Number(this.servicePrices[index].quantity);
+    if (currentQuantity > 1) {
+      this.servicePrices[index].quantity = currentQuantity - 1;
+    }
+  }
+
+  updateQuantity(index: number, event: Event) {
+    const input = event.target as HTMLInputElement;
+    let newQuantity = Number(input.value);
+
+    // Ensure the quantity is at least 1
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      newQuantity = 1;
+    }
+
+    // Update the quantity in the servicePrices array
+    this.servicePrices[index].quantity = newQuantity;
+  }
+
   removeService(index: number) {
     this.servicePrices.splice(index, 1);
-    if (this.selectedServiceIndex === index) {
-      this.selectedServiceIndex = null; // Reset selected service if removed
+  }
+
+  addServicesToFinalList() {
+    if (!this.selectedBookingId) {
+      console.error('Please select a booking first');
+      return;
     }
+  
+    const payloads = this.servicePrices.map(service => {
+      if (!service.serviceId) {
+        console.error('Service ID is missing for service:', service);
+        throw new Error('Service ID cannot be null');
+      }
+      return {
+        bookingId: this.selectedBookingId,
+        serviceId: service.serviceId,
+        addQuantity: service.quantity,
+        requestDate: new Date(service.requestDate).toISOString(),
+        reason: ''
+      };
+    });
+  
+    for (const payload of payloads) {
+      console.log('Sending payload:', payload); // Log payload để kiểm tra
+      this.tourService.addServices(payload).subscribe({
+        next: (response: any) => {
+          if (response.code === 200) {
+            console.log('Service added successfully:', response);
+          } else {
+            console.error('Error adding service:', response.message);
+          }
+        },
+        error: (error) => {
+          console.error('Error adding service:', error);
+        },
+        complete: () => {
+          if (payload === payloads[payloads.length - 1]) {
+            this.serviceAdded.emit(this.servicePrices);
+            this.servicePrices = [];
+            this.selectedBookingId = null;
+          }
+        }
+      });
+    }
+  }
+
+  open() {
+    this.modal?.show();
+  }
+
+  close() {
+    this.modal?.hide();
   }
 }

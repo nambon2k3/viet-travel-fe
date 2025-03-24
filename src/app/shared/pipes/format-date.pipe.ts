@@ -14,7 +14,7 @@ export class FormatDatePipe implements PipeTransform {
 
     const options: Intl.DateTimeFormatOptions = {
       day: '2-digit',
-      month: 'short',
+      month: '2-digit',
       year: 'numeric',
     };
 

@@ -16,6 +16,7 @@
           <th class="p-2">Loại phiếu</th>
           <th class="p-2">Ngày</th>
           <th class="p-2">Giá tiền</th>
+          <th class="p-2">Trạng thái</th>
           <th class="p-2">Nội dung</th>
         </tr>
       </thead>
@@ -27,6 +28,7 @@
           <td class="p-2">{{ transaction.category === 'RECEIPT' ? 'Phiếu thu' : 'Phiếu chi' }}</td>
           <td class="p-2">{{ transaction.createdAt | formatDate }}</td>
           <td class="p-2">{{ transaction.amount }}</td>
+          <td class="p-2">{{ transaction.paymentStatus }}</td>
           <td class="p-2">{{ transaction.costAccount.content | truncate : 30 }}</td>
         </tr>
       </tbody>
