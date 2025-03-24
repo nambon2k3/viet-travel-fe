@@ -7,6 +7,7 @@ import { TourListBookingComponent } from "./components/tour-list-booking/tour-li
 import { ListTourPrivateComponent } from "./components/list-tour-private/list-tour-private.component";
 import { ListTourPublicComponent } from "./components/list-tour-public/list-tour-public.component";
 import { CreatePublicBookingComponent } from "./components/create-public-booking/create-public-booking.component";
+import { TourBookingServiceComponent } from "./components/tour-booking-service/tour-booking-service.component";
 
 export const SALESMAN_ROUTES: Route[] = [
   {
@@ -36,6 +37,10 @@ export const SALESMAN_ROUTES: Route[] = [
       {
         path: 'tour-list-booking/:tourId/:scheduleId',
         component: TourListBookingComponent
+      },
+      {
+        path: 'create-public-booking/:tourId/:scheduleId',
+        component: CreatePublicBookingComponent
       }
     ]
   },
@@ -44,7 +49,7 @@ export const SALESMAN_ROUTES: Route[] = [
     component: BookingDetailComponent
   },
   {
-    path: 'create-public-booking',
-    component: CreatePublicBookingComponent
-  },
+    path: 'tour-booking-service/:tourBookingId',
+    component: TourBookingServiceComponent
+  }
 ];

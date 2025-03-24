@@ -52,4 +52,11 @@ export class TourService {
         return this.http.get(`${environment.apiUrl}salesman/bookings/detail/${tourBookingId}`);
     }
 
+
+    getTourDetail(tourId: number, scheduleId: number) : Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/bookings/create/tour/${tourId}/${scheduleId}`);
+    }
+
+    
+
 }

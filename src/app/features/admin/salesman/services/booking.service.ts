@@ -50,5 +50,31 @@ export class BookingService {
         return this.http.post(`${environment.apiUrl}salesman/bookings/customers/update`, customerFormData);
     }
 
+    getCustomers(searchName: string): Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/bookings/create/customers`, {
+            params: { customerName: searchName }
+        });
+    }
+
+
+    createBooking(formData: any) {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/create`, formData);
+    }
+
+    getBookingService(tourBookingId: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/bookings/services/${tourBookingId}`);
+    }
+
+    updateServiceQuantity(formData: any): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/services/update-quantity`, formData);
+    }
+
+    cancelService(tourBookingId: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/services/cancel-service`, tourBookingId);
+    }
+
+    sendCheckingAvailable(tourBookingId: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/services/checking-available`, tourBookingId);
+    }
 
 }

@@ -58,12 +58,16 @@ export class BookingDetailComponent implements AfterViewInit {
     this.transactionDetailModal?.hide();
   }
 
+  selectedId : number = 0;
+  selectedIndex : number = 0;
 
   showConfirmModal(index: number): void {
     const customerGroup = this.customersFormArray.at(index);
     const id = customerGroup.get('id')?.value;
     if (id) {
       this.showWarning = true;
+      this.selectedId = id;
+      this.selectedIndex = index;
     } else {
       this.customersFormArray.removeAt(index);
     }
@@ -252,11 +256,11 @@ export class BookingDetailComponent implements AfterViewInit {
     });
 
     this.customersFormArray.controls.forEach((customerGroup) => {
-      customerGroup.get('deleted')?.valueChanges.subscribe((isDeleted) => {
-        if (isDeleted) {
-          customerGroup.disable();
-        } else {
-          customerGroup.enable();
+      customerGroup.get('deleted')?.valueChanges.subscribe((deleted) => {
+        if (deleted && customerGroup.enabled) {
+          customerGroup.disable({ emitEvent: false });
+        } else if (!deleted && customerGroup.disabled) {
+          customerGroup.enable({ emitEvent: false });
         }
       });
     });
@@ -283,25 +287,27 @@ export class BookingDetailComponent implements AfterViewInit {
   }
 
 
-  deleteCustomer(index: number): void {
-    const customerGroup = this.customersFormArray.at(index);
-    const id = customerGroup.get('id')?.value;
-    if (id) {
-      this.bookingService.updateCustomerStatus(id).subscribe({
+  deleteCustomer(): void {
+    if (this.selectedId) {
+      this.bookingService.updateCustomerStatus(this.selectedId).subscribe({
         next: (response) => {
-
-
-
-          this.customersFormArray.at(index).get('deleted')?.setValue(response.data.deleted);
-
-          console.log(response)
+          this.customersFormArray.at(this.selectedIndex).get('deleted')?.setValue(response.data.deleted);
+          this.tourCustomers = this.tourCustomers.map((customer: any) => {
+            if (customer.id === this.selectedId) {
+              return {
+                ...customer,
+                deleted: response.data.deleted
+              };
+            }
+            return customer;
+          });
         },
         error: (error) => {
           console.log(error);
         }
       });
     } else {
-      this.customersFormArray.removeAt(index);
+      this.customersFormArray.removeAt(this.selectedIndex);
     }
     this.closeConfirmModal();
   }
@@ -362,5 +368,7 @@ export class BookingDetailComponent implements AfterViewInit {
   private formatDate(dateString: string): string {
     return dateString ? new Date(dateString).toISOString().substring(0, 10) : '';
   }
+
+
 
 }
