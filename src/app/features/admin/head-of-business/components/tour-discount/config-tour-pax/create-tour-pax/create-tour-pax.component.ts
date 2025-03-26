@@ -43,7 +43,6 @@ export class CreateTourPaxComponent {
   constructor(private tourDiscountService: TourDiscountService) {}
 
   createTourPax() {
-    // Ensure all fields are populated (you can add validation if needed)
     const tourPaxData: TourPax = {
       minPax: this.newPax.minPax,
       maxPax: this.newPax.maxPax,

@@ -1,6 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, AfterViewInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TourDiscountService } from '../../../services/discount.service';
+import { CreateTourPaxComponent } from './create-tour-pax/create-tour-pax.component';
+import { UpdateTourPaxComponent } from './update-tour-pax/update-tour-pax.component';
+import { SsrService } from '../../../../../../core/services/ssr.service';
 
 interface TourPax {
   id: number;
@@ -20,27 +23,34 @@ interface TourPax {
 interface ApiResponse {
   code: number;
   message: string;
-  data: TourPax[];
+  data: TourPax[] | TourPax;
 }
 
 @Component({
   selector: 'app-config-tour-pax',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    CreateTourPaxComponent,
+    UpdateTourPaxComponent
+  ],
   templateUrl: './config-tour-pax.component.html',
   styleUrls: ['./config-tour-pax.component.css']
 })
-export class ConfigTourPaxComponent {
+export class ConfigTourPaxComponent implements AfterViewInit {
   @Input() tourId!: number;
+  @ViewChild('createTourPaxModal') createTourPaxModal!: CreateTourPaxComponent;
+  @ViewChildren(UpdateTourPaxComponent) updateTourPaxComponents!: QueryList<UpdateTourPaxComponent>;
 
   tourPaxList: TourPax[] = [];
+  selectedPaxId: number | null = null;
 
   constructor(
     private tourDiscountService: TourDiscountService,
+    private ssrService: SsrService
   ) {}
 
-  ngOnInit() {
-    console.log('Tour ID:', this.tourId);
+  ngAfterViewInit() {
     if (this.tourId) {
       this.fetchTourPaxData();
     }
@@ -50,7 +60,11 @@ export class ConfigTourPaxComponent {
     this.tourDiscountService.getTourPaxById(this.tourId).subscribe({
       next: (response: ApiResponse) => {
         if (response.code === 200) {
-          this.tourPaxList = response.data;
+          this.tourPaxList = Array.isArray(response.data) ? response.data : [response.data];
+          this.tourPaxList = this.tourPaxList.map(pax => ({
+            ...pax,
+            paxRange: pax.paxRange || `${pax.minPax}-${pax.maxPax}`
+          }));
         } else {
           console.error('Error fetching tour pax data:', response.message);
         }
@@ -61,19 +75,62 @@ export class ConfigTourPaxComponent {
     });
   }
 
-  deleteTourPax(id: number) {
-    this.tourDiscountService.deleteTourPax(this.tourId, id).subscribe({
-      next: (response: ApiResponse) => {
-        if (response.code === 200) {
-          this.fetchTourPaxData();
+  openUpdateModal(paxId: number) {
+    this.selectedPaxId = paxId;
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      // Find the specific UpdateTourPaxComponent instance for this paxId
+      const updateComponent = this.updateTourPaxComponents.find(
+        (component) => component.tourPaxId === paxId
+      );
+      if (updateComponent) {
+        const modalElement = doc.getElementById(`updateTourPaxModal-${paxId}`) as HTMLElement;
+        if (modalElement) {
+          modalElement.classList.remove('hidden');
+          modalElement.setAttribute('aria-hidden', 'false');
         }
-        else {
-          console.error('Error deleting tour pax:', response.message);
-        }
-      },
-      error: (error : any) => {
-        console.error('HTTP error deleting tour pax:', error);
       }
-    });
+    }
+  }
+
+  closeUpdateModal(paxId: number) {
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      const modalElement = doc.getElementById(`updateTourPaxModal-${paxId}`) as HTMLElement;
+      if (modalElement) {
+        modalElement.classList.add('hidden');
+        modalElement.setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+
+  deleteTourPax(id: number) {
+    if (confirm('Bạn có chắc chắn muốn xóa cấu hình này không?')) {
+      this.tourDiscountService.deleteTourPax(this.tourId, id).subscribe({
+        next: (response: ApiResponse) => {
+          if (response.code === 200) {
+            this.fetchTourPaxData();
+            alert('Cấu hình đã được xóa thành công!');
+          } else {
+            console.error('Error deleting tour pax:', response.message);
+            alert(`Error: ${response.message}`);
+          }
+        },
+        error: (error: any) => {
+          console.error('HTTP error deleting tour pax:', error);
+          alert('An error occurred while deleting the tour pax. Please try again.');
+        }
+      });
+    }
+  }
+
+  onTourPaxCreated() {
+    this.fetchTourPaxData();
+  }
+
+  onTourPaxUpdated(paxId: number) {
+    this.fetchTourPaxData();
+    this.closeUpdateModal(paxId);
+    this.selectedPaxId = null;
   }
 }

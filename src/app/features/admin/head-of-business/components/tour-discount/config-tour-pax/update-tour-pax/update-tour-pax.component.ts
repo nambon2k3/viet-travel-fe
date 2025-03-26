@@ -4,24 +4,14 @@ import { TourDiscountService } from '../../../../services/discount.service';
 import { FormsModule } from '@angular/forms';
 
 interface TourPax {
-  id: number;
-  tourId: number;
   minPax: number;
   maxPax: number;
-  paxRange: string;
   fixedCost: number;
   extraHotelCost: number;
   nettPricePerPax: number;
   sellingPrice: number;
   validFrom: string;
   validTo: string;
-  valid: boolean;
-}
-
-interface ApiResponse {
-  code: number;
-  message: string;
-  data: TourPax;
 }
 
 @Component({
@@ -32,39 +22,61 @@ interface ApiResponse {
   styleUrls: ['./update-tour-pax.component.css']
 })
 export class UpdateTourPaxComponent {
-  @Input() tourPax!: TourPax;
+  @Input() tourPaxId!: number;
+  @Input() tourId!: number;
   @Output() confirmUpdate = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
 
-  updatedPax: TourPax = { ...this.tourPax };
+  tourPax: TourPax = {
+    minPax: 0,
+    maxPax: 0,
+    fixedCost: 0,
+    extraHotelCost: 0,
+    nettPricePerPax: 0,
+    sellingPrice: 0,
+    validFrom: new Date().toISOString().split('T')[0], // Format as YYYY-MM-DD
+    validTo: new Date().toISOString().split('T')[0]    // Format as YYYY-MM-DD
+  };
 
   constructor(private tourDiscountService: TourDiscountService) {}
 
-  ngOnChanges() {
-    this.updatedPax = { ...this.tourPax };
+  ngOnInit() {
+    console.log('Tour ID:', this.tourId);
+    console.log('Tour Pax ID:', this.tourPaxId);
+    this.fetchTourPaxData();
   }
 
-  updateTourPax() {
-    const updatedTourPax: TourPax = {
-      ...this.updatedPax,
-      paxRange: `${this.updatedPax.minPax.toString().padStart(2, '0')}-${this.updatedPax.maxPax.toString().padStart(2, '0')}`
-    };
+  ngAfterViewInit() {
+    if (this.tourPaxId) {
+      this.fetchTourPaxData();
+    }
+  }
 
-    this.tourDiscountService.updateTourPax(updatedTourPax.id, updatedTourPax).subscribe({
-      next: (response: ApiResponse) => {
+  fetchTourPaxData() {
+    this.tourDiscountService.getTourPaxDetailById(this.tourId, this.tourPaxId).subscribe({
+      next: (response: any) => {
         if (response.code === 200) {
-          this.confirmUpdate.emit();
-        } else {
-          console.error('Error updating tour pax:', response.message);
+          this.tourPax = response.data;
+          // Ensure dates are in the correct format for input[type="date"]
+          this.tourPax.validFrom = new Date(this.tourPax.validFrom).toISOString().split('T')[0];
+          this.tourPax.validTo = new Date(this.tourPax.validTo).toISOString().split('T')[0];
         }
       },
-      error: (error : any) => {
-        console.error('HTTP error updating tour pax:', error);
+      error: (error: any) => {
+        console.error('Error fetching tour pax data:', error);
       }
     });
   }
 
-  onCancel() {
-    this.cancel.emit();
+  updateTourPax() {
+    this.tourDiscountService.updateTourPax(this.tourId, this.tourPaxId, this.tourPax).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.confirmUpdate.emit();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error updating tour pax:', error);
+      }
+    });
   }
 }
