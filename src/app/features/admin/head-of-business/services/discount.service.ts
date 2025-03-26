@@ -13,8 +13,8 @@ export class TourDiscountService {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/${id}/discount/list`);
   }
 
-  getLocations(page: number = 0, size: number = 51, keyword: string = '', isDeleted: boolean = false, orderDate: string = 'desc'): Observable<any> {
-    return this.http.get(`${environment.apiUrl}head-of-business/tour/discount/list-location`, {
+  getLocations(id : number,page: number = 0, size: number = 10, keyword: string = '', isDeleted: boolean = false, orderDate: string = 'desc'): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${id}/discount/list-location`, {
       params: { page, size, keyword, isDeleted, orderDate }
     });
   }
@@ -23,6 +23,10 @@ export class TourDiscountService {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/providers`, {
       params: { tourId, locationId, categoryName }
     });
+  }
+
+  getServices(tourId: number, locationId: number, providerId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/provider/${providerId}/location/${locationId}`);
   }
 
   getServiceDetails(tourId: number, serviceId: number): Observable<any> {

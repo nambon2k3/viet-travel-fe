@@ -17,8 +17,10 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, FormArray } f
 })
 export class AddActivityComponent implements AfterViewInit {
   @Input() days: number[] = [1, 2, 3, 4, 5];
-  @Input() numGuests: number = 0;
+  @Input() tourId: number = 0;
   @Output() activityAdded = new EventEmitter<any>();
+  serviceId: number | null = null;
+  @Input() pricesRange: string[] = [];
 
   modal: Modal | null = null;
   addActivityForm!: FormGroup;

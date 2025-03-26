@@ -72,18 +72,21 @@
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ hotel.prices[range] | currencyVnd }}</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ hotel.prices[range] | currencyVnd }}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td class="p-2 text-center">
             <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddHotelModal(hotel.id)">
-              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-              </svg>              
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
             </button>
-            <button class="text-red-500 hover:text-red-700">X</button>
+            <button class="text-red-500 hover:text-red-700" (click)="deleteHotel(i)">X</button>
           </td>
         </tr>
       </tbody>
@@ -105,7 +108,6 @@
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-left">Tên phương tiện</th>
           <th class="p-2 text-left">Nhà cung cấp</th>
-          <th class="p-2 text-left">Loại</th>
           <th class="p-2 text-center">Giá Net</th>
           <th class="p-2 text-center">Số lượng</th>
           <th class="p-2 text-center">Ngày</th>
@@ -131,7 +133,6 @@
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2">{{ transport.name }}</td>
           <td class="p-2">{{ transport.serviceProviderName }}</td>
-          <td class="p-2">{{ transport.type }}</td>
           <td class="p-2 text-center">{{ transport.netPrice | currencyVnd }}</td>
           <td class="p-2 text-center">{{ transport.quantity }}</td>
           <td class="p-2 text-center">{{ transport.day }}</td>
@@ -139,13 +140,21 @@
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ transport.roomPrices[range] | currencyVnd }}</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ transport.prices[range] |
+                    currencyVnd }}</td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-red-500 hover:text-red-700">X</button>
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddTransportationModal(transport.id)">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
+            </button>
+            <button class="text-red-500 hover:text-red-700" (click)="deleteTransportation(i)">X</button>
           </td>
         </tr>
       </tbody>
@@ -168,7 +177,6 @@
           <th class="p-2 text-left">Tên nhà hàng</th>
           <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-left">Địa chỉ</th>
-          <th class="p-2 text-left">Loại</th>
           <th class="p-2 text-center">Giá Net</th>
           <th class="p-2 text-center">Số lượng</th>
           <th class="p-2 text-center">Ngày</th>
@@ -195,7 +203,6 @@
           <td class="p-2">{{ restaurant.name }}</td>
           <td class="p-2">{{ restaurant.serviceProviderName }}</td>
           <td class="p-2">{{ restaurant.location }}</td>
-          <td class="p-2">{{ restaurant.type }}</td>
           <td class="p-2 text-center">{{ restaurant.netPrice | currencyVnd }}</td>
           <td class="p-2 text-center">{{ restaurant.quantity }}</td>
           <td class="p-2 text-center">{{ restaurant.day }}</td>
@@ -203,73 +210,21 @@
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ restaurant.roomPrices[range] | currencyVnd }}</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ restaurant.prices[range] |
+                    currencyVnd }}</td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-red-500 hover:text-red-700">X</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Tour Guides Section -->
-  <div class="mb-6">
-    <div class="flex justify-between items-center mb-4">
-      <div class="flex items-center">
-        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">4</div>
-        <h2 class="text-lg font-semibold ml-4">Hướng dẫn viên</h2>
-      </div>
-      <button data-modal-target="addTourGuideModal" data-modal-toggle="addTourGuideModal"
-        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm mới</button>
-    </div>
-    <table class="w-full border border-gray-300 rounded-lg">
-      <thead>
-        <tr class="bg-gray-100 border-b border-gray-300">
-          <th class="p-2 text-left">Tên HDV</th>
-          <th class="p-2 text-left">Nhà cung cấp</th>
-          <th class="p-2 text-center">Giá Net</th>
-          <th class="p-2 text-center">Số lượng</th>
-          <th class="p-2 text-center">Ngày</th>
-          <th class="p-2 text-center">Giá HDV</th>
-          <th class="p-2 text-center">Actions</th>
-        </tr>
-        <tr class="bg-gray-200 border-b border-gray-300">
-          <th colspan="5"></th>
-          <th class="p-2 text-right">
-            <table class="border-collapse inline-table w-full">
-              <tbody>
-                <tr>
-                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
-                </tr>
-              </tbody>
-            </table>
-          </th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="border-b border-gray-300" *ngFor="let guide of tourGuides; let i = index"
-          [class.bg-gray-50]="i % 2 === 0">
-          <td class="p-2">{{ guide.name }}</td>
-          <td class="p-2">{{ guide.serviceProviderName }}</td>
-          <td class="p-2 text-center">{{ guide.netPrice | currencyVnd }}</td>
-          <td class="p-2 text-center">{{ guide.quantity }}</td>
-          <td class="p-2 text-center">{{ guide.day }}</td>
-          <td class="p-2 text-right">
-            <table class="border-collapse inline-table w-full">
-              <tbody>
-                <tr>
-                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ guide.roomPrices[range] | currencyVnd }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-          <td class="p-2 text-center">
-            <button class="text-red-500 hover:text-red-700">X</button>
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddRestaurantModal(restaurant.id)">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
+            </button>
+            <button class="text-red-500 hover:text-red-700" (click)="deleteRestaurant(i)">X</button>
           </td>
         </tr>
       </tbody>
@@ -292,12 +247,11 @@
           <tr class="bg-gray-100 border-b border-gray-300">
             <th class="p-2 text-left min-w-[150px]">Tên hoạt động</th>
             <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
-            <th class="p-2 text-left min-w-[120px]">Type</th>
             <th class="p-2 text-center min-w-[100px]">Giá Net</th>
             <th class="p-2 text-center min-w-[90px]">Số lượng</th>
             <th class="p-2 text-center min-w-[90px]">Ngày</th>
             <th class="p-2 text-center min-w-[250px]">Giá vé</th>
-            <th class="p-2 text-center min-w-[100px]">Actions</th>
+            <th class="p-2 text-center min-w-[100px]">Hành Động</th>
           </tr>
           <tr class="bg-gray-200 border-b border-gray-300">
             <th colspan="6"></th>
@@ -318,7 +272,6 @@
             [class.bg-gray-50]="i % 2 === 0">
             <td class="p-2 whitespace-nowrap">{{ activity.name }}</td>
             <td class="p-2 whitespace-nowrap">{{ activity.serviceProviderName }}</td>
-            <td class="p-2 whitespace-nowrap">{{ activity.type }}</td>
             <td class="p-2 text-center whitespace-nowrap">{{ activity.netPrice | currencyVnd }}</td>
             <td class="p-2 text-center whitespace-nowrap">{{ activity.quantity }}</td>
             <td class="p-2 text-center whitespace-nowrap">{{ activity.day }}</td>
@@ -326,13 +279,21 @@
               <table class="border-collapse inline-table w-full">
                 <tbody>
                   <tr>
-                    <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ activity.roomPrices[range] | currencyVnd }}</td>
+                    <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ activity.prices[range] |
+                      currencyVnd }}</td>
                   </tr>
                 </tbody>
               </table>
             </td>
             <td class="p-2 text-center">
-              <button class="text-red-500 hover:text-red-700">X</button>
+              <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddActivityModal(activity.id)">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                </svg>
+              </button>
+              <button class="text-red-500 hover:text-red-700" (click)="deleteActivity(i)">X</button>
             </td>
           </tr>
         </tbody>
@@ -359,12 +320,14 @@
           <!-- Giá Net 1 khách -->
           <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá Net (1 khách)</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestNetPrices[range] | currencyVnd }}</td>
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestNetPrices[range] | currencyVnd }}
+            </td>
           </tr>
           <!-- Giá bán (1 khách) -->
           <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán (1 khách)</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestPrices[range] | currencyVnd }}</td>
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestPrices[range] | currencyVnd }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -374,8 +337,11 @@
 
 <!-- Include the new popup components -->
 <app-config-tour-pax [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
-<app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-<app-add-transportation #addTransportationModal (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
-<app-add-restaurant #addRestaurantModal (RestaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
-<app-add-tourguide #addTourGuideModal (tourGuideAdded)="addNewTourGuide($event)"></app-add-tourguide>
-<app-add-activity #addActivityModal (activityAdded)="addNewActivity($event)"></app-add-activity>
+<app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+  (hotelAdded)="addNewHotel($event)"></app-add-hotel>
+<app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [pricesRange]="priceRanges"
+  (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
+<app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [pricesRange]="priceRanges"
+  (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
+<app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [pricesRange]="priceRanges"
+  (activityAdded)="addNewActivity($event)"></app-add-activity>
