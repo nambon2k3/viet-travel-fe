@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
@@ -7,6 +7,7 @@ import { AddTransportationComponent } from './add-transportation/add-transportat
 import { AddRestaurantComponent } from "./add-restaurant/add-restaurant.component";
 import { AddTourGuideComponent } from "./add-tour-guide/add-tour-guide.component";
 import { AddActivityComponent } from "./add-activity/add-activity.component";
+import { ConfigTourPaxComponent } from "./config-tour-pax/config-tour-pax.component";
 
 interface Hotel {
   name: string;
@@ -14,7 +15,7 @@ interface Hotel {
   netPrice: number;
   quantity: number;
   prices: PriceRange;
-  day: number; // New field for tour day
+  day: number;
 }
 
 interface Transport {
@@ -23,7 +24,7 @@ interface Transport {
   netPrice: number;
   quantity: number;
   roomPrices: PriceRange;
-  day: number; // New field for tour day
+  day: number;
 }
 
 interface Restaurant {
@@ -33,7 +34,7 @@ interface Restaurant {
   netPrice: number;
   quantity: number;
   roomPrices: PriceRange;
-  day: number; // New field for tour day
+  day: number;
 }
 
 interface TourGuide {
@@ -42,7 +43,7 @@ interface TourGuide {
   netPrice: number;
   quantity: number;
   roomPrices: PriceRange;
-  day: number; // New field for tour day
+  day: number;
 }
 
 interface Activity {
@@ -52,7 +53,7 @@ interface Activity {
   netPrice: number;
   quantity: number;
   roomPrices: PriceRange;
-  day: number; // New field for tour day
+  day: number;
 }
 
 interface PriceRange {
@@ -61,27 +62,31 @@ interface PriceRange {
 
 @Component({
   selector: 'app-tour-discount',
-  imports: [CurrencyVndPipe,
-     CommonModule, 
-     AddHotelComponent, 
-     AddTransportationComponent, 
-     AddRestaurantComponent, 
-     AddTourGuideComponent,
-     AddActivityComponent
-    ],
+  standalone: true,
+  imports: [
+    CurrencyVndPipe,
+    CommonModule,
+    AddHotelComponent,
+    AddTransportationComponent,
+    AddRestaurantComponent,
+    AddTourGuideComponent,
+    AddActivityComponent,
+    ConfigTourPaxComponent,
+  ],
   templateUrl: './tour-discount.component.html',
-  styleUrl: './tour-discount.component.css'
+  styleUrls: ['./tour-discount.component.css']
 })
-export class TourDiscountComponent {
+export class TourDiscountComponent implements OnInit {
   @ViewChild('addHotelModal') addHotelModal!: AddHotelComponent;
   @ViewChild('addTransportationModal') addTransportationModal!: AddTransportationComponent;
-  @ViewChild('addRestaurantnModal') addRestaurantModal!: AddRestaurantComponent;
-  @ViewChild('addTourGuidenModal') addTourGuideModal!: AddTourGuideComponent;
+  @ViewChild('addRestaurantModal') addRestaurantModal!: AddRestaurantComponent;
+  @ViewChild('addTourGuideModal') addTourGuideModal!: AddTourGuideComponent;
   @ViewChild('addActivityModal') addActivityModal!: AddActivityComponent;
+  @ViewChild('tourConfigPaxModal') tourConfigPaxModal!: ConfigTourPaxComponent;
 
-  constructor(
-    private router: Router
-  ) { }
+  tourId : number = 2;
+
+  constructor(private router: Router) { }
 
   hotels: Hotel[] = [
     {
@@ -94,7 +99,7 @@ export class TourDiscountComponent {
         '05-10': 1400000,
         '11-20': 1300000
       },
-      day: 1 // Day 1
+      day: 1
     },
     {
       name: 'Daue Hotel Da...',
@@ -106,7 +111,7 @@ export class TourDiscountComponent {
         '05-10': 1500000,
         '11-20': 1400000
       },
-      day: 2 // Day 2
+      day: 2
     }
   ];
 
@@ -121,7 +126,7 @@ export class TourDiscountComponent {
         '05-10': 280000,
         '11-20': 270000
       },
-      day: 1 // Day 1
+      day: 1
     },
     {
       name: 'Hikari',
@@ -133,7 +138,7 @@ export class TourDiscountComponent {
         '05-10': 600000,
         '11-20': 500000
       },
-      day: 2 // Day 2
+      day: 2
     }
   ];
 
@@ -149,7 +154,7 @@ export class TourDiscountComponent {
         '05-10': 200000,
         '11-20': 200000
       },
-      day: 1 // Day 1
+      day: 1
     },
     {
       name: 'Seafood Jump',
@@ -162,7 +167,7 @@ export class TourDiscountComponent {
         '05-10': 300000,
         '11-20': 300000
       },
-      day: 2 // Day 2
+      day: 2
     },
     {
       name: 'Nét Huế Xưa',
@@ -175,7 +180,7 @@ export class TourDiscountComponent {
         '05-10': 300000,
         '11-20': 300000
       },
-      day: 3 // Day 3
+      day: 3
     },
     {
       name: 'King BBQ',
@@ -188,7 +193,7 @@ export class TourDiscountComponent {
         '05-10': 200000,
         '11-20': 200000
       },
-      day: 2 // Day 2
+      day: 2
     }
   ];
 
@@ -203,7 +208,7 @@ export class TourDiscountComponent {
         '05-10': 150000,
         '11-20': 100000
       },
-      day: 1 // Day 1
+      day: 1
     }
   ];
 
@@ -219,7 +224,7 @@ export class TourDiscountComponent {
         '05-10': 600000,
         '11-20': 600000
       },
-      day: 2 // Day 2
+      day: 2
     },
     {
       name: 'Lặn',
@@ -232,7 +237,7 @@ export class TourDiscountComponent {
         '05-10': 300000,
         '11-20': 300000
       },
-      day: 3 // Day 3
+      day: 3
     },
     {
       name: 'Ba Na Hills',
@@ -245,7 +250,7 @@ export class TourDiscountComponent {
         '05-10': 300000,
         '11-20': 300000
       },
-      day: 2 // Day 2
+      day: 2
     },
     {
       name: 'Kinh thành Huế',
@@ -258,108 +263,11 @@ export class TourDiscountComponent {
         '05-10': 200000,
         '11-20': 200000
       },
-      day: 3 // Day 3
+      day: 3
     }
   ];
 
-  addNewHotel(event: any) {
-    const newHotel: Hotel = {
-      name: event.name,
-      location: event.location,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      prices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.hotels.push(newHotel);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  addNewTransportation(event: any) {
-    const newTransportation: Transport = {
-      name: event.name,
-      type: event.type,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.transports.push(newTransportation);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  addNewTourGuide(event: any) {
-    const newTourGuide: TourGuide = {
-      name: event.name,
-      provider: event.provider,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.tourGuides.push(newTourGuide);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  addNewRestaurant(event: any) {
-    const newRestaurant: Restaurant = {
-      name: event.name,
-      location: event.location,
-      type: event.type,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.restaurants.push(newRestaurant);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  addNewActivity(event: any) {
-    const newActivity: Activity = {
-      name: event.name,
-      provider: event.provider,
-      type: event.type,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.activities.push(newActivity);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  priceRanges: string[] = []; // Will be populated from API
+  priceRanges: string[] = [];
   totalNetPrice: number = 0;
   mintotalNetPrices: PriceRange = {};
   maxtotalNetPrices: PriceRange = {};
@@ -372,11 +280,7 @@ export class TourDiscountComponent {
   perGuestNetPrices: PriceRange = {};
 
   private fetchPriceRanges(): void {
-    // This would be your actual API call
-    // For now, simulating with sample data
     this.priceRanges = ['01-04', '05-10', '11-20'];
-
-    // Initialize price objects with ranges
     this.priceRanges.forEach(range => {
       this.mintotalNetPrices[range] = 0;
       this.maxtotalNetPrices[range] = 0;
@@ -472,7 +376,6 @@ export class TourDiscountComponent {
         total += (activity.roomPrices[range] || 0) * guestRanges[range].min * activity.quantity;
       });
 
-      // Assign to totalPrices
       this.minsalePrices[range] = total;
 
       total = 0;
@@ -492,14 +395,13 @@ export class TourDiscountComponent {
         total += (activity.roomPrices[range] || 0) * guestRanges[range].max * activity.quantity;
       });
 
-      // Assign to totalPrices
       this.maxsalePrices[range] = total;
     });
   }
 
   calculatePerGuestPrices(): void {
     const minGuests: { [key: string]: number } = {};
-    const maxGuests: { [key: string]: number } = {}; // For clarity, though not used here directly
+    const maxGuests: { [key: string]: number } = {};
     this.priceRanges.forEach(range => {
       const [min, max] = range.split('-').map(num => parseInt(num));
       minGuests[range] = min;
@@ -507,11 +409,9 @@ export class TourDiscountComponent {
     });
     this.priceRanges.forEach(range => {
       if (range === '01-04') {
-        // Special case for 1-4 range
         let totalMaxSale = 0;
-        // Calculate total max sale price with special tour guide handling
         this.hotels.forEach(hotel => {
-          totalMaxSale += (hotel.prices[range] || hotel.netPrice || 0) * hotel.quantity; // Base price, no guest scaling
+          totalMaxSale += (hotel.prices[range] || hotel.netPrice || 0) * hotel.quantity;
         });
         this.transports.forEach(transport => {
           totalMaxSale += (transport.roomPrices[range] || transport.netPrice || 0) * transport.quantity;
@@ -520,22 +420,20 @@ export class TourDiscountComponent {
           totalMaxSale += (restaurant.roomPrices[range] || restaurant.netPrice || 0) * restaurant.quantity;
         });
         this.tourGuides.forEach(tourGuide => {
-          totalMaxSale += (tourGuide.roomPrices[range] || tourGuide.netPrice || 0) * tourGuide.quantity * 4; // Multiply by 4
+          totalMaxSale += (tourGuide.roomPrices[range] || tourGuide.netPrice || 0) * tourGuide.quantity * 4;
         });
         this.activities.forEach(activity => {
           totalMaxSale += (activity.roomPrices[range] || activity.netPrice || 0) * activity.quantity;
         });
-        // Calculate per-guest price: max sale price / min guests (1)
         this.perGuestPrices[range] = Math.ceil(totalMaxSale / minGuests[range]);
       } else {
-        // Default case for other ranges
         this.perGuestPrices[range] = Math.ceil(this.maxsalePrices[range] / minGuests[range]);
       }
     });
   }
 
   ngOnInit() {
-    this.fetchPriceRanges(); // Get ranges from API
+    this.fetchPriceRanges();
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
     this.calculatePerGuestPrices();
@@ -544,5 +442,102 @@ export class TourDiscountComponent {
 
   backToList() {
     this.router.navigate(['head-business/list-tour']);
+  }
+
+  addNewHotel(event: any) {
+    const newHotel: Hotel = {
+      name: event.name,
+      location: event.location,
+      netPrice: event.netPrice,
+      quantity: 1,
+      prices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day
+    };
+    this.hotels.push(newHotel);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
+
+  addNewTransportation(event: any) {
+    const newTransportation: Transport = {
+      name: event.name,
+      type: event.type,
+      netPrice: event.netPrice,
+      quantity: 1,
+      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day
+    };
+    this.transports.push(newTransportation);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
+
+  addNewTourGuide(event: any) {
+    const newTourGuide: TourGuide = {
+      name: event.name,
+      provider: event.provider,
+      netPrice: event.netPrice,
+      quantity: 1,
+      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day
+    };
+    this.tourGuides.push(newTourGuide);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
+
+  addNewRestaurant(event: any) {
+    const newRestaurant: Restaurant = {
+      name: event.name,
+      location: event.location,
+      type: event.type,
+      netPrice: event.netPrice,
+      quantity: 1,
+      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day
+    };
+    this.restaurants.push(newRestaurant);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
+  }
+
+  addNewActivity(event: any) {
+    const newActivity: Activity = {
+      name: event.name,
+      provider: event.provider,
+      type: event.type,
+      netPrice: event.netPrice,
+      quantity: 1,
+      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
+        acc[price.guests] = price.sellingPrice;
+        return acc;
+      }, {}),
+      day: event.day
+    };
+    this.activities.push(newActivity);
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculatePerGuestPrices();
+    this.calculatePerGuestNetPrice();
   }
 }

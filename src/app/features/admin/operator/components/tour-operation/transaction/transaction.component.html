@@ -1,9 +1,8 @@
 <div class="mt-6 p-6 bg-white rounded-md">
   <div class="flex justify-end gap-2 mb-4">
-    <button (click)="openPostReceipt()" class="bg-blue-400 hover:bg-blue-500 text-white px-4 py-2 rounded">Tạo Phiếu
-      Thu</button>
     <button data-modal-target="paymentModal" data-modal-toggle="paymentModal"
-      class="bg-yellow-600 text-white hover:bg-yellow-700 px-4 py-2 rounded">Thanh Toán Tạm Ứng</button>
+      class="bg-yellow-600 text-white hover:bg-yellow-700 px-4 py-2 rounded">Tạo Phiếu
+      Thu</button>
   </div>
 
   <div class="rounded-md">
@@ -28,7 +27,7 @@
           <td class="p-2">{{ transaction.category === 'RECEIPT' ? 'Phiếu thu' : 'Phiếu chi' }}</td>
           <td class="p-2">{{ transaction.createdAt | formatDate }}</td>
           <td class="p-2">{{ transaction.amount }}</td>
-          <td class="p-2">{{ transaction.paymentStatus }}</td>
+          <td class="p-2">{{ mapPaymentStatus(transaction.paymentStatus) }}</td>
           <td class="p-2">{{ transaction.costAccount.content | truncate : 30 }}</td>
         </tr>
       </tbody>

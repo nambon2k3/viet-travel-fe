@@ -1,70 +1,74 @@
 <div class="p-6 bg-white rounded-md">
-    <h2 class="text-2xl font-bold mb-4">Tạo Tour Mới</h2>
-    <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="space-y-4">
+  <h2 class="text-2xl font-bold mb-4">Tạo Tour Mới</h2>
+  <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Tên Tour</label>
+      <input type="text" formControlName="tourName" placeholder="Nhập tên tour"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700">Tên Tour</label>
-        <input type="text" formControlName="tourName" placeholder="Nhập tên tour"
+        <label class="block text-sm font-semibold">Chọn địa điểm</label>
+        <ng-select formControlName="departLocationId" [items]="locations()" bindLabel="name" bindValue="id"
+          placeholder="Chọn địa điểm" [searchable]="true"
+          class="mt-2 custom bg-white border border-gray-300 rounded-md">
+        </ng-select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold">Chọn điểm đến</label>
+        <ng-multi-select-dropdown formControlName="departLocationId" bindLabel="name" bindValue="id"
+          placeholder="Chọn địa điểm" 
+          class="mt-2 custom bg-white border border-gray-300 rounded-md">
+        </ng-multi-select-dropdown>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Ngày Bắt Đầu</label>
+        <input type="date" formControlName="startDate"
           class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
       </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Người Tạo</label>
-          <input type="text" formControlName="authorName" placeholder="Nhập tên người tạo"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Điểm Đến</label>
-          <input type="text" formControlName="destination" placeholder="Nhập điểm đến"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-        </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Ngày Kết Thúc</label>
+        <input type="date" formControlName="endDate"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
       </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Ngày Bắt Đầu</label>
-          <input type="date" formControlName="startDate"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Ngày Kết Thúc</label>
-          <input type="date" formControlName="endDate"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-        </div>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Số Ngày</label>
-          <input type="number" formControlName="duration"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Số Đêm</label>
-          <input type="number" formControlName="nights"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
-        </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Số Ngày</label>
+        <input type="number" formControlName="duration"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-700">Điểm Nổi Bật</label>
-        <textarea formControlName="highlights" placeholder="Mô tả điểm nổi bật"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          rows="3"></textarea>
+        <label class="block text-sm font-medium text-gray-700">Số Đêm</label>
+        <input type="number" formControlName="nights"
+          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
       </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Ghi Chú</label>
-        <textarea formControlName="note" placeholder="Ghi chú"
-          class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          rows="3"></textarea>
-      </div>
-      <div class="mt-6 justify-end flex">
-        <button
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Điểm Nổi Bật</label>
+      <textarea formControlName="highlights" placeholder="Mô tả điểm nổi bật"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+        rows="3"></textarea>
+    </div>
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Ghi Chú</label>
+      <textarea formControlName="note" placeholder="Ghi chú"
+        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+        rows="3"></textarea>
+    </div>
+    <div class="mt-6 justify-end flex">
+      <button
         class="w-24 mr-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
         (click)="onCancel()">
         Cancel
       </button>
-        <button type="submit"
-          class="w-40 bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
-          [disabled]="isSubmitting()">
-          {{ isSubmitting() ? 'Đang xử lý...' : 'Thêm Tour' }}
-        </button>
-      </div>
-    </form>
-  </div>
+      <button type="submit"
+        class="w-40 bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+        [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Đang xử lý...' : 'Thêm Tour' }}
+      </button>
+    </div>
+  </form>
+</div>

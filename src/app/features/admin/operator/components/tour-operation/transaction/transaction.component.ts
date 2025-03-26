@@ -14,7 +14,7 @@ import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe"
     PostAdvancePaymentComponent,
     TruncatePipe,
     FormatDatePipe
-],
+  ],
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.css']
 })
@@ -44,9 +44,6 @@ export class TransactionComponent {
       next: (response: any) => {
         if (response.code === 200) {
           this.listTransactions = response.data;
-          this.listTransactions = response.data.map((service: any) => ({
-            status: this.mapPaymentStatus(service.bookingStatus)
-          }));
         } else {
           console.error('Lỗi:', response.message);
         }
@@ -56,14 +53,19 @@ export class TransactionComponent {
       }
     });
   }
-  
+
   mapPaymentStatus(status: string): string {
     const paymentStatusMap: { [key: string]: string } = {
       'UNPAID': 'Chưa thanh toán',
       'PAID': 'Đã thanh toán',
-      'PARTIALLY_PAID': 'Thanh toán một phần'
+      'PARTIALLY_PAID': 'Thanh toán một phần',
+      'PENDING': 'Đang chờ xử lý',       
+      'APPROVED': 'Được chấp nhận',
+      'REJECTED': 'Bị từ chối',
+      'CANCELLED': 'Đã hủy',             
+      'REFUNDED': 'Đã hoàn tiền'       
     };
-    return paymentStatusMap[status] || 'Chưa thanh toán';
+    return paymentStatusMap[status?.toUpperCase()] || 'Không xác định';
   }
 
   openPostReceipt(): void {

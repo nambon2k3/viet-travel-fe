@@ -242,7 +242,6 @@ export class PostServiceComponent {
     });
   
     for (const payload of payloads) {
-      console.log('Sending payload:', payload); // Log payload để kiểm tra
       this.tourService.addServices(payload).subscribe({
         next: (response: any) => {
           if (response.code === 200) {

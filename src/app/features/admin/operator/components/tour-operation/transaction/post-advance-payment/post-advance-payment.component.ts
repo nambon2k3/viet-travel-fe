@@ -16,7 +16,6 @@ export class PostAdvancePaymentComponent {
   modal: Modal | null = null;
   
   constructor(private fb: FormBuilder,
-    private ssrService: SsrService
   ) {
     this.paymentForm = this.fb.group({
       amount: ['2.000.000', Validators.required],

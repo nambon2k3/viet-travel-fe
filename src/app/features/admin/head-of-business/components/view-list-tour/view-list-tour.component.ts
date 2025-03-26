@@ -93,7 +93,7 @@ export class ViewListTourComponent {
 
   onPageSizeChange(newSize: number): void {
     this.size = newSize;
-    this.page = 0; // Reset to first page
+    this.page = 0;
     this.loadTour();
   }
 

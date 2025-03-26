@@ -3,16 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TourService } from '../../services/tour.service';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @Component({
   selector: 'app-add-tour',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectModule, NgMultiSelectDropDownModule],
   templateUrl: './add-tour.component.html',
   styleUrl: './add-tour.component.css'
 })
 export class AddTourComponent {
   tourForm: FormGroup;
+  locations = signal<any[]>([]);
   isSubmitting = signal(false);
 
   constructor(private fb: FormBuilder,
