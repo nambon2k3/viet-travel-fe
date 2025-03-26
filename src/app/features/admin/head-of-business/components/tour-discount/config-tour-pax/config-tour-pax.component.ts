@@ -79,7 +79,6 @@ export class ConfigTourPaxComponent implements AfterViewInit {
     this.selectedPaxId = paxId;
     const doc = this.ssrService.getDocument();
     if (doc) {
-      // Find the specific UpdateTourPaxComponent instance for this paxId
       const updateComponent = this.updateTourPaxComponents.find(
         (component) => component.tourPaxId === paxId
       );
@@ -104,24 +103,45 @@ export class ConfigTourPaxComponent implements AfterViewInit {
     }
   }
 
-  deleteTourPax(id: number) {
-    if (confirm('Bạn có chắc chắn muốn xóa cấu hình này không?')) {
-      this.tourDiscountService.deleteTourPax(this.tourId, id).subscribe({
-        next: (response: ApiResponse) => {
-          if (response.code === 200) {
-            this.fetchTourPaxData();
-            alert('Cấu hình đã được xóa thành công!');
-          } else {
-            console.error('Error deleting tour pax:', response.message);
-            alert(`Error: ${response.message}`);
-          }
-        },
-        error: (error: any) => {
-          console.error('HTTP error deleting tour pax:', error);
-          alert('An error occurred while deleting the tour pax. Please try again.');
-        }
-      });
+  openDeleteModal(index: number) {
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      const modalElement = doc.getElementById(`deleteTourPaxModal-${index}`) as HTMLElement;
+      if (modalElement) {
+        modalElement.classList.remove('hidden');
+        modalElement.setAttribute('aria-hidden', 'false');
+      }
     }
+  }
+
+  closeDeleteModal(index: number) {
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      const modalElement = doc.getElementById(`deleteTourPaxModal-${index}`) as HTMLElement;
+      if (modalElement) {
+        modalElement.classList.add('hidden');
+        modalElement.setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+
+  deleteTourPax(id: number, index: number) {
+    this.tourDiscountService.deleteTourPax(this.tourId, id).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.code === 200) {
+          this.fetchTourPaxData();
+          this.closeDeleteModal(index);
+          alert('Cấu hình đã được xóa thành công!');
+        } else {
+          console.error('Error deleting tour pax:', response.message);
+          alert(`Error: ${response.message}`);
+        }
+      },
+      error: (error: any) => {
+        console.error('HTTP error deleting tour pax:', error);
+        alert('An error occurred while deleting the tour pax. Please try again.');
+      }
+    });
   }
 
   onTourPaxCreated() {

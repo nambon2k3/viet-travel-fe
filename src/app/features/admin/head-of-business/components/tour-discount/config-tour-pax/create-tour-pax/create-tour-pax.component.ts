@@ -56,19 +56,15 @@ export class CreateTourPaxComponent {
 
     this.tourDiscountService.createTourPax(this.tourId, tourPaxData).subscribe({
       next: (response: any) => {
-        if (response.code === 200) {
+        if (response.code === 201) {
           this.confirmCreate.emit();
         } else {
           console.error('Error creating tour pax:', response.message);
         }
       },
-      error: (error: any) => {
+      error: (error) => {
         console.error('HTTP error creating tour pax:', error);
       }
     });
-  }
-
-  onCancel() {
-    this.cancel.emit();
   }
 }
