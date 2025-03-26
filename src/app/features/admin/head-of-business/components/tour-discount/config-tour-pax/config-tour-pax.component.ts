@@ -131,15 +131,12 @@ export class ConfigTourPaxComponent implements AfterViewInit {
         if (response.code === 200) {
           this.fetchTourPaxData();
           this.closeDeleteModal(index);
-          alert('Cấu hình đã được xóa thành công!');
         } else {
           console.error('Error deleting tour pax:', response.message);
-          alert(`Error: ${response.message}`);
         }
       },
       error: (error: any) => {
         console.error('HTTP error deleting tour pax:', error);
-        alert('An error occurred while deleting the tour pax. Please try again.');
       }
     });
   }

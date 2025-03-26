@@ -17,7 +17,7 @@
           <span class="sr-only">Close modal</span>
         </button>
       </div>
-      <div class="flex justify-end p-4">
+      <div class="flex justify-end p-4 pb-0">
         <button type="button" data-modal-target="createTourPaxModal" data-modal-toggle="createTourPaxModal"
           class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-700 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
           Tạo mới
@@ -38,24 +38,24 @@
               <span>{{ i + 1 }}</span>
               <span>{{ pax.paxRange }} khách</span>
             </div>
-            <div class="flex space-x-2">
+            <div class="flex">
               <!-- Update Button -->
               <button (click)="openUpdateModal(pax.id)"
                 class="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-green-700 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
                 Cập nhật
               </button>
-              <app-update-tour-pax [tourId]="tourId" [tourPaxId]="pax.id" (confirmUpdate)="onTourPaxUpdated(pax.id)" (cancel)="closeUpdateModal(pax.id)"
-                #updateTourPaxModal{{pax.id}}>
+              <app-update-tour-pax [tourId]="tourId" [tourPaxId]="pax.id" (confirmUpdate)="onTourPaxUpdated(pax.id)"
+                (cancel)="closeUpdateModal(pax.id)" #updateTourPaxModal{{pax.id}}>
               </app-update-tour-pax>
               <!-- Delete Button -->
               <button (click)="openDeleteModal(i)"
-                class="text-white bg-red-600 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                class="text-white ml-2 bg-red-600 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
                 Xóa
               </button>
               <!-- Delete Modal -->
               <div id="deleteTourPaxModal-{{i}}" tabindex="-1" aria-hidden="true"
-                class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                <div class="relative w-full max-w-md max-h-full">
+                class="fixed hidden inset-0 z-50 flex items-center justify-center w-full h-full">
+                <div class="relative w-96 max-w-md max-h-full">
                   <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                       <h3 class="text-xl font-semibold text-gray-900 dark:text-white">

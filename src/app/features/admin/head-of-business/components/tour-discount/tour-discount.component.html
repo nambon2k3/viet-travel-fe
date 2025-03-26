@@ -5,7 +5,7 @@
     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7" />
   </svg>
   <div class="ml-4">
-    <h1 class="text-xl font-bold">MS001 - Đà Nẵng - Huế - Bà Nà - Hội An (3N2D)</h1>
+    <h1 class="text-xl font-bold">MS001 - {{ tourName }}</h1>
   </div>
 </div>
 <div class="p-6 bg-white rounded-md">
@@ -37,6 +37,7 @@
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-left">Tên khách sạn</th>
+          <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-left">Địa chỉ</th>
           <th class="p-2 text-center">Giá Net</th>
           <th class="p-2 text-center">Số lượng</th>
@@ -45,17 +46,15 @@
           <th class="p-2 text-center">Actions</th>
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
-          <th colspan="5"></th>
+          <th colspan="6"></th>
           <th class="p-2 text-right">
-              <table class="border-collapse inline-table w-full">
-                <tbody>
-                  <tr>
-                    <td class="text-center pr-2">01 - 04 khách</td>
-                    <td class="text-center pr-2">05 - 10 khách</td>
-                    <td class="text-center">11 - 20 khách</td>
-                  </tr>
-                </tbody>
-              </table>
+            <table class="border-collapse inline-table w-full">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
+                </tr>
+              </tbody>
+            </table>
           </th>
           <th></th>
         </tr>
@@ -64,6 +63,7 @@
         <tr class="border-b border-gray-300" *ngFor="let hotel of hotels; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2">{{ hotel.name }}</td>
+          <td class="p-2">{{ hotel.serviceProviderName }}</td>
           <td class="p-2">{{ hotel.location }}</td>
           <td class="p-2 text-center">{{ hotel.netPrice | currencyVnd }}</td>
           <td class="p-2 text-center">{{ hotel.quantity }}</td>
@@ -72,14 +72,17 @@
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td class="text-center pr-2">{{ hotel.prices['01-04'] | currencyVnd }}</td>
-                  <td class="text-center pr-2">{{ hotel.prices['05-10'] | currencyVnd }}</td>
-                  <td class="text-center">{{ hotel.prices['11-20'] | currencyVnd }}</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ hotel.prices[range] | currencyVnd }}</td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td class="p-2 text-center">
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddHotelModal(hotel.id)">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+              </svg>              
+            </button>
             <button class="text-red-500 hover:text-red-700">X</button>
           </td>
         </tr>
@@ -101,6 +104,7 @@
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-left">Tên phương tiện</th>
+          <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-left">Loại</th>
           <th class="p-2 text-center">Giá Net</th>
           <th class="p-2 text-center">Số lượng</th>
@@ -109,15 +113,12 @@
           <th class="p-2 text-center">Actions</th>
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
-          <th colspan="5"></th>
+          <th colspan="6"></th>
           <th class="p-2 text-right">
-            
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td class="text-center pr-2">01 - 04 khách</td>
-                  <td class="text-center pr-2">05 - 10 khách</td>
-                  <td class="text-center">11 - 20 khách</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
                 </tr>
               </tbody>
             </table>
@@ -129,6 +130,7 @@
         <tr class="border-b border-gray-300" *ngFor="let transport of transports; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2">{{ transport.name }}</td>
+          <td class="p-2">{{ transport.serviceProviderName }}</td>
           <td class="p-2">{{ transport.type }}</td>
           <td class="p-2 text-center">{{ transport.netPrice | currencyVnd }}</td>
           <td class="p-2 text-center">{{ transport.quantity }}</td>
@@ -136,11 +138,9 @@
           <td class="p-2 text-right">
             <table class="border-collapse inline-table w-full">
               <tbody>
-              <tr>
-                <td class="text-center pr-2">{{ transport.roomPrices['01-04'] | currencyVnd }}</td>
-                <td class="text-center pr-2">{{ transport.roomPrices['05-10'] | currencyVnd }}</td>
-                <td class="text-center">{{ transport.roomPrices['11-20'] | currencyVnd }}</td>
-              </tr>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ transport.roomPrices[range] | currencyVnd }}</td>
+                </tr>
               </tbody>
             </table>
           </td>
@@ -166,6 +166,7 @@
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-left">Tên nhà hàng</th>
+          <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-left">Địa chỉ</th>
           <th class="p-2 text-left">Loại</th>
           <th class="p-2 text-center">Giá Net</th>
@@ -175,15 +176,12 @@
           <th class="p-2 text-center">Actions</th>
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
-          <th colspan="6"></th>
+          <th colspan="7"></th>
           <th class="p-2 text-right">
-            
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td class="text-center pr-2">01 - 04 khách</td>
-                  <td class="text-center pr-2">05 - 10 khách</td>
-                  <td class="text-center">11 - 20 khách</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
                 </tr>
               </tbody>
             </table>
@@ -195,6 +193,7 @@
         <tr class="border-b border-gray-300" *ngFor="let restaurant of restaurants; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2">{{ restaurant.name }}</td>
+          <td class="p-2">{{ restaurant.serviceProviderName }}</td>
           <td class="p-2">{{ restaurant.location }}</td>
           <td class="p-2">{{ restaurant.type }}</td>
           <td class="p-2 text-center">{{ restaurant.netPrice | currencyVnd }}</td>
@@ -204,9 +203,7 @@
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td class="text-center pr-2">{{ restaurant.roomPrices['01-04'] | currencyVnd }}</td>
-                  <td class="text-center pr-2">{{ restaurant.roomPrices['05-10'] | currencyVnd }}</td>
-                  <td class="p-2 text-center">{{ restaurant.roomPrices['11-20'] | currencyVnd }}</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ restaurant.roomPrices[range] | currencyVnd }}</td>
                 </tr>
               </tbody>
             </table>
@@ -243,13 +240,10 @@
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="5"></th>
           <th class="p-2 text-right">
-            
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td class="text-center pr-2">01 - 04 khách</td>
-                  <td class="text-center pr-2">05 - 10 khách</td>
-                  <td class="text-center">11 - 20 khách</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
                 </tr>
               </tbody>
             </table>
@@ -261,20 +255,17 @@
         <tr class="border-b border-gray-300" *ngFor="let guide of tourGuides; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2">{{ guide.name }}</td>
-          <td class="p-2">{{ guide.provider }}</td>
+          <td class="p-2">{{ guide.serviceProviderName }}</td>
           <td class="p-2 text-center">{{ guide.netPrice | currencyVnd }}</td>
           <td class="p-2 text-center">{{ guide.quantity }}</td>
           <td class="p-2 text-center">{{ guide.day }}</td>
-          <td class="p-2 text-center">
+          <td class="p-2 text-right">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
-                  <td class="text-center pr-2">{{ guide.roomPrices['01-04'] | currencyVnd }}</td>
-                  <td class="text-center pr-2">{{ guide.roomPrices['05-10'] | currencyVnd }}</td>
-                  <td class="text-center">{{ guide.roomPrices['11-20'] | currencyVnd }}</td>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ guide.roomPrices[range] | currencyVnd }}</td>
                 </tr>
               </tbody>
-              
             </table>
           </td>
           <td class="p-2 text-center">
@@ -311,13 +302,10 @@
           <tr class="bg-gray-200 border-b border-gray-300">
             <th colspan="6"></th>
             <th class="p-2 text-right">
-              
               <table class="border-collapse inline-table w-full">
                 <tbody>
                   <tr>
-                    <td class="text-center pr-2">01 - 04 khách</td>
-                    <td class="text-center pr-2">05 - 10 khách</td>
-                    <td class="text-center">11 - 20 khách</td>
+                    <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
                   </tr>
                 </tbody>
               </table>
@@ -329,7 +317,7 @@
           <tr class="border-b border-gray-300" *ngFor="let activity of activities; let i = index"
             [class.bg-gray-50]="i % 2 === 0">
             <td class="p-2 whitespace-nowrap">{{ activity.name }}</td>
-            <td class="p-2 whitespace-nowrap">{{ activity.provider }}</td>
+            <td class="p-2 whitespace-nowrap">{{ activity.serviceProviderName }}</td>
             <td class="p-2 whitespace-nowrap">{{ activity.type }}</td>
             <td class="p-2 text-center whitespace-nowrap">{{ activity.netPrice | currencyVnd }}</td>
             <td class="p-2 text-center whitespace-nowrap">{{ activity.quantity }}</td>
@@ -338,9 +326,7 @@
               <table class="border-collapse inline-table w-full">
                 <tbody>
                   <tr>
-                    <td class="text-center pr-2">{{ activity.roomPrices['01-04'] | currencyVnd }}</td>
-                    <td class="text-center pr-2">{{ activity.roomPrices['05-10'] | currencyVnd }}</td>
-                    <td class="text-center">{{ activity.roomPrices['11-20'] | currencyVnd }}</td>
+                    <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ activity.roomPrices[range] | currencyVnd }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -370,31 +356,15 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Tổng giá Net dịch vụ -->
-          <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
-            <td class="w-1/4 py-2 font-semibold text-left pl-4">Tổng giá Net dịch vụ</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ mintotalNetPrices[range] |
-              currencyVnd }} - {{ maxtotalNetPrices[range] | currencyVnd }}</td>
-          </tr>
           <!-- Giá Net 1 khách -->
           <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá Net (1 khách)</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestNetPrices[range] |
-              currencyVnd }}</td>
-          </tr>
-          <!-- Tổng giá bán -->
-          <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
-            <td class="w-1/4 py-2 font-semibold text-left pl-4">Tổng giá bán</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">
-              {{ minsalePrices[range] ? (minsalePrices[range] | currencyVnd) : 'Chưa đặt' }} - {{
-              maxsalePrices[range] ? (maxsalePrices[range] | currencyVnd) : 'Chưa đặt' }}
-            </td>
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestNetPrices[range] | currencyVnd }}</td>
           </tr>
           <!-- Giá bán (1 khách) -->
           <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán (1 khách)</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestPrices[range] |
-              currencyVnd }}</td>
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestPrices[range] | currencyVnd }}</td>
           </tr>
         </tbody>
       </table>
@@ -404,10 +374,8 @@
 
 <!-- Include the new popup components -->
 <app-config-tour-pax [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
-<app-config-tour-pax #addHotelModal></app-config-tour-pax>
 <app-add-hotel #addHotelModal (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-<app-add-transportation #addTransportationModal
-  (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
+<app-add-transportation #addTransportationModal (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
 <app-add-restaurant #addRestaurantModal (RestaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
 <app-add-tourguide #addTourGuideModal (tourGuideAdded)="addNewTourGuide($event)"></app-add-tourguide>
 <app-add-activity #addActivityModal (activityAdded)="addNewActivity($event)"></app-add-activity>
