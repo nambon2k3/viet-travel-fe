@@ -8,6 +8,7 @@ import { AddRestaurantComponent } from "./add-restaurant/add-restaurant.componen
 import { AddActivityComponent } from "./add-activity/add-activity.component";
 import { ConfigTourPaxComponent } from "./config-tour-pax/config-tour-pax.component";
 import { TourDiscountService } from '../../services/discount.service';
+import { SsrService } from '../../../../../core/services/ssr.service';
 
 interface PriceRange {
   [key: string]: number;
@@ -73,6 +74,7 @@ export class TourDiscountComponent implements OnInit {
   tourId: number = 10;
   tourName: string = '';
   tourDays: number[] = [];
+  serviceId: number | null = null;
 
   hotels: Service[] = [];
   transports: Service[] = [];
@@ -80,7 +82,7 @@ export class TourDiscountComponent implements OnInit {
   activities: Service[] = [];
 
   priceRanges: string[] = [];
-  prices : PaxOption[] = [];
+  prices: PaxOption[] = [];
   totalNetPrice: number = 0;
   mintotalNetPrices: PriceRange = {};
   maxtotalNetPrices: PriceRange = {};
@@ -94,7 +96,8 @@ export class TourDiscountComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private tourDiscountService: TourDiscountService
+    private tourDiscountService: TourDiscountService,
+    private ssrService: SsrService
   ) { }
 
   ngOnInit() {
@@ -289,11 +292,13 @@ export class TourDiscountComponent implements OnInit {
     this.router.navigate(['head-business/list-tour']);
   }
 
-  openAddHotelModal(serviceId?: number) {
-    this.addHotelModal.serviceId = serviceId || null;
-    const modalElement = document.getElementById('addHotelModal');
-    if (modalElement) {
-      modalElement.classList.remove('hidden');
+  openAddHotelModal() {
+    const doc = this.ssrService.getDocument();
+    if (doc) {
+      const modalElement = document.getElementById('addHotelModal');
+      if (modalElement) {
+        modalElement.classList.remove('hidden');
+      }
     }
   }
 

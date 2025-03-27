@@ -108,6 +108,8 @@ export class AddHotelComponent implements AfterViewInit {
   ) { }
 
   ngOnInit() {
+    console.log("serviceId: " + this.serviceId); // Debug để kiểm tra serviceId
+    console.log("tourId: " + this.tourId);
     this.initializeForm();
     this.fetchLocations();
     if (this.serviceId) {
@@ -238,19 +240,29 @@ export class AddHotelComponent implements AfterViewInit {
     if (this.serviceId && this.tourId) {
       this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId).subscribe({
         next: (response: ServiceDetailResponse) => {
-          if (response.code === 0) { // Adjust code based on your API
+          if (response.code === 200) {
             const hotel = response.data;
-            const paxPricesGroup = this.addHotelForm.get('paxPrices') as FormGroup;
-            this.prices.forEach((pax) => {
+  
+            // Cập nhật FormArray paxPrices
+            const paxPricesArray = this.addHotelForm.get('paxPrices') as FormArray;
+            paxPricesArray.clear(); // Xóa các control cũ
+            this.prices.forEach((pax, index) => {
               const paxPrice = Object.values(hotel.paxPrices).find(p => p.paxId === pax.id);
-              paxPricesGroup.get(`price_${pax.id}`)?.setValue(paxPrice?.price || 0);
+              paxPricesArray.push(
+                this.fb.group({
+                  paxId: [pax.id],
+                  paxRange: [pax.paxRange],
+                  price: [paxPrice?.price || 0]
+                })
+              );
             });
-
+  
+            // Cập nhật các trường khác
             this.addHotelForm.patchValue({
               selectedDay: hotel.dayNumber,
               selectedLocation: hotel.locationId,
               selectedProvider: hotel.serviceProviderId,
-              selectedHotel: hotel.name,
+              selectedHotel: hotel.id,
               description: hotel.description,
               netPrice: hotel.nettPrice,
               roomDetail: {
@@ -259,8 +271,9 @@ export class AddHotelComponent implements AfterViewInit {
                 facilities: hotel.roomDetail?.facilities || ''
               }
             });
-
+  
             this.fetchServiceProviders();
+            this.fetchHotels();
           }
         },
         error: (error: any) => {
@@ -407,5 +420,9 @@ export class AddHotelComponent implements AfterViewInit {
     } else {
       this.createHotel();
     }
+  }
+
+  onCancel(){
+    this.modal?.hide();
   }
 }
