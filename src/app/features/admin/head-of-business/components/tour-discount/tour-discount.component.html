@@ -59,6 +59,9 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="hotels.length === 0">
+          <td colspan="7" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
         <tr class="border-b border-gray-300" *ngFor="let hotel of hotels; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2 text-center">{{ hotel.day }}</td>
@@ -77,14 +80,14 @@
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddHotelModal()">
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddHotelModal(hotel.id)">
               <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [serviceId]="hotel.id"
+            <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
               (hotelAdded)="addNewHotel($event)"></app-add-hotel>
             <button class="text-red-500 hover:text-red-700" (click)="deleteHotel(i)">X</button>
           </td>
@@ -128,6 +131,9 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="transports.length === 0">
+          <td colspan="7" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
         <tr class="border-b border-gray-300" *ngFor="let transport of transports; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2 text-center">{{ transport.day }}</td>
@@ -152,6 +158,8 @@
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
+            <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+              (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
             <button class="text-red-500 hover:text-red-700" (click)="deleteTransportation(i)">X</button>
           </td>
         </tr>
@@ -195,6 +203,9 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="restaurants.length === 0">
+          <td colspan="7" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
         <tr class="border-b border-gray-300" *ngFor="let restaurant of restaurants; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2 text-center">{{ restaurant.day }}</td>
@@ -262,6 +273,9 @@
         </tr>
       </thead>
       <tbody>
+        <tr *ngIf="activities.length === 0">
+          <td colspan="7" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
         <tr class="border-b border-gray-300" *ngFor="let activity of activities; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2 text-center whitespace-nowrap">{{ activity.day }}</td>
@@ -293,19 +307,24 @@
     </table>
   </div>
 
+
+  <!-- Table Layout with Stripes -->
   <div class="mb-6">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-lg font-semibold">Tổng cộng</h2>
-      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Cấu hình giá</button>
+      <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800" data-modal-target="addPriceModal"
+        data-modal-toggle="addPriceModal">
+        Cấu hình giá
+      </button>
     </div>
-
-    <!-- Table Layout with Stripes -->
     <div class="flex justify-between">
       <div class="block">
-        <div class="">
+        <div class="font-semibold">
           Chi phí tổ chức
         </div>
-        <input type="number" placeholder="Nhập chi phí tổ chức" class="w-full">
+        <input type="number" [(ngModel)]="organizationCost" placeholder="Nhập chi phí tổ chức"
+          class="mt-2 w-10/12 h-10 px-2 border border-gray-300 rounded-md" />
+        <div class="mt-2 text-sm text-gray-500">Chi phí tổ chức sẽ được cộng vào giá bán cuối cùng</div>
       </div>
       <table class="w-3/4 border border-gray-300 rounded-lg bg-gray-50">
         <thead>
@@ -318,19 +337,22 @@
           <!-- Giá Net 1 khách -->
           <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá Net (1 khách)</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestNetPrices[range] | currencyVnd }}
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">
+              {{ (mintotalNetPrices[range] / getMinPax(range)) | currencyVnd }}
             </td>
           </tr>
           <!-- Giá bán cơ bản -->
           <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cơ bản (1 khách)</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestPrices[range] | currencyVnd }}
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">
+              {{ ((minsalePrices[range] + organizationCost) / getMinPax(range)) | currencyVnd }}
             </td>
           </tr>
-          <!-- Giá bán (1 khách) -->
+          <!-- Giá bán cuối -->
           <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cuối (1 khách)</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">{{ perGuestPrices[range] | currencyVnd }}
+            <td *ngFor="let range of priceRanges" class="py-2 text-center">
+              {{ getPriceByRange(range)?.sellingPrice | currencyVnd }}
             </td>
           </tr>
         </tbody>
@@ -341,11 +363,14 @@
 
 <!-- Include the new popup components -->
 <app-config-tour-pax [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
+<app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalNetPrice]="mintotalNetPrices"
+  (confirm)="handlePriceConfirm($event)">
+</app-config-price>
 <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
   (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-<app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [pricesRange]="priceRanges"
+<app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
   (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
-<app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [pricesRange]="priceRanges"
+<app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
   (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
-<app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [pricesRange]="priceRanges"
+<app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
   (activityAdded)="addNewActivity($event)"></app-add-activity>

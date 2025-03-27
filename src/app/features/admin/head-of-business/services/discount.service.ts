@@ -25,8 +25,8 @@ export class TourDiscountService {
     });
   }
 
-  getServices(tourId: number, locationId: number, providerId: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/provider/${providerId}/location/${locationId}`);
+  getServices(tourId: number, locationId: number, providerId: number, categoryName: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/provider/${providerId}/category/${categoryName}/location/${locationId}`);
   }
 
   getServiceDetails(tourId: number, serviceId: number): Observable<any> {
