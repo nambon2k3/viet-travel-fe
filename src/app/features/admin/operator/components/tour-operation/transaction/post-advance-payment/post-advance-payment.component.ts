@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SsrService } from '../../../../../../../core/services/ssr.service';
 import { Modal } from 'flowbite';
@@ -12,6 +12,7 @@ import { Modal } from 'flowbite';
   ],
 })
 export class PostAdvancePaymentComponent {
+  @Input() bookingId: number | null = null;
   paymentForm: FormGroup;
   modal: Modal | null = null;
   

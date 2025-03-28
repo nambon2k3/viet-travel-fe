@@ -245,6 +245,7 @@ export class PostServiceComponent {
       this.tourService.addServices(payload).subscribe({
         next: (response: any) => {
           if (response.code === 200) {
+            this.serviceAdded.emit(this.servicePrices);
             console.log('Service added successfully:', response);
           } else {
             console.error('Error adding service:', response.message);

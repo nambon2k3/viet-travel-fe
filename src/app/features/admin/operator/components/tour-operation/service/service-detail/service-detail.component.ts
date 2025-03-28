@@ -1,75 +1,98 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from '../../../../../../../shared/pipes/currency-vnd.pipe';
 import { SsrService } from '../../../../../../../core/services/ssr.service';
 import { Modal } from 'flowbite';
 import { TourService } from '../../../../services/tour.service';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { error } from 'console';
 
 @Component({
   selector: 'app-service-detail',
-  imports: [FormsModule, CommonModule, CurrencyVndPipe, NgSelectModule],
+  standalone: true,
+  imports: [FormsModule, CommonModule, CurrencyVndPipe],
   templateUrl: './service-detail.component.html',
   styleUrls: ['./service-detail.component.css'],
 })
 export class ServiceDetailComponent {
-  @Output() serviceAdded = new EventEmitter<any[]>();
-  @Input() scheduleId: number | null = null;
   @Input() service: any | null = null;
   modal: Modal | null = null;
-
-  servicePrices: any[] = [];
-  finalServiceList: any[] = [];
+  serviceDetail: any | null = null;
+  quantity: number = 1;
+  totalPrice: number = 0;
 
   constructor(
-    private ssrService: SsrService,
-    private tourService: TourService
-  ) { }
+    private tourService: TourService,
+    private ssrService: SsrService  
+  ) {}
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
     const document = this.ssrService.getDocument();
-    if (document) {
+    if (!document) return;
+    const modalElement = document.getElementById('changeServiceModal'); 
+    if (modalElement) {
+      this.modal = new Modal(modalElement);
+    }
+  }  
+
+  getServiceDetail() {
+    if (!this.service?.id) return;
+
+    this.tourService.getServiceDetails(this.service.id).subscribe((response) => {
+      if (response.code === 200) {
+        this.serviceDetail = response.data;
+        this.calculateTotal();
+      }
+    });
+  }
+
+  calculateTotal() {
+    this.totalPrice = (this.serviceDetail?.sellingPrice || 0) * this.service.quantity;
+  }
+
+  updateQuantity(change: number) {
+    this.service.quantity = Math.max(1, this.service.quantity + change);
+    this.calculateTotal();
+  }
+
+  updateService() {
+    if (!this.service?.id) return;
+  
+    const requestData = {
+      tourBookingServiceId: this.service.bookingServiceId, // Đảm bảo ID này đúng
+      newQuantity: this.service.quantity // Lấy số lượng từ input
+    };
+  
+    this.tourService.updateServiceQuantity(requestData).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.serviceDetail = response.data;
+          this.calculateTotal();
+          this.close();
+
+        } else {
+          console.error('Cập nhật thất bại:', response.message);
+        }
+      }, 
+      error: (error: any) => {
+        console.error('Lỗi khi gọi API:', error);
+      }
+    });
+  }
+  
+
+  open() {
+    const doc = this.ssrService.getDocument();
+    if (doc) {
       const modalElement = document.getElementById('changeServiceModal');
       if (modalElement) {
         this.modal = new Modal(modalElement);
+        this.modal.show();
       }
     }
-  }
-
-  getTotalPrice(): number {
-    return this.servicePrices.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
-  }
-
-  increaseQuantity(index: number) {
-    this.servicePrices[index].quantity = Number(this.servicePrices[index].quantity) + 1;
-  }
-
-  decreaseQuantity(index: number) {
-    const currentQuantity = Number(this.servicePrices[index].quantity);
-    if (currentQuantity > 1) {
-      this.servicePrices[index].quantity = currentQuantity - 1;
-    }
-  }
-
-  updateQuantity(index: number, event: Event) {
-    const input = event.target as HTMLInputElement;
-    let newQuantity = Number(input.value);
-
-    // Ensure the quantity is at least 1
-    if (isNaN(newQuantity) || newQuantity < 1) {
-      newQuantity = 1;
-    }
-
-    // Update the quantity in the servicePrices array
-    this.servicePrices[index].quantity = newQuantity;
-  }
-
-  open() {
-    this.modal?.show();
   }
 
   close() {

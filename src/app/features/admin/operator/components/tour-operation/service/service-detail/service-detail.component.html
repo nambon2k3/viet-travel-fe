@@ -3,163 +3,67 @@
     <div class="max-w-7xl w-11/12 mx-auto bg-white p-6 rounded-lg shadow">
         <div class="flex justify-between items-center">
             <h2 class="text-lg font-bold mb-3">Chọn dịch vụ</h2>
-            <button data-modal-hide="changeServiceModal" class="text-gray-500 hover:text-gray-700">
-                ✖
-            </button>
+            <button (click)="close()" class="text-gray-500 hover:text-gray-700">✖</button>
         </div>
 
-        <!-- Location and Category Selection -->
-        <!-- Location and Category Selection -->
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
                 <label class="block text-sm font-semibold">Chọn địa điểm</label>
-                <input type="text" [(ngModel)]="selectedLocationName" class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
+                <input type="text" [(ngModel)]="service.location"
+                    class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
             </div>
             <div>
-                <label class="block text-sm font-semibold">Chọn loại dịch vụ</label>
-                <input type="text" [(ngModel)]="selectedCategoryName" class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
+                <label class="block text-sm font-semibold">Loại dịch vụ</label>
+                <input type="text" [(ngModel)]="service.type"
+                    class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
             </div>
         </div>
 
         <!-- Service Provider and Customer Selection -->
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
-                <label class="block text-sm font-semibold">Chọn nhà cung cấp dịch vụ</label>
-                <input type="text" [(ngModel)]="selectedProviderName" class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
+                <label class="block text-sm font-semibold">Nhà cung cấp dịch vụ</label>
+                <input type="text" [(ngModel)]="service.providerName"
+                    class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
             </div>
             <div>
-                <label class="block text-sm font-semibold">Chọn khách hàng</label>
-                <input type="text" [(ngModel)]="selectedBookingName" class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
+                <label class="block text-sm font-semibold">Khách hàng</label>
+                <input type="text" [(ngModel)]="service.bookingCode"
+                    class="mt-2 w-full bg-gray-100 border border-gray-300 rounded-md p-2" readonly>
             </div>
         </div>
 
-        <!-- Service List -->
-        <div class="border rounded-md  p-3">
-            <table class="w-full text-left service-list-table">
-                <thead class="sticky top-0 bg-gray-100">
-                    <tr>
-                        <th class="font-semibold">Tên dịch vụ</th>
-                        <th class="font-semibold">Loại</th>
-                        <th class="font-semibold">Đơn giá</th>
-                        <th class="font-semibold">Chi tiết</th>
-                        <th class="font-semibold text-center">Hành động</th>
-                    </tr>
-                </thead>
-            </table>
-            <div class="max-h-[120px] overflow-y-auto">
-                <table class="w-full text-left service-list-table">
-                    <tbody>
-                        <tr class="border-t cursor-pointer">
-                            <td>{{ service.name }}</td>
-                            <td>{{ service.type }}</td>
-                            <td>{{ service.unitPrice | currency:'VND' }}</td>
-                            <td>
-                                <span *ngIf="service.room">
-                                    {{ service.room.capacity === 1 ? 'Phòng đơn' : (service.room.capacity === 2 ? 'Phòng đôi' : 'Phòng nhiều người') }}
-                                </span>
-                                <span *ngIf="service.meal">
-                                    {{ service.meal.type === 'BREAKFAST' ? 'Bữa sáng' :
-                                    service.meal.type === 'LUNCH' ? 'Bữa trưa' :
-                                    service.meal.type === 'DINNER' ? 'Bữa tối' : '' }}
-                                </span>
-                            </td>
-                            <td class=" text-center">
-                                <button class="text-xl">
-                                    <svg class="w-6 h-6 text-green-700 hover:text-green-800 dark:text-white"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M12 7.757v8.486M7.757 12h8.486M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Service Info -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-semibold">Dịch vụ</label>
+                <input type="text" [(ngModel)]="service.name" class="mt-2 w-full bg-gray-100 border p-2" readonly>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold">Đơn giá</label>
+                <input type="text" [value]="serviceDetail?.sellingPrice | currencyVnd"
+                    class="mt-2 w-full bg-gray-100 border p-2" readonly>
             </div>
         </div>
 
-        <!-- Selected Services Table -->
-        <div class="border rounded-md  p-3 mt-4">
-            <table class="w-full text-left selected-services-table">
-                <thead class="sticky top-0 bg-gray-100">
-                    <tr>
-                        <th class="font-semibold">Dịch vụ</th>
-                        <th class="font-semibold text-center">Đơn giá</th>
-                        <th class="font-semibold text-center">Ngày yêu cầu</th>
-                        <th class="font-semibold text-center">Số lượng</th>
-                        <th class="font-semibold text-center">Tổng cộng</th>
-                        <th class="font-semibold text-center">Hành động</th>
-                    </tr>
-                </thead>
-            </table>
-            <div class="max-h-[150px] overflow-y-auto">
-                <table class="w-full text-left selected-services-table">
-                    <tbody>
-                        <tr *ngFor="let price of servicePrices; let i = index">
-                            <td>
-                                <p>{{ price.type }}</p>
-                            </td>
-                            <td class="text-center">
-                                <p>{{ price.unitPrice | currencyVnd }}</p>
-                            </td>
-                            <td class="text-center max-w-5">
-                                <input type="date" [(ngModel)]="price.requestDate" class="border p-1 rounded">
-                            </td>
-                            <td class="text-center">
-                                <div class="flex justify-between items-center">
-                                    <button
-                                        class="h-9 bg-white rounded-l border text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-50 inline-flex items-center pl-2 py-1 border-r border-gray-200"
-                                        (click)="decreaseQuantity(i)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M20 12H4" />
-                                        </svg>
-                                    </button>
-                                    <input type="number" [(ngModel)]="price.quantity"
-                                        (keydown.enter)="updateQuantity(i, $event)" (blur)="updateQuantity(i, $event)"
-                                        class="w-16 z-10 text-center border-t border-b border-gray-100 bg-white py-1 focus:outline-none focus:ring-1 focus:ring-green-700"
-                                        min="1" />
-                                    <button
-                                        class="h-9 bg-white rounded-r border text-gray-600 hover:bg-gray-100 active:bg-gray-200 disabled:opacity-50 inline-flex items-center pl-2 py-1 border-r border-gray-200"
-                                        (click)="increaseQuantity(i)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 4v16m8-8H4" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <p>{{ price.unitPrice * price.quantity | currencyVnd }}</p>
-                            </td>
-                            <td class="text-center">
-                                <button>
-                                    <svg class="w-6 h-6 text-red-700 hover:text-red-800 dark:text-white"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- Quantity and Total Price -->
+        <div class="flex justify-between items-center">
+            <label class="block text-sm font-semibold">Số lượng</label>
+            <div class="flex">
+                <button class="border px-3 py-1" (click)="updateQuantity(-1)">-</button>
+                <input type="number" [(ngModel)]="service.quantity" class="w-20 text-center border mx-2" min="1"
+                    (input)="calculateTotal()">
+                <button class="border px-3 py-1" (click)="updateQuantity(1)">+</button>
             </div>
-            <div class="text-right font-bold mt-2">
-                Tổng giá: {{ getTotalPrice() | currencyVnd }}
-            </div>
+        </div>
+        <div class="text-right font-bold mt-2">
+            Tổng giá: {{ totalPrice | currencyVnd }}
         </div>
 
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-2 mt-4">
-            <button class="border px-4 py-2 rounded bg-gray-300" data-modal-hide="changeServiceModal">Hủy</button>
-            <button class="border px-4 py-2 rounded bg-black text-white" data-modal-hide="changeServiceModal"
-               >Thay đổi số lượng</button>
+            <button class="border px-4 py-2 rounded bg-gray-300" (click)="close()">Hủy</button>
+            <button class="border px-4 py-2 rounded bg-green-700 text-white" (click)="updateService()">Xác nhận</button>
         </div>
     </div>
 </div>

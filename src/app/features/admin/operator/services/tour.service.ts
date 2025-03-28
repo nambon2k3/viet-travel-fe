@@ -78,11 +78,15 @@ export class TourService {
   }
 
   deleteService(id: number): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}operator/tour-detail/service/change-status/${id}`);
+    return this.http.put(`${environment.apiUrl}operator/cancel-service/${id}`, id);
+  }
+
+  previewEmail(payload: any) {
+    return this.http.post(`${environment.apiUrl}operator/preview-mail`, payload);
   }
 
   sendOrder(formData: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/operator/send-mail-to-provider`, formData);
+    return this.http.post(`${environment.apiUrl}operator/send-mail-to-provider`, formData);
   }
 
   getSummary(id: number): Observable<any> {
@@ -111,5 +115,13 @@ export class TourService {
 
   addServices(services: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}operator/add-service`, services);
+  }
+
+  updateServiceQuantity(formData: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}operator/update-service-quantity`, formData);
+  }
+
+  payService(formData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}operator/pay-service`, formData);
   }
 }
