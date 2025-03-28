@@ -96,7 +96,7 @@ export class AddTransportationComponent {
 
   modal: Modal | null = null;
   addTransportationForm!: FormGroup;
-  locations = signal<any[]>([]);
+  @Input() locations = signal<any[]>([]);
   providers = signal<any[]>([]);
   transportations = signal<any[]>([]);
 
@@ -108,7 +108,6 @@ export class AddTransportationComponent {
 
   ngOnInit() {
     this.initializeForm();
-    this.fetchLocations();
   }
 
   initializeForm() {
@@ -126,18 +125,16 @@ export class AddTransportationComponent {
       }),
       paxPrices: this.fb.array([])
     });
-    this.initPaxPrices();
   }
 
 
   initPaxPrices() {
-    console.log('Initializing Pax Prices:', this.prices);
     const paxPricesArray = this.addTransportationForm.get('paxPrices') as FormArray;
     paxPricesArray.clear();
     Object.values(this.prices).forEach((pax: any) => {
       paxPricesArray.push(
         this.fb.group({
-          paxId: [pax.paxId],
+          paxId: [pax.id],
           paxRange: [pax.paxRange],
           price: [0]
         })
@@ -155,23 +152,6 @@ export class AddTransportationComponent {
         this.initPaxPrices();
       }
     }
-  }
-
-  fetchLocations() {
-    this.tourDiscountService.getLocations(this.tourId).subscribe({
-      next: (response: any) => {
-        if (response.code === 200) {
-          const mappedLocations = response.data.items.map((item: any) => ({
-            id: item.id,
-            name: item.name
-          }));
-          this.locations.set(mappedLocations);
-        }
-      },
-      error: (error: any) => {
-        console.error('Error fetching locations:', error);
-      }
-    });
   }
 
   fetchServiceProviders() {
@@ -299,7 +279,6 @@ export class AddTransportationComponent {
   createTransportation() {
     if (this.addTransportationForm.valid) {
       const formValue = this.addTransportationForm.value;
-
       const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
         acc[pax.paxId] = pax.price;
         return acc;
@@ -312,7 +291,7 @@ export class AddTransportationComponent {
         sellingPrice: formValue.netPrice,
         nettPrice: formValue.netPrice,
         paxPrices: paxPrices,
-        roomDetail: formValue.roomDetail,
+        //roomDetail: formValue.roomDetail,
         mealDetail: null,
         transportDetail: null
       };
@@ -337,7 +316,7 @@ export class AddTransportationComponent {
               serviceProviderId: formValue.selectedProvider,
               startDate: response.data.startDate || '',
               endDate: response.data.endDate || '',
-              roomDetail: formData.roomDetail
+              //roomDetail: formData.roomDetail
             };
             this.transportationAdded.emit({ service: newService, isUpdate: false });
             this.modal?.hide();

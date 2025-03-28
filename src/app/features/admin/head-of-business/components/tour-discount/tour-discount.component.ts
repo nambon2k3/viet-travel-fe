@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,6 @@ import { AddRestaurantComponent } from "./add-restaurant/add-restaurant.componen
 import { AddActivityComponent } from "./add-activity/add-activity.component";
 import { ConfigTourPaxComponent } from "./config-tour-pax/config-tour-pax.component";
 import { TourDiscountService } from '../../services/discount.service';
-import { SsrService } from '../../../../../core/services/ssr.service';
 import { ConfigPriceComponent } from './config-price/config-price.component';
 import { FormsModule } from '@angular/forms';
 
@@ -21,6 +20,7 @@ interface PaxOption {
   minPax: number;
   maxPax: number;
   paxRange: string;
+  fixedCost: number;
   sellingPrice: number;
 }
 
@@ -87,7 +87,7 @@ export class TourDiscountComponent implements OnInit {
   activities: Service[] = [];
   priceRanges: string[] = [];
   prices: PaxOption[] = [];
-  organizationCost: number = 0;
+  locations = signal<any[]>([]);
 
   mintotalNetPrices: PriceRange = {};
   minsalePrices: PriceRange = {};
@@ -95,7 +95,6 @@ export class TourDiscountComponent implements OnInit {
   constructor(
     private router: Router,
     private tourDiscountService: TourDiscountService,
-    private ssrService: SsrService,
     private route: ActivatedRoute,
   ) { }
 
@@ -104,6 +103,7 @@ export class TourDiscountComponent implements OnInit {
       this.tourId = params['id'];
       if (this.tourId !== 0) {
         this.fetchTourData(this.tourId);
+        this.fetchLocations();
       }
     });
   }
@@ -123,8 +123,8 @@ export class TourDiscountComponent implements OnInit {
           data.serviceCategories.forEach(category => {
             if (category.categoryName === 'Hotel') {
               this.hotels = category.services.map(service => this.mapService(service, 'Hotel'));
-            } else if (category.categoryName === 'Transportation') {
-              this.transports = category.services.map(service => this.mapService(service, 'Transportation'));
+            } else if (category.categoryName === 'Transport') {
+              this.transports = category.services.map(service => this.mapService(service, 'Transport'));
             } else if (category.categoryName === 'Restaurant') {
               this.restaurants = category.services.map(service => this.mapService(service, 'Restaurant'));
             } else if (category.categoryName === 'Activity') {
@@ -139,6 +139,23 @@ export class TourDiscountComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('HTTP error fetching tour data:', error);
+      }
+    });
+  }
+
+  fetchLocations() {
+    this.tourDiscountService.getLocations(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          const mappedLocations = response.data.items.map((item: any) => ({
+            id: item.id,
+            name: item.name
+          }));
+          this.locations.set(mappedLocations);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching locations:', error);
       }
     });
   }
@@ -348,7 +365,7 @@ export class TourDiscountComponent implements OnInit {
       this.activities.forEach(activity => {
         total += (activity.prices[range] || 0) * guestRanges[range].min * activity.quantity;
       });
-      this.minsalePrices[range] = total + (this.organizationCost || 0);
+      this.minsalePrices[range] = total;
     });
   }
 }

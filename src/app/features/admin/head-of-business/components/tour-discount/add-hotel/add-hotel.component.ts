@@ -92,11 +92,11 @@ export class AddHotelComponent {
   @Input() tourId: number = 0;
   @Input() serviceId: number | null = null;
   @Input() prices: PaxOption[] = [];
+  @Input() locations = signal<any[]>([]);
   @Output() hotelAdded = new EventEmitter<any>();
 
   modal: Modal | null = null;
   addHotelForm!: FormGroup;
-  locations = signal<any[]>([]);
   providers = signal<any[]>([]);
   hotels = signal<any[]>([]);
 
@@ -108,7 +108,6 @@ export class AddHotelComponent {
 
   ngOnInit() {
     this.initializeForm();
-    this.fetchLocations();
   }
 
   initializeForm() {
@@ -126,18 +125,16 @@ export class AddHotelComponent {
       }),
       paxPrices: this.fb.array([])
     });
-    this.initPaxPrices();
   }
 
 
   initPaxPrices() {
-    console.log('Initializing Pax Prices:', this.prices);
     const paxPricesArray = this.addHotelForm.get('paxPrices') as FormArray;
     paxPricesArray.clear();
     Object.values(this.prices).forEach((pax: any) => {
       paxPricesArray.push(
         this.fb.group({
-          paxId: [pax.paxId],
+          paxId: [pax.id],
           paxRange: [pax.paxRange],
           price: [0]
         })
@@ -157,22 +154,7 @@ export class AddHotelComponent {
     }
   }
 
-  fetchLocations() {
-    this.tourDiscountService.getLocations(this.tourId).subscribe({
-      next: (response: any) => {
-        if (response.code === 200) {
-          const mappedLocations = response.data.items.map((item: any) => ({
-            id: item.id,
-            name: item.name
-          }));
-          this.locations.set(mappedLocations);
-        }
-      },
-      error: (error: any) => {
-        console.error('Error fetching locations:', error);
-      }
-    });
-  }
+  
 
   fetchServiceProviders() {
     const locationId = this.addHotelForm.get('selectedLocation')?.value;
@@ -299,7 +281,6 @@ export class AddHotelComponent {
   createHotel() {
     if (this.addHotelForm.valid) {
       const formValue = this.addHotelForm.value;
-
       const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
         acc[pax.paxId] = pax.price;
         return acc;
@@ -312,7 +293,7 @@ export class AddHotelComponent {
         sellingPrice: formValue.netPrice,
         nettPrice: formValue.netPrice,
         paxPrices: paxPrices,
-        roomDetail: formValue.roomDetail,
+        //roomDetail: formValue.roomDetail,
         mealDetail: null,
         transportDetail: null
       };
@@ -337,7 +318,7 @@ export class AddHotelComponent {
               serviceProviderId: formValue.selectedProvider,
               startDate: response.data.startDate || '',
               endDate: response.data.endDate || '',
-              roomDetail: formData.roomDetail
+              //roomDetail: formData.roomDetail
             };
             this.hotelAdded.emit({ service: newService, isUpdate: false });
             this.modal?.hide();

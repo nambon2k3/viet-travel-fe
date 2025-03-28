@@ -25,13 +25,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let service of services, let i = index"
-                    class="border-b">
+                <tr *ngFor="let service of services, let i = index" class="border-b">
                     <td class="p-2">{{ i + 1 }}</td>
                     <td class="p-2">{{ service.name }}</td>
                     <td class="p-2">{{ service.type }}</td>
-                    <td class="p-2">{{ service.bookingId }}</td>
-                    <td class="p-2">{{ service.date | formatDate}}</td>
+                    <td class="p-2">{{ service.bookingCode }}</td>
+                    <td class="p-2">{{ service.date !== 'Chưa đặt' ? (service.date | formatDate) : 'Chưa đặt' }}</td>
                     <td class="p-2">{{ service.quantity }} slots</td>
                     <td class="p-2 relative">
                         <button id="dropdownOrderButton-{{ service.uniqueId }}"
@@ -68,7 +67,7 @@
 
                         <div id="dropdownPayment-{{ service.uniqueId }}"
                             class="z-10 hidden absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-36 dark:bg-white">
-                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                            <ul class="p-2 text-sm text-gray-700 dark:text-gray-200">
                                 <li>
                                     <button (click)="openTourGuidePayModal(service)"
                                         class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/20 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-1">
@@ -85,7 +84,9 @@
                         </div>
                     </td>
                     <td class="p-2">
-                        <button class="text-white px-2 py-1 rounded-md" (click)="openServiceDetail(service.id)">
+                        <button class="text-white px-2 py-1 rounded-md" data-modal-target="changeServiceModal"
+                            data-modal-toggle="changeServiceModal" 
+                            (click)="openServiceDetail(service.bookingServiceId)">
                             <svg class="w-6 h-6 text-green-700 dark:text-green-700" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
@@ -94,6 +95,7 @@
                                     d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
                             </svg>
                         </button>
+                        <app-service-detail [scheduleId]="scheduleId" [service]="service" #changeServiceModal></app-service-detail>
 
                         <button class="text-white px-2 py-1 rounded-md" (click)="deleteService(service.id)">
                             <svg class="w-6 h-6 text-red-500 dark:text-red-500" aria-hidden="true"

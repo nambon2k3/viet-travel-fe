@@ -87,7 +87,7 @@
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+            <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
               (hotelAdded)="addNewHotel($event)"></app-add-hotel>
             <button class="text-red-500 hover:text-red-700" (click)="deleteHotel(i)">X</button>
           </td>
@@ -158,7 +158,7 @@
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+            <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
               (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
             <button class="text-red-500 hover:text-red-700" (click)="deleteTransportation(i)">X</button>
           </td>
@@ -231,6 +231,8 @@
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
+            <app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+              (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
             <button class="text-red-500 hover:text-red-700" (click)="deleteRestaurant(i)">X</button>
           </td>
         </tr>
@@ -300,6 +302,8 @@
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
+            <app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+              (activityAdded)="addNewActivity($event)"></app-add-activity>
             <button class="text-red-500 hover:text-red-700" (click)="deleteActivity(i)">X</button>
           </td>
         </tr>
@@ -317,15 +321,7 @@
         Cấu hình giá
       </button>
     </div>
-    <div class="flex justify-between">
-      <div class="block">
-        <div class="font-semibold">
-          Chi phí tổ chức
-        </div>
-        <input type="number" [(ngModel)]="organizationCost" placeholder="Nhập chi phí tổ chức"
-          class="mt-2 w-10/12 h-10 px-2 border border-gray-300 rounded-md" />
-        <div class="mt-2 text-sm text-gray-500">Chi phí tổ chức sẽ được cộng vào giá bán cuối cùng</div>
-      </div>
+    <div class="flex justify-end">
       <table class="w-3/4 border border-gray-300 rounded-lg bg-gray-50">
         <thead>
           <tr class="bg-gray-100 border-b border-gray-300">
@@ -341,16 +337,9 @@
               {{ (mintotalNetPrices[range] / getMinPax(range)) | currencyVnd }}
             </td>
           </tr>
-          <!-- Giá bán cơ bản -->
-          <tr class="odd:bg-white even:bg-gray-50">
-            <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cơ bản (1 khách)</td>
-            <td *ngFor="let range of priceRanges" class="py-2 text-center">
-              {{ ((minsalePrices[range] + organizationCost) / getMinPax(range)) | currencyVnd }}
-            </td>
-          </tr>
           <!-- Giá bán cuối -->
           <tr class="odd:bg-white even:bg-gray-50">
-            <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cuối (1 khách)</td>
+            <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán (1 khách)</td>
             <td *ngFor="let range of priceRanges" class="py-2 text-center">
               {{ getPriceByRange(range)?.sellingPrice | currencyVnd }}
             </td>
@@ -366,11 +355,11 @@
 <app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalNetPrice]="mintotalNetPrices"
   (confirm)="handlePriceConfirm($event)">
 </app-config-price>
-<app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+<app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-<app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+<app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
-<app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
-  (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
-<app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+<app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+  (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant> 
+<app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (activityAdded)="addNewActivity($event)"></app-add-activity>

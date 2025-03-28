@@ -3,12 +3,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from "../../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
+import { TourDiscountService } from '../../../services/discount.service';
 
 interface PaxOption {
   id: number;
   minPax: number;
   maxPax: number;
   paxRange: string;
+  //fixedCost: number;
   sellingPrice: number;
 }
 
@@ -27,6 +29,7 @@ export class ConfigPriceComponent {
   @Input() set prices(value: PaxOption[]) {
     this._prices = value.map(p => ({
       ...p,
+      //fixedCostFormatted: p.fixedCost.toLocaleString('vi-VN'),
       sellingPriceFormatted: p.sellingPrice.toLocaleString('vi-VN')
     }));
   }
@@ -34,9 +37,13 @@ export class ConfigPriceComponent {
   @Output() cancel = new EventEmitter<void>();
   @Input() totalNetPrice: PriceRange = {};
 
-  _prices: { paxRange: string, sellingPriceFormatted: string }[] = [];
-  startDate: string = new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0];
-  endDate: string = new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0];
+  constructor(
+    private discountService: TourDiscountService,
+  ) { }
+
+  _prices: { id: number, paxRange: string, sellingPriceFormatted: string }[] = [];
+  startDate: string = new Date().toISOString().split('T')[0];
+  endDate: string = new Date().toISOString().split('T')[0];
 
   formatPrice(index: number): void {
     let value = this._prices[index].sellingPriceFormatted.replace(/[^0-9]/g, '');
@@ -51,18 +58,31 @@ export class ConfigPriceComponent {
     return parseInt(range.split('-')[0], 10);
   }
 
-  deletePrice(index: number): void {
-    this._prices.splice(index, 1);
+  getMaxPax(range: string): number {
+    return parseInt(range.split('-')[1], 10);
   }
 
   onConfirm(): void {
-    const parsedPrices = this._prices.map((p, index) => ({
-      id: index, 
-      minPax: 0, 
-      maxPax: 0, 
+    console.log('Confirming prices:', this._prices);
+    const parsedPrices = this._prices.map((p) => ({
+      id: p.id,
+      minPax: this.getMinPax(p.paxRange),
+      maxPax: this.getMaxPax(p.paxRange),
       paxRange: p.paxRange,
-      sellingPrice: parseInt(p.sellingPriceFormatted.replace(/,/g, ''), 10)
+      //fixedCost: parseInt(p.fixedCostFormatted.replace(/,/g, ''), 10),
+      sellingPrice: parseInt(p.sellingPriceFormatted.replace(/,/g, ''), 10),
+      validFrom: new Date(this.startDate).toISOString(),
+      validTo: new Date(this.endDate).toISOString(),
     }));
+
+    parsedPrices.forEach(price => {
+      this.discountService.updatePrice(this.tourId, price.id, price)
+        .subscribe({
+          next: () => console.log(`Updated price for paxId: ${price.id}`),
+          error: (err: any) => console.error(`Failed to update paxId: ${price.id}`, err)
+        });
+    });
+
     this.confirm.emit(parsedPrices);
   }
 }

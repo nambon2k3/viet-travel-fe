@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CurrencyVndPipe } from "../../../../../../shared/pipes/currency-vnd.pipe";
 import { TourService } from '../../../services/tour.service';
 import { ActivatedRoute } from '@angular/router';
@@ -51,38 +50,37 @@ export class SummaryComponent implements OnInit {
     });
   }
 
-  fetchTourSummary(id : number): void {
+  fetchTourSummary(id: number): void {
     this.tourService.getSummary(id).subscribe({
       next: (response: any) => {
         if (response.code === 200 && response.data) {
           const tourData = response.data;
-
+  
           this.totalCollect = {
-            total: tourData.totalReceiptAmount,
-            companyCollect: tourData.receiptedAmount,
-            travelGuideCollect: tourData.collectionAmount,
-            remain: tourData.remainingReceiptAmount
+            total: parseFloat(tourData.totalReceiptAmount),
+            companyCollect: parseFloat(tourData.receiptedAmount),
+            travelGuideCollect: parseFloat(tourData.collectionAmount),
+            remain: parseFloat(tourData.remainingReceiptAmount)
           };
-
+  
           this.totalPaid = {
-            total: tourData.totalPaymentAmount,
-            companyPaid: tourData.paymentAmount,
-            travelGuidePaid: tourData.advanceAmount,
-            remain: tourData.remainingPaymentAmount
+            total: parseFloat(tourData.totalPaymentAmount),
+            companyPaid: parseFloat(tourData.paymentAmount),
+            travelGuidePaid: parseFloat(tourData.advanceAmount),
+            remain: parseFloat(tourData.remainingPaymentAmount)
           };
-
-          const profit = (tourData.totalReceiptAmount) - (tourData.totalPaymentAmount);
+  
+          const profit = parseFloat(tourData.actualProfitAmount);
           this.summary = [
-            { content: 'Đã thu', estimate: tourData.totalReceiptAmount, summary: tourData.totalReceiptAmount },
-            { content: 'Đã chi', estimate: tourData.totalPaymentAmount, summary: tourData.totalPaymentAmount },
-            { content: 'Lợi nhuận', estimate: profit, summary: profit }
+            { content: 'Đã thu', estimate: parseFloat(tourData.estimateReceiptAmount), summary: parseFloat(tourData.totalReceiptAmount) },
+            { content: 'Đã chi', estimate: parseFloat(tourData.estimatedPaymentAmount), summary: parseFloat(tourData.totalPaymentAmount) },
+            { content: 'Lợi nhuận', estimate: parseFloat(tourData.estimateProfitAmount), summary: profit }
           ];
-          console.log("this.summary");
         }
       },
       error: (error) => {
         console.error('Error fetching tour summary:', error);
       }
     });
-  }
+  }  
 }

@@ -38,7 +38,7 @@ export class TourDiscountService {
   }
 
   getTourPaxDetailById(id: number, paxId: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}head-of-business/tour/${id}/tour-pax/${paxId}`);
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${id}/tour-pax/detail/${paxId}`);
   }
 
   createTourPax(id: number, data: any): Observable<any> {
@@ -59,5 +59,9 @@ export class TourDiscountService {
 
   updateService(tourId: number, serviceId: number, data: any): Observable<any> {
     return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/${serviceId}`, data);
+  }
+
+  updatePrice(tourId: number, paxId: number, priceData: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-pax/update/${paxId}`, priceData);
   }
 }

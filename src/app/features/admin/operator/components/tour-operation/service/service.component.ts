@@ -8,6 +8,7 @@ import { OrderServiceComponent } from './order-service/order-service.component';
 import { CurrencyVndPipe } from '../../../../../../shared/pipes/currency-vnd.pipe';
 import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe';
 import { TourService } from '../../../services/tour.service';
+import { ServiceDetailComponent } from './service-detail/service-detail.component';
 
 @Component({
   selector: 'app-service',
@@ -18,6 +19,7 @@ import { TourService } from '../../../services/tour.service';
     TourGuidePayComponent,
     PostServiceComponent,
     OrderServiceComponent,
+    ServiceDetailComponent,
     CurrencyVndPipe,
     FormatDatePipe
   ]
@@ -33,6 +35,7 @@ export class ServiceComponent {
   scheduleId: number | null = null;
 
   @ViewChild('chooseServiceModal') chooseServiceModal!: PostServiceComponent;
+  @ViewChild('changeServiceModal') changeServiceModal!: ServiceDetailComponent;
   @ViewChild('tourGuidePayModal') tourGuidePayModal!: TourGuidePayComponent;
   @ViewChild('orderModal') orderModal!: OrderServiceComponent;
 
@@ -74,12 +77,15 @@ export class ServiceComponent {
       next: (response: any) => {
         if (response.code === 200) {
           this.services = response.data.services.map((service: any) => ({
+            bookingServiceId: service.bookingServiceId,
+            bookingCode: service.bookingCode,
+            bookingStatus: service.bookingStatus,
+            bookingId: service.bookingId,
             id: service.serviceId,
-            uniqueId: `${service.serviceId}-${service.bookingId}`,
+            uniqueId: `${service.serviceId}-${service.bookingId}-${service.bookingServiceId}`,
             name: service.serviceName,
             type: this.mapCategory(service.serviceCategory),
-            bookingId: service.bookingCode,
-            date: service.usingDate,
+            date: service.usingDate ? service.usingDate : 'Chưa đặt', // Cập nhật tại đây
             quantity: service.requestQuantity,
             order: this.mapOrderStatus(service.bookingStatus),
             payment: this.mapPaymentStatus(service.paymentStatus),
@@ -99,7 +105,7 @@ export class ServiceComponent {
         console.error('Lỗi khi tải danh sách dịch vụ:', error);
       }
     });
-  }
+  }  
 
   // Map booking status to Vietnamese and for display
   mapOrderStatus(status: string): string {
@@ -175,7 +181,7 @@ export class ServiceComponent {
       next: (response: any) => {
         if (response.code === 200) {
           this.services = this.services.filter(service => service.id !== serviceId);
-          this.inits(); // Re-initialize after DOM changes
+          this.inits();
         } else {
           console.error('Lỗi:', response.message);
         }
@@ -188,15 +194,15 @@ export class ServiceComponent {
 
   changeOrderStatus(service: any, status: string) {
     this.selectedService = service;
-    service.order = this.mapOrderStatus(status); // Update to Vietnamese
+    service.order = this.mapOrderStatus(status);
   }
 
   changePaymentStatus(service: any, status: string) {
-    service.payment = this.mapPaymentStatus(status); // Update to Vietnamese
+    service.payment = this.mapPaymentStatus(status); 
   }
 
   openServiceDetail(serviceId: number) {
-    this.router.navigate(['/operator/tour-operation/service', serviceId]);
+    
   }
 
   openOrderModal(service: any) {

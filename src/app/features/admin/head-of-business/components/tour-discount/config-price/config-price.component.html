@@ -30,6 +30,7 @@
               <tr class="bg-gray-100 border-b border-gray-300">
                 <th class="p-3 text-left font-semibold">Số khách hàng</th>
                 <th class="p-3 text-left font-semibold">Tổng giá Nett dịch vụ</th>
+                <th class="p-3 text-left font-semibold">Chi phí tổ chức</th>
                 <th class="p-3 text-left font-semibold">Giá bán (1 khách)</th>
                 <th class="p-3 text-left font-semibold"></th>
               </tr>
@@ -39,6 +40,12 @@
                 <td class="p-3">{{ price.paxRange }} khách</td>
                 <td class="p-3">{{ (totalNetPrice[price.paxRange] / getMinPax(price.paxRange)) | currencyVnd }} VND</td>
                 <td class="p-3 flex items-center gap-2">
+                  <input type="text" [(ngModel)]="price.sellingPriceFormatted"
+                    class="p-2 border border-gray-300 rounded-md w-32" placeholder="Nhập chi phí tổ chức"
+                    (input)="formatPrice(i)" />
+                  <span>VND</span>
+                </td>
+                <td class="p-3">
                   <input type="text" [(ngModel)]="price.sellingPriceFormatted"
                     class="p-2 border border-gray-300 rounded-md w-32" placeholder="Nhập giá bán"
                     (input)="formatPrice(i)" />

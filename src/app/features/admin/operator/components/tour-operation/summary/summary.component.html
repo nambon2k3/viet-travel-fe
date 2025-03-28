@@ -4,19 +4,19 @@
                 <tbody>
                     <tr class="mb-2">
                         <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Tổng số thu</td>
-                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.total | number }}</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.total | currencyVnd }}</td>
                     </tr>
                     <tr class="mb-2">
                         <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Công ty thu</td>
-                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.companyCollect | number }}</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.companyCollect | currencyVnd }}</td>
                     </tr>
                     <tr class="mb-2">
                         <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Hướng dẫn viên thu</td>
-                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.travelGuideCollect | number }}</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.travelGuideCollect | currencyVnd }}</td>
                     </tr>
                     <tr>
                         <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Còn lại</td>
-                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.remain | number }}</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalCollect.remain | currencyVnd }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -26,19 +26,19 @@
                 <tbody>
                     <tr class="mb-2">
                         <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Tổng số đã chi</td>
-                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.total | number }}</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.total | currencyVnd }}</td>
                     </tr>
                     <tr class="mb-2">
                         <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Công ty đã chi</td>
-                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.companyPaid | number }}</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.companyPaid | currencyVnd }}</td>
                     </tr>
                     <tr class="mb-2">
                         <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Hướng dẫn viên đã chi</td>
-                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.travelGuidePaid | number }}</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.travelGuidePaid | currencyVnd }}</td>
                     </tr>
                     <tr>
                         <td class="bg-gray-200 border border-gray-300 p-2 font-semibold">Còn lại</td>
-                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.remain | number }}</td>
+                        <td class="bg-white border border-gray-300 p-2 text-right">{{ totalPaid.remain | currencyVnd }}</td>
                     </tr>
                 </tbody>
             </table>
