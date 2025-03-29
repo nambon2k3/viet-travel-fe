@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Modal } from 'flowbite';
 import { TourService } from '../../../../services/tour.service';
@@ -15,6 +15,7 @@ import { SsrService } from '../../../../../../../core/services/ssr.service';
 })
 export class PayServiceComponent {
   @Input() selectedService: any;
+  @Output() sendRequest = new EventEmitter<void>();
   paymentForm: FormGroup;
   modal: Modal | null = null;
 
@@ -24,7 +25,7 @@ export class PayServiceComponent {
       paidBy: ['Viet Travel', Validators.required],
       receivedBy: ['', Validators.required],
       paymentMethod: ['CASH', Validators.required],
-      transactionType: ['RECEIPT', Validators.required],
+      transactionType: ['PAYMENT', Validators.required],
       notes: [''],
       serviceId: ['', Validators.required],
       serviceName: [''],
@@ -32,9 +33,7 @@ export class PayServiceComponent {
     });
   }
 
-  sendPayment() {
-    console.log('Payment Form Values:', this.paymentForm.value);
-  
+  sendPayment() {  
     const { serviceName, ...payload } = {
       bookingId: this.selectedService?.bookingId,
       ...this.paymentForm.value
@@ -42,7 +41,8 @@ export class PayServiceComponent {
   
     this.tourService.payService(payload).subscribe({
       next: (res: any) => {
-        console.log('Payment Success:', res);
+        this.sendRequest.emit();
+        this.close();
       },
       error: (err: any) => {
         console.error('Payment Failed:', err);
@@ -62,16 +62,13 @@ export class PayServiceComponent {
 
     if (this.selectedService) {
       this.paymentForm.patchValue({
-        amount: this.selectedService.amountToPayForBooking || '',
+        amount: (this.selectedService.amountToPayForBooking - this.selectedService.paidForBooking) || '',
         receivedBy: this.selectedService.providerName || '',
         serviceId: this.selectedService.id || '',
         quantity: this.selectedService.quantity || '',
         serviceName: this.selectedService.serviceName || '',
       });
     }
-
-    console.log('Selected Service:', this.selectedService);
-
     this.modal?.show();
   }
   

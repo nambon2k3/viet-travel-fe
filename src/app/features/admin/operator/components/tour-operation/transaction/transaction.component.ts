@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { PostAdvancePaymentComponent } from './post-advance-payment/post-advance-payment.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TourService } from '../../../services/tour.service';
 import { TruncatePipe } from "../../../../../../shared/pipes/truncate.pipe";
@@ -11,7 +10,6 @@ import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe"
   standalone: true,
   imports: [
     CommonModule,
-    PostAdvancePaymentComponent,
     TruncatePipe,
     FormatDatePipe
   ],
@@ -19,7 +17,6 @@ import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe"
   styleUrls: ['./transaction.component.css']
 })
 export class TransactionComponent {
-  @ViewChild('paymentModal') paymentModal!: PostAdvancePaymentComponent;
   listTransactions: any[] = [];
   id: number = 0;
   status: string = '';

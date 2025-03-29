@@ -15,11 +15,11 @@
       <ng-container *ngFor="let group of listCustomers">
         <tr class="bg-gray-100">
           <td colspan="8" class="text-left font-semibold p-2">
-            Mã booking: {{ group.tourBookingId }} | Loại booking: {{ group.tourBookingCategory || 'TRỰC TIẾP' }}
+            Mã booking: {{ group.tourBookingCode }} | Loại booking: {{ group.tourBookingCategory || 'TRỰC TIẾP' }}
           </td>
         </tr>
-        <tr *ngFor="let customer of group.listCustomer" class="border border-gray-300">
-          <td class="border border-gray-300 p-2 text-center">{{ customer.id }}</td>
+        <tr *ngFor="let customer of group.listCustomer, let i = index" class="border border-gray-300">
+          <td class="border border-gray-300 p-2 text-center">{{ i + 1 }}</td>
           <td class="border border-gray-300 p-2">{{ customer.fullName }}</td>
           <td class="border border-gray-300 p-2">{{ customer.phoneNumber || 'Không có' }}</td>
           <td class="border border-gray-300 p-2">{{ customer.email || 'Không có' }}</td>

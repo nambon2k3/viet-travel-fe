@@ -164,8 +164,9 @@
 
 <app-post-service [scheduleId]="scheduleId" (serviceAdded)="onServiceAdded($event)"
     #chooseServiceModal></app-post-service>
-<app-tour-guide-pay [tourGuide]="tourGuide" #tourGuidePayModal></app-tour-guide-pay>
-<app-pay-service [selectedService]="selectedService" (paymentSent)="onPaymentSent($event)"
+<app-tour-guide-pay [selectedService]="selectedService" [tourGuide]="tourGuide" (sendRequest)="onPaymentSent($event)"
+    #tourGuidePayModal></app-tour-guide-pay>
+<app-pay-service [selectedService]="selectedService" (sendRequest)="onPaymentSent($event)"
     #paymentModal></app-pay-service>
 <app-order-service (emailSent)="onEmailSent($event)" [selectedService]="selectedService"
     #orderModal></app-order-service>

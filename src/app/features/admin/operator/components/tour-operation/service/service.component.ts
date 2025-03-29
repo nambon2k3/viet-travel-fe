@@ -93,7 +93,7 @@ export class ServiceComponent {
             quantity: service.currentQuantity,
             requestQuantity: service.requestQuantity,
             amountToPayForBooking: service.amountToPayForBooking,
-            amountToPayForProvider: service.amountToPayForProvider,
+            paidForBooking: service.paidForBooking,
             serviceName: service.serviceName,
             order: this.mapOrderStatus(service.bookingStatus),
             payment: this.mapPaymentStatus(service.paymentStatus),
@@ -277,7 +277,7 @@ export class ServiceComponent {
   }
 
   openTourGuidePayModal(service: any) {
-    this.selectedService = service;
+    this.tourGuidePayModal.selectedService = service;
     this.tourGuidePayModal.open();
   }
 }
