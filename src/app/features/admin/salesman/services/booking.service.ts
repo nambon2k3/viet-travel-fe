@@ -56,6 +56,22 @@ export class BookingService {
         });
     }
 
+    getToursPrivate(searchName: string): Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/tours/private/list`, {
+            params: { name: searchName }
+        });
+    }
+
+    getToursPrivateContent(tourId: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/tours/private/details`, {
+            params: { tourId: tourId }
+        });
+    }
+
+    getLocations(): Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/tours/create/locations`);
+    }
+
 
     createBooking(formData: any) {
         return this.http.post(`${environment.apiUrl}salesman/bookings/create`, formData);
@@ -75,6 +91,11 @@ export class BookingService {
 
     sendCheckingAvailable(tourBookingId: number): Observable<any> {
         return this.http.post(`${environment.apiUrl}salesman/bookings/services/checking-available`, tourBookingId);
+    }
+
+
+    createPrivateTour(formData: any) {
+        return this.http.post(`${environment.apiUrl}salesman/tours/create`, formData);
     }
 
 }

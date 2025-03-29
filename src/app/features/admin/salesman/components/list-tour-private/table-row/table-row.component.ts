@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TourService } from '../../../services/tour.service';
+import { response } from 'express';
 @Component({
   selector: '[app-table-row]',
   imports: [FormsModule, AngularSvgIconModule, CommonModule, RouterModule],
@@ -14,6 +16,37 @@ export class TableRowComponent {
 
   ngOnInit(): void {
     console.log(this.tourData)
+  }
+
+  constructor(
+    private tourService: TourService
+  ) {
+
+  }
+
+  error: boolean= false;
+
+  updateStatus() {
+
+    this.tourService.updateTourStatus(this.tourData?.tour?.id, 'DRAFT').subscribe({
+      next: (response) => {
+        console.log('Response:', response);
+        this.tourData.tourStatus = 'DRAFT'
+      },
+      error: (error) => {
+        console.error('Error:', error);
+        this.triggerError();
+      }
+    })
+  }
+
+  triggerError() {
+    this.error = true;
+    
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.error = false;
+    }, 4000);
   }
   
 }

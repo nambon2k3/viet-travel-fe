@@ -27,7 +27,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       let errorMessage = 'An unexpected error occurred. Please try again later.';
 
       if (error.error && typeof error.error === 'object') {
-        errorMessage = error.error.message || error.error.data || errorMessage;
+        errorMessage = error.error.data || error.error.message || errorMessage;
       } else if (error.error && typeof error.error === 'string') {
         errorMessage = error.error;
       }

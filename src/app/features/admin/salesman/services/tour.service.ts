@@ -57,6 +57,25 @@ export class TourService {
         return this.http.get(`${environment.apiUrl}salesman/bookings/create/tour/${tourId}/${scheduleId}`);
     }
 
+
+    updateTourContent(formData: any) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/tours/private/update`, formData);
+    }
+
+
+    updateTourStatus(tourId: number, tourStatus: any) : Observable<any> {
+
+        console.log({
+            id: tourId,
+            tourStatus: tourStatus
+        })
+
+        return this.http.post(`${environment.apiUrl}salesman/tours/private/change-status`, {
+            id: tourId,
+            tourStatus: tourStatus
+        });
+    }
+
     
 
 }

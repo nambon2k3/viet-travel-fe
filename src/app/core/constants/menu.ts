@@ -33,15 +33,6 @@ export class Menu {
             { label: 'Đánh giá', route: '/salesman/booking-service' },
           ],
         },
-        {
-          icon: 'assets/icons/heroicons/outline/ticket.svg',
-          label: 'Dịch vụ bán lẻ',
-          route: '/salesman',
-          children: [
-            { label: 'Danh sách dịch vụ', route: '/salesman/list-booking' },
-            { label: 'Tour mở bán (SIC)', route: '/salesman/service' },
-          ],
-        },
       ],
     },
     {
