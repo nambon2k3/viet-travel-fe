@@ -14,10 +14,7 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe'
 })
 export class TableRowComponent {
 
-  @Input() refund: RefundRecord = <RefundRecord>{};
-
-  authorName: string = 'Loading...';
-  tags: string[] = [];
+  @Input() refund: any;
 
   constructor(
     private router: Router

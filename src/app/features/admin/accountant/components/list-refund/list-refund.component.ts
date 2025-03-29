@@ -5,6 +5,7 @@ import { TableRowComponent } from './table-row/table-row.component';
 import { RefundRecord } from '../../../../../core/models/tour-accountant.model';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { Router } from '@angular/router';
+import { TransactionService } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-list-refund',
@@ -18,40 +19,11 @@ import { Router } from '@angular/router';
   styleUrl: './list-refund.component.css'
 })
 export class ListRefundComponent {
-  refunds = signal<RefundRecord[]>([
-    {
-      id: 1,
-      tourName: 'Tour Cái Chiên',
-      createdDate: '02/02/2025',
-      accountingDate: '02/02/2025',
-      customerOrPartner: 'Long Nga Hotel',
-      amount: 5000000,
-      status: 'Hoàn thành',
-    },
-    {
-      id: 2,
-      tourName: 'Tour Cái Chiên Special',
-      createdDate: '02/02/2025',
-      accountingDate: '02/02/2025',
-      customerOrPartner: 'Mai Restaurant',
-      amount: 15000000,
-      status: 'Chưa hoàn thành',
-    },
-    {
-      id: 3,
-      tourName: 'Tour Ninh Bình',
-      createdDate: '02/02/2025',
-      accountingDate: '03/02/2025',
-      customerOrPartner: 'Cuc Phuong Resort',
-      amount: 5000000,
-      status: 'Hoàn thành',
-    }
-  ]);
-
-  totalItems = this.refunds().length;
+  refunds: any;
+  totalItems = 0;
   page = 0;
   size = 10;
-  totalPages = signal(Math.ceil(this.totalItems / this.size));
+  totalPages = signal(0);
   isLoading: boolean = false;
 
   keyword = '';
@@ -60,7 +32,8 @@ export class ListRefundComponent {
   sortDirection = 'desc';
 
   constructor(
-    private router : Router
+    private router: Router,
+    private transactionService: TransactionService
   ) { }
 
   ngOnInit(): void {
@@ -68,10 +41,23 @@ export class ListRefundComponent {
   }
 
   loadRefunds(): void {
-    this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 500); // Simulate loading time
+    this.transactionService.getTransactionByPage(
+      this.page,
+      this.size,
+      this.keyword,
+      this.sortField,
+      this.sortDirection,
+      "REFUND"
+    ).subscribe({
+      next: (response) => {
+        this.refunds = response.data.items;
+        console.log('REFUND', this.refunds);
+      },
+      error: (error) => {
+        console.log(error);
+        this.isLoading = false;
+      }
+    });
   }
 
   onSearch(filters: any): void {
@@ -99,15 +85,4 @@ export class ListRefundComponent {
     this.loadRefunds();
   }
 
-  toggleRefunds(checked: boolean): void {
-    this.refunds.update((refunds) => {
-      return refunds.map((refunds) => {
-        return { ...refunds, selected: checked };
-      });
-    });
-  }
-
-  filteredRefunds = computed(() => {
-    return this.refunds();
-  });
 }

@@ -2,19 +2,19 @@
   <td>{{ refund.id }}</td>
 
   <td>
-    {{ refund.tourName  }}
+    {{ refund.createdAt | formatDate }}
   </td>
 
   <td>
-    {{ refund.createdDate | formatDate }}
+    {{ refund.paidBy }}
   </td>
 
   <td>
-    {{ refund.accountingDate| formatDate }}
+    {{ refund.receivedBy }}
   </td>
 
   <td>
-    {{ refund.customerOrPartner}}
+    {{ refund.booking.bookingCode }}
   </td>
 
   <td>
@@ -22,7 +22,11 @@
   </td>
 
   <td>
-    {{ refund.status }}
+    {{ refund.paymentMethod  == 'CASH' ? 'Tiền mặt' : 'Chuyển khoản' }}
+  </td>
+
+  <td>
+    {{ refund.transactionStatus }}
   </td>
 
   <td>

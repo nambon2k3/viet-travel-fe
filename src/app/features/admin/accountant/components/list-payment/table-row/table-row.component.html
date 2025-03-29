@@ -2,15 +2,19 @@
   <td>{{ payment.id }}</td>
 
   <td>
-    {{ payment.createdDate | formatDate }}
+    {{ payment.createdAt | formatDate }}
   </td>
 
   <td>
-    {{ payment.accountingDate| formatDate }}
+    {{ payment.paidBy }}
   </td>
 
   <td>
-    {{ payment.provider}}
+    {{ payment.receivedBy }}
+  </td>
+
+  <td>
+    {{ payment.booking.bookingCode }}
   </td>
 
   <td>
@@ -18,11 +22,11 @@
   </td>
 
   <td>
-    {{ payment.paymentMethod }}
+    {{ payment.paymentMethod  == 'CASH' ? 'Tiền mặt' : 'Chuyển khoản' }}
   </td>
 
   <td>
-    {{ payment.status }}
+    {{ payment.transactionStatus }}
   </td>
 
   <td>

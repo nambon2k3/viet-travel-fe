@@ -89,18 +89,22 @@ export class Menu {
       ],
     },
     {
-      group: 'Accountant',
+      group: 'Kế toán',
       separator: true,
       items: [
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Expenditure',
-          route: '/marketer/blog',
+          icon: 'assets/icons/heroicons/outline/bill.svg',
+          label: 'Phiếu dịch vụ',
+          children: [
+            { label: 'Phiếu thu', route: '/accountant/list-receipt' },
+            { label: 'Phiếu chi', route: '/accountant/list-payment' },
+            { label: 'Phiếu hoàn tiền', route: '/accountant/list-refund' },
+          ],
         },
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Revenue',
-          route: '/marketer/blog',
+          icon: 'assets/icons/heroicons/outline/dollar-svgrepo-com.svg',
+          label: 'Quyết toán tour',
+          route: '/accountant/list-tour',
         }
       ],
     },

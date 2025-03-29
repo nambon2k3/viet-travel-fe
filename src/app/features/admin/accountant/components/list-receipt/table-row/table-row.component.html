@@ -2,15 +2,19 @@
   <td>{{ receipt.id }}</td>
 
   <td>
-    {{ receipt.createdDate | formatDate }}
+    {{ receipt.createdAt | formatDate }}
   </td>
 
   <td>
-    {{ receipt.accountingDate| formatDate }}
+    {{ receipt.paidBy }}
   </td>
 
   <td>
-    {{ receipt.customer }}
+    {{ receipt.receivedBy }}
+  </td>
+
+  <td>
+    {{ receipt.booking.bookingCode }}
   </td>
 
   <td>
@@ -18,11 +22,11 @@
   </td>
 
   <td>
-    {{ receipt.paymentMethod }}
+    {{ receipt.paymentMethod  == 'CASH' ? 'Tiền mặt' : 'Chuyển khoản' }}
   </td>
 
   <td>
-    {{ receipt.status }}
+    {{ receipt.transactionStatus }}
   </td>
 
   <td>
