@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, signal } from '@angular/core';
+import { Component, ViewChild, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,7 @@ import { ConfigTourPaxComponent } from "./config-tour-pax/config-tour-pax.compon
 import { TourDiscountService } from '../../services/discount.service';
 import { ConfigPriceComponent } from './config-price/config-price.component';
 import { FormsModule } from '@angular/forms';
+import { initFlowbite } from 'flowbite';
 
 interface PriceRange {
   [key: string]: number;
@@ -111,6 +112,7 @@ export class TourDiscountComponent implements OnInit {
     private router: Router,
     private tourDiscountService: TourDiscountService,
     private route: ActivatedRoute,
+    private cdRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -191,7 +193,7 @@ export class TourDiscountComponent implements OnInit {
       serviceProviderId: service.serviceProviderId,
       paxPrices: Object.keys(service.paxPrices || {}).reduce((acc: { [key: string]: PaxPrice }, key: string) => {
         const pax = service.paxPrices[key];
-        acc[pax.paxRange] = {  
+        acc[pax.paxRange] = {
           paxId: pax.paxId,
           minPax: pax.minPax,
           maxPax: pax.maxPax,
@@ -262,33 +264,37 @@ export class TourDiscountComponent implements OnInit {
     this.router.navigate(['head-business/list-tour']);
   }
 
-  openAddHotelModal(serviceId?: number) {
+  openAddHotelModal(serviceId?: number, dayNumber?: number) {
     if (this.addHotelModal) {
       this.addHotelModal.serviceId = serviceId || null;
+      this.addHotelModal.day = dayNumber || null;
       this.addHotelModal.fetchHotelDetails();
       this.addHotelModal.showModal();
     }
   }
 
-  openAddTransportationModal(serviceId?: number) {
+  openAddTransportationModal(serviceId?: number, dayNumber?: number) {
     if (this.addTransportationModal) {
       this.addTransportationModal.serviceId = serviceId || null;
+      this.addTransportationModal.day = dayNumber || null;
       this.addTransportationModal.fetchTransportationDetails();
       this.addTransportationModal.showModal();
     }
   }
 
-  openAddRestaurantModal(serviceId?: number) {
+  openAddRestaurantModal(serviceId?: number, dayNumber?: number) {
     if (this.addRestaurantModal) {
       this.addRestaurantModal.serviceId = serviceId || null;
+      this.addRestaurantModal.day = dayNumber || null;
       this.addRestaurantModal.fetchRestaurantDetails();
       this.addRestaurantModal.showModal();
     }
   }
 
-  openAddActivityModal(serviceId?: number) {
+  openAddActivityModal(serviceId?: number, dayNumber?: number) {
     if (this.addActivityModal) {
       this.addActivityModal.serviceId = serviceId || null;
+      this.addActivityModal.day = dayNumber || null;
       this.addActivityModal.fetchActivityDetails();
       this.addActivityModal.showModal();
     }
@@ -309,10 +315,20 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.hotels.push(hotel);
     }
-    this.fetchTourData(this.tourId);
+    window.location.reload(); 
   }
 
-  deleteHotel(index: number) {
+  deleteHotel(index: number, serviceId: number, dayNumber: number) {
+    this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          console.log('Hotel deleted successfully');
+          window.location.reload();
+        } else {
+          console.error('Error deleting hotel:', response.message);
+        }
+      }
+    });
     this.hotels.splice(index, 1);
     this.calculateTourDays();
     this.calculateTotalNetPrice();
@@ -329,10 +345,20 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.transports.push(transport);
     }
-    this.fetchTourData(this.tourId);
+    window.location.reload();
   }
 
-  deleteTransportation(index: number) {
+  deleteTransportation(index: number, serviceId: number, dayNumber: number) {
+    this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          console.log('Transportation deleted successfully');
+          window.location.reload();
+        } else {
+          console.error('Error deleting hotel:', response.message);
+        }
+      }
+    });
     this.transports.splice(index, 1);
     this.calculateTourDays();
     this.calculateTotalNetPrice();
@@ -349,11 +375,20 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.restaurants.push(restaurant);
     }
-    this.fetchTourData(this.tourId);
+    window.location.reload();
   }
 
-  deleteRestaurant(index: number) {
-    this.restaurants.splice(index, 1);
+  deleteRestaurant(index: number, serviceId: number, dayNumber: number) {
+    this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          console.log('Restaurant deleted successfully');
+          window.location.reload();
+        } else {
+          console.error('Error deleting hotel:', response.message);
+        }
+      }
+    });
     this.calculateTourDays();
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
@@ -369,10 +404,20 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.activities.push(activity);
     }
-    this.fetchTourData(this.tourId);
+    window.location.reload();
   }
 
-  deleteActivity(index: number) {
+  deleteActivity(index: number, serviceId: number, dayNumber: number) {
+    this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.fetchTourData(this.tourId);
+          console.log('Activity deleted successfully');
+        } else {
+          console.error('Error deleting hotel:', response.message);
+        }
+      }
+    });
     this.activities.splice(index, 1);
     this.calculateTourDays();
     this.calculateTotalNetPrice();

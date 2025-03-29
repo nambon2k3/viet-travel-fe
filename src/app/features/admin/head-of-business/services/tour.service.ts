@@ -42,7 +42,7 @@ export class TourService {
   }
 
   getTourDayById(tourId: string): Observable<any> {
-    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days`);
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/list`);
   }
 
   updateTour(formData: any): Observable<any> {
@@ -50,7 +50,7 @@ export class TourService {
   }
 
   createTour(formData: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}head-of-business/tour/create`, formData);
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/create`, formData);
   }
 
   deleteTour(id: number): Observable<any> {
@@ -63,5 +63,9 @@ export class TourService {
 
   getAllTags(): Observable<any> {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/list-tag`);
-}
+  }
+
+  createTourDay(tourId: string, formData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/create`, formData);
+  }
 }

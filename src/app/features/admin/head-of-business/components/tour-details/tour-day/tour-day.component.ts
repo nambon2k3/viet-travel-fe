@@ -1,24 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TourService } from '../../../services/tour.service';
 import { TruncatePipe } from "../../../../../../shared/pipes/truncate.pipe";
 import { TourDay } from '../../../../../../core/models/tour.model'; 
+import { UpdateTourDayComponent } from '../update-tour-day/update-tour-day.component';
+import { CreateTourDayComponent } from './create-tour-day/create-tour-day.component';
 
 @Component({
   selector: 'app-tour-day',
   standalone: true,
-  imports: [CommonModule, FormsModule, TruncatePipe],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    UpdateTourDayComponent,
+    CreateTourDayComponent
+  ],
   templateUrl: './tour-day.component.html',
   styleUrls: ['./tour-day.component.css']
 })
 export class TourDayComponent implements OnInit {
+  @ViewChild('updateTourDayModal') updateTourDayModal!: UpdateTourDayComponent;
+  @ViewChild('createTourDayModal') createTourDayModal!: CreateTourDayComponent;
+
   tourId: string | null = null;
   tourDays: TourDay[] = [];
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
     private tourService: TourService,
   ) { }
@@ -46,14 +55,4 @@ export class TourDayComponent implements OnInit {
       });
     }
   }
-
-  openUpdateTourDay(): void {
-    if (this.tourId) {
-      this.router.navigate(['/head-business/update-tour-day'], {
-        queryParams: { id: this.tourId }
-      });
-    }
-  }
-
-
 }

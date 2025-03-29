@@ -66,7 +66,7 @@ export class ViewListTourComponent {
   }
 
   openAddTourModal(): void {
-    this.router.navigate(['/head-business/add-tour']);
+    this.router.navigate(['/head-business/tour-details']);
   }
 
   keyword = '';

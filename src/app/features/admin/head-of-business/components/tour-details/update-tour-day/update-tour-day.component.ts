@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BlogComponent } from "../../../../../public/components/blog/blog.component";
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { BlogContentComponent } from '../../../../marketer/components/blog-detail/blog-content/blog-content.component';
 
