@@ -1,4 +1,4 @@
-import { Component, Input, ViewChildren, QueryList, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, Input, ViewChildren, QueryList, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TourDiscountService } from '../../../services/discount.service';
 import { CreateTourPaxComponent } from './create-tour-pax/create-tour-pax.component';
@@ -39,6 +39,7 @@ interface ApiResponse {
 })
 export class ConfigTourPaxComponent implements AfterViewInit {
   @Input() tourId!: number;
+  @Output() close = new EventEmitter<void>();
   @ViewChild('createTourPaxModal') createTourPaxModal!: CreateTourPaxComponent;
   @ViewChildren(UpdateTourPaxComponent) updateTourPaxComponents!: QueryList<UpdateTourPaxComponent>;
 
@@ -139,6 +140,10 @@ export class ConfigTourPaxComponent implements AfterViewInit {
         console.error('HTTP error deleting tour pax:', error);
       }
     });
+  }
+
+  reload(){
+    this.close.emit();
   }
 
   onTourPaxCreated() {

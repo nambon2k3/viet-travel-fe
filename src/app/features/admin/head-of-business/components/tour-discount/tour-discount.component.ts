@@ -15,6 +15,37 @@ interface PriceRange {
   [key: string]: number;
 }
 
+interface PaxPrice {
+  paxId: number;
+  minPax: number;
+  maxPax: number;
+  paxRange: string;
+  price: number;
+  serviceNettPrice: number;
+  sellingPrice: number;
+  fixedCost: number;
+  extraHotelCost: number;
+}
+
+interface Service {
+  id: number;
+  name: string;
+  dayNumber: number;
+  status: string;
+  nettPrice: number;
+  sellingPrice: number;
+  locationName: string;
+  locationId: number;
+  serviceProviderName: string;
+  serviceProviderId: number;
+  paxPrices: { [key: string]: PaxPrice };
+}
+
+interface ServiceCategory {
+  categoryName: string;
+  services: Service[];
+}
+
 interface PaxOption {
   id: number;
   minPax: number;
@@ -22,20 +53,8 @@ interface PaxOption {
   paxRange: string;
   fixedCost: number;
   sellingPrice: number;
-}
-
-interface Service {
-  id: number;
-  name: string;
-  location: string;
-  netPrice: number;
-  sellingPrice: number;
-  quantity: number;
-  prices: PriceRange;
-  day: number;
-  status: string;
-  serviceProviderName: string;
-  serviceProviderId: number;
+  validFrom: string;
+  validTo: string;
 }
 
 interface ApiResponse {
@@ -44,10 +63,7 @@ interface ApiResponse {
   data: {
     tourId: number;
     tourName: string;
-    serviceCategories: {
-      categoryName: string;
-      services: any[];
-    }[];
+    serviceCategories: ServiceCategory[];
     paxOptions: PaxOption[];
   };
 }
@@ -70,7 +86,6 @@ interface ApiResponse {
   styleUrls: ['./tour-discount.component.css']
 })
 export class TourDiscountComponent implements OnInit {
-  
   @ViewChild('addHotelModal') addHotelModal!: AddHotelComponent;
   @ViewChild('addTransportationModal') addTransportationModal!: AddTransportationComponent;
   @ViewChild('addRestaurantModal') addRestaurantModal!: AddRestaurantComponent;
@@ -100,8 +115,8 @@ export class TourDiscountComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.tourId = params['id'];
-      if (this.tourId !== 0) {
+      this.tourId = +params['id']; // Convert to number
+      if (this.tourId) {
         this.fetchTourData(this.tourId);
         this.fetchLocations();
       }
@@ -115,20 +130,22 @@ export class TourDiscountComponent implements OnInit {
           const data = response.data;
           this.tourName = data.tourName;
           this.priceRanges = data.paxOptions.map(pax => pax.paxRange);
-          this.prices = data.paxOptions.map(p => ({
-            ...p,
-            sellingPrice: p.sellingPrice || 0
-          }));
+          this.prices = data.paxOptions;
 
           data.serviceCategories.forEach(category => {
-            if (category.categoryName === 'Hotel') {
-              this.hotels = category.services.map(service => this.mapService(service, 'Hotel'));
-            } else if (category.categoryName === 'Transport') {
-              this.transports = category.services.map(service => this.mapService(service, 'Transport'));
-            } else if (category.categoryName === 'Restaurant') {
-              this.restaurants = category.services.map(service => this.mapService(service, 'Restaurant'));
-            } else if (category.categoryName === 'Activity') {
-              this.activities = category.services.map(service => this.mapService(service, 'Activity'));
+            switch (category.categoryName) {
+              case 'Hotel':
+                this.hotels = category.services.map(service => this.mapService(service));
+                break;
+              case 'Transport':
+                this.transports = category.services.map(service => this.mapService(service));
+                break;
+              case 'Restaurant':
+                this.restaurants = category.services.map(service => this.mapService(service));
+                break;
+              case 'Activity':
+                this.activities = category.services.map(service => this.mapService(service));
+                break;
             }
           });
 
@@ -160,34 +177,39 @@ export class TourDiscountComponent implements OnInit {
     });
   }
 
-  mapService(service: any, category: string): Service {
+  mapService(service: any): Service {
     return {
       id: service.id,
       name: service.name,
-      location: service.locationName || '',
-      netPrice: service.nettPrice,
-      sellingPrice: service.sellingPrice,
-      quantity: 1,
-      prices: Object.keys(service.paxPrices).reduce((acc: PriceRange, paxId: string) => {
-        const pax = service.paxPrices[paxId];
-        acc[pax.paxRange] = pax.price;
-        return acc;
-      }, {}),
-      day: service.dayNumber,
+      dayNumber: service.dayNumber,
       status: service.status,
+      nettPrice: service.nettPrice,
+      sellingPrice: service.sellingPrice,
+      locationName: service.locationName || '',
+      locationId: service.locationId,
       serviceProviderName: service.serviceProviderName,
-      serviceProviderId: service.serviceProviderId
+      serviceProviderId: service.serviceProviderId,
+      paxPrices: Object.keys(service.paxPrices || {}).reduce((acc: { [key: string]: PaxPrice }, key: string) => {
+        const pax = service.paxPrices[key];
+        acc[pax.paxRange] = {  
+          paxId: pax.paxId,
+          minPax: pax.minPax,
+          maxPax: pax.maxPax,
+          paxRange: pax.paxRange,
+          price: pax.price,
+          serviceNettPrice: pax.serviceNettPrice,
+          sellingPrice: pax.sellingPrice,
+          fixedCost: pax.fixedCost,
+          extraHotelCost: pax.extraHotelCost
+        };
+        return acc;
+      }, {})
     };
   }
 
   calculateTourDays() {
-    const allServices = [
-      ...this.hotels,
-      ...this.transports,
-      ...this.restaurants,
-      ...this.activities
-    ];
-    const maxDay = allServices.length > 0 ? Math.max(...allServices.map(service => service.day)) : 1;
+    const allServices = [...this.hotels, ...this.transports, ...this.restaurants, ...this.activities];
+    const maxDay = allServices.length > 0 ? Math.max(...allServices.map(service => service.dayNumber)) : 1;
     this.tourDays = Array.from({ length: maxDay }, (_, i) => i + 1);
   }
 
@@ -195,10 +217,10 @@ export class TourDiscountComponent implements OnInit {
     this.priceRanges.forEach(range => {
       const minPax = this.getMinPax(range);
       let total = 0;
-      this.hotels.forEach(h => total += h.netPrice * h.quantity * minPax);
-      this.transports.forEach(t => total += t.netPrice * t.quantity * minPax);
-      this.restaurants.forEach(r => total += r.netPrice * r.quantity * minPax);
-      this.activities.forEach(a => total += a.netPrice * a.quantity * minPax);
+      this.hotels.forEach(h => total += h.nettPrice * minPax);
+      this.transports.forEach(t => total += t.nettPrice * minPax);
+      this.restaurants.forEach(r => total += r.nettPrice * minPax);
+      this.activities.forEach(a => total += a.nettPrice * minPax);
       this.mintotalNetPrices[range] = total;
     });
   }
@@ -207,10 +229,13 @@ export class TourDiscountComponent implements OnInit {
     this.priceRanges.forEach(range => {
       const minPax = this.getMinPax(range);
       let total = 0;
-      this.hotels.forEach(h => total += (h.prices[range] || 0) * h.quantity * minPax);
-      this.transports.forEach(t => total += (t.prices[range] || 0) * t.quantity * minPax);
-      this.restaurants.forEach(r => total += (r.prices[range] || 0) * r.quantity * minPax);
-      this.activities.forEach(a => total += (a.prices[range] || 0) * a.quantity * minPax);
+      [this.hotels, this.transports, this.restaurants, this.activities].forEach(services => {
+        services.forEach(service => {
+          if (service.paxPrices && service.paxPrices[range]) {
+            total += (service.paxPrices[range].sellingPrice || 0) * minPax;
+          }
+        });
+      });
       this.minsalePrices[range] = total;
     });
   }
@@ -230,6 +255,7 @@ export class TourDiscountComponent implements OnInit {
         existing.sellingPrice = price.sellingPrice;
       }
     });
+    this.calculateTotalPrices();
   }
 
   backToList() {
@@ -238,8 +264,8 @@ export class TourDiscountComponent implements OnInit {
 
   openAddHotelModal(serviceId?: number) {
     if (this.addHotelModal) {
-      this.addHotelModal.serviceId = serviceId || null; 
-      this.addHotelModal.fetchHotelDetails(); 
+      this.addHotelModal.serviceId = serviceId || null;
+      this.addHotelModal.fetchHotelDetails();
       this.addHotelModal.showModal();
     }
   }
@@ -247,7 +273,7 @@ export class TourDiscountComponent implements OnInit {
   openAddTransportationModal(serviceId?: number) {
     if (this.addTransportationModal) {
       this.addTransportationModal.serviceId = serviceId || null;
-      this.addTransportationModal.fetchTransportationDetails(); 
+      this.addTransportationModal.fetchTransportationDetails();
       this.addTransportationModal.showModal();
     }
   }
@@ -255,7 +281,7 @@ export class TourDiscountComponent implements OnInit {
   openAddRestaurantModal(serviceId?: number) {
     if (this.addRestaurantModal) {
       this.addRestaurantModal.serviceId = serviceId || null;
-      this.addRestaurantModal.fetchRestaurantDetails(); 
+      this.addRestaurantModal.fetchRestaurantDetails();
       this.addRestaurantModal.showModal();
     }
   }
@@ -263,9 +289,14 @@ export class TourDiscountComponent implements OnInit {
   openAddActivityModal(serviceId?: number) {
     if (this.addActivityModal) {
       this.addActivityModal.serviceId = serviceId || null;
-      this.addActivityModal.fetchActivityDetails(); 
+      this.addActivityModal.fetchActivityDetails();
       this.addActivityModal.showModal();
     }
+  }
+
+  closeTourPax() {
+    this.fetchTourData(this.tourId);
+
   }
 
   addNewHotel(event: { hotel: Service, isUpdate: boolean }) {
@@ -285,6 +316,7 @@ export class TourDiscountComponent implements OnInit {
     this.hotels.splice(index, 1);
     this.calculateTourDays();
     this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
   }
 
   addNewTransportation(event: { transport: Service, isUpdate: boolean }) {
@@ -304,6 +336,7 @@ export class TourDiscountComponent implements OnInit {
     this.transports.splice(index, 1);
     this.calculateTourDays();
     this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
   }
 
   addNewRestaurant(event: { restaurant: Service, isUpdate: boolean }) {
@@ -316,13 +349,14 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.restaurants.push(restaurant);
     }
-    this.fetchTourData(this.tourId); // Consistent with Hotel
+    this.fetchTourData(this.tourId);
   }
 
   deleteRestaurant(index: number) {
     this.restaurants.splice(index, 1);
     this.calculateTourDays();
     this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
   }
 
   addNewActivity(event: { activity: Service, isUpdate: boolean }) {
@@ -335,37 +369,13 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.activities.push(activity);
     }
-    this.fetchTourData(this.tourId); // Consistent with Hotel
+    this.fetchTourData(this.tourId);
   }
 
   deleteActivity(index: number) {
     this.activities.splice(index, 1);
     this.calculateTourDays();
     this.calculateTotalNetPrice();
-  }
-
-  calculateTotalBaseSellingPrice(): void {
-    const guestRanges: { [key: string]: { min: number; max: number } } = {};
-    this.priceRanges.forEach(range => {
-      const [min, max] = range.split('-').map(num => parseInt(num));
-      guestRanges[range] = { min, max };
-    });
-  
-    this.priceRanges.forEach(range => {
-      let total = 0;
-      this.hotels.forEach(hotel => {
-        total += (hotel.prices[range] || 0) * guestRanges[range].min * hotel.quantity;
-      });
-      this.transports.forEach(transport => {
-        total += (transport.prices[range] || 0) * guestRanges[range].min * transport.quantity;
-      });
-      this.restaurants.forEach(restaurant => {
-        total += (restaurant.prices[range] || 0) * guestRanges[range].min * restaurant.quantity;
-      });
-      this.activities.forEach(activity => {
-        total += (activity.prices[range] || 0) * guestRanges[range].min * activity.quantity;
-      });
-      this.minsalePrices[range] = total;
-    });
+    this.calculateTotalPrices();
   }
 }

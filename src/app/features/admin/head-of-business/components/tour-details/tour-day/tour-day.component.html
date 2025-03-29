@@ -12,7 +12,7 @@
       <tr class="border" *ngFor="let day of tourDays; let i = index">
         <td class="p-2 text-center">{{ i + 1 }}</td>
         <td class="p-2">{{ day.title }}</td>
-        <td class="p-2">{{ getServicesString(day) | truncate: 30 }}</td> <!-- Use getter and pipe -->
+        <td class="p-2">{{ day.content }}</td> <!-- Use getter and pipe -->
         <td class="p-2 text-center">
           <button
             (click)="openUpdateTourDay()"

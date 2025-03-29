@@ -6,8 +6,30 @@ import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } f
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourDiscountService } from '../../../services/discount.service';
 
-interface PriceRange {
-  [key: string]: number;
+interface PaxPrice {
+  paxId: number;
+  minPax: number;
+  maxPax: number;
+  paxRange: string;
+  price: number;
+  serviceNettPrice: number;
+  sellingPrice: number;
+  fixedCost: number;
+  extraHotelCost: number;
+}
+
+interface Service {
+  id: number;
+  name: string;
+  dayNumber: number;
+  status: string;
+  nettPrice: number;
+  sellingPrice: number;
+  locationName: string;
+  locationId: number;
+  serviceProviderName: string;
+  serviceProviderId: number;
+  paxPrices: { [key: string]: PaxPrice };
 }
 
 interface PaxOption {
@@ -15,33 +37,10 @@ interface PaxOption {
   minPax: number;
   maxPax: number;
   paxRange: string;
-}
-
-interface RoomDetail {
-  id: number;
-  capacity: number;
-  availableQuantity: number;
-  facilities: string;
-}
-
-interface Service {
-  id: number;
-  category: string;
-  name: string;
-  description: string;
-  dayNumber: number;
-  status: string;
-  netPrice: number;
+  fixedCost: number;
   sellingPrice: number;
-  quantity: number;
-  prices: PriceRange;
-  locationName: string;
-  locationId: number;
-  serviceProviderName: string;
-  serviceProviderId: number;
-  startDate: string;
-  endDate: string;
-  roomDetail?: RoomDetail;
+  validFrom: string;
+  validTo: string;
 }
 
 interface ServiceDetailResponse {
@@ -50,7 +49,6 @@ interface ServiceDetailResponse {
   data: {
     id: number;
     name: string;
-    description: string;
     dayNumber: number;
     status: string;
     nettPrice: number;
@@ -59,19 +57,7 @@ interface ServiceDetailResponse {
     locationName: string;
     serviceProviderId: number;
     serviceProviderName: string;
-    categoryName: string;
-    startDate: string;
-    endDate: string;
-    paxPrices: {
-      [key: string]: {
-        paxId: number;
-        minPax: number;
-        maxPax: number;
-        paxRange: string;
-        price?: number;
-      };
-    };
-    roomDetail?: RoomDetail;
+    paxPrices: { [key: string]: PaxPrice };
   };
 }
 
@@ -87,16 +73,16 @@ interface ServiceDetailResponse {
   templateUrl: './add-restaurant.component.html',
   styleUrls: ['./add-restaurant.component.css']
 })
-export class AddRestaurantComponent {
+export class AddRestaurantComponent implements AfterViewInit {
   @Input() days: number[] = [];
   @Input() tourId: number = 0;
   @Input() serviceId: number | null = null;
   @Input() prices: PaxOption[] = [];
-  @Output() restaurantAdded = new EventEmitter<any>();
+  @Input() locations = signal<any[]>([]);
+  @Output() restaurantAdded = new EventEmitter<{ restaurant: Service, isUpdate: boolean }>();
 
   modal: Modal | null = null;
   addRestaurantForm!: FormGroup;
-  @Input() locations = signal<any[]>([]);
   providers = signal<any[]>([]);
   restaurants = signal<any[]>([]);
 
@@ -104,10 +90,15 @@ export class AddRestaurantComponent {
     private ssrService: SsrService,
     private fb: FormBuilder,
     private tourDiscountService: TourDiscountService
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.initializeForm();
+  }
+
+  ngAfterViewInit() {
+    const modalElement = document.getElementById('addRestaurantModal');
+    if (modalElement) {
+      this.modal = new Modal(modalElement);
+    }
   }
 
   initializeForm() {
@@ -115,30 +106,9 @@ export class AddRestaurantComponent {
       selectedDay: [this.days.length > 0 ? this.days[0] : 1],
       selectedLocation: [null],
       selectedProvider: [null],
-      selectedRestaurant: [''],
-      description: [''],
-      netPrice: [0],
-      roomDetail: this.fb.group({
-        capacity: [0],
-        availableQuantity: [0],
-        facilities: ['']
-      }),
+      selectedRestaurant: [null],
+      netPrice: [{ value: 0, disabled: true }],
       paxPrices: this.fb.array([])
-    });
-  }
-
-
-  initPaxPrices() {
-    const paxPricesArray = this.addRestaurantForm.get('paxPrices') as FormArray;
-    paxPricesArray.clear();
-    Object.values(this.prices).forEach((pax: any) => {
-      paxPricesArray.push(
-        this.fb.group({
-          paxId: [pax.id],
-          paxRange: [pax.paxRange],
-          price: [0]
-        })
-      );
     });
   }
 
@@ -146,11 +116,23 @@ export class AddRestaurantComponent {
     return this.addRestaurantForm.get('paxPrices') as FormArray;
   }
 
+  initPaxPrices() {
+    const paxPricesArray = this.paxPrices;
+    paxPricesArray.clear();
+    this.prices.forEach(pax => {
+      paxPricesArray.push(
+        this.fb.group({
+          paxId: [pax.id],
+          paxRange: [pax.paxRange],
+          sellingPrice: [pax.sellingPrice || 0]
+        })
+      );
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['prices'] && changes['prices'].currentValue) {
-      if (this.addRestaurantForm) {
-        this.initPaxPrices();
-      }
+      this.initPaxPrices();
     }
   }
 
@@ -178,20 +160,15 @@ export class AddRestaurantComponent {
     const locationId = this.addRestaurantForm.get('selectedLocation')?.value;
     const providerId = this.addRestaurantForm.get('selectedProvider')?.value;
     if (locationId && providerId) {
-      this.tourDiscountService.getServices(this.tourId, locationId, providerId, "Restaurant").subscribe({
+      this.tourDiscountService.getServices(this.tourId, locationId, providerId, 'Restaurant').subscribe({
         next: (response: any) => {
           if (response.code === 200) {
-            const providerData = response.data;
-            if (providerData) {
-              const mappedRestaurants = providerData.availableServices.map((service: any) => ({
-                id: service.id,
-                name: service.name,
-                netPrice: service.nettPrice,
-                description: service.description || '',
-                roomDetail: service.roomDetail || { capacity: 0, availableQuantity: 0, facilities: '' }
-              }));
-              this.restaurants.set(mappedRestaurants);
-            }
+            const mappedRestaurants = response.data.availableServices.map((service: any) => ({
+              id: service.id,
+              name: service.name,
+              nettPrice: service.nettPrice
+            }));
+            this.restaurants.set(mappedRestaurants);
           }
         },
         error: (error: any) => {
@@ -201,43 +178,31 @@ export class AddRestaurantComponent {
     }
   }
 
-
-
   fetchRestaurantDetails() {
     if (this.serviceId && this.tourId) {
-      if (!this.addRestaurantForm) return;
-      this.addRestaurantForm.reset();
       this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId).subscribe({
         next: (response: ServiceDetailResponse) => {
           if (response.code === 200) {
             const restaurant = response.data;
 
-            const paxPricesArray = this.addRestaurantForm.get('paxPrices') as FormArray;
-            paxPricesArray.clear();
-
-            Object.values(restaurant.paxPrices).forEach((pax: any) => {
-              paxPricesArray.push(
-                this.fb.group({
-                  paxId: [pax.paxId],
-                  paxRange: [pax.paxRange],
-                  price: [pax.price || 0]
-                })
-              );
-            });
-
-            // Cập nhật các trường khác
             this.addRestaurantForm.patchValue({
               selectedDay: restaurant.dayNumber,
               selectedLocation: restaurant.locationId,
               selectedProvider: restaurant.serviceProviderId,
               selectedRestaurant: restaurant.id,
-              description: restaurant.description || '',
-              netPrice: restaurant.nettPrice,
-              roomDetail: {
-                capacity: restaurant.roomDetail?.capacity || 0,
-                availableQuantity: restaurant.roomDetail?.availableQuantity || 0,
-                facilities: restaurant.roomDetail?.facilities || ''
-              }
+              netPrice: restaurant.nettPrice
+            });
+
+            const paxPricesArray = this.paxPrices;
+            paxPricesArray.clear();
+            Object.values(restaurant.paxPrices).forEach(pax => {
+              paxPricesArray.push(
+                this.fb.group({
+                  paxId: [pax.paxId],
+                  paxRange: [pax.paxRange],
+                  sellingPrice: [pax.sellingPrice || 0]
+                })
+              );
             });
 
             this.fetchServiceProviders();
@@ -248,15 +213,21 @@ export class AddRestaurantComponent {
           console.error('Error fetching restaurant details:', error);
         }
       });
+    } else {
+      this.initPaxPrices();
     }
   }
 
-
   onLocationChange() {
+    this.addRestaurantForm.patchValue({ selectedProvider: null, selectedRestaurant: null });
+    this.providers.set([]);
+    this.restaurants.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
+    this.addRestaurantForm.patchValue({ selectedRestaurant: null });
+    this.restaurants.set([]);
     this.fetchRestaurants();
   }
 
@@ -265,144 +236,109 @@ export class AddRestaurantComponent {
     const selectedRestaurant = this.restaurants().find(h => h.id === selectedRestaurantId);
     if (selectedRestaurant) {
       this.addRestaurantForm.patchValue({
-        description: selectedRestaurant.description,
-        netPrice: selectedRestaurant.netPrice,
-        roomDetail: {
-          capacity: selectedRestaurant.roomDetail.capacity,
-          availableQuantity: selectedRestaurant.roomDetail.availableQuantity,
-          facilities: selectedRestaurant.roomDetail.facilities
-        }
-      });
-    }
-  }
-
-  createRestaurant() {
-    if (this.addRestaurantForm.valid) {
-      const formValue = this.addRestaurantForm.value;
-      const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
-        acc[pax.paxId] = pax.price;
-        return acc;
-      }, {});
-
-      const formData = {
-        serviceId: formValue.selectedRestaurant,
-        dayNumber: formValue.selectedDay,
-        quantity: 1,
-        sellingPrice: formValue.netPrice,
-        nettPrice: formValue.netPrice,
-        paxPrices: paxPrices,
-        //roomDetail: formValue.roomDetail,
-        mealDetail: null,
-        transportDetail: null
-      };
-
-      this.tourDiscountService.addService(this.tourId, formData).subscribe({
-        next: (response: any) => {
-          if (response.code === 201) {
-            const newService: Service = {
-              id: response.data.id || 0,
-              category: 'Restaurant',
-              name: formValue.selectedRestaurant,
-              description: formValue.description,
-              dayNumber: formData.dayNumber,
-              status: 'ACTIVE',
-              netPrice: formData.nettPrice,
-              sellingPrice: formData.sellingPrice,
-              quantity: formData.quantity,
-              prices: formData.paxPrices,
-              locationName: response.data.locationName || '',
-              locationId: formValue.selectedLocation,
-              serviceProviderName: response.data.serviceProviderName || '',
-              serviceProviderId: formValue.selectedProvider,
-              startDate: response.data.startDate || '',
-              endDate: response.data.endDate || '',
-              //roomDetail: formData.roomDetail
-            };
-            this.restaurantAdded.emit({ service: newService, isUpdate: false });
-            this.modal?.hide();
-          }
-        },
-        error: (error: any) => {
-          console.error('Error creating restaurant:', error);
-        }
-      });
-    }
-  }
-
-  updateRestaurant() {
-    if (this.addRestaurantForm.valid && this.serviceId) {
-      const formValue = this.addRestaurantForm.value;
-      const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
-        acc[pax.paxId] = pax.price;
-        return acc;
-      }, {});
-
-      const formData = {
-        serviceId: this.serviceId,
-        dayNumber: formValue.selectedDay,
-        quantity: 1,
-        sellingPrice: formValue.netPrice,
-        nettPrice: formValue.netPrice,
-        paxPrices: paxPrices,
-        // roomDetail: formValue.roomDetail,
-        mealDetail: null,
-        transportDetail: null
-      };
-
-      this.tourDiscountService.updateService(this.tourId, this.serviceId, formData).subscribe({
-        next: (response: any) => {
-          if (response.code === 200) {
-            const updatedService: Service = {
-              id: this.serviceId!,
-              category: 'Restaurant',
-              name: formValue.selectedRestaurant,
-              description: formValue.description,
-              dayNumber: formData.dayNumber,
-              status: 'ACTIVE',
-              netPrice: formData.nettPrice,
-              sellingPrice: formData.sellingPrice,
-              quantity: formData.quantity,
-              prices: formData.paxPrices,
-              locationName: response.data.locationName || '',
-              locationId: formValue.selectedLocation,
-              serviceProviderName: response.data.serviceProviderName || '',
-              serviceProviderId: formValue.selectedProvider,
-              startDate: response.data.startDate || '',
-              endDate: response.data.endDate || '',
-              // roomDetail: formData.roomDetail
-            };
-            this.restaurantAdded.emit({ service: updatedService, isUpdate: true });
-            this.modal?.hide();
-          }
-        },
-        error: (error: any) => {
-          console.error('Error updating restaurant:', error);
-        }
+        netPrice: selectedRestaurant.nettPrice
       });
     }
   }
 
   onSubmit() {
-    if (this.serviceId) {
-      this.updateRestaurant();
-    } else {
-      this.createRestaurant();
-    }
-  }
+    if (this.addRestaurantForm.valid) {
+      const formValue = this.addRestaurantForm.getRawValue(); // Use getRawValue to include disabled fields
+      const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
+        acc[pax.paxRange] = {
+          paxId: pax.paxId,
+          minPax: this.prices.find(p => p.paxRange === pax.paxRange)?.minPax || 0,
+          maxPax: this.prices.find(p => p.paxRange === pax.paxRange)?.maxPax || 0,
+          paxRange: pax.paxRange,
+          price: 0, // Assuming price is not used here
+          serviceNettPrice: formValue.netPrice,
+          sellingPrice: pax.sellingPrice,
+          fixedCost: 0, // Adjust if needed from data
+          extraHotelCost: 0 // Adjust if needed from data
+        };
+        return acc;
+      }, {});
 
-  showModal() {
-    const doc = this.ssrService.getDocument();
-    if (doc) {
-      const modalElement = document.getElementById('addRestaurantModal');
-      if (modalElement) {
-        this.modal = new Modal(modalElement);
-        this.modal.show();
-        this.addRestaurantForm.reset();
+      const restaurantData: Service = {
+        id: this.serviceId || formValue.selectedRestaurant,
+        name: this.restaurants().find(h => h.id === formValue.selectedRestaurant)?.name || '',
+        dayNumber: formValue.selectedDay,
+        status: 'ACTIVE',
+        nettPrice: formValue.netPrice,
+        sellingPrice: 0, // Will be calculated based on paxPrices
+        locationName: this.locations().find(l => l.id === formValue.selectedLocation)?.name || '',
+        locationId: formValue.selectedLocation,
+        serviceProviderName: this.providers().find(p => p.id === formValue.selectedProvider)?.name || '',
+        serviceProviderId: formValue.selectedProvider,
+        paxPrices: paxPrices
+      };
+
+      if (this.serviceId) {
+        this.updateRestaurant(restaurantData);
+      } else {
+        this.createRestaurant(restaurantData);
       }
     }
   }
 
+  createRestaurant(restaurantData: Service) {
+    const payload = {
+      serviceId: restaurantData.id,
+      locationId: restaurantData.locationId,
+      serviceProviderId: restaurantData.serviceProviderId,
+      dayNumber: Number(restaurantData.dayNumber),
+      paxPrices: Object.values(restaurantData.paxPrices).reduce((acc: any, pax) => {
+        acc[pax.paxId] = pax.sellingPrice;
+        return acc;
+      }, {})
+    };
+  
+    this.tourDiscountService.addService(this.tourId, payload).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.restaurantAdded.emit({ restaurant: restaurantData, isUpdate: false });
+          this.modal?.hide();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error creating restaurant:', error);
+      }
+    });
+  }  
+
+  updateRestaurant(restaurantData: Service) {
+    const payload = {
+      serviceId: restaurantData.id,
+      locationId: restaurantData.locationId,
+      serviceProviderId: restaurantData.serviceProviderId,
+      dayNumber: Number(restaurantData.dayNumber),
+      paxPrices: Object.values(restaurantData.paxPrices).reduce((acc: any, pax) => {
+        acc[pax.paxId] = pax.sellingPrice;
+        return acc;
+      }, {})
+    };
+
+    this.tourDiscountService.updateService(this.tourId, this.serviceId!, payload).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.restaurantAdded.emit({ restaurant: restaurantData, isUpdate: true });
+          this.modal?.hide();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error updating restaurant:', error);
+      }
+    });
+  }
+
+  showModal() {
+    this.fetchRestaurantDetails();
+    this.modal?.show();
+  }
+
   onCancel() {
     this.modal?.hide();
+    this.addRestaurantForm.reset();
+    this.initPaxPrices();
   }
 }

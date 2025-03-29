@@ -17,12 +17,13 @@ export interface TourHOB {
   numberDays: number;
   numberNight: number;
   note: string;
-  deleted: boolean;
-  tourType: string;
-  markUpPercent: number;
   privacy: string;
-  createdUserId: number;
-  createdUserName: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: User;
+  markUpPercent: number;
+  tourType: string;
+  tourStatus: string;
 }
 
 export interface TourDetailHOB {
@@ -33,79 +34,65 @@ export interface TourDetailHOB {
   numberNight: number;
   note: string;
   privacy: string;
-  createdUserId: number;
-  createdUserName: string;
-  locations: {
-    id: number;
-    name: string;
-    description: string;
-    image: string;
-  }[];
-  tags: {
-    id: number;
-    name: string;
-  }[];
-  departLocation: {
-    id: number;
-    name: string;
-    description: string;
-    image: string;
-  };
-  tourSchedules: {
-    scheduleId: number;
-    startDate: string;
-    endDate: string;
-    sellingPrice: number;
-    minPax: number;
-    maxPax: number;
-    availableSeats: number;
-    meetingLocation: string;
-    departureTime: {
-      hour: number;
-      minute: number;
-      second: number;
-      nano: number;
-    };
-    extraHotelCost: number;
-  }[];
-  tourImages: {
-    id: number;
-    imageUrl: string;
-  }[];
-  tourDays: {
-    id: number;
-    title: string;
-    content: string;
-    mealPlan: string;
-  }[];
+  createdAt: string;
+  updatedAt: string;
+  createdBy: User;
+  locations: Location[];
+  tags: Tag[];
+  departLocation: Location;
+  tourSchedules: TourSchedule[];
+  tourImages: TourImage[];
+  tourDays: TourDay[];
+}
+
+export interface Location {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  geoPosition: GeoPosition;
+}
+
+export interface GeoPosition {
+  id: number;
+  latitude: number;
+  longitude: number;
+}
+
+export interface Tag {
+  id: number;
+  name: string;
+}
+
+export interface TourSchedule {
+  scheduleId: number;
+  startDate: string;
+  endDate: string;
+  sellingPrice: number;
+  minPax: number;
+  maxPax: number;
+  availableSeats: number;
+  meetingLocation: string;
+  departureTime: TimeObject;
+  extraHotelCost: number;
+}
+
+export interface TimeObject {
+  hour: number;
+  minute: number;
+  second: number;
+  nano: number;
+}
+
+export interface TourImage {
+  id: number;
+  imageUrl: string;
 }
 
 export interface TourDay {
   id: number;
   title: string;
+  dayNumber: number;
   content: string;
   mealPlan: string;
-  tourId: number;
-  location: {
-    id: number;
-    name: string;
-    description: string;
-    image: string;
-    deleted: boolean;
-    geoPosition: {
-      id: number;
-      latitude: number;
-      longitude: number;
-    };
-    createdAt: string;
-  };
-  tourDayServices: {
-    id: number;
-    serviceId: number;
-    serviceName: string;
-    quantity: number;
-    sellingPrice: number;
-  }[];
-  createdAt: string;
-  updatedAt: string;
 }

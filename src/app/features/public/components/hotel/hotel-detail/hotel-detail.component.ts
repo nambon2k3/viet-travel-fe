@@ -50,7 +50,16 @@ export class HotelDetailComponent {
         name: "Hà Nội, Việt Nam",
         id: 0,
         description: '',
-        image: ''
+        image: '',
+        deleted: false,
+        geoPosition: {
+          id: 0,
+          latitude: 21.028511,
+          longitude: 105.804817,
+          createdAt: "2023-10-01T00:00:00Z",
+          updatedAt: "2023-10-01T00:00:00Z",
+          deleted: false
+        }
       },
       star: 4.5,
       website: "https://example.com",
@@ -63,9 +72,10 @@ export class HotelDetailComponent {
         id: 0,
         latitude: 21.028511,
         longitude: 105.804817
-      }
+      },
+      minRoomPrice: 600000
     };
-  
+
     this.allRooms = [
       {
         name: "Phòng đôi",
@@ -83,19 +93,19 @@ export class HotelDetailComponent {
         imageUrl: "https://via.placeholder.com/300x200?text=Phòng+3+người",
       }, // Phòng này sẽ bị ẩn vì không phải phòng đôi hoặc đơn
     ];
-  
-    
+
+
     this.rooms = [...this.allRooms];
     this.price = this.rooms[0]?.sellingPrice || 0;
   }
-  
+
 
   loadHotelDetail(id: number) {
     this.hotelService.getHotelDetail(id).subscribe({
       next: (response: any) => {
         if (response.code === 200 && response.data) {
           this.hotelDetails = response.data.serviceProvider;
-          this.rooms = response.data.rooms.filter((room: any) => 
+          this.rooms = response.data.rooms.filter((room: any) =>
             room.name.toLowerCase().includes('double') || room.name.toLowerCase().includes('single')
           );
           this.price = response.data.minRoomPrice;
@@ -127,20 +137,20 @@ export class HotelDetailComponent {
 
   private async initMap(): Promise<void> {
     const L = await import('leaflet');
-  
+
     this.map = L.map('map').setView(
-      [this.hotelDetails.geoPosition.latitude, this.hotelDetails.geoPosition.longitude], 
+      [this.hotelDetails.geoPosition.latitude, this.hotelDetails.geoPosition.longitude],
       13
     );
-  
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(this.map);
-  
+
     L.marker([this.hotelDetails.geoPosition.latitude, this.hotelDetails.geoPosition.longitude])
       .addTo(this.map);
   }
-  
+
 
   showOrHide() {
     this.isShow = !this.isShow;

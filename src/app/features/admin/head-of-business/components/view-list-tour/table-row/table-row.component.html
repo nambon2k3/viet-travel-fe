@@ -5,10 +5,6 @@
   </td>
 
   <td>
-    {{ tour.createdUserName }}
-  </td>
-
-  <td>
     {{ tour.numberDays }}N{{ tour.numberNight }}Đ
   </td>
 
@@ -25,7 +21,7 @@
   </td>
 
   <td>
-    @if (tour.deleted) {
+    @if (tour.tourStatus === 'CLOSED') {
     <button type="button"
       class="rounded-[30px] bg-red-500/10 px-2 py-0.5 text-xs font-medium text-red-800 inline-block mt-1"
       (click)="recoverTour()">

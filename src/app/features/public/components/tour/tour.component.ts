@@ -84,7 +84,6 @@ export class TourComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          console.log('Tours:', response.data);
           this.tours.set(response.data.tours.items);
           this.locations.set(response.data.locations);
           this.totalItems = response.data.tours.total;
@@ -167,16 +166,21 @@ export class TourComponent implements OnInit {
   }
 
   updateSlider(): void {
+    // Ensure min and max have a gap of at least $10
     const minGap = 10;
     if (this.maxPrice - this.minPrice < minGap) {
-      if (this.minPrice + minGap <= 200000000) {
+      if (this.minPrice + minGap <= 100000) {
         this.minPrice = this.maxPrice - minGap;
       } else {
         this.maxPrice = this.minPrice + minGap;
       }
     }
+
+    // Update percentage positions for track styling
     this.minPercent = (this.minPrice / 200000000) * 100;
     this.maxPercent = (this.maxPrice / 200000000) * 100;
+
+    this.applyFilters();
   }
 
   ngAfterViewInit(): void {
