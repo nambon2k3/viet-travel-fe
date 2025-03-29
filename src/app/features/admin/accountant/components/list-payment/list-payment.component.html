@@ -4,7 +4,7 @@
   <div class="inline-block">
     <h3 class="text-foreground font-semibold">Kế toán</h3>
     <div class="text-muted-foreground space-x-1 text-xs font-medium">
-      <a href="" class="hover:text-primary">Tất cả phiếu thu:</a>
+      <a href="" class="hover:text-primary">Tất cả phiếu chi:</a>
       <span class="text-foreground">{{ totalItems }}</span>
     </div>
   </div>
@@ -25,14 +25,14 @@
     <table
       class="text-muted-foreground table w-full table-auto border-collapse border-0 text-left align-middle leading-5">
       <thead class="border-muted/20 text-muted-foreground border text-xs">
-        <tr app-table-header (onCheck)="togglePayments($event)"></tr>
+        <tr app-table-header></tr>
       </thead>
       <tbody>
-        @for (payments of filteredPayments(); track $index) {
-        <tr class="hover:bg-card/50" app-table-row [payment]="payments"></tr>
+        @for (payment of payments; track $index) {
+        <tr class="hover:bg-card/50" app-table-row [payment]="payment"></tr>
         } @empty {
         <tr>
-          <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy phiếu thu nào</td>
+          <td class="py-4 text-center text-sm" colspan="9">Không tìm thấy phiếu chi nào</td>
         </tr>
         }
       </tbody>

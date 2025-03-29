@@ -5,6 +5,7 @@ import { TableRowComponent } from './table-row/table-row.component';
 import { PaymentRecord } from '../../../../../core/models/tour-accountant.model';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { Router } from '@angular/router';
+import { TransactionService } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-list-payment',
@@ -19,61 +20,46 @@ import { Router } from '@angular/router';
   styleUrl: './list-payment.component.css'
 })
 export class ListPaymentComponent {
-  payments = signal<PaymentRecord[]>([
-    {
-      id: 1,
-      createdDate: '02/02/2025',
-      accountingDate: '02/02/2025',
-      provider: 'Long Nga Hotel',
-      amount: 5000000,
-      paymentMethod: 'Thanh toán',
-      status: 'Hoàn thành',
-    },
-    {
-      id: 2,
-      createdDate: '02/02/2025',
-      accountingDate: '02/02/2025',
-      provider: 'Mai Restaurant',
-      amount: 15000000,
-      paymentMethod: 'Advance',
-      status: 'Chưa hoàn thành',
-    },
-    {
-      id: 3,
-      createdDate: '02/02/2025',
-      accountingDate: '03/02/2025',
-      provider: 'Cuc Phuong Resort',
-      amount: 5000000,
-      paymentMethod: 'Thanh toán',
-      status: 'Hoàn thành',
+  payments: any;
+  totalItems = 0;
+    page = 0;
+    size = 10;
+    totalPages = signal(0);
+    isLoading: boolean = false;
+  
+    keyword = '';
+    isDeleted?: boolean;
+    sortField = 'createdAt';
+    sortDirection = 'desc';
+  
+    constructor(
+      private router: Router,
+      private transactionService: TransactionService
+    ) { }
+  
+    ngOnInit(): void {
+      this.loadPayments();
     }
-  ]);
-
-  totalItems = this.payments().length;
-  page = 0;
-  size = 10;
-  totalPages = signal(Math.ceil(this.totalItems / this.size));
-  isLoading: boolean = false;
-
-  keyword = '';
-  isDeleted?: boolean;
-  sortField = 'createdAt';
-  sortDirection = 'desc';
-
-  constructor(
-    private router: Router
-  ) { }
-
-  ngOnInit(): void {
-    this.loadPayments();
-  }
-
-  loadPayments(): void {
-    this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 500); // Simulate loading time
-  }
+  
+    loadPayments(): void {
+      this.transactionService.getTransactionByPage(
+        this.page,
+        this.size,
+        this.keyword,
+        this.sortField,
+        this.sortDirection,
+        "PAYMENT"
+      ).subscribe({
+        next: (response) => {
+          this.payments = response.data.items;
+          console.log('RECEPITS', this.payments);
+        },
+        error: (error) => {
+          console.log(error);
+          this.isLoading = false;
+        }
+      });
+    }
 
   onSearch(filters: any): void {
     this.keyword = filters.keyword || '';
@@ -100,15 +86,4 @@ export class ListPaymentComponent {
     this.router.navigate(['/accountant/invoice-details']);
   }
 
-  togglePayments(checked: boolean): void {
-    this.payments.update((payments) => {
-      return payments.map((payments) => {
-        return { ...payments, selected: checked };
-      });
-    });
-  }
-
-  filteredPayments = computed(() => {
-    return this.payments();
-  });
 }

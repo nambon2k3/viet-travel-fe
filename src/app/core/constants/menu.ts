@@ -97,7 +97,7 @@ export class Menu {
           label: 'Phiếu dịch vụ',
           children: [
             { label: 'Phiếu thu', route: '/accountant/list-receipt' },
-            { label: 'Phiếu chi', route: 'accountant/list-payment' },
+            { label: 'Phiếu chi', route: '/accountant/list-payment' },
             { label: 'Phiếu hoàn tiền', route: '/accountant/list-refund' },
           ],
         },

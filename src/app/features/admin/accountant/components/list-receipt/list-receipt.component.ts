@@ -5,6 +5,7 @@ import { TableRowComponent } from './table-row/table-row.component';
 import { ReceiptRecord } from '../../../../../core/models/tour-accountant.model';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { Router } from '@angular/router';
+import { TransactionService } from '../../services/transaction.service';
 
 @Component({
   selector: 'app-list-receipt',
@@ -19,40 +20,11 @@ import { Router } from '@angular/router';
   styleUrl: './list-receipt.component.css'
 })
 export class ListReceiptComponent {
-  receipts = signal<ReceiptRecord[]>([
-    {
-      id: 1,
-      createdDate: "02/02/2025",
-      accountingDate: "02/02/2025",
-      customer: "Marketing De...",
-      amount: 5000000,
-      paymentMethod: "Thanh toán",
-      status: "Hoàn thành"
-    },
-    {
-      id: 2,
-      createdDate: "02/02/2025",
-      accountingDate: "02/02/2025",
-      customer: "Lan Than",
-      amount: 15000000,
-      paymentMethod: "Advance",
-      status: "Chưa hoàn thành"
-    },
-    {
-      id: 3,
-      createdDate: "02/02/2025",
-      accountingDate: "03/02/2025",
-      customer: "Dai Hinh",
-      amount: 5000000,
-      paymentMethod: "Thanh toán",
-      status: "Hoàn thành"
-    }
-  ]);
-
-  totalItems = this.receipts().length;
+  receipts: any;
+  totalItems = 0;
   page = 0;
   size = 10;
-  totalPages = signal(Math.ceil(this.totalItems / this.size));
+  totalPages = signal(0);
   isLoading: boolean = false;
 
   keyword = '';
@@ -61,7 +33,8 @@ export class ListReceiptComponent {
   sortDirection = 'desc';
 
   constructor(
-    private router: Router
+    private router: Router,
+    private transactionService: TransactionService
   ) { }
 
   ngOnInit(): void {
@@ -69,11 +42,25 @@ export class ListReceiptComponent {
   }
 
   loadReceipts(): void {
-    this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 500); // Simulate loading time
+    this.transactionService.getTransactionByPage(
+      this.page,
+      this.size,
+      this.keyword,
+      this.sortField,
+      this.sortDirection,
+      "RECEIPT"
+    ).subscribe({
+      next: (response) => {
+        this.receipts = response.data.items;
+        console.log('RECEPITS', this.receipts);
+      },
+      error: (error) => {
+        console.log(error);
+        this.isLoading = false;
+      }
+    });
   }
+
 
   onSearch(filters: any): void {
     this.keyword = filters.keyword || '';
@@ -99,16 +86,4 @@ export class ListReceiptComponent {
   addReceipt(): void {
     this.router.navigate(['/accountant/invoice-details']);
   }
-
-  toggleReceipts(checked: boolean): void {
-    this.receipts.update((receipts) => {
-      return receipts.map((receipts) => {
-        return { ...receipts, selected: checked };
-      });
-    });
-  }
-
-  filteredReceipts = computed(() => {
-    return this.receipts();
-  });
 }

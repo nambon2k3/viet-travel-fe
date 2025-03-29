@@ -26,14 +26,14 @@
       <table
         class="text-muted-foreground table w-full table-auto border-collapse border-0 text-left align-middle leading-5">
         <thead class="border-muted/20 text-muted-foreground border text-xs">
-          <tr app-table-header (onCheck)="toggleReceipts($event)"></tr>
+          <tr app-table-header></tr>
         </thead>
         <tbody>
-          @for (receipts of filteredReceipts(); track $index) {
-          <tr class="hover:bg-card/50" app-table-row [receipt]="receipts"></tr>
+          @for (receipt of receipts; track $index) {
+          <tr class="hover:bg-card/50" app-table-row [receipt]="receipt"></tr>
           } @empty {
           <tr>
-            <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy phiếu thu nào</td>
+            <td class="py-4 text-center text-sm" colspan="9">Không tìm thấy phiếu thu nào</td>
           </tr>
           }
         </tbody>
