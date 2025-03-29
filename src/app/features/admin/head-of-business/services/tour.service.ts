@@ -50,7 +50,7 @@ export class TourService {
   }
 
   createTour(formData: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}head-of-business/tour`, formData);
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/create`, formData);
   }
 
   deleteTour(id: number): Observable<any> {
@@ -60,4 +60,8 @@ export class TourService {
   recoverTour(id: number): Observable<any> {
     return this.http.delete(`${environment.apiUrl}head-business/tour/change-status/${id}` + '?isDeleted=false');
   }
+
+  getAllTags(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/list-tag`);
+}
 }

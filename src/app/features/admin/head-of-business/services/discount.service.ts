@@ -42,11 +42,11 @@ export class TourDiscountService {
   }
 
   createTourPax(id: number, data: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}head-of-business/tour/${id}/tour-pax`, data);
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/${id}/tour-pax/create`, data);
   }
 
   updateTourPax(id: number, paxId: number, data: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}head-of-business/tour/${id}/tour-pax/${paxId}`, data);
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/${id}/tour-pax/update/${paxId}`, data);
   }
 
   deleteTourPax(id: number, paxId: number): Observable<any> {

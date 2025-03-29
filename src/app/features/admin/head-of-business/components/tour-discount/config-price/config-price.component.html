@@ -2,7 +2,7 @@
 <div id="addPriceModal" tabindex="-1" aria-hidden="true"
   class="fixed inset-0 z-50 hidden w-full overflow-x-hidden overflow-y-auto max-h-full">
   <div class="min-w-3xl max-h-full flex justify-center items-center">
-    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4">
+    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4 ">
       <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
           Cấu hình giá
@@ -16,7 +16,7 @@
           <span class="sr-only">Close modal</span>
         </button>
       </div>
-      <div class="p-4 md:p-5 space-y-4">
+      <div class="p-4 md:p-5 space-y-4 max-h-[60vh] overflow-y-auto">
         <div class="mb-6">
           <label class="block font-medium mb-2">Giá bán áp dụng từ:</label>
           <div class="flex gap-3">
@@ -38,31 +38,31 @@
             <tbody>
               <tr *ngFor="let price of _prices; let i = index" class="border-b border-gray-300">
                 <td class="p-3">{{ price.paxRange }} khách</td>
-                <td class="p-3">{{ (totalNetPrice[price.paxRange] / getMinPax(price.paxRange)) | currencyVnd }} VND</td>
+                <td class="p-3">{{ (totalSellingPrice[price.paxRange] / getMinPax(price.paxRange)) | currencyVnd }} VND</td>
                 <td class="p-3 flex items-center gap-2">
-                  <input type="text" [(ngModel)]="price.sellingPriceFormatted"
+                  <input type="text" [(ngModel)]="price.fixedCostFormatted"
                     class="p-2 border border-gray-300 rounded-md w-32" placeholder="Nhập chi phí tổ chức"
-                    (input)="formatPrice(i)" />
+                    (input)="formatPrice(i, 'fixedCostFormatted')" />
                   <span>VND</span>
                 </td>
                 <td class="p-3">
                   <input type="text" [(ngModel)]="price.sellingPriceFormatted"
                     class="p-2 border border-gray-300 rounded-md w-32" placeholder="Nhập giá bán"
-                    (input)="formatPrice(i)" />
+                    (input)="formatPrice(i, 'sellingPriceFormatted')" />
                   <span>VND</span>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="flex justify-end gap-3">
-          <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300" data-modal-hide="addPriceModal">
-            Hủy
-          </button>
-          <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700" (click)="onConfirm()" data-modal-hide="addPriceModal">
-            Xác nhận
-          </button>
-        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300" data-modal-hide="addPriceModal">
+          Hủy
+        </button>
+        <button class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700" (click)="onConfirm()" data-modal-hide="addPriceModal">
+          Xác nhận
+        </button>
       </div>
     </div>
   </div>

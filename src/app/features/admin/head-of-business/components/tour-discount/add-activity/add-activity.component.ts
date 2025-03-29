@@ -6,8 +6,30 @@ import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } f
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourDiscountService } from '../../../services/discount.service';
 
-interface PriceRange {
-  [key: string]: number;
+interface PaxPrice {
+  paxId: number;
+  minPax: number;
+  maxPax: number;
+  paxRange: string;
+  price: number;
+  serviceNettPrice: number;
+  sellingPrice: number;
+  fixedCost: number;
+  extraHotelCost: number;
+}
+
+interface Service {
+  id: number;
+  name: string;
+  dayNumber: number;
+  status: string;
+  nettPrice: number;
+  sellingPrice: number;
+  locationName: string;
+  locationId: number;
+  serviceProviderName: string;
+  serviceProviderId: number;
+  paxPrices: { [key: string]: PaxPrice };
 }
 
 interface PaxOption {
@@ -15,33 +37,10 @@ interface PaxOption {
   minPax: number;
   maxPax: number;
   paxRange: string;
-}
-
-interface RoomDetail {
-  id: number;
-  capacity: number;
-  availableQuantity: number;
-  facilities: string;
-}
-
-interface Service {
-  id: number;
-  category: string;
-  name: string;
-  description: string;
-  dayNumber: number;
-  status: string;
-  netPrice: number;
+  fixedCost: number;
   sellingPrice: number;
-  quantity: number;
-  prices: PriceRange;
-  locationName: string;
-  locationId: number;
-  serviceProviderName: string;
-  serviceProviderId: number;
-  startDate: string;
-  endDate: string;
-  roomDetail?: RoomDetail;
+  validFrom: string;
+  validTo: string;
 }
 
 interface ServiceDetailResponse {
@@ -50,7 +49,6 @@ interface ServiceDetailResponse {
   data: {
     id: number;
     name: string;
-    description: string;
     dayNumber: number;
     status: string;
     nettPrice: number;
@@ -59,19 +57,7 @@ interface ServiceDetailResponse {
     locationName: string;
     serviceProviderId: number;
     serviceProviderName: string;
-    categoryName: string;
-    startDate: string;
-    endDate: string;
-    paxPrices: {
-      [key: string]: {
-        paxId: number;
-        minPax: number;
-        maxPax: number;
-        paxRange: string;
-        price?: number;
-      };
-    };
-    roomDetail?: RoomDetail;
+    paxPrices: { [key: string]: PaxPrice };
   };
 }
 
@@ -87,16 +73,16 @@ interface ServiceDetailResponse {
   templateUrl: './add-activity.component.html',
   styleUrls: ['./add-activity.component.css']
 })
-export class AddActivityComponent {
+export class AddActivityComponent implements AfterViewInit {
   @Input() days: number[] = [];
   @Input() tourId: number = 0;
   @Input() serviceId: number | null = null;
   @Input() prices: PaxOption[] = [];
-  @Output() activityAdded = new EventEmitter<any>();
+  @Input() locations = signal<any[]>([]);
+  @Output() activityAdded = new EventEmitter<{ activity: Service, isUpdate: boolean }>();
 
   modal: Modal | null = null;
   addActivityForm!: FormGroup;
-  @Input() locations = signal<any[]>([]);
   providers = signal<any[]>([]);
   activitys = signal<any[]>([]);
 
@@ -104,10 +90,15 @@ export class AddActivityComponent {
     private ssrService: SsrService,
     private fb: FormBuilder,
     private tourDiscountService: TourDiscountService
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.initializeForm();
+  }
+
+  ngAfterViewInit() {
+    const modalElement = document.getElementById('addActivityModal');
+    if (modalElement) {
+      this.modal = new Modal(modalElement);
+    }
   }
 
   initializeForm() {
@@ -115,30 +106,9 @@ export class AddActivityComponent {
       selectedDay: [this.days.length > 0 ? this.days[0] : 1],
       selectedLocation: [null],
       selectedProvider: [null],
-      selectedActivity: [''],
-      description: [''],
-      netPrice: [0],
-      roomDetail: this.fb.group({
-        capacity: [0],
-        availableQuantity: [0],
-        facilities: ['']
-      }),
+      selectedActivity: [null],
+      netPrice: [{ value: 0, disabled: true }],
       paxPrices: this.fb.array([])
-    });
-  }
-
-
-  initPaxPrices() {
-    const paxPricesArray = this.addActivityForm.get('paxPrices') as FormArray;
-    paxPricesArray.clear();
-    Object.values(this.prices).forEach((pax: any) => {
-      paxPricesArray.push(
-        this.fb.group({
-          paxId: [pax.id],
-          paxRange: [pax.paxRange],
-          price: [0]
-        })
-      );
     });
   }
 
@@ -146,11 +116,23 @@ export class AddActivityComponent {
     return this.addActivityForm.get('paxPrices') as FormArray;
   }
 
+  initPaxPrices() {
+    const paxPricesArray = this.paxPrices;
+    paxPricesArray.clear();
+    this.prices.forEach(pax => {
+      paxPricesArray.push(
+        this.fb.group({
+          paxId: [pax.id],
+          paxRange: [pax.paxRange],
+          sellingPrice: [pax.sellingPrice || 0]
+        })
+      );
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['prices'] && changes['prices'].currentValue) {
-      if (this.addActivityForm) {
-        this.initPaxPrices();
-      }
+      this.initPaxPrices();
     }
   }
 
@@ -178,20 +160,15 @@ export class AddActivityComponent {
     const locationId = this.addActivityForm.get('selectedLocation')?.value;
     const providerId = this.addActivityForm.get('selectedProvider')?.value;
     if (locationId && providerId) {
-      this.tourDiscountService.getServices(this.tourId, locationId, providerId, "Activity").subscribe({
+      this.tourDiscountService.getServices(this.tourId, locationId, providerId, 'Activity').subscribe({
         next: (response: any) => {
           if (response.code === 200) {
-            const providerData = response.data;
-            if (providerData) {
-              const mappedActivitys = providerData.availableServices.map((service: any) => ({
-                id: service.id,
-                name: service.name,
-                netPrice: service.nettPrice,
-                description: service.description || '',
-                roomDetail: service.roomDetail || { capacity: 0, availableQuantity: 0, facilities: '' }
-              }));
-              this.activitys.set(mappedActivitys);
-            }
+            const mappedActivitys = response.data.availableServices.map((service: any) => ({
+              id: service.id,
+              name: service.name,
+              nettPrice: service.nettPrice
+            }));
+            this.activitys.set(mappedActivitys);
           }
         },
         error: (error: any) => {
@@ -201,43 +178,31 @@ export class AddActivityComponent {
     }
   }
 
-
-
   fetchActivityDetails() {
     if (this.serviceId && this.tourId) {
-      if (!this.addActivityForm) return;
-      this.addActivityForm.reset();
       this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId).subscribe({
         next: (response: ServiceDetailResponse) => {
           if (response.code === 200) {
             const activity = response.data;
 
-            const paxPricesArray = this.addActivityForm.get('paxPrices') as FormArray;
-            paxPricesArray.clear();
-
-            Object.values(activity.paxPrices).forEach((pax: any) => {
-              paxPricesArray.push(
-                this.fb.group({
-                  paxId: [pax.paxId],
-                  paxRange: [pax.paxRange],
-                  price: [pax.price || 0]
-                })
-              );
-            });
-
-            // Cập nhật các trường khác
             this.addActivityForm.patchValue({
               selectedDay: activity.dayNumber,
               selectedLocation: activity.locationId,
               selectedProvider: activity.serviceProviderId,
               selectedActivity: activity.id,
-              description: activity.description || '',
-              netPrice: activity.nettPrice,
-              roomDetail: {
-                capacity: activity.roomDetail?.capacity || 0,
-                availableQuantity: activity.roomDetail?.availableQuantity || 0,
-                facilities: activity.roomDetail?.facilities || ''
-              }
+              netPrice: activity.nettPrice
+            });
+
+            const paxPricesArray = this.paxPrices;
+            paxPricesArray.clear();
+            Object.values(activity.paxPrices).forEach(pax => {
+              paxPricesArray.push(
+                this.fb.group({
+                  paxId: [pax.paxId],
+                  paxRange: [pax.paxRange],
+                  sellingPrice: [pax.sellingPrice || 0]
+                })
+              );
             });
 
             this.fetchServiceProviders();
@@ -248,15 +213,21 @@ export class AddActivityComponent {
           console.error('Error fetching activity details:', error);
         }
       });
+    } else {
+      this.initPaxPrices();
     }
   }
 
-
   onLocationChange() {
+    this.addActivityForm.patchValue({ selectedProvider: null, selectedActivity: null });
+    this.providers.set([]);
+    this.activitys.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
+    this.addActivityForm.patchValue({ selectedActivity: null });
+    this.activitys.set([]);
     this.fetchActivitys();
   }
 
@@ -265,144 +236,109 @@ export class AddActivityComponent {
     const selectedActivity = this.activitys().find(h => h.id === selectedActivityId);
     if (selectedActivity) {
       this.addActivityForm.patchValue({
-        description: selectedActivity.description,
-        netPrice: selectedActivity.netPrice,
-        roomDetail: {
-          capacity: selectedActivity.roomDetail.capacity,
-          availableQuantity: selectedActivity.roomDetail.availableQuantity,
-          facilities: selectedActivity.roomDetail.facilities
-        }
-      });
-    }
-  }
-
-  createActivity() {
-    if (this.addActivityForm.valid) {
-      const formValue = this.addActivityForm.value;
-      const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
-        acc[pax.paxId] = pax.price;
-        return acc;
-      }, {});
-
-      const formData = {
-        serviceId: formValue.selectedActivity,
-        dayNumber: formValue.selectedDay,
-        quantity: 1,
-        sellingPrice: formValue.netPrice,
-        nettPrice: formValue.netPrice,
-        paxPrices: paxPrices,
-        //roomDetail: formValue.roomDetail,
-        mealDetail: null,
-        transportDetail: null
-      };
-
-      this.tourDiscountService.addService(this.tourId, formData).subscribe({
-        next: (response: any) => {
-          if (response.code === 201) {
-            const newService: Service = {
-              id: response.data.id || 0,
-              category: 'Activity',
-              name: formValue.selectedActivity,
-              description: formValue.description,
-              dayNumber: formData.dayNumber,
-              status: 'ACTIVE',
-              netPrice: formData.nettPrice,
-              sellingPrice: formData.sellingPrice,
-              quantity: formData.quantity,
-              prices: formData.paxPrices,
-              locationName: response.data.locationName || '',
-              locationId: formValue.selectedLocation,
-              serviceProviderName: response.data.serviceProviderName || '',
-              serviceProviderId: formValue.selectedProvider,
-              startDate: response.data.startDate || '',
-              endDate: response.data.endDate || '',
-              //roomDetail: formData.roomDetail
-            };
-            this.activityAdded.emit({ service: newService, isUpdate: false });
-            this.modal?.hide();
-          }
-        },
-        error: (error: any) => {
-          console.error('Error creating activity:', error);
-        }
-      });
-    }
-  }
-
-  updateActivity() {
-    if (this.addActivityForm.valid && this.serviceId) {
-      const formValue = this.addActivityForm.value;
-      const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
-        acc[pax.paxId] = pax.price;
-        return acc;
-      }, {});
-
-      const formData = {
-        serviceId: this.serviceId,
-        dayNumber: formValue.selectedDay,
-        quantity: 1,
-        sellingPrice: formValue.netPrice,
-        nettPrice: formValue.netPrice,
-        paxPrices: paxPrices,
-        // roomDetail: formValue.roomDetail,
-        mealDetail: null,
-        transportDetail: null
-      };
-
-      this.tourDiscountService.updateService(this.tourId, this.serviceId, formData).subscribe({
-        next: (response: any) => {
-          if (response.code === 200) {
-            const updatedService: Service = {
-              id: this.serviceId!,
-              category: 'Activity',
-              name: formValue.selectedActivity,
-              description: formValue.description,
-              dayNumber: formData.dayNumber,
-              status: 'ACTIVE',
-              netPrice: formData.nettPrice,
-              sellingPrice: formData.sellingPrice,
-              quantity: formData.quantity,
-              prices: formData.paxPrices,
-              locationName: response.data.locationName || '',
-              locationId: formValue.selectedLocation,
-              serviceProviderName: response.data.serviceProviderName || '',
-              serviceProviderId: formValue.selectedProvider,
-              startDate: response.data.startDate || '',
-              endDate: response.data.endDate || '',
-              // roomDetail: formData.roomDetail
-            };
-            this.activityAdded.emit({ service: updatedService, isUpdate: true });
-            this.modal?.hide();
-          }
-        },
-        error: (error: any) => {
-          console.error('Error updating activity:', error);
-        }
+        netPrice: selectedActivity.nettPrice
       });
     }
   }
 
   onSubmit() {
-    if (this.serviceId) {
-      this.updateActivity();
-    } else {
-      this.createActivity();
-    }
-  }
+    if (this.addActivityForm.valid) {
+      const formValue = this.addActivityForm.getRawValue(); // Use getRawValue to include disabled fields
+      const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
+        acc[pax.paxRange] = {
+          paxId: pax.paxId,
+          minPax: this.prices.find(p => p.paxRange === pax.paxRange)?.minPax || 0,
+          maxPax: this.prices.find(p => p.paxRange === pax.paxRange)?.maxPax || 0,
+          paxRange: pax.paxRange,
+          price: 0, // Assuming price is not used here
+          serviceNettPrice: formValue.netPrice,
+          sellingPrice: pax.sellingPrice,
+          fixedCost: 0, // Adjust if needed from data
+          extraHotelCost: 0 // Adjust if needed from data
+        };
+        return acc;
+      }, {});
 
-  showModal() {
-    const doc = this.ssrService.getDocument();
-    if (doc) {
-      const modalElement = document.getElementById('addActivityModal');
-      if (modalElement) {
-        this.modal = new Modal(modalElement);
-        this.modal.show();
-        this.addActivityForm.reset();
+      const activityData: Service = {
+        id: this.serviceId || formValue.selectedActivity,
+        name: this.activitys().find(h => h.id === formValue.selectedActivity)?.name || '',
+        dayNumber: formValue.selectedDay,
+        status: 'ACTIVE',
+        nettPrice: formValue.netPrice,
+        sellingPrice: 0, // Will be calculated based on paxPrices
+        locationName: this.locations().find(l => l.id === formValue.selectedLocation)?.name || '',
+        locationId: formValue.selectedLocation,
+        serviceProviderName: this.providers().find(p => p.id === formValue.selectedProvider)?.name || '',
+        serviceProviderId: formValue.selectedProvider,
+        paxPrices: paxPrices
+      };
+
+      if (this.serviceId) {
+        this.updateActivity(activityData);
+      } else {
+        this.createActivity(activityData);
       }
     }
   }
 
+  createActivity(activityData: Service) {
+    const payload = {
+      serviceId: activityData.id,
+      locationId: activityData.locationId,
+      serviceProviderId: activityData.serviceProviderId,
+      dayNumber: Number(activityData.dayNumber),
+      paxPrices: Object.values(activityData.paxPrices).reduce((acc: any, pax) => {
+        acc[pax.paxId] = pax.sellingPrice;
+        return acc;
+      }, {})
+    };
+  
+    this.tourDiscountService.addService(this.tourId, payload).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.activityAdded.emit({ activity: activityData, isUpdate: false });
+          this.modal?.hide();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error creating activity:', error);
+      }
+    });
+  }  
+
+  updateActivity(activityData: Service) {
+    const payload = {
+      serviceId: activityData.id,
+      locationId: activityData.locationId,
+      serviceProviderId: activityData.serviceProviderId,
+      dayNumber: Number(activityData.dayNumber),
+      paxPrices: Object.values(activityData.paxPrices).reduce((acc: any, pax) => {
+        acc[pax.paxId] = pax.sellingPrice;
+        return acc;
+      }, {})
+    };
+
+    this.tourDiscountService.updateService(this.tourId, this.serviceId!, payload).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.activityAdded.emit({ activity: activityData, isUpdate: true });
+          this.modal?.hide();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error updating activity:', error);
+      }
+    });
+  }
+
+  showModal() {
+    this.fetchActivityDetails();
+    this.modal?.show();
+  }
+
   onCancel() {
     this.modal?.hide();
+    this.addActivityForm.reset();
+    this.initPaxPrices();
   }
 }

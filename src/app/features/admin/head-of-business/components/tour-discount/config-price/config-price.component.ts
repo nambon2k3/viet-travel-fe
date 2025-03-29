@@ -1,4 +1,3 @@
-// config-price.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from "../../../../../../shared/pipes/currency-vnd.pipe";
@@ -10,8 +9,10 @@ interface PaxOption {
   minPax: number;
   maxPax: number;
   paxRange: string;
-  //fixedCost: number;
+  fixedCost: number;
   sellingPrice: number;
+  validFrom: string;
+  validTo: string;
 }
 
 interface PriceRange {
@@ -27,30 +28,47 @@ interface PriceRange {
 export class ConfigPriceComponent {
   @Input() tourId!: number;
   @Input() set prices(value: PaxOption[]) {
-    this._prices = value.map(p => ({
-      ...p,
-      //fixedCostFormatted: p.fixedCost.toLocaleString('vi-VN'),
-      sellingPriceFormatted: p.sellingPrice.toLocaleString('vi-VN')
-    }));
+    this._prices = value.map(p => {
+      const netPrice = this.totalSellingPrice[p.paxRange] / this.getMinPax(p.paxRange);
+      return {
+        ...p,
+        fixedCostFormatted: p.fixedCost.toLocaleString('vi-VN'),
+        sellingPriceFormatted: (netPrice + p.fixedCost).toLocaleString('vi-VN')
+      };
+    });
   }
+
   @Output() confirm = new EventEmitter<PaxOption[]>();
   @Output() cancel = new EventEmitter<void>();
-  @Input() totalNetPrice: PriceRange = {};
+  @Input() totalSellingPrice: PriceRange = {};
 
   constructor(
     private discountService: TourDiscountService,
   ) { }
 
-  _prices: { id: number, paxRange: string, sellingPriceFormatted: string }[] = [];
+  _prices: {
+    id: number;
+    paxRange: string;
+    fixedCostFormatted: string;
+    sellingPriceFormatted: string;
+  }[] = [];
+
   startDate: string = new Date().toISOString().split('T')[0];
   endDate: string = new Date().toISOString().split('T')[0];
 
-  formatPrice(index: number): void {
-    let value = this._prices[index].sellingPriceFormatted.replace(/[^0-9]/g, '');
+  formatPrice(index: number, field: 'fixedCostFormatted' | 'sellingPriceFormatted'): void {
+    let value = this._prices[index][field].replace(/[^0-9]/g, '');
     if (value) {
-      this._prices[index].sellingPriceFormatted = parseInt(value).toLocaleString('en-US');
+      this._prices[index][field] = parseInt(value).toLocaleString('vi-VN');
     } else {
-      this._prices[index].sellingPriceFormatted = '';
+      this._prices[index][field] = '';
+    }
+
+    // Nếu cập nhật fixedCost -> tự động tính lại sellingPrice
+    if (field === 'fixedCostFormatted') {
+      const fixedCost = parseInt(this._prices[index].fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0;
+      const netPrice = this.totalSellingPrice[this._prices[index].paxRange] / this.getMinPax(this._prices[index].paxRange);
+      this._prices[index].sellingPriceFormatted = (netPrice + fixedCost).toLocaleString('vi-VN');
     }
   }
 
@@ -64,13 +82,13 @@ export class ConfigPriceComponent {
 
   onConfirm(): void {
     console.log('Confirming prices:', this._prices);
-    const parsedPrices = this._prices.map((p) => ({
+    const parsedPrices: PaxOption[] = this._prices.map((p) => ({
       id: p.id,
       minPax: this.getMinPax(p.paxRange),
       maxPax: this.getMaxPax(p.paxRange),
       paxRange: p.paxRange,
-      //fixedCost: parseInt(p.fixedCostFormatted.replace(/,/g, ''), 10),
-      sellingPrice: parseInt(p.sellingPriceFormatted.replace(/,/g, ''), 10),
+      fixedCost: parseInt(p.fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0,
+      sellingPrice: parseInt(p.sellingPriceFormatted.replace(/[^0-9]/g, ''), 10) || 0,
       validFrom: new Date(this.startDate).toISOString(),
       validTo: new Date(this.endDate).toISOString(),
     }));

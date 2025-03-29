@@ -55,7 +55,5 @@ export class TourDayComponent implements OnInit {
     }
   }
 
-  getServicesString(tourDay: TourDay): string {
-    return tourDay.tourDayServices?.map(s => s.serviceName).join(', ') || 'Không có dịch vụ';
-  }
+
 }

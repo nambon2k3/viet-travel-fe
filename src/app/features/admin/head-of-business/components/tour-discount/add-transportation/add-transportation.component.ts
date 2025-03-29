@@ -6,8 +6,30 @@ import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } f
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourDiscountService } from '../../../services/discount.service';
 
-interface PriceRange {
-  [key: string]: number;
+interface PaxPrice {
+  paxId: number;
+  minPax: number;
+  maxPax: number;
+  paxRange: string;
+  price: number;
+  serviceNettPrice: number;
+  sellingPrice: number;
+  fixedCost: number;
+  extraHotelCost: number;
+}
+
+interface Service {
+  id: number;
+  name: string;
+  dayNumber: number;
+  status: string;
+  nettPrice: number;
+  sellingPrice: number;
+  locationName: string;
+  locationId: number;
+  serviceProviderName: string;
+  serviceProviderId: number;
+  paxPrices: { [key: string]: PaxPrice };
 }
 
 interface PaxOption {
@@ -15,33 +37,10 @@ interface PaxOption {
   minPax: number;
   maxPax: number;
   paxRange: string;
-}
-
-interface RoomDetail {
-  id: number;
-  capacity: number;
-  availableQuantity: number;
-  facilities: string;
-}
-
-interface Service {
-  id: number;
-  category: string;
-  name: string;
-  description: string;
-  dayNumber: number;
-  status: string;
-  netPrice: number;
+  fixedCost: number;
   sellingPrice: number;
-  quantity: number;
-  prices: PriceRange;
-  locationName: string;
-  locationId: number;
-  serviceProviderName: string;
-  serviceProviderId: number;
-  startDate: string;
-  endDate: string;
-  roomDetail?: RoomDetail;
+  validFrom: string;
+  validTo: string;
 }
 
 interface ServiceDetailResponse {
@@ -50,7 +49,6 @@ interface ServiceDetailResponse {
   data: {
     id: number;
     name: string;
-    description: string;
     dayNumber: number;
     status: string;
     nettPrice: number;
@@ -59,19 +57,7 @@ interface ServiceDetailResponse {
     locationName: string;
     serviceProviderId: number;
     serviceProviderName: string;
-    categoryName: string;
-    startDate: string;
-    endDate: string;
-    paxPrices: {
-      [key: string]: {
-        paxId: number;
-        minPax: number;
-        maxPax: number;
-        paxRange: string;
-        price?: number;
-      };
-    };
-    roomDetail?: RoomDetail;
+    paxPrices: { [key: string]: PaxPrice };
   };
 }
 
@@ -87,16 +73,16 @@ interface ServiceDetailResponse {
   templateUrl: './add-transportation.component.html',
   styleUrls: ['./add-transportation.component.css']
 })
-export class AddTransportationComponent {
+export class AddTransportationComponent implements AfterViewInit {
   @Input() days: number[] = [];
   @Input() tourId: number = 0;
   @Input() serviceId: number | null = null;
   @Input() prices: PaxOption[] = [];
-  @Output() transportationAdded = new EventEmitter<any>();
+  @Input() locations = signal<any[]>([]);
+  @Output() transportationAdded = new EventEmitter<{ transport: Service, isUpdate: boolean }>();
 
   modal: Modal | null = null;
   addTransportationForm!: FormGroup;
-  @Input() locations = signal<any[]>([]);
   providers = signal<any[]>([]);
   transportations = signal<any[]>([]);
 
@@ -104,10 +90,15 @@ export class AddTransportationComponent {
     private ssrService: SsrService,
     private fb: FormBuilder,
     private tourDiscountService: TourDiscountService
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.initializeForm();
+  }
+
+  ngAfterViewInit() {
+    const modalElement = document.getElementById('addTransportationModal');
+    if (modalElement) {
+      this.modal = new Modal(modalElement);
+    }
   }
 
   initializeForm() {
@@ -115,30 +106,9 @@ export class AddTransportationComponent {
       selectedDay: [this.days.length > 0 ? this.days[0] : 1],
       selectedLocation: [null],
       selectedProvider: [null],
-      selectedTransportation: [''],
-      description: [''],
-      netPrice: [0],
-      roomDetail: this.fb.group({
-        capacity: [0],
-        availableQuantity: [0],
-        facilities: ['']
-      }),
+      selectedTransportation: [null],
+      netPrice: [{ value: 0, disabled: true }],
       paxPrices: this.fb.array([])
-    });
-  }
-
-
-  initPaxPrices() {
-    const paxPricesArray = this.addTransportationForm.get('paxPrices') as FormArray;
-    paxPricesArray.clear();
-    Object.values(this.prices).forEach((pax: any) => {
-      paxPricesArray.push(
-        this.fb.group({
-          paxId: [pax.id],
-          paxRange: [pax.paxRange],
-          price: [0]
-        })
-      );
     });
   }
 
@@ -146,18 +116,30 @@ export class AddTransportationComponent {
     return this.addTransportationForm.get('paxPrices') as FormArray;
   }
 
+  initPaxPrices() {
+    const paxPricesArray = this.paxPrices;
+    paxPricesArray.clear();
+    this.prices.forEach(pax => {
+      paxPricesArray.push(
+        this.fb.group({
+          paxId: [pax.id],
+          paxRange: [pax.paxRange],
+          sellingPrice: [pax.sellingPrice || 0]
+        })
+      );
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['prices'] && changes['prices'].currentValue) {
-      if (this.addTransportationForm) {
-        this.initPaxPrices();
-      }
+      this.initPaxPrices();
     }
   }
 
   fetchServiceProviders() {
     const locationId = this.addTransportationForm.get('selectedLocation')?.value;
     if (locationId) {
-      this.tourDiscountService.getServiceProviders(this.tourId, locationId, 'Transportation').subscribe({
+      this.tourDiscountService.getServiceProviders(this.tourId, locationId, 'Transport').subscribe({
         next: (response: any) => {
           if (response.code === 200) {
             const mappedProviders = response.data.serviceProviders.map((provider: any) => ({
@@ -178,20 +160,15 @@ export class AddTransportationComponent {
     const locationId = this.addTransportationForm.get('selectedLocation')?.value;
     const providerId = this.addTransportationForm.get('selectedProvider')?.value;
     if (locationId && providerId) {
-      this.tourDiscountService.getServices(this.tourId, locationId, providerId, "Transportation").subscribe({
+      this.tourDiscountService.getServices(this.tourId, locationId, providerId, 'Transport').subscribe({
         next: (response: any) => {
           if (response.code === 200) {
-            const providerData = response.data;
-            if (providerData) {
-              const mappedTransportations = providerData.availableServices.map((service: any) => ({
-                id: service.id,
-                name: service.name,
-                netPrice: service.nettPrice,
-                description: service.description || '',
-                roomDetail: service.roomDetail || { capacity: 0, availableQuantity: 0, facilities: '' }
-              }));
-              this.transportations.set(mappedTransportations);
-            }
+            const mappedTransportations = response.data.availableServices.map((service: any) => ({
+              id: service.id,
+              name: service.name,
+              nettPrice: service.nettPrice
+            }));
+            this.transportations.set(mappedTransportations);
           }
         },
         error: (error: any) => {
@@ -201,43 +178,31 @@ export class AddTransportationComponent {
     }
   }
 
-
-
   fetchTransportationDetails() {
     if (this.serviceId && this.tourId) {
-      if (!this.addTransportationForm) return;
-      this.addTransportationForm.reset();
       this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId).subscribe({
         next: (response: ServiceDetailResponse) => {
           if (response.code === 200) {
             const transportation = response.data;
 
-            const paxPricesArray = this.addTransportationForm.get('paxPrices') as FormArray;
-            paxPricesArray.clear();
-
-            Object.values(transportation.paxPrices).forEach((pax: any) => {
-              paxPricesArray.push(
-                this.fb.group({
-                  paxId: [pax.paxId],
-                  paxRange: [pax.paxRange],
-                  price: [pax.price || 0]
-                })
-              );
-            });
-
-            // Cập nhật các trường khác
             this.addTransportationForm.patchValue({
               selectedDay: transportation.dayNumber,
               selectedLocation: transportation.locationId,
               selectedProvider: transportation.serviceProviderId,
               selectedTransportation: transportation.id,
-              description: transportation.description || '',
-              netPrice: transportation.nettPrice,
-              roomDetail: {
-                capacity: transportation.roomDetail?.capacity || 0,
-                availableQuantity: transportation.roomDetail?.availableQuantity || 0,
-                facilities: transportation.roomDetail?.facilities || ''
-              }
+              netPrice: transportation.nettPrice
+            });
+
+            const paxPricesArray = this.paxPrices;
+            paxPricesArray.clear();
+            Object.values(transportation.paxPrices).forEach(pax => {
+              paxPricesArray.push(
+                this.fb.group({
+                  paxId: [pax.paxId],
+                  paxRange: [pax.paxRange],
+                  sellingPrice: [pax.sellingPrice || 0]
+                })
+              );
             });
 
             this.fetchServiceProviders();
@@ -248,15 +213,21 @@ export class AddTransportationComponent {
           console.error('Error fetching transportation details:', error);
         }
       });
+    } else {
+      this.initPaxPrices();
     }
   }
 
-
   onLocationChange() {
+    this.addTransportationForm.patchValue({ selectedProvider: null, selectedTransportation: null });
+    this.providers.set([]);
+    this.transportations.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
+    this.addTransportationForm.patchValue({ selectedTransportation: null });
+    this.transportations.set([]);
     this.fetchTransportations();
   }
 
@@ -265,144 +236,109 @@ export class AddTransportationComponent {
     const selectedTransportation = this.transportations().find(h => h.id === selectedTransportationId);
     if (selectedTransportation) {
       this.addTransportationForm.patchValue({
-        description: selectedTransportation.description,
-        netPrice: selectedTransportation.netPrice,
-        roomDetail: {
-          capacity: selectedTransportation.roomDetail.capacity,
-          availableQuantity: selectedTransportation.roomDetail.availableQuantity,
-          facilities: selectedTransportation.roomDetail.facilities
-        }
-      });
-    }
-  }
-
-  createTransportation() {
-    if (this.addTransportationForm.valid) {
-      const formValue = this.addTransportationForm.value;
-      const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
-        acc[pax.paxId] = pax.price;
-        return acc;
-      }, {});
-
-      const formData = {
-        serviceId: formValue.selectedTransportation,
-        dayNumber: formValue.selectedDay,
-        quantity: 1,
-        sellingPrice: formValue.netPrice,
-        nettPrice: formValue.netPrice,
-        paxPrices: paxPrices,
-        //roomDetail: formValue.roomDetail,
-        mealDetail: null,
-        transportDetail: null
-      };
-
-      this.tourDiscountService.addService(this.tourId, formData).subscribe({
-        next: (response: any) => {
-          if (response.code === 201) {
-            const newService: Service = {
-              id: response.data.id || 0,
-              category: 'Transportation',
-              name: formValue.selectedTransportation,
-              description: formValue.description,
-              dayNumber: formData.dayNumber,
-              status: 'ACTIVE',
-              netPrice: formData.nettPrice,
-              sellingPrice: formData.sellingPrice,
-              quantity: formData.quantity,
-              prices: formData.paxPrices,
-              locationName: response.data.locationName || '',
-              locationId: formValue.selectedLocation,
-              serviceProviderName: response.data.serviceProviderName || '',
-              serviceProviderId: formValue.selectedProvider,
-              startDate: response.data.startDate || '',
-              endDate: response.data.endDate || '',
-              //roomDetail: formData.roomDetail
-            };
-            this.transportationAdded.emit({ service: newService, isUpdate: false });
-            this.modal?.hide();
-          }
-        },
-        error: (error: any) => {
-          console.error('Error creating transportation:', error);
-        }
-      });
-    }
-  }
-
-  updateTransportation() {
-    if (this.addTransportationForm.valid && this.serviceId) {
-      const formValue = this.addTransportationForm.value;
-      const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
-        acc[pax.paxId] = pax.price;
-        return acc;
-      }, {});
-
-      const formData = {
-        serviceId: this.serviceId,
-        dayNumber: formValue.selectedDay,
-        quantity: 1,
-        sellingPrice: formValue.netPrice,
-        nettPrice: formValue.netPrice,
-        paxPrices: paxPrices,
-        // roomDetail: formValue.roomDetail,
-        mealDetail: null,
-        transportDetail: null
-      };
-
-      this.tourDiscountService.updateService(this.tourId, this.serviceId, formData).subscribe({
-        next: (response: any) => {
-          if (response.code === 200) {
-            const updatedService: Service = {
-              id: this.serviceId!,
-              category: 'Transportation',
-              name: formValue.selectedTransportation,
-              description: formValue.description,
-              dayNumber: formData.dayNumber,
-              status: 'ACTIVE',
-              netPrice: formData.nettPrice,
-              sellingPrice: formData.sellingPrice,
-              quantity: formData.quantity,
-              prices: formData.paxPrices,
-              locationName: response.data.locationName || '',
-              locationId: formValue.selectedLocation,
-              serviceProviderName: response.data.serviceProviderName || '',
-              serviceProviderId: formValue.selectedProvider,
-              startDate: response.data.startDate || '',
-              endDate: response.data.endDate || '',
-              // roomDetail: formData.roomDetail
-            };
-            this.transportationAdded.emit({ service: updatedService, isUpdate: true });
-            this.modal?.hide();
-          }
-        },
-        error: (error: any) => {
-          console.error('Error updating transportation:', error);
-        }
+        netPrice: selectedTransportation.nettPrice
       });
     }
   }
 
   onSubmit() {
-    if (this.serviceId) {
-      this.updateTransportation();
-    } else {
-      this.createTransportation();
-    }
-  }
+    if (this.addTransportationForm.valid) {
+      const formValue = this.addTransportationForm.getRawValue(); // Use getRawValue to include disabled fields
+      const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
+        acc[pax.paxRange] = {
+          paxId: pax.paxId,
+          minPax: this.prices.find(p => p.paxRange === pax.paxRange)?.minPax || 0,
+          maxPax: this.prices.find(p => p.paxRange === pax.paxRange)?.maxPax || 0,
+          paxRange: pax.paxRange,
+          price: 0, // Assuming price is not used here
+          serviceNettPrice: formValue.netPrice,
+          sellingPrice: pax.sellingPrice,
+          fixedCost: 0, // Adjust if needed from data
+          extraHotelCost: 0 // Adjust if needed from data
+        };
+        return acc;
+      }, {});
 
-  showModal() {
-    const doc = this.ssrService.getDocument();
-    if (doc) {
-      const modalElement = document.getElementById('addTransportationModal');
-      if (modalElement) {
-        this.modal = new Modal(modalElement);
-        this.modal.show();
-        this.addTransportationForm.reset();
+      const transportationData: Service = {
+        id: this.serviceId || formValue.selectedTransportation,
+        name: this.transportations().find(h => h.id === formValue.selectedTransportation)?.name || '',
+        dayNumber: formValue.selectedDay,
+        status: 'ACTIVE',
+        nettPrice: formValue.netPrice,
+        sellingPrice: 0, // Will be calculated based on paxPrices
+        locationName: this.locations().find(l => l.id === formValue.selectedLocation)?.name || '',
+        locationId: formValue.selectedLocation,
+        serviceProviderName: this.providers().find(p => p.id === formValue.selectedProvider)?.name || '',
+        serviceProviderId: formValue.selectedProvider,
+        paxPrices: paxPrices
+      };
+
+      if (this.serviceId) {
+        this.updateTransportation(transportationData);
+      } else {
+        this.createTransportation(transportationData);
       }
     }
   }
 
+  createTransportation(transportationData: Service) {
+    const payload = {
+      serviceId: transportationData.id,
+      locationId: transportationData.locationId,
+      serviceProviderId: transportationData.serviceProviderId,
+      dayNumber: Number(transportationData.dayNumber),
+      paxPrices: Object.values(transportationData.paxPrices).reduce((acc: any, pax) => {
+        acc[pax.paxId] = pax.sellingPrice;
+        return acc;
+      }, {})
+    };
+  
+    this.tourDiscountService.addService(this.tourId, payload).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.transportationAdded.emit({ transport: transportationData, isUpdate: false });
+          this.modal?.hide();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error creating transportation:', error);
+      }
+    });
+  }  
+
+  updateTransportation(transportationData: Service) {
+    const payload = {
+      serviceId: transportationData.id,
+      locationId: transportationData.locationId,
+      serviceProviderId: transportationData.serviceProviderId,
+      dayNumber: Number(transportationData.dayNumber),
+      paxPrices: Object.values(transportationData.paxPrices).reduce((acc: any, pax) => {
+        acc[pax.paxId] = pax.sellingPrice;
+        return acc;
+      }, {})
+    };
+
+    this.tourDiscountService.updateService(this.tourId, this.serviceId!, payload).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.transportationAdded.emit({ transport: transportationData, isUpdate: true });
+          this.modal?.hide();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error updating transportation:', error);
+      }
+    });
+  }
+
+  showModal() {
+    this.fetchTransportationDetails();
+    this.modal?.show();
+  }
+
   onCancel() {
     this.modal?.hide();
+    this.addTransportationForm.reset();
+    this.initPaxPrices();
   }
 }

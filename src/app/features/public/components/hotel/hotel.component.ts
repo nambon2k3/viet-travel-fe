@@ -52,6 +52,21 @@ export class HotelComponent implements OnInit {
     this.router.navigate(['/hotel-details', id]);
   }
 
+  getDestinationName(): string {
+    const selectedLocation = this.locations().find(loc => loc.id === Number(this.keyword));
+    return selectedLocation?.name || '';
+  }
+
+  getDestinationDescription(): string {
+    const selectedLocation = this.locations().find(loc => loc.id === Number(this.keyword));
+    return selectedLocation?.description || '';
+  }
+
+  getDepartLocationName(): string {
+    const firstTour = this.hotels()[this.hotels().length - 1];
+    return firstTour?.location?.name || 'Không xác định';
+  }
+
   getHotels(): void {
     this.hotelService.getHotels(
       this.currentPage,
@@ -63,10 +78,11 @@ export class HotelComponent implements OnInit {
       //sortBy ?: string
     ).subscribe({
       next: (response) => {
-        this.hotels.set(response.data.items);
-        this.totalItems = response.data.total;
-        this.currentPage = response.data.page;
-        this.size = response.data.size;
+        this.hotels.set(response.data.publicServiceProviderDTOS.data.items);
+        this.locations.set(response.data.locationDTOS);
+        this.totalItems = response.data.publicServiceProviderDTOS.data.total;
+        this.currentPage = response.data.publicServiceProviderDTOS.data.page;
+        this.size = response.data.publicServiceProviderDTOS.data.size;
         this.totalPages = (Math.ceil(this.totalItems / this.size));
       },
       error: (err) => {

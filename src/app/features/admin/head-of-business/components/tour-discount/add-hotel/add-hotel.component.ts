@@ -6,8 +6,30 @@ import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } f
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourDiscountService } from '../../../services/discount.service';
 
-interface PriceRange {
-  [key: string]: number;
+interface PaxPrice {
+  paxId: number;
+  minPax: number;
+  maxPax: number;
+  paxRange: string;
+  price: number;
+  serviceNettPrice: number;
+  sellingPrice: number;
+  fixedCost: number;
+  extraHotelCost: number;
+}
+
+interface Service {
+  id: number;
+  name: string;
+  dayNumber: number;
+  status: string;
+  nettPrice: number;
+  sellingPrice: number;
+  locationName: string;
+  locationId: number;
+  serviceProviderName: string;
+  serviceProviderId: number;
+  paxPrices: { [key: string]: PaxPrice };
 }
 
 interface PaxOption {
@@ -15,33 +37,10 @@ interface PaxOption {
   minPax: number;
   maxPax: number;
   paxRange: string;
-}
-
-interface RoomDetail {
-  id: number;
-  capacity: number;
-  availableQuantity: number;
-  facilities: string;
-}
-
-interface Service {
-  id: number;
-  category: string;
-  name: string;
-  description: string;
-  dayNumber: number;
-  status: string;
-  netPrice: number;
+  fixedCost: number;
   sellingPrice: number;
-  quantity: number;
-  prices: PriceRange;
-  locationName: string;
-  locationId: number;
-  serviceProviderName: string;
-  serviceProviderId: number;
-  startDate: string;
-  endDate: string;
-  roomDetail?: RoomDetail;
+  validFrom: string;
+  validTo: string;
 }
 
 interface ServiceDetailResponse {
@@ -50,7 +49,6 @@ interface ServiceDetailResponse {
   data: {
     id: number;
     name: string;
-    description: string;
     dayNumber: number;
     status: string;
     nettPrice: number;
@@ -59,19 +57,7 @@ interface ServiceDetailResponse {
     locationName: string;
     serviceProviderId: number;
     serviceProviderName: string;
-    categoryName: string;
-    startDate: string;
-    endDate: string;
-    paxPrices: {
-      [key: string]: {
-        paxId: number;
-        minPax: number;
-        maxPax: number;
-        paxRange: string;
-        price?: number;
-      };
-    };
-    roomDetail?: RoomDetail;
+    paxPrices: { [key: string]: PaxPrice };
   };
 }
 
@@ -87,13 +73,13 @@ interface ServiceDetailResponse {
   templateUrl: './add-hotel.component.html',
   styleUrls: ['./add-hotel.component.css']
 })
-export class AddHotelComponent {
+export class AddHotelComponent implements AfterViewInit {
   @Input() days: number[] = [];
   @Input() tourId: number = 0;
   @Input() serviceId: number | null = null;
   @Input() prices: PaxOption[] = [];
   @Input() locations = signal<any[]>([]);
-  @Output() hotelAdded = new EventEmitter<any>();
+  @Output() hotelAdded = new EventEmitter<{ hotel: Service, isUpdate: boolean }>();
 
   modal: Modal | null = null;
   addHotelForm!: FormGroup;
@@ -104,10 +90,15 @@ export class AddHotelComponent {
     private ssrService: SsrService,
     private fb: FormBuilder,
     private tourDiscountService: TourDiscountService
-  ) { }
-
-  ngOnInit() {
+  ) {
     this.initializeForm();
+  }
+
+  ngAfterViewInit() {
+    const modalElement = document.getElementById('addHotelModal');
+    if (modalElement) {
+      this.modal = new Modal(modalElement);
+    }
   }
 
   initializeForm() {
@@ -115,30 +106,9 @@ export class AddHotelComponent {
       selectedDay: [this.days.length > 0 ? this.days[0] : 1],
       selectedLocation: [null],
       selectedProvider: [null],
-      selectedHotel: [''],
-      description: [''],
-      netPrice: [0],
-      roomDetail: this.fb.group({
-        capacity: [0],
-        availableQuantity: [0],
-        facilities: ['']
-      }),
+      selectedHotel: [null],
+      netPrice: [{ value: 0, disabled: true }],
       paxPrices: this.fb.array([])
-    });
-  }
-
-
-  initPaxPrices() {
-    const paxPricesArray = this.addHotelForm.get('paxPrices') as FormArray;
-    paxPricesArray.clear();
-    Object.values(this.prices).forEach((pax: any) => {
-      paxPricesArray.push(
-        this.fb.group({
-          paxId: [pax.id],
-          paxRange: [pax.paxRange],
-          price: [0]
-        })
-      );
     });
   }
 
@@ -146,15 +116,25 @@ export class AddHotelComponent {
     return this.addHotelForm.get('paxPrices') as FormArray;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['prices'] && changes['prices'].currentValue) {
-      if (this.addHotelForm) {
-        this.initPaxPrices();
-      }
-    }
+  initPaxPrices() {
+    const paxPricesArray = this.paxPrices;
+    paxPricesArray.clear();
+    this.prices.forEach(pax => {
+      paxPricesArray.push(
+        this.fb.group({
+          paxId: [pax.id],
+          paxRange: [pax.paxRange],
+          sellingPrice: [pax.sellingPrice || 0]
+        })
+      );
+    });
   }
 
-  
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['prices'] && changes['prices'].currentValue) {
+      this.initPaxPrices();
+    }
+  }
 
   fetchServiceProviders() {
     const locationId = this.addHotelForm.get('selectedLocation')?.value;
@@ -180,20 +160,15 @@ export class AddHotelComponent {
     const locationId = this.addHotelForm.get('selectedLocation')?.value;
     const providerId = this.addHotelForm.get('selectedProvider')?.value;
     if (locationId && providerId) {
-      this.tourDiscountService.getServices(this.tourId, locationId, providerId, "Hotel").subscribe({
+      this.tourDiscountService.getServices(this.tourId, locationId, providerId, 'Hotel').subscribe({
         next: (response: any) => {
           if (response.code === 200) {
-            const providerData = response.data;
-            if (providerData) {
-              const mappedHotels = providerData.availableServices.map((service: any) => ({
-                id: service.id,
-                name: service.name,
-                netPrice: service.nettPrice,
-                description: service.description || '',
-                roomDetail: service.roomDetail || { capacity: 0, availableQuantity: 0, facilities: '' }
-              }));
-              this.hotels.set(mappedHotels);
-            }
+            const mappedHotels = response.data.availableServices.map((service: any) => ({
+              id: service.id,
+              name: service.name,
+              nettPrice: service.nettPrice
+            }));
+            this.hotels.set(mappedHotels);
           }
         },
         error: (error: any) => {
@@ -203,43 +178,31 @@ export class AddHotelComponent {
     }
   }
 
-
-
   fetchHotelDetails() {
     if (this.serviceId && this.tourId) {
-      if (!this.addHotelForm) return;
-      this.addHotelForm.reset();
       this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId).subscribe({
         next: (response: ServiceDetailResponse) => {
           if (response.code === 200) {
             const hotel = response.data;
 
-            const paxPricesArray = this.addHotelForm.get('paxPrices') as FormArray;
-            paxPricesArray.clear();
-
-            Object.values(hotel.paxPrices).forEach((pax: any) => {
-              paxPricesArray.push(
-                this.fb.group({
-                  paxId: [pax.paxId],
-                  paxRange: [pax.paxRange],
-                  price: [pax.price || 0]
-                })
-              );
-            });
-
-            // Cập nhật các trường khác
             this.addHotelForm.patchValue({
               selectedDay: hotel.dayNumber,
               selectedLocation: hotel.locationId,
               selectedProvider: hotel.serviceProviderId,
               selectedHotel: hotel.id,
-              description: hotel.description || '',
-              netPrice: hotel.nettPrice,
-              roomDetail: {
-                capacity: hotel.roomDetail?.capacity || 0,
-                availableQuantity: hotel.roomDetail?.availableQuantity || 0,
-                facilities: hotel.roomDetail?.facilities || ''
-              }
+              netPrice: hotel.nettPrice
+            });
+
+            const paxPricesArray = this.paxPrices;
+            paxPricesArray.clear();
+            Object.values(hotel.paxPrices).forEach(pax => {
+              paxPricesArray.push(
+                this.fb.group({
+                  paxId: [pax.paxId],
+                  paxRange: [pax.paxRange],
+                  sellingPrice: [pax.sellingPrice || 0]
+                })
+              );
             });
 
             this.fetchServiceProviders();
@@ -250,15 +213,21 @@ export class AddHotelComponent {
           console.error('Error fetching hotel details:', error);
         }
       });
+    } else {
+      this.initPaxPrices();
     }
   }
 
-
   onLocationChange() {
+    this.addHotelForm.patchValue({ selectedProvider: null, selectedHotel: null });
+    this.providers.set([]);
+    this.hotels.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
+    this.addHotelForm.patchValue({ selectedHotel: null });
+    this.hotels.set([]);
     this.fetchHotels();
   }
 
@@ -267,144 +236,109 @@ export class AddHotelComponent {
     const selectedHotel = this.hotels().find(h => h.id === selectedHotelId);
     if (selectedHotel) {
       this.addHotelForm.patchValue({
-        description: selectedHotel.description,
-        netPrice: selectedHotel.netPrice,
-        roomDetail: {
-          capacity: selectedHotel.roomDetail.capacity,
-          availableQuantity: selectedHotel.roomDetail.availableQuantity,
-          facilities: selectedHotel.roomDetail.facilities
-        }
-      });
-    }
-  }
-
-  createHotel() {
-    if (this.addHotelForm.valid) {
-      const formValue = this.addHotelForm.value;
-      const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
-        acc[pax.paxId] = pax.price;
-        return acc;
-      }, {});
-
-      const formData = {
-        serviceId: formValue.selectedHotel,
-        dayNumber: formValue.selectedDay,
-        quantity: 1,
-        sellingPrice: formValue.netPrice,
-        nettPrice: formValue.netPrice,
-        paxPrices: paxPrices,
-        //roomDetail: formValue.roomDetail,
-        mealDetail: null,
-        transportDetail: null
-      };
-
-      this.tourDiscountService.addService(this.tourId, formData).subscribe({
-        next: (response: any) => {
-          if (response.code === 201) {
-            const newService: Service = {
-              id: response.data.id || 0,
-              category: 'Hotel',
-              name: formValue.selectedHotel,
-              description: formValue.description,
-              dayNumber: formData.dayNumber,
-              status: 'ACTIVE',
-              netPrice: formData.nettPrice,
-              sellingPrice: formData.sellingPrice,
-              quantity: formData.quantity,
-              prices: formData.paxPrices,
-              locationName: response.data.locationName || '',
-              locationId: formValue.selectedLocation,
-              serviceProviderName: response.data.serviceProviderName || '',
-              serviceProviderId: formValue.selectedProvider,
-              startDate: response.data.startDate || '',
-              endDate: response.data.endDate || '',
-              //roomDetail: formData.roomDetail
-            };
-            this.hotelAdded.emit({ service: newService, isUpdate: false });
-            this.modal?.hide();
-          }
-        },
-        error: (error: any) => {
-          console.error('Error creating hotel:', error);
-        }
-      });
-    }
-  }
-
-  updateHotel() {
-    if (this.addHotelForm.valid && this.serviceId) {
-      const formValue = this.addHotelForm.value;
-      const paxPrices = (formValue.paxPrices as any[]).reduce((acc: { [key: string]: number }, pax) => {
-        acc[pax.paxId] = pax.price;
-        return acc;
-      }, {});
-
-      const formData = {
-        serviceId: this.serviceId,
-        dayNumber: formValue.selectedDay,
-        quantity: 1,
-        sellingPrice: formValue.netPrice,
-        nettPrice: formValue.netPrice,
-        paxPrices: paxPrices,
-        // roomDetail: formValue.roomDetail,
-        mealDetail: null,
-        transportDetail: null
-      };
-
-      this.tourDiscountService.updateService(this.tourId, this.serviceId, formData).subscribe({
-        next: (response: any) => {
-          if (response.code === 200) {
-            const updatedService: Service = {
-              id: this.serviceId!,
-              category: 'Hotel',
-              name: formValue.selectedHotel,
-              description: formValue.description,
-              dayNumber: formData.dayNumber,
-              status: 'ACTIVE',
-              netPrice: formData.nettPrice,
-              sellingPrice: formData.sellingPrice,
-              quantity: formData.quantity,
-              prices: formData.paxPrices,
-              locationName: response.data.locationName || '',
-              locationId: formValue.selectedLocation,
-              serviceProviderName: response.data.serviceProviderName || '',
-              serviceProviderId: formValue.selectedProvider,
-              startDate: response.data.startDate || '',
-              endDate: response.data.endDate || '',
-              // roomDetail: formData.roomDetail
-            };
-            this.hotelAdded.emit({ service: updatedService, isUpdate: true });
-            this.modal?.hide();
-          }
-        },
-        error: (error: any) => {
-          console.error('Error updating hotel:', error);
-        }
+        netPrice: selectedHotel.nettPrice
       });
     }
   }
 
   onSubmit() {
-    if (this.serviceId) {
-      this.updateHotel();
-    } else {
-      this.createHotel();
-    }
-  }
+    if (this.addHotelForm.valid) {
+      const formValue = this.addHotelForm.getRawValue(); // Use getRawValue to include disabled fields
+      const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
+        acc[pax.paxRange] = {
+          paxId: pax.paxId,
+          minPax: this.prices.find(p => p.paxRange === pax.paxRange)?.minPax || 0,
+          maxPax: this.prices.find(p => p.paxRange === pax.paxRange)?.maxPax || 0,
+          paxRange: pax.paxRange,
+          price: 0, // Assuming price is not used here
+          serviceNettPrice: formValue.netPrice,
+          sellingPrice: pax.sellingPrice,
+          fixedCost: 0, // Adjust if needed from data
+          extraHotelCost: 0 // Adjust if needed from data
+        };
+        return acc;
+      }, {});
 
-  showModal() {
-    const doc = this.ssrService.getDocument();
-    if (doc) {
-      const modalElement = document.getElementById('addHotelModal');
-      if (modalElement) {
-        this.modal = new Modal(modalElement);
-        this.modal.show();
-        this.addHotelForm.reset();
+      const hotelData: Service = {
+        id: this.serviceId || formValue.selectedHotel,
+        name: this.hotels().find(h => h.id === formValue.selectedHotel)?.name || '',
+        dayNumber: formValue.selectedDay,
+        status: 'ACTIVE',
+        nettPrice: formValue.netPrice,
+        sellingPrice: 0, // Will be calculated based on paxPrices
+        locationName: this.locations().find(l => l.id === formValue.selectedLocation)?.name || '',
+        locationId: formValue.selectedLocation,
+        serviceProviderName: this.providers().find(p => p.id === formValue.selectedProvider)?.name || '',
+        serviceProviderId: formValue.selectedProvider,
+        paxPrices: paxPrices
+      };
+
+      if (this.serviceId) {
+        this.updateHotel(hotelData);
+      } else {
+        this.createHotel(hotelData);
       }
     }
   }
 
+  createHotel(hotelData: Service) {
+    const payload = {
+      serviceId: hotelData.id,
+      locationId: hotelData.locationId,
+      serviceProviderId: hotelData.serviceProviderId,
+      dayNumber: Number(hotelData.dayNumber),
+      paxPrices: Object.values(hotelData.paxPrices).reduce((acc: any, pax) => {
+        acc[pax.paxId] = pax.sellingPrice;
+        return acc;
+      }, {})
+    };
+  
+    this.tourDiscountService.addService(this.tourId, payload).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.hotelAdded.emit({ hotel: hotelData, isUpdate: false });
+          this.modal?.hide();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error creating hotel:', error);
+      }
+    });
+  }  
+
+  updateHotel(hotelData: Service) {
+    const payload = {
+      serviceId: hotelData.id,
+      locationId: hotelData.locationId,
+      serviceProviderId: hotelData.serviceProviderId,
+      dayNumber: Number(hotelData.dayNumber),
+      paxPrices: Object.values(hotelData.paxPrices).reduce((acc: any, pax) => {
+        acc[pax.paxId] = pax.sellingPrice;
+        return acc;
+      }, {})
+    };
+
+    this.tourDiscountService.updateService(this.tourId, this.serviceId!, payload).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.hotelAdded.emit({ hotel: hotelData, isUpdate: true });
+          this.modal?.hide();
+        }
+      },
+      error: (error: any) => {
+        console.error('Error updating hotel:', error);
+      }
+    });
+  }
+
+  showModal() {
+    this.fetchHotelDetails();
+    this.modal?.show();
+  }
+
   onCancel() {
     this.modal?.hide();
+    this.addHotelForm.reset();
+    this.initPaxPrices();
   }
 }

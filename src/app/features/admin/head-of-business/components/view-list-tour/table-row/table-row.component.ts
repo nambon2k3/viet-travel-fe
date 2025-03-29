@@ -24,7 +24,6 @@ export class TableRowComponent {
     this.tourService.deleteTour(this.tour.id).subscribe({
       next: (response) => {
         if (response.code === 200) {
-          this.tour.deleted = true;
           this.tourUpdated.emit(); // Notify parent to reload
         }
       },
@@ -44,7 +43,6 @@ export class TableRowComponent {
     this.router.navigate(['/head-business/tour-details'], {
       queryParams: {
         id: tour.id,
-        authorName: tour.createdUserName, // Pass the createdUserName
       },
     });
   }
@@ -59,7 +57,6 @@ export class TableRowComponent {
     this.tourService.recoverTour(this.tour.id).subscribe({
       next: (response) => {
         if (response.code === 200) {
-          this.tour.deleted = false;
           this.tourUpdated.emit();
         }
       },
