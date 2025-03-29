@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { get } from 'http';
 
 @Injectable({
   providedIn: 'root'
@@ -77,10 +78,50 @@ export class TourService {
   }
 
   deleteService(id: number): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}operator/tour-detail/service/change-status/${id}`);
+    return this.http.put(`${environment.apiUrl}operator/cancel-service/${id}`, id);
+  }
+
+  previewEmail(payload: any) {
+    return this.http.post(`${environment.apiUrl}operator/preview-mail`, payload);
   }
 
   sendOrder(formData: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/operator/send-mail-to-provider`, formData)
+    return this.http.post(`${environment.apiUrl}operator/send-mail-to-provider`, formData);
+  }
+
+  getSummary(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/summary`);
+  }
+
+  getLocationsAndCategories(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-service/list-location-and-service-category`);
+  }
+
+  getServiceProviders(selectedLocationId: number, selectedCategoryId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-service/${selectedLocationId}/list-service-provider/${selectedCategoryId}`);
+  }
+
+  getServicesByProvider(providerId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-service/${providerId}/list-service`);
+  }
+
+  getServiceDetails(serviceId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-service/${serviceId}/service-detail`);
+  }
+
+  getListBooking(id: number | null): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-service/${id}/list-booking`);
+  }
+
+  addServices(services: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}operator/add-service`, services);
+  }
+
+  updateServiceQuantity(formData: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}operator/update-service-quantity`, formData);
+  }
+
+  payService(formData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}operator/pay-service`, formData);
   }
 }

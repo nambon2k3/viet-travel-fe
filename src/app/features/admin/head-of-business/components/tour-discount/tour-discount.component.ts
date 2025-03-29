@@ -1,548 +1,371 @@
-import { Component, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ViewChild, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { CommonModule } from '@angular/common';
 import { AddHotelComponent } from "./add-hotel/add-hotel.component";
 import { AddTransportationComponent } from './add-transportation/add-transportation.component';
 import { AddRestaurantComponent } from "./add-restaurant/add-restaurant.component";
-import { AddTourGuideComponent } from "./add-tour-guide/add-tour-guide.component";
 import { AddActivityComponent } from "./add-activity/add-activity.component";
-
-interface Hotel {
-  name: string;
-  location: string;
-  netPrice: number;
-  quantity: number;
-  prices: PriceRange;
-  day: number; // New field for tour day
-}
-
-interface Transport {
-  name: string;
-  type: string;
-  netPrice: number;
-  quantity: number;
-  roomPrices: PriceRange;
-  day: number; // New field for tour day
-}
-
-interface Restaurant {
-  name: string;
-  location: string;
-  type: string;
-  netPrice: number;
-  quantity: number;
-  roomPrices: PriceRange;
-  day: number; // New field for tour day
-}
-
-interface TourGuide {
-  name: string;
-  provider: string;
-  netPrice: number;
-  quantity: number;
-  roomPrices: PriceRange;
-  day: number; // New field for tour day
-}
-
-interface Activity {
-  name: string;
-  provider: string;
-  type: string;
-  netPrice: number;
-  quantity: number;
-  roomPrices: PriceRange;
-  day: number; // New field for tour day
-}
+import { ConfigTourPaxComponent } from "./config-tour-pax/config-tour-pax.component";
+import { TourDiscountService } from '../../services/discount.service';
+import { ConfigPriceComponent } from './config-price/config-price.component';
+import { FormsModule } from '@angular/forms';
 
 interface PriceRange {
   [key: string]: number;
 }
 
+interface PaxOption {
+  id: number;
+  minPax: number;
+  maxPax: number;
+  paxRange: string;
+  fixedCost: number;
+  sellingPrice: number;
+}
+
+interface Service {
+  id: number;
+  name: string;
+  location: string;
+  netPrice: number;
+  sellingPrice: number;
+  quantity: number;
+  prices: PriceRange;
+  day: number;
+  status: string;
+  serviceProviderName: string;
+  serviceProviderId: number;
+}
+
+interface ApiResponse {
+  code: number;
+  message: string;
+  data: {
+    tourId: number;
+    tourName: string;
+    serviceCategories: {
+      categoryName: string;
+      services: any[];
+    }[];
+    paxOptions: PaxOption[];
+  };
+}
+
 @Component({
   selector: 'app-tour-discount',
-  imports: [CurrencyVndPipe,
-     CommonModule, 
-     AddHotelComponent, 
-     AddTransportationComponent, 
-     AddRestaurantComponent, 
-     AddTourGuideComponent,
-     AddActivityComponent
-    ],
+  standalone: true,
+  imports: [
+    CurrencyVndPipe,
+    CommonModule,
+    AddHotelComponent,
+    AddTransportationComponent,
+    AddRestaurantComponent,
+    AddActivityComponent,
+    ConfigTourPaxComponent,
+    ConfigPriceComponent,
+    FormsModule
+  ],
   templateUrl: './tour-discount.component.html',
-  styleUrl: './tour-discount.component.css'
+  styleUrls: ['./tour-discount.component.css']
 })
-export class TourDiscountComponent {
+export class TourDiscountComponent implements OnInit {
+  
   @ViewChild('addHotelModal') addHotelModal!: AddHotelComponent;
   @ViewChild('addTransportationModal') addTransportationModal!: AddTransportationComponent;
-  @ViewChild('addRestaurantnModal') addRestaurantModal!: AddRestaurantComponent;
-  @ViewChild('addTourGuidenModal') addTourGuideModal!: AddTourGuideComponent;
+  @ViewChild('addRestaurantModal') addRestaurantModal!: AddRestaurantComponent;
   @ViewChild('addActivityModal') addActivityModal!: AddActivityComponent;
+  @ViewChild('tourConfigPaxModal') tourConfigPaxModal!: ConfigTourPaxComponent;
+  @ViewChild('addPriceModal') addPriceModal!: ConfigPriceComponent;
+
+  tourName: string = '';
+  tourDays: number[] = [];
+  tourId: number = 0;
+  hotels: Service[] = [];
+  transports: Service[] = [];
+  restaurants: Service[] = [];
+  activities: Service[] = [];
+  priceRanges: string[] = [];
+  prices: PaxOption[] = [];
+  locations = signal<any[]>([]);
+
+  mintotalNetPrices: PriceRange = {};
+  minsalePrices: PriceRange = {};
 
   constructor(
-    private router: Router
+    private router: Router,
+    private tourDiscountService: TourDiscountService,
+    private route: ActivatedRoute,
   ) { }
 
-  hotels: Hotel[] = [
-    {
-      name: 'Melia Vinpearl Da...',
-      location: 'Đà Nẵng',
-      netPrice: 1200000,
-      quantity: 1,
-      prices: {
-        '01-04': 1500000,
-        '05-10': 1400000,
-        '11-20': 1300000
-      },
-      day: 1 // Day 1
-    },
-    {
-      name: 'Daue Hotel Da...',
-      location: 'Đà Nẵng',
-      netPrice: 1300000,
-      quantity: 1,
-      prices: {
-        '01-04': 1600000,
-        '05-10': 1500000,
-        '11-20': 1400000
-      },
-      day: 2 // Day 2
-    }
-  ];
-
-  transports: Transport[] = [
-    {
-      name: 'Hưng Sơn Limou...',
-      type: 'Xe ô tô',
-      netPrice: 250000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 290000,
-        '05-10': 280000,
-        '11-20': 270000
-      },
-      day: 1 // Day 1
-    },
-    {
-      name: 'Hikari',
-      type: 'Xe ô tô',
-      netPrice: 400000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 700000,
-        '05-10': 600000,
-        '11-20': 500000
-      },
-      day: 2 // Day 2
-    }
-  ];
-
-  restaurants: Restaurant[] = [
-    {
-      name: 'Long Beach Resta...',
-      location: 'Đà Nẵng',
-      type: 'Bữa trưa',
-      netPrice: 200000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 200000,
-        '05-10': 200000,
-        '11-20': 200000
-      },
-      day: 1 // Day 1
-    },
-    {
-      name: 'Seafood Jump',
-      location: 'Đà Nẵng',
-      type: 'Bữa tối',
-      netPrice: 300000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 300000,
-        '05-10': 300000,
-        '11-20': 300000
-      },
-      day: 2 // Day 2
-    },
-    {
-      name: 'Nét Huế Xưa',
-      location: 'Huế',
-      type: 'Bữa tối',
-      netPrice: 300000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 300000,
-        '05-10': 300000,
-        '11-20': 300000
-      },
-      day: 3 // Day 3
-    },
-    {
-      name: 'King BBQ',
-      location: 'Đà Nẵng',
-      type: 'Bữa trưa',
-      netPrice: 200000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 200000,
-        '05-10': 200000,
-        '11-20': 200000
-      },
-      day: 2 // Day 2
-    }
-  ];
-
-  tourGuides: TourGuide[] = [
-    {
-      name: 'Tour Guide',
-      provider: 'Viet Travel',
-      netPrice: 300000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 300000,
-        '05-10': 150000,
-        '11-20': 100000
-      },
-      day: 1 // Day 1
-    }
-  ];
-
-  activities: Activity[] = [
-    {
-      name: 'Canoe',
-      provider: 'Viet Travel',
-      type: 'Giải trí',
-      netPrice: 600000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 600000,
-        '05-10': 600000,
-        '11-20': 600000
-      },
-      day: 2 // Day 2
-    },
-    {
-      name: 'Lặn',
-      provider: 'Viet Travel',
-      type: 'Giải trí',
-      netPrice: 300000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 300000,
-        '05-10': 300000,
-        '11-20': 300000
-      },
-      day: 3 // Day 3
-    },
-    {
-      name: 'Ba Na Hills',
-      provider: 'Sun Group',
-      type: 'Vé tham quan',
-      netPrice: 300000,
-      quantity: 2,
-      roomPrices: {
-        '01-04': 300000,
-        '05-10': 300000,
-        '11-20': 300000
-      },
-      day: 2 // Day 2
-    },
-    {
-      name: 'Kinh thành Huế',
-      provider: 'Huế City',
-      type: 'Vé tham quan',
-      netPrice: 200000,
-      quantity: 1,
-      roomPrices: {
-        '01-04': 200000,
-        '05-10': 200000,
-        '11-20': 200000
-      },
-      day: 3 // Day 3
-    }
-  ];
-
-  addNewHotel(event: any) {
-    const newHotel: Hotel = {
-      name: event.name,
-      location: event.location,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      prices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.hotels.push(newHotel);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  addNewTransportation(event: any) {
-    const newTransportation: Transport = {
-      name: event.name,
-      type: event.type,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.transports.push(newTransportation);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  addNewTourGuide(event: any) {
-    const newTourGuide: TourGuide = {
-      name: event.name,
-      provider: event.provider,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.tourGuides.push(newTourGuide);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  addNewRestaurant(event: any) {
-    const newRestaurant: Restaurant = {
-      name: event.name,
-      location: event.location,
-      type: event.type,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.restaurants.push(newRestaurant);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  addNewActivity(event: any) {
-    const newActivity: Activity = {
-      name: event.name,
-      provider: event.provider,
-      type: event.type,
-      netPrice: event.netPrice,
-      quantity: 1, // Default quantity
-      roomPrices: event.prices.reduce((acc: PriceRange, price: any) => {
-        acc[price.guests] = price.sellingPrice;
-        return acc;
-      }, {}),
-      day: event.day // Use the selected day
-    };
-    this.activities.push(newActivity);
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  priceRanges: string[] = []; // Will be populated from API
-  totalNetPrice: number = 0;
-  mintotalNetPrices: PriceRange = {};
-  maxtotalNetPrices: PriceRange = {};
-  totalSalePrice: number = 0;
-  minsalePrices: PriceRange = {};
-  maxsalePrices: PriceRange = {};
-  perGuestPrice: number = 0;
-  perGuestPrices: PriceRange = {};
-  perGuestNetPrice: number = 0;
-  perGuestNetPrices: PriceRange = {};
-
-  private fetchPriceRanges(): void {
-    // This would be your actual API call
-    // For now, simulating with sample data
-    this.priceRanges = ['01-04', '05-10', '11-20'];
-
-    // Initialize price objects with ranges
-    this.priceRanges.forEach(range => {
-      this.mintotalNetPrices[range] = 0;
-      this.maxtotalNetPrices[range] = 0;
-      this.minsalePrices[range] = 0;
-      this.maxsalePrices[range] = 0;
-      this.perGuestPrices[range] = 0;
-      this.perGuestNetPrices[range] = 0;
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.tourId = params['id'];
+      if (this.tourId !== 0) {
+        this.fetchTourData(this.tourId);
+        this.fetchLocations();
+      }
     });
   }
 
-  calculateTotalNetPrice(): void {
-    this.totalNetPrice = 0;
+  fetchTourData(id: number) {
+    this.tourDiscountService.getTourDiscount(id).subscribe({
+      next: (response: ApiResponse) => {
+        if (response.code === 200) {
+          const data = response.data;
+          this.tourName = data.tourName;
+          this.priceRanges = data.paxOptions.map(pax => pax.paxRange);
+          this.prices = data.paxOptions.map(p => ({
+            ...p,
+            sellingPrice: p.sellingPrice || 0
+          }));
+
+          data.serviceCategories.forEach(category => {
+            if (category.categoryName === 'Hotel') {
+              this.hotels = category.services.map(service => this.mapService(service, 'Hotel'));
+            } else if (category.categoryName === 'Transport') {
+              this.transports = category.services.map(service => this.mapService(service, 'Transport'));
+            } else if (category.categoryName === 'Restaurant') {
+              this.restaurants = category.services.map(service => this.mapService(service, 'Restaurant'));
+            } else if (category.categoryName === 'Activity') {
+              this.activities = category.services.map(service => this.mapService(service, 'Activity'));
+            }
+          });
+
+          this.calculateTourDays();
+          this.calculateTotalNetPrice();
+          this.calculateTotalPrices();
+        }
+      },
+      error: (error: any) => {
+        console.error('HTTP error fetching tour data:', error);
+      }
+    });
+  }
+
+  fetchLocations() {
+    this.tourDiscountService.getLocations(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          const mappedLocations = response.data.items.map((item: any) => ({
+            id: item.id,
+            name: item.name
+          }));
+          this.locations.set(mappedLocations);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching locations:', error);
+      }
+    });
+  }
+
+  mapService(service: any, category: string): Service {
+    return {
+      id: service.id,
+      name: service.name,
+      location: service.locationName || '',
+      netPrice: service.nettPrice,
+      sellingPrice: service.sellingPrice,
+      quantity: 1,
+      prices: Object.keys(service.paxPrices).reduce((acc: PriceRange, paxId: string) => {
+        const pax = service.paxPrices[paxId];
+        acc[pax.paxRange] = pax.price;
+        return acc;
+      }, {}),
+      day: service.dayNumber,
+      status: service.status,
+      serviceProviderName: service.serviceProviderName,
+      serviceProviderId: service.serviceProviderId
+    };
+  }
+
+  calculateTourDays() {
+    const allServices = [
+      ...this.hotels,
+      ...this.transports,
+      ...this.restaurants,
+      ...this.activities
+    ];
+    const maxDay = allServices.length > 0 ? Math.max(...allServices.map(service => service.day)) : 1;
+    this.tourDays = Array.from({ length: maxDay }, (_, i) => i + 1);
+  }
+
+  calculateTotalNetPrice() {
+    this.priceRanges.forEach(range => {
+      const minPax = this.getMinPax(range);
+      let total = 0;
+      this.hotels.forEach(h => total += h.netPrice * h.quantity * minPax);
+      this.transports.forEach(t => total += t.netPrice * t.quantity * minPax);
+      this.restaurants.forEach(r => total += r.netPrice * r.quantity * minPax);
+      this.activities.forEach(a => total += a.netPrice * a.quantity * minPax);
+      this.mintotalNetPrices[range] = total;
+    });
+  }
+
+  calculateTotalPrices() {
+    this.priceRanges.forEach(range => {
+      const minPax = this.getMinPax(range);
+      let total = 0;
+      this.hotels.forEach(h => total += (h.prices[range] || 0) * h.quantity * minPax);
+      this.transports.forEach(t => total += (t.prices[range] || 0) * t.quantity * minPax);
+      this.restaurants.forEach(r => total += (r.prices[range] || 0) * r.quantity * minPax);
+      this.activities.forEach(a => total += (a.prices[range] || 0) * a.quantity * minPax);
+      this.minsalePrices[range] = total;
+    });
+  }
+
+  getMinPax(range: string): number {
+    return parseInt(range.split('-')[0], 10);
+  }
+
+  getPriceByRange(range: string): PaxOption | undefined {
+    return this.prices.find(p => p.paxRange === range);
+  }
+
+  handlePriceConfirm(updatedPrices: { paxRange: string, sellingPrice: number }[]) {
+    updatedPrices.forEach(price => {
+      const existing = this.prices.find(p => p.paxRange === price.paxRange);
+      if (existing) {
+        existing.sellingPrice = price.sellingPrice;
+      }
+    });
+  }
+
+  backToList() {
+    this.router.navigate(['head-business/list-tour']);
+  }
+
+  openAddHotelModal(serviceId?: number) {
+    if (this.addHotelModal) {
+      this.addHotelModal.serviceId = serviceId || null; 
+      this.addHotelModal.fetchHotelDetails(); 
+      this.addHotelModal.showModal();
+    }
+  }
+
+  openAddTransportationModal(serviceId?: number) {
+    if (this.addTransportationModal) {
+      this.addTransportationModal.serviceId = serviceId || null;
+      this.addTransportationModal.fetchTransportationDetails(); 
+      this.addTransportationModal.showModal();
+    }
+  }
+
+  openAddRestaurantModal(serviceId?: number) {
+    if (this.addRestaurantModal) {
+      this.addRestaurantModal.serviceId = serviceId || null;
+      this.addRestaurantModal.fetchRestaurantDetails(); 
+      this.addRestaurantModal.showModal();
+    }
+  }
+
+  openAddActivityModal(serviceId?: number) {
+    if (this.addActivityModal) {
+      this.addActivityModal.serviceId = serviceId || null;
+      this.addActivityModal.fetchActivityDetails(); 
+      this.addActivityModal.showModal();
+    }
+  }
+
+  addNewHotel(event: { hotel: Service, isUpdate: boolean }) {
+    const { hotel, isUpdate } = event;
+    if (isUpdate && this.addHotelModal.serviceId) {
+      const index = this.hotels.findIndex(h => h.id === this.addHotelModal.serviceId);
+      if (index !== -1) {
+        this.hotels[index] = hotel;
+      }
+    } else {
+      this.hotels.push(hotel);
+    }
+    this.fetchTourData(this.tourId);
+  }
+
+  deleteHotel(index: number) {
+    this.hotels.splice(index, 1);
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+  }
+
+  addNewTransportation(event: { transport: Service, isUpdate: boolean }) {
+    const { transport, isUpdate } = event;
+    if (isUpdate && this.addTransportationModal.serviceId) {
+      const index = this.transports.findIndex(t => t.id === this.addTransportationModal.serviceId);
+      if (index !== -1) {
+        this.transports[index] = transport;
+      }
+    } else {
+      this.transports.push(transport);
+    }
+    this.fetchTourData(this.tourId);
+  }
+
+  deleteTransportation(index: number) {
+    this.transports.splice(index, 1);
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+  }
+
+  addNewRestaurant(event: { restaurant: Service, isUpdate: boolean }) {
+    const { restaurant, isUpdate } = event;
+    if (isUpdate && this.addRestaurantModal.serviceId) {
+      const index = this.restaurants.findIndex(r => r.id === this.addRestaurantModal.serviceId);
+      if (index !== -1) {
+        this.restaurants[index] = restaurant;
+      }
+    } else {
+      this.restaurants.push(restaurant);
+    }
+    this.fetchTourData(this.tourId); // Consistent with Hotel
+  }
+
+  deleteRestaurant(index: number) {
+    this.restaurants.splice(index, 1);
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+  }
+
+  addNewActivity(event: { activity: Service, isUpdate: boolean }) {
+    const { activity, isUpdate } = event;
+    if (isUpdate && this.addActivityModal.serviceId) {
+      const index = this.activities.findIndex(a => a.id === this.addActivityModal.serviceId);
+      if (index !== -1) {
+        this.activities[index] = activity;
+      }
+    } else {
+      this.activities.push(activity);
+    }
+    this.fetchTourData(this.tourId); // Consistent with Hotel
+  }
+
+  deleteActivity(index: number) {
+    this.activities.splice(index, 1);
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+  }
+
+  calculateTotalBaseSellingPrice(): void {
     const guestRanges: { [key: string]: { min: number; max: number } } = {};
     this.priceRanges.forEach(range => {
       const [min, max] = range.split('-').map(num => parseInt(num));
       guestRanges[range] = { min, max };
     });
-
-    this.priceRanges.forEach(range => {
-      let totalForRange = 0;
-
-      this.hotels.forEach(hotel => {
-        totalForRange += hotel.netPrice * hotel.quantity * guestRanges[range].min;
-      });
-      this.transports.forEach(transport => {
-        totalForRange += transport.netPrice * transport.quantity * guestRanges[range].min;
-      });
-      this.restaurants.forEach(restaurant => {
-        totalForRange += restaurant.netPrice * restaurant.quantity * guestRanges[range].min;
-      });
-      this.tourGuides.forEach(tourGuide => {
-        totalForRange += tourGuide.netPrice * tourGuide.quantity * guestRanges[range].min;
-      });
-      this.activities.forEach(activity => {
-        totalForRange += activity.netPrice * activity.quantity * guestRanges[range].min;
-      });
-      this.mintotalNetPrices[range] = totalForRange;
-
-      totalForRange = 0;
-      this.hotels.forEach(hotel => {
-        totalForRange += hotel.netPrice * hotel.quantity * guestRanges[range].max;
-      });
-      this.transports.forEach(transport => {
-        totalForRange += transport.netPrice * transport.quantity * guestRanges[range].max;
-      });
-      this.restaurants.forEach(restaurant => {
-        totalForRange += restaurant.netPrice * restaurant.quantity * guestRanges[range].max;
-      });
-      this.tourGuides.forEach(tourGuide => {
-        totalForRange += tourGuide.netPrice * tourGuide.quantity * guestRanges[range].max;
-      });
-      this.activities.forEach(activity => {
-        totalForRange += activity.netPrice * activity.quantity * guestRanges[range].max;
-      });
-      this.maxtotalNetPrices[range] = totalForRange;
-    });
-  }
-
-  calculatePerGuestNetPrice(): void {
-    const guestRanges: { [key: string]: { min: number; max: number } } = {};
-    this.priceRanges.forEach(range => {
-      const [min, max] = range.split('-').map(num => parseInt(num));
-      guestRanges[range] = { min, max };
-    });
-
-    this.priceRanges.forEach(range => {
-      this.perGuestNetPrices[range] = Math.ceil(this.mintotalNetPrices[range] / guestRanges[range].min);
-    });
-  }
-
-  calculateTotalPrices(): void {
-    const guestRanges: { [key: string]: { min: number; max: number } } = {};
-    this.priceRanges.forEach(range => {
-      const [min, max] = range.split('-').map(num => parseInt(num));
-      guestRanges[range] = { min, max };
-    });
-
+  
     this.priceRanges.forEach(range => {
       let total = 0;
       this.hotels.forEach(hotel => {
         total += (hotel.prices[range] || 0) * guestRanges[range].min * hotel.quantity;
       });
       this.transports.forEach(transport => {
-        total += (transport.roomPrices[range] || 0) * guestRanges[range].min * transport.quantity;
+        total += (transport.prices[range] || 0) * guestRanges[range].min * transport.quantity;
       });
       this.restaurants.forEach(restaurant => {
-        total += (restaurant.roomPrices[range] || 0) * guestRanges[range].min * restaurant.quantity;
-      });
-      this.tourGuides.forEach(tourGuide => {
-        total += (tourGuide.roomPrices[range] || 0) * guestRanges[range].min * tourGuide.quantity;
+        total += (restaurant.prices[range] || 0) * guestRanges[range].min * restaurant.quantity;
       });
       this.activities.forEach(activity => {
-        total += (activity.roomPrices[range] || 0) * guestRanges[range].min * activity.quantity;
+        total += (activity.prices[range] || 0) * guestRanges[range].min * activity.quantity;
       });
-
-      // Assign to totalPrices
       this.minsalePrices[range] = total;
-
-      total = 0;
-      this.hotels.forEach(hotel => {
-        total += (hotel.prices[range] || 0) * guestRanges[range].max * hotel.quantity;
-      });
-      this.transports.forEach(transport => {
-        total += (transport.roomPrices[range] || 0) * guestRanges[range].max * transport.quantity;
-      });
-      this.restaurants.forEach(restaurant => {
-        total += (restaurant.roomPrices[range] || 0) * guestRanges[range].max * restaurant.quantity;
-      });
-      this.tourGuides.forEach(tourGuide => {
-        total += (tourGuide.roomPrices[range] || 0) * guestRanges[range].max * tourGuide.quantity;
-      });
-      this.activities.forEach(activity => {
-        total += (activity.roomPrices[range] || 0) * guestRanges[range].max * activity.quantity;
-      });
-
-      // Assign to totalPrices
-      this.maxsalePrices[range] = total;
     });
-  }
-
-  calculatePerGuestPrices(): void {
-    const minGuests: { [key: string]: number } = {};
-    const maxGuests: { [key: string]: number } = {}; // For clarity, though not used here directly
-    this.priceRanges.forEach(range => {
-      const [min, max] = range.split('-').map(num => parseInt(num));
-      minGuests[range] = min;
-      maxGuests[range] = max;
-    });
-    this.priceRanges.forEach(range => {
-      if (range === '01-04') {
-        // Special case for 1-4 range
-        let totalMaxSale = 0;
-        // Calculate total max sale price with special tour guide handling
-        this.hotels.forEach(hotel => {
-          totalMaxSale += (hotel.prices[range] || hotel.netPrice || 0) * hotel.quantity; // Base price, no guest scaling
-        });
-        this.transports.forEach(transport => {
-          totalMaxSale += (transport.roomPrices[range] || transport.netPrice || 0) * transport.quantity;
-        });
-        this.restaurants.forEach(restaurant => {
-          totalMaxSale += (restaurant.roomPrices[range] || restaurant.netPrice || 0) * restaurant.quantity;
-        });
-        this.tourGuides.forEach(tourGuide => {
-          totalMaxSale += (tourGuide.roomPrices[range] || tourGuide.netPrice || 0) * tourGuide.quantity * 4; // Multiply by 4
-        });
-        this.activities.forEach(activity => {
-          totalMaxSale += (activity.roomPrices[range] || activity.netPrice || 0) * activity.quantity;
-        });
-        // Calculate per-guest price: max sale price / min guests (1)
-        this.perGuestPrices[range] = Math.ceil(totalMaxSale / minGuests[range]);
-      } else {
-        // Default case for other ranges
-        this.perGuestPrices[range] = Math.ceil(this.maxsalePrices[range] / minGuests[range]);
-      }
-    });
-  }
-
-  ngOnInit() {
-    this.fetchPriceRanges(); // Get ranges from API
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculatePerGuestPrices();
-    this.calculatePerGuestNetPrice();
-  }
-
-  backToList() {
-    this.router.navigate(['head-business/list-tour']);
   }
 }

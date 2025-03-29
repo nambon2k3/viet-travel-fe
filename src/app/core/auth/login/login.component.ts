@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
       .login(username, password)
       .pipe(
         catchError((error) => {
-          const apiError = error?.error?.message || 'An error occurred during sign in.';
+          const apiError = error?.message || 'An error occurred during sign in.';
           this.errorMessage = apiError;
           return of(null);
         })
@@ -119,7 +119,29 @@ export class LoginComponent implements OnInit {
             this.userStorageService.saveUser(user); // Save for 30 days
             localStorage.setItem('rememberedUser', username);
           }
-          this.router.navigateByUrl('/');
+
+          const userRoles = this.userStorageService.getUserRoles();
+
+          // Mapping role to route
+          const roleRouteMap: { [key: string]: string } = {
+            CUSTOMER: 'customer',
+            CEO: 'ceo',
+            MARKETER: 'marketer',
+            SERVICE_PROVIDER: 'service-provider',
+            ADMIN: 'admin',
+            HEAD_OF_BUSINESS: 'head-business',
+            OPERATOR: 'operator',
+            SALESMAN: 'salesman',
+            ACCOUNTANT: 'accountant'
+          };
+
+          let redirectTo = '/customer'; // Default nếu chỉ có role CUSTOMER
+          if (userRoles.length > 1 || userRoles[0] !== 'CUSTOMER') {
+            const targetRole = userRoles.find(role => role !== 'CUSTOMER') || userRoles[0];
+            redirectTo = `/${roleRouteMap[targetRole] || 'customer'}`;
+          }
+
+          this.router.navigate([redirectTo]);
         } else {
           this.errorMessage = response?.message || 'An error occurred during sign in.';
         }

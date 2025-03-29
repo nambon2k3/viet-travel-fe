@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { PostAdvancePaymentComponent } from './post-advance-payment/post-advance-payment.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TourService } from '../../../services/tour.service';
 import { TruncatePipe } from "../../../../../../shared/pipes/truncate.pipe";
@@ -11,17 +10,16 @@ import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe"
   standalone: true,
   imports: [
     CommonModule,
-    PostAdvancePaymentComponent,
     TruncatePipe,
     FormatDatePipe
-],
+  ],
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.css']
 })
 export class TransactionComponent {
-  @ViewChild('paymentModal') paymentModal!: PostAdvancePaymentComponent;
   listTransactions: any[] = [];
   id: number = 0;
+  status: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -51,6 +49,20 @@ export class TransactionComponent {
         console.error('Lỗi khi tải danh sách transaction:', error.message);
       }
     });
+  }
+
+  mapPaymentStatus(status: string): string {
+    const paymentStatusMap: { [key: string]: string } = {
+      'UNPAID': 'Chưa thanh toán',
+      'PAID': 'Đã thanh toán',
+      'PARTIALLY_PAID': 'Thanh toán một phần',
+      'PENDING': 'Đang chờ xử lý',       
+      'APPROVED': 'Được chấp nhận',
+      'REJECTED': 'Bị từ chối',
+      'CANCELLED': 'Đã hủy',             
+      'REFUNDED': 'Đã hoàn tiền'       
+    };
+    return paymentStatusMap[status?.toUpperCase()] || 'Không xác định';
   }
 
   openPostReceipt(): void {

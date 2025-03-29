@@ -34,6 +34,12 @@ export class TableRowComponent {
     });
   }
 
+  openDiscount(tour: TourHOB): void {
+    this.router.navigate(['/head-business/tour-discount'], {
+      queryParams: { id: tour.id },
+    });
+  }
+
   openDetail(tour: TourHOB): void {
     this.router.navigate(['/head-business/tour-details'], {
       queryParams: {

@@ -1,31 +1,31 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Modal } from 'flowbite';
-import { SsrService } from '../../../../../../../core/services/ssr.service';
 import { TourService } from '../../../../services/tour.service';
+import { SsrService } from '../../../../../../../core/services/ssr.service';
 
 @Component({
-  selector: 'app-tour-guide-pay',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './tour-guide-pay.component.html',
-  styleUrls: ['./tour-guide-pay.component.css'],
+  selector: 'app-pay-service',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  templateUrl: './pay-service.component.html',
+  styleUrl: './pay-service.component.css'
 })
-export class TourGuidePayComponent {
+export class PayServiceComponent {
   @Input() selectedService: any;
   @Output() sendRequest = new EventEmitter<void>();
   paymentForm: FormGroup;
   modal: Modal | null = null;
-  @Input() tourGuide: any = null;
 
   constructor(private fb: FormBuilder, private tourService: TourService, private ssrService: SsrService) {
     this.paymentForm = this.fb.group({
       amount: ['', Validators.required],
-      paidBy: ['', Validators.required],
+      paidBy: ['Viet Travel', Validators.required],
       receivedBy: ['', Validators.required],
       paymentMethod: ['CASH', Validators.required],
-      transactionType: ['ADVANCED', Validators.required],
+      transactionType: ['PAYMENT', Validators.required],
       notes: [''],
       serviceId: ['', Validators.required],
       serviceName: [''],
@@ -33,12 +33,12 @@ export class TourGuidePayComponent {
     });
   }
 
-  sendPayment() {
+  sendPayment() {  
     const { serviceName, ...payload } = {
       bookingId: this.selectedService?.bookingId,
       ...this.paymentForm.value
     };
-
+  
     this.tourService.payService(payload).subscribe({
       next: (res: any) => {
         this.sendRequest.emit();
@@ -49,12 +49,12 @@ export class TourGuidePayComponent {
       }
     });
   }
-
+  
 
   open() {
     const doc = this.ssrService.getDocument();
     if (doc) {
-      const modalElement = document.getElementById('tourGuidePayModal');
+      const modalElement = document.getElementById('paymentModal');
       if (modalElement) {
         this.modal = new Modal(modalElement);
       }
@@ -64,7 +64,6 @@ export class TourGuidePayComponent {
       this.paymentForm.patchValue({
         amount: (this.selectedService.amountToPayForBooking - this.selectedService.paidForBooking) || '',
         receivedBy: this.selectedService.providerName || '',
-        paidBy: this.tourGuide || '',
         serviceId: this.selectedService.id || '',
         quantity: this.selectedService.quantity || '',
         serviceName: this.selectedService.serviceName || '',
@@ -72,7 +71,7 @@ export class TourGuidePayComponent {
     }
     this.modal?.show();
   }
-
+  
   close() {
     this.modal?.hide();
   }

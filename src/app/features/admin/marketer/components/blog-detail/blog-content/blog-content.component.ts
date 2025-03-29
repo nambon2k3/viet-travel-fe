@@ -1,4 +1,4 @@
-import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, forwardRef, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Highlight from '@tiptap/extension-highlight';
@@ -48,11 +48,19 @@ export class BlogContentComponent implements OnInit {
   onChange = (value: any) => { };
   onTouched = () => { };
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['content'] && this.editor) {
+      // Nếu content thay đổi và editor đã được khởi tạo, cập nhật nội dung của editor
+      this.editor.commands.setContent(this.content || '');
+    }
+  }
+
+  // Implement ControlValueAccessor Methods
   // Implement ControlValueAccessor Methods
   writeValue(value: any): void {
     this.content = value;
     if (this.editor) {
-      this.editor.commands.setContent(value);
+      this.editor.commands.setContent(value || '');
     }
   }
 
@@ -124,7 +132,7 @@ export class BlogContentComponent implements OnInit {
         Image,
         YouTube,
       ],
-      content: this.content,
+      content: this.content || '',
       onUpdate: ({ editor }) => {
         this.onChange(editor.getHTML());
       },

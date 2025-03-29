@@ -1,58 +1,115 @@
-import { Component, Input, AfterViewInit } from '@angular/core';
-import { BlogContentComponent } from '../../../../../marketer/components/blog-detail/blog-content/blog-content.component';
+import { Component, Input, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { TourService } from '../../../../services/tour.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Modal } from 'flowbite';
+import { SsrService } from '../../../../../../../core/services/ssr.service';
+import { BlogContentComponent } from "../../../../../marketer/components/blog-detail/blog-content/blog-content.component";
 
 @Component({
   selector: 'app-order-service',
   templateUrl: './order-service.component.html',
   styleUrls: ['./order-service.component.css'],
   imports: [
-    BlogContentComponent,
     FormsModule,
-    CommonModule
+    CommonModule,
+    BlogContentComponent
   ]
 })
-export class OrderServiceComponent implements AfterViewInit {
+export class OrderServiceComponent {
   @Input() selectedService: any;
-  to: string = '';
-  email: string = '';
-  content: string = '';
+  @Output() emailSent: EventEmitter<any> = new EventEmitter<any>();
+  requestDate: string = new Date().toISOString().split('T')[0];
   private modal: Modal | null = null;
 
-  constructor(private tourService: TourService) {}
+  emailData = {
+    bookingServiceId: 0,
+    providerId: 0,
+    providerName: '',
+    providerEmail: '',
+    emailSubject: '',
+    emailContent: ''
+  };
 
-  ngAfterViewInit() {
-    const modalElement = document.getElementById('orderModal');
-    if (modalElement) {
-      this.modal = new Modal(modalElement);
+  convertedtext: string = '';
+
+  constructor(
+    private tourService: TourService,
+    private ssrService: SsrService,
+    private cdr: ChangeDetectorRef 
+  ) { }
+
+  async open() {
+    const document = this.ssrService.getDocument();
+    if (document && !this.modal) {
+      const modalElement = document.getElementById('orderModal');
+      if (modalElement) {
+        this.modal = new Modal(modalElement);
+      }
     }
+    await this.previewEmail();
+    this.generateEmailContent(); 
+    this.cdr.detectChanges(); 
+    this.modal?.show();
   }
 
-  open() {
-    this.to = this.selectedService?.name || '';
-    this.email = this.selectedService?.name || '';
-    this.content = this.selectedService?.content || '';
-    this.modal?.show();
+  async previewEmail() {
+    const payload = {
+      bookingServiceId: this.selectedService.bookingServiceId,
+      serviceId: this.selectedService.id,
+      orderQuantity: this.selectedService.quantity,
+      requestDate: this.requestDate === 'Chưa đặt'
+        ? new Date().toISOString()
+        : `${this.requestDate}T00:00:00`
+    };
+
+    try {
+      const response = await this.tourService.previewEmail(payload).toPromise() as { data: any };
+      if (response) {
+        this.emailData = { ...response.data };
+      }
+    } catch (error) {
+      console.error('Error fetching email preview:', error);
+    }
   }
 
   close() {
     this.modal?.hide();
   }
 
-  sendOrder() {
-    const payload = {
-      providerId: this.selectedService?.id || 0,
-      providerName: this.to,
-      emailSubject: `[Viet Travel - ${this.selectedService?.name}] - Order Service Information`,
-      emailContent: this.content
-    };
+  generateEmailContent() {
+    const data = this.emailData;
 
-    this.tourService.sendOrder(payload).subscribe({
+    this.convertedtext = `
+      Kính gửi: <strong>${data.providerName}</strong>,<br><br>
+      
+      Dưới đây là thông tin đặt dịch vụ của chúng tôi. Mong quý đối tác vui lòng sắp xếp và xác nhận thông tin sau:<br><br>
+      
+      <strong>Dịch vụ:</strong> ${data.emailContent.match(/Dịch vụ: (.*)/)?.[1] || 'N/A'}<br>
+      <strong>Số lượng:</strong> ${data.emailContent.match(/Số lượng: (\d+)/)?.[1] || 'N/A'}<br>
+      <strong>Ngày yêu cầu:</strong> <span>${data.emailContent.match(/Ngày yêu cầu: (.*)/)?.[1] || 'N/A'}</span><br><br>
+      
+      <strong>Tổng số tiền:</strong> <span>${data.emailContent.match(/Tổng số tiền: (.*)/)?.[1] || 'N/A'}</span><br><br>
+      
+      <b>Vui lòng xác nhận yêu cầu tại đường link sau:</b><br>
+      ${data.emailContent.match(/http[^\s]+/)?.[0]}<br><br>
+      
+      Kính mong quý đối tác cho chúng tôi biết phản hồi trong thời gian sớm nhất.<br><br>
+      
+      Best Regards,<br>
+      <strong>Viet Travel</strong>
+    `;
+  }
+
+  onConfirm() {
+    this.tourService.sendOrder(this.emailData).subscribe({
       next: (response: any) => {
-        console.log('Email sent successfully:', response.message);
+        if (response.code === 200) {
+          this.emailSent.emit(); 
+          console.log('Email sent successfully:', response.message);
+        } else {
+          console.error('Error sending email:', response.message);
+        }
         this.close();
       },
       error: (error) => {

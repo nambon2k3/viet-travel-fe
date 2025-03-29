@@ -6,7 +6,6 @@ import { ServiceComponent } from "./service/service.component";
 import { SummaryComponent } from "./summary/summary.component";
 import { TourOperationLayoutComponent } from "./tour-operation-layout/tour-operation-layout.component";
 import { TourOperationComponent } from "./tour-operation.component";
-import { PostReceiptComponent } from "./transaction/post-receipt/post-receipt.component";
 import { TransactionComponent } from "./transaction/transaction.component";
 import { ServiceDetailComponent } from "./service/service-detail/service-detail.component";
 
@@ -53,9 +52,5 @@ export const TOUR_OPERATION_ROUTES: Route[] = [
     {
       path: 'service/:id',
       component: ServiceDetailComponent
-    },
-    {
-      path: 'create-receipt',
-      component: PostReceiptComponent
     },
 ];
