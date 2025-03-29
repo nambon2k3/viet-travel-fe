@@ -1,7 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { TableFooterComponent } from '../../../../shared/components/table/table-footer/table-footer.component';
 import { TableHeaderComponent } from './table-header/table-header.component';
-import { TableRowComponent } from './table-row/table-row.component';
 import { TableActionComponent } from './table-action/table-action.component';
 import { SpinnerComponent } from "../../../../shared/components/spinner/spinner.component";
 import { Router } from '@angular/router';
@@ -10,7 +9,7 @@ import { ServiceRequest } from '../../../../core/models/service-request.model';
 
 @Component({
   selector: 'app-service-request',
-  imports: [TableActionComponent, TableFooterComponent, TableHeaderComponent, TableRowComponent, SpinnerComponent],
+  imports: [TableActionComponent, TableFooterComponent, TableHeaderComponent, SpinnerComponent],
   templateUrl: './service-request.component.html',
   styleUrl: './service-request.component.css'
 })

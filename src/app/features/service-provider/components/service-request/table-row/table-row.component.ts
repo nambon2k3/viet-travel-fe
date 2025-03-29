@@ -1,8 +1,7 @@
 import { Component, Input} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
-import { ServiceContact } from '../../../../../core/models/service-contact.model';
-import { ServiceContactService } from '../../../services/service-contact.service';
+
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { ServiceRequest } from '../../../../../core/models/service-request.model';
