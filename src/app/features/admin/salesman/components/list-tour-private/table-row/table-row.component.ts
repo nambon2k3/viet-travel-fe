@@ -31,13 +31,25 @@ export class TableRowComponent {
     this.tourService.updateTourStatus(this.tourData?.tour?.id, 'DRAFT').subscribe({
       next: (response) => {
         console.log('Response:', response);
-        this.tourData.tourStatus = 'DRAFT'
+        this.tourData.tour.tourStatus = 'DRAFT'
+        this.triggerSuccess();
       },
       error: (error) => {
         console.error('Error:', error);
         this.triggerError();
       }
     })
+  }
+
+  success: boolean = false;
+
+  triggerSuccess() {
+    this.success = true;
+    
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.success = false;
+    }, 4000);
   }
 
   triggerError() {

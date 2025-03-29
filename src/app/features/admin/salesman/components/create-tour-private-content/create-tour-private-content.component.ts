@@ -7,10 +7,11 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule
 import { CommonModule, DatePipe } from '@angular/common';
 import { Modal } from 'flowbite';
 import { start } from 'node:repl';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-create-tour-private-content',
-  imports: [BlogContentComponent, DatePipe, CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [BlogContentComponent, DatePipe, CommonModule, ReactiveFormsModule, RouterModule, SpinnerComponent],
   templateUrl: './create-tour-private-content.component.html',
   styleUrl: './create-tour-private-content.component.css'
 })
@@ -20,6 +21,8 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
 
   editTourModal: Modal | null = null;
 
+
+  isLoading: boolean = false;
 
   ngAfterViewInit(): void {
     this.editTourModal = new Modal(document.getElementById('day-modal'));
@@ -126,10 +129,13 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
 
 
   getTourData(tourId: number) {
+    this.isLoading = true; // Start loading
     this.bookingService.getToursPrivateContent(tourId).subscribe({
       next: (response) => {
 
         this.tourData = response.data;
+
+        this.isLoading = false; // Stop loading
 
         this.patchTourDays(this.tourData.tourDays);
 
@@ -146,6 +152,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
 
       },
       error: (error) => {
+        this.isLoading = false; // Stop loading
         console.log(error);
       }
     });
@@ -241,7 +248,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
     const serviceCategory = control.value;
     if (!serviceCategory) return { atLeastOneRequired: true };
   
-    // Check if at least one checkbox is selected
+    // Check if at least one checkbox isLoading: boolean = false; selected
     if (!serviceCategory.restaurant && !serviceCategory.hotel && !serviceCategory.activity) {
       return { atLeastOneRequired: true };
     }
@@ -253,6 +260,8 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
   get tourDays() {
     return this.tourPrivateContentForm.get('tourDays') as FormArray;
   }
+
+  success: boolean = false;
 
   onSubmit() {
     if (this.tourPrivateContentForm.valid) {
@@ -286,12 +295,18 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
   
       console.log('Processed Tour Data:', formData); // Debugging output
   
+      this.isLoading = true; // Start loading
       //Call API to update tour content
       this.tourService.updateTourContent(formData).subscribe({
         next: (response) => {
+          this.isLoading = false; // Stop loading
           console.log('Response:', response);
+          this.showSuccess(); // Show success message
+          
+          this.tourPrivateContentForm.reset(); // Reset form after successful submission
         },
         error: (error) => {
+          this.isLoading = false; // Stop loading
           console.error('Error:', error);
         }
       });
@@ -300,6 +315,25 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
       this.tourPrivateContentForm.markAllAsTouched();
       console.log('Form Invalid');
     }
+  }
+
+  second: number = 0;
+
+  showSuccess() {
+    this.success = true;
+    this.second = 3; // Set countdown to 3 seconds
+    const intervalId = setInterval(() => {
+      this.second--; // Decrease countdown
+      if (this.second === 0) {
+        clearInterval(intervalId); // Stop interval when reaching 0
+      }
+    }, 1000);
+    
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.success = false;
+      this.router.navigate(['/salesman/list-tour-private']);
+    }, 3000);
   }
   
 

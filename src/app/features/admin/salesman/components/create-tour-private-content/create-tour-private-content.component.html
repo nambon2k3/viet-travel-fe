@@ -1,5 +1,11 @@
 <div class="bg-white mx-auto p-6 relative">
-    <form [formGroup]="tourPrivateContentForm" (ngSubmit)="onSubmit()">
+
+    @if(isLoading) {
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+    }
+
+
+    <form [formGroup]="tourPrivateContentForm" (ngSubmit)="onSubmit()" [class]="isLoading ? 'opacity-50' : ''">
         <!-- Chọn Tour -->
         <div>
 
@@ -265,3 +271,28 @@
         </div>
     </div>
 </div>
+
+@if(success) {
+    <!-- Modal Overlay (Black Background) -->
+<div class="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity">
+    <!-- Modal Box -->
+    <div id="successModal" tabindex="-1" class="relative z-50 w-full max-w-md p-4">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-800 animate-fadeIn">
+
+            <!-- Modal Content -->
+            <div class="p-6 text-center">
+                <svg class="w-16 h-16 mx-auto text-green-500 dark:text-green-400" fill="none" stroke="currentColor"
+                    stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <h2 class="mt-4 text-2xl font-semibold text-gray-800 dark:text-white">Success!</h2>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">
+                    Tạo chương trình tour thành công. 
+                    <br />
+                    Chuyển sang trang chọn dịch vụ trong {{second}} giây ...
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+}
