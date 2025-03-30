@@ -1,8 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CurrencyVndPipe } from '../../../../../shared/pipes/currency-vnd.pipe';
+import { TransactionService } from '../../services/transaction.service';
+import { create } from 'domain';
+import { stat } from 'fs';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-post-receipt',
@@ -10,7 +14,8 @@ import { CurrencyVndPipe } from '../../../../../shared/pipes/currency-vnd.pipe';
   imports: [
     ReactiveFormsModule,
     CurrencyVndPipe,
-    CommonModule
+    CommonModule,
+    SpinnerComponent
 ],
   templateUrl: './post-receipt.component.html',
   styleUrls: ['./post-receipt.component.css']
@@ -18,69 +23,151 @@ import { CurrencyVndPipe } from '../../../../../shared/pipes/currency-vnd.pipe';
 export class PostReceiptComponent {
   receiptForm: FormGroup;
 
+  transaction: any;
+  
+  isLoading: boolean = false;
+
+  showSuccess: boolean = false;
+
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute,
+    private transactionService: TransactionService
   ) {
     this.receiptForm = this.fb.group({
-      tourBookingId: [234, Validators.required],
-      tourBookingName: ['Tour Cái Chiên - Đầu Rồng - 23/02/2025', Validators.required],
-      receiptId: [123, Validators.required],
-      createdDate: ['2025-02-23', Validators.required],
-      payFor: ['Viet Travel', Validators.required],
-      accountedDate: ['2025-02-25', Validators.required],
-      payer: ['Lan Than', Validators.required],
-      email: ['lanthan@mail.vn', [Validators.required, Validators.email]],
-      accountant: ['Dai Hinh', Validators.required],
-      type: ['Pay', Validators.required],
-      method: ['Cash', Validators.required],
-      note: ['Viet Travel'],
-      paymentRows: this.fb.array([]) // Initialize FormArray
+      id: [null, Validators.required],
+      receivedBy: ['Viet Travel', Validators.required],
+      paidBy: ['Lan Than', Validators.required],
+      category: [{ value: 'Pay', disabled: true }, Validators.required],
+      paymentMethod: ['CASH', Validators.required],
+      notes: ['Viet Travel'],
+      costAccounts: this.fb.array([]) // Initialize FormArray
     });
 
-    // Add default payment rows
-    this.addPaymentRow('Pay for Hotel Service', 10000000);
-    this.addPaymentRow('Pay for Restaurant Service', 5000000);
   }
 
-  get paymentRows(): FormArray {
-    return this.receiptForm.get('paymentRows') as FormArray;
+  receiptId: number | null = null;
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.receiptId = params['id']; 
+    });
+
+    if (this.receiptId) {
+      this.getTranstactionById(this.receiptId);
+    } else {
+      console.log('No receipt ID provided in query params.');
+    }
   }
 
-  addPaymentRow(content: string = '', amount: number = 0) {
-    this.paymentRows.push(this.fb.group({
-      content: [content, Validators.required],
-      amount: [amount, [Validators.required, Validators.min(0)]]
-    }));
+  getTranstactionById(id: number) {
+    this.isLoading = true; // Start loading
+    // Call the service to get transaction by ID
+    this.transactionService.getTranscationById(id).subscribe(
+      (response) => {
+        this.isLoading = false; // Stop loading
+        this.transaction = response.data;
+        console.log('Transaction data:', response);
+        // // Populate the form with the received data
+        this.receiptForm.patchValue({
+          bookingCode: this.transaction.booking.bookingCode,
+          paidBy: this.transaction.paidBy,
+          receivedBy: this.transaction.receivedBy,
+          createdAt: this.transaction.createdAt.split('T')[0],
+          paymentMethod: this.transaction.paymentMethod,
+          category: this.transaction.category,
+          notes: this.transaction.notes,
+          id: this.transaction.id,
+        });
+
+        const costAccountsArray = this.receiptForm.get('costAccounts') as FormArray;
+        costAccountsArray.clear(); // Clear existing entries if any
+
+        this.transaction.costAccount.forEach((account: any) => {
+          costAccountsArray.push(this.fb.group(account));
+        });
+
+        console.log('Form values after patching:', this.receiptForm.value);
+
+      },
+      (error) => {
+        console.error('Error fetching transaction:', error);
+      }
+    );
+
   }
 
-  deletePaymentRow(index: number) {
-    this.paymentRows.removeAt(index);
+  get costAccounts(): FormArray {
+    return this.receiptForm.get('costAccounts') as FormArray;
+  }
+
+  addCostAccount() {
+    const costAccountGroup = this.fb.group({
+      id: [null],
+      content: ['', Validators.required],
+      amount: [0, [Validators.required, Validators.min(0)]],
+      discount: [0],
+      quantity: [1],
+      finalAmount: [0], // Initialize finalAmount with amount
+      status: ['PENDING']
+    });
+  
+    // Listen for changes in 'amount' and update 'finalAmount'
+    costAccountGroup.get('amount')?.valueChanges.subscribe((newAmount) => {
+      costAccountGroup.get('finalAmount')?.setValue(newAmount, { emitEvent: false });
+    });
+  
+    this.costAccounts.push(costAccountGroup);
+  }
+
+  deleteCostAccount(index: number) {
+    this.costAccounts.removeAt(index);
   }
 
   getTotalAmount(): number {
-    return this.paymentRows.value.reduce((sum: number, row: any) => sum + row.amount, 0);
+    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount, 0);
   }
 
   onCancel() {
-    this.router.navigate(['/operator/tour-operation/log']);
+    if(this.transaction.category == 'RECEIPT'){
+      this.router.navigate(['/accountant/list-receipt']);
+
+    } else {
+      this.router.navigate(['/accountant/list-payment']);
+    }
   }
 
   onSave() {
     if (this.receiptForm.valid) {
       const formData = { ...this.receiptForm.value, totalAmount: this.getTotalAmount() };
       console.log("Form Submitted!", formData);
+      this.isLoading = true; // Start loading
+      this.transactionService.updateTransaction(formData).subscribe({
+        next: (response) => {
+          this.isLoading = false; // Stop loading
+          console.log('Transaction updated successfully:', response);
+          this.triggerSuccess(); // Show success message
+          this.getTranstactionById(this.receiptId!); // Refresh the transaction data
+        },
+        error: (error) => {
+          this.isLoading = false; // Stop loading
+          console.error('Error updating transaction:', error);
+        }
+      });
     } else {
-      alert("Please fill all required fields correctly.");
+      this.receiptForm.markAllAsTouched(); // Mark all fields as touched to show validation errors
     }
+  }
+  
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
   }
 
-  onReceive() {
-    if (this.receiptForm.valid) {
-      const formData = { ...this.receiptForm.value, totalAmount: this.getTotalAmount() };
-      console.log("Form Submitted!", formData);
-    } else {
-      alert("Please fill all required fields correctly.");
-    }
-  }
 }

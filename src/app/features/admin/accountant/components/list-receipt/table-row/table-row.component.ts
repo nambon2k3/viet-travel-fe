@@ -21,7 +21,7 @@ export class TableRowComponent {
   ) { }
 
   openDetail(receipt: ReceiptRecord): void {
-    this.router.navigate(['/accountant/receipt-details'],  {
+    this.router.navigate(['/accountant/invoice-details'],  {
       queryParams: { id: receipt.id }
     });
   }

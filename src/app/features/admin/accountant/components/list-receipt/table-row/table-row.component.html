@@ -26,7 +26,21 @@
   </td>
 
   <td>
-    {{ receipt.transactionStatus }}
+    @if(receipt?.transactionStatus === 'PENDING') {
+      <span class="bg-yellow-200 text-yellow-800 px-3 py-0.5 rounded text-xs">
+          Đang xử lý
+      </span>
+      }
+      @if(receipt?.transactionStatus === 'MISSING') {
+      <span class="bg-red-200 text-red-800 px-3 py-0.5 rounded text-xs">
+          Còn thiếu tiền
+      </span>
+      }
+      @if(receipt?.transactionStatus === 'COMPLETED') {
+          <span class="bg-green-200 text-green-800 px-3 py-0.5 rounded text-xs">
+              Hoàn thành
+          </span>
+          }
   </td>
 
   <td>

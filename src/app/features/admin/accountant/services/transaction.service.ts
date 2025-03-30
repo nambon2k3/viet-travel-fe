@@ -32,4 +32,13 @@ export class TransactionService {
         return this.http.get(`${environment.apiUrl}accountant/transactions/list`, { params });
     }
 
+
+    getTranscationById(id: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}accountant/transactions/${id}`);
+    }
+
+    updateTransaction(data: any): Observable<any> {
+        return this.http.post(`${environment.apiUrl}accountant/transactions/update`, data);
+    }
+
 }

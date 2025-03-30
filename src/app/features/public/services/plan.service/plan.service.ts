@@ -10,12 +10,13 @@ export class PlanService {
 
   constructor(private http: HttpClient) { }
 
-  getHomepageData(numberTour: number, numberBlog: number, numberActivity: number, numberLocation: number): Observable<any> {
-    let params = new HttpParams()
-      .set('numberTour', numberTour)
-      .set('numberBlog', numberBlog)
-      .set('numberActivity', numberActivity)
-      .set('numberLocation', numberLocation);
-      return this.http.get<any>(`${environment.apiUrl}public/homepage`, { params });
+  getLocationData(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}public/plans/locations`);
+  }
+
+  getAllLocationData(name: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}public/plans/locations/all`, {
+      params: { name: name }
+    });
   }
 }
