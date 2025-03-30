@@ -80,14 +80,14 @@
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddHotelModal(hotel.id)">
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddHotelModal(hotel.id, hotel.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
             <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
               (hotelAdded)="addNewHotel($event)"></app-add-hotel>
-            <button class="text-red-500 hover:text-red-700" (click)="deleteHotel(i)">X</button>
+            <button class="text-red-500 hover:text-red-700" (click)="deleteHotel(i, hotel.id, hotel.dayNumber)">X</button>
           </td>
         </tr>
       </tbody>
@@ -155,7 +155,9 @@
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <button class="text-red-500 hover:text-red-700" (click)="deleteTransportation(i)">X</button>
+            <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+              (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
+            <button class="text-red-500 hover:text-red-700" (click)="deleteTransportation(i, transport.id, transport.dayNumber)">X</button>
           </td>
         </tr>
       </tbody>
@@ -224,7 +226,9 @@
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <button class="text-red-500 hover:text-red-700" (click)="deleteRestaurant(i)">X</button>
+            <app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+              (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
+            <button class="text-red-500 hover:text-red-700" (click)="deleteRestaurant(i, restaurant.id, restaurant.dayNumber)">X</button>
           </td>
         </tr>
       </tbody>
@@ -291,7 +295,9 @@
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <button class="text-red-500 hover:text-red-700" (click)="deleteActivity(i)">X</button>
+            <app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+              (activityAdded)="addNewActivity($event)"></app-add-activity>
+            <button class="text-red-500 hover:text-red-700" (click)="deleteActivity(i, activity.id, activity.dayNumber)">X</button>
           </td>
         </tr>
       </tbody>

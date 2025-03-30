@@ -75,6 +75,7 @@ interface ServiceDetailResponse {
 })
 export class AddHotelComponent implements AfterViewInit {
   @Input() days: number[] = [];
+  @Input() day: number | null = null;
   @Input() tourId: number = 0;
   @Input() serviceId: number | null = null;
   @Input() prices: PaxOption[] = [];
@@ -87,14 +88,16 @@ export class AddHotelComponent implements AfterViewInit {
   hotels = signal<any[]>([]);
 
   constructor(
-    private ssrService: SsrService,
     private fb: FormBuilder,
+    private ssrService: SsrService,
     private tourDiscountService: TourDiscountService
   ) {
     this.initializeForm();
   }
 
   ngAfterViewInit() {
+    const doc = this.ssrService.getDocument();
+    if (!doc) return;
     const modalElement = document.getElementById('addHotelModal');
     if (modalElement) {
       this.modal = new Modal(modalElement);
@@ -180,7 +183,7 @@ export class AddHotelComponent implements AfterViewInit {
 
   fetchHotelDetails() {
     if (this.serviceId && this.tourId) {
-      this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId).subscribe({
+      this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId, this.day).subscribe({
         next: (response: ServiceDetailResponse) => {
           if (response.code === 200) {
             const hotel = response.data;
@@ -332,7 +335,6 @@ export class AddHotelComponent implements AfterViewInit {
   }
 
   showModal() {
-    this.fetchHotelDetails();
     this.modal?.show();
   }
 

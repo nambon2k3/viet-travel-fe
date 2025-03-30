@@ -53,6 +53,22 @@ export class ConfigPriceComponent {
     sellingPriceFormatted: string;
   }[] = [];
 
+  ngOnInit(): void {
+    this.discountService.getPriceConfigurations(this.tourId).subscribe(response => {
+      if (response?.data?.priceConfigurations) {
+        this._prices = response.data.priceConfigurations.map((p: any) => {
+          const netPrice = this.totalSellingPrice[p.paxRange] / this.getMinPax(p.paxRange);
+          return {
+            id: p.id,
+            paxRange: p.paxRange,
+            fixedCostFormatted: p.fixedCost.toLocaleString('vi-VN'),
+            sellingPriceFormatted: (netPrice + p.fixedCost).toLocaleString('vi-VN')
+          };
+        });
+      }
+    });
+  }
+
   startDate: string = new Date().toISOString().split('T')[0];
   endDate: string = new Date().toISOString().split('T')[0];
 
@@ -91,10 +107,11 @@ export class ConfigPriceComponent {
       sellingPrice: parseInt(p.sellingPriceFormatted.replace(/[^0-9]/g, ''), 10) || 0,
       validFrom: new Date(this.startDate).toISOString(),
       validTo: new Date(this.endDate).toISOString(),
+      tourId: this.tourId
     }));
 
     parsedPrices.forEach(price => {
-      this.discountService.updatePrice(this.tourId, price.id, price)
+      this.discountService.updatePrice(this.tourId, price)
         .subscribe({
           next: () => console.log(`Updated price for paxId: ${price.id}`),
           error: (err: any) => console.error(`Failed to update paxId: ${price.id}`, err)

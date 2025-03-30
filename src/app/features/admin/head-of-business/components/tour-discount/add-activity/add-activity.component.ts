@@ -75,6 +75,7 @@ interface ServiceDetailResponse {
 })
 export class AddActivityComponent implements AfterViewInit {
   @Input() days: number[] = [];
+  @Input() day: number | null = null;
   @Input() tourId: number = 0;
   @Input() serviceId: number | null = null;
   @Input() prices: PaxOption[] = [];
@@ -95,6 +96,8 @@ export class AddActivityComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
+    const doc = this.ssrService.getDocument();
+    if (!doc) return;
     const modalElement = document.getElementById('addActivityModal');
     if (modalElement) {
       this.modal = new Modal(modalElement);
@@ -180,7 +183,7 @@ export class AddActivityComponent implements AfterViewInit {
 
   fetchActivityDetails() {
     if (this.serviceId && this.tourId) {
-      this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId).subscribe({
+      this.tourDiscountService.getServiceDetails(this.tourId, this.serviceId, this.day).subscribe({
         next: (response: ServiceDetailResponse) => {
           if (response.code === 200) {
             const activity = response.data;

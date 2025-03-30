@@ -29,8 +29,8 @@ export class TourDiscountService {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/provider/${providerId}/category/${categoryName}/location/${locationId}`);
   }
 
-  getServiceDetails(tourId: number, serviceId: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/${serviceId}`);
+  getServiceDetails(tourId: number, serviceId: number, dayNumber: number | null): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/day/${dayNumber}/service/${serviceId}`);
   }
 
   getTourPaxById(id: number): Observable<any> {
@@ -61,7 +61,17 @@ export class TourDiscountService {
     return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/${serviceId}`, data);
   }
 
-  updatePrice(tourId: number, paxId: number, priceData: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-pax/update/${paxId}`, priceData);
+  deleteService(tourId: number, serviceId: number, dayNumber: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/remove/services/${serviceId}`, {
+      params: { dayNumber: dayNumber }
+    });
+  }
+
+  updatePrice(tourId: number, priceData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/${tourId}/price-configurations/manage`, priceData);
+  }
+
+  getPriceConfigurations(tourId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/price-configurations/list`);
   }
 }

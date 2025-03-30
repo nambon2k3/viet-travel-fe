@@ -2,11 +2,9 @@ import { Route } from "@angular/router";
 import { LayoutComponent } from "../layout/layout.component";
 import { ListLocationComponent } from "./components/list-location/list-location.component";
 import { PostLocationDetailComponent } from "./components/post-location-detail/post-location-detail.component";
-import { AddTourComponent } from "./components/add-tour/add-tour.component";
 import { TourDayComponent } from "./components/tour-details/tour-day/tour-day.component";
 import { TourDetailsLayoutComponent } from "./components/tour-details/tour-details-layout/tour-details-layout.component";
 import { TourDetailsComponent } from "./components/tour-details/tour-details.component";
-import { TourPaxComponent } from "./components/tour-details/tour-pax/tour-pax.component";
 import { UpdateTourDayComponent } from "./components/tour-details/update-tour-day/update-tour-day.component";
 import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
 import { OpenTourForSaleComponent } from "./components/open-tour-for-sale/open-tour-for-sale.component";
@@ -37,10 +35,6 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
         component: ViewListTourComponent,
       },
       {
-        path: 'add-tour',
-        component: AddTourComponent,
-      },
-      {
         path: 'tour-discount',
         component: TourDiscountComponent,
       },
@@ -51,7 +45,6 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
           { path: '', redirectTo: 'tour-details', pathMatch: 'full' },
           { path: 'tour-details', component: TourDetailsComponent },
           { path: 'tour-day', component: TourDayComponent },
-          { path: 'pax', component: TourPaxComponent },
           { path: 'update-tour-day', component: UpdateTourDayComponent },
         ],
       },
