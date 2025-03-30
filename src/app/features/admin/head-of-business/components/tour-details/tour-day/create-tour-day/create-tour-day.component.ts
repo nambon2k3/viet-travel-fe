@@ -1,13 +1,24 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { BlogContentComponent } from '../../../../../marketer/components/blog-detail/blog-content/blog-content.component';
 import { TourService } from '../../../../services/tour.service';
 import { LocationService } from '../../../../services/location/location.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { Subject } from 'rxjs';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+
+
+interface Meal {
+  id: string;
+  name: string;
+}
+
+interface Location {
+  id: number;
+  name: string;
+}
 
 @Component({
   selector: 'app-create-tour-day',
@@ -17,20 +28,32 @@ import { Subject } from 'rxjs';
     FormsModule,
     BlogContentComponent,
     ReactiveFormsModule,
-    NgSelectComponent
+    NgSelectComponent,
+    NgMultiSelectDropDownModule // Import multiselect dropdown
   ],
   templateUrl: './create-tour-day.component.html',
   styleUrls: ['./create-tour-day.component.css'],
 })
+
 export class CreateTourDayComponent {
   @Input() tourId: string | null = null;
+  @Output() tourChange: EventEmitter<any> = new EventEmitter<any>();
   editTourForm!: FormGroup;
   description: string | null = null;
   dropdownList: Location[] = [];
+  dropdownMealList: Meal[] = [];
+  dropdownServiceList: Meal[] = [];
   locations: Location[] = [];
   searchText$ = new Subject<string>();
+  dropdownSettings: IDropdownSettings = {};
 
-  serviceOptions = [
+  mealOptions: Meal[] = [
+    { id: 'breakfast', name: 'Bữa Sáng' },
+    { id: 'lunch', name: 'Bữa Trưa' },
+    { id: 'dinner', name: 'Bữa Tối' },
+  ];
+
+  serviceOptions: Meal[] = [
     { id: 'Restaurant', name: 'Nhà Hàng' },
     { id: 'Transport', name: 'Vận Chuyển' },
     { id: 'Hotel', name: 'Khách Sạn' },
@@ -38,30 +61,62 @@ export class CreateTourDayComponent {
   ];
 
   constructor(
-    private router: Router,
     private fb: FormBuilder,
     private tourService: TourService,
-    private locationService: LocationService,
+    private locationService: LocationService
   ) { }
 
   ngOnInit(): void {
     this.editTourForm = this.fb.group({
-      title: ['', Validators.required], // Maps to "title" in API
-      content: ['', Validators.required], // Maps to "content" in API
-      mealPlan: ['', Validators.required], // Maps to "mealPlan" in API
-      locationId: [null, [Validators.required, Validators.min(0)]], // Maps to "locationId" in API
-      serviceCategories: [[], Validators.required], // Maps to "serviceCategories" in API
+      title: ['', Validators.required],
+      content: ['', Validators.required],
+      mealPlan: ['', Validators.required],  // Cập nhật kiểu dữ liệu thành array
+      locationId: [null, [Validators.required, Validators.min(0)]],
+      serviceCategories: [[], Validators.required], // Cập nhật kiểu dữ liệu thành array
     });
+
+
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'name',
+      allowSearchFilter: true,
+      enableCheckAll: false,
+      itemsShowLimit: 3,
+      searchPlaceholderText: 'Tìm kiếm dịch vụ...',
+    };
+
+    this.mealOptions = this.mealOptions || [];
+    this.serviceOptions = this.serviceOptions || [];
+    this.dropdownMealList = this.mealOptions;
+    this.dropdownServiceList = this.serviceOptions;
+
     this.loadLocations();
   }
 
-  onServiceChange(event: any, service: string) {
-    const serviceCategories = this.editTourForm.get('serviceCategories')?.value || [];
-    if (event.target.checked) {
-      this.editTourForm.get('serviceCategories')?.setValue([...serviceCategories, service]);
-    } else {
-      this.editTourForm.get('serviceCategories')?.setValue(serviceCategories.filter((s: string) => s !== service));
-    }
+  onSubmit() {
+    const formValue = this.editTourForm.value;
+    const mealIds = formValue.mealPlan.map((meal: any) => meal.id);
+    const mealPlanFormatted = `${mealIds.length}(${mealIds.join(', ')})`;
+    const serviceCategoriesFormatted = formValue.serviceCategories.map((service: any) => service.id); 
+
+
+    const payload = {
+      title: formValue.title,
+      content: formValue.content,
+      mealPlan: mealPlanFormatted, // Định dạng lại chuỗi mealPlan
+      locationId: formValue.locationId,
+      serviceCategories: serviceCategoriesFormatted
+    };
+
+    this.tourService.createTourDay(this.tourId!, payload).subscribe({
+      next: (response) => {
+        this.tourChange.emit(response.data);
+      },
+      error: (error) => {
+        console.error('Error creating tour day', error);
+      },
+    });
   }
 
   loadLocations(keyword: string = ''): void {
@@ -79,25 +134,5 @@ export class CreateTourDayComponent {
   onSearch(event: any): void {
     const keyword = event || '';
     this.searchText$.next(keyword);
-  }
-
-  onSubmit() {
-    const formValue = this.editTourForm.value;
-    const payload = {
-      title: formValue.title,
-      content: formValue.content,
-      mealPlan: formValue.mealPlan,
-      locationId: formValue.locationId,
-      serviceCategories: formValue.serviceCategories,
-    };
-    this.tourService.createTourDay(this.tourId!, payload).subscribe({
-      next: (response) => {
-        console.log('Tour day created successfully', response);
-        this.router.navigate(['/head-business/tour-day']);
-      },
-      error: (error) => {
-        console.error('Error creating tour day', error);
-      },
-    });
   }
 }

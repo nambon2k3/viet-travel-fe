@@ -18,7 +18,7 @@ export class Menu {
           ],
         },
       ],
-    },{
+    }, {
       group: 'Bán hàng',
       separator: true,
       items: [
@@ -65,27 +65,19 @@ export class Menu {
       ],
     },
     {
-      group: 'Head of Business',
+      group: 'Trưởng phòng kinh doanh',
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Tour',
-          children: [
-            { label: 'Tours', route: '/marketer/blog' },
-            { label: 'Tours Guide', route: '/marketer/blog' }
-          ],
+          route: '/head-business/list-tour'
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Locations',
+          label: 'Địa điểm',
           route: '/head-business/locations',
         },
-        {
-          icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Refund',
-          route: '/marketer/blog',
-        }
       ],
     },
     {

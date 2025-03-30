@@ -97,7 +97,6 @@ export class ConfigPriceComponent {
   }
 
   onConfirm(): void {
-    console.log('Confirming prices:', this._prices);
     const parsedPrices: PaxOption[] = this._prices.map((p) => ({
       id: p.id,
       minPax: this.getMinPax(p.paxRange),

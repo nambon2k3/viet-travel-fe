@@ -74,4 +74,12 @@ export class TourDiscountService {
   getPriceConfigurations(tourId: number): Observable<any> {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/price-configurations/list`);
   }
+
+  getMarkup(tourId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-pax/markup`);
+  }
+
+  updateMarkup(tourId: number, markupData: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-pax/update-markup`, markupData);
+  }
 }

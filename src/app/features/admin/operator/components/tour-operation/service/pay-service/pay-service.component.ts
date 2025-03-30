@@ -18,6 +18,7 @@ export class PayServiceComponent {
   @Output() sendRequest = new EventEmitter<void>();
   paymentForm: FormGroup;
   modal: Modal | null = null;
+  displayTransactionType: string = "Phiếu Chi";
 
   constructor(private fb: FormBuilder, private tourService: TourService, private ssrService: SsrService) {
     this.paymentForm = this.fb.group({
