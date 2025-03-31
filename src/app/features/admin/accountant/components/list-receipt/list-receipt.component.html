@@ -40,7 +40,7 @@
     </table>
   </div>
   <app-table-footer [totalPages]="totalPages()" [currentPage]="page" (pageChange)="onPageChange($event)"
-    (pageSizeChange)="onPageSizeChange($event)"></app-table-footer> 
+    (pageSizeChange)="onPageSizeChange($event)"></app-table-footer>
 </div>
 
 
@@ -85,18 +85,18 @@
                       receiptForm.get('bookingCode')?.invalid &&
                       receiptForm.get('bookingCode')?.touched
                     " class="text-red-500 w-full text-left text-sm">
-                      Thông tin bắt buộc
-                    </p>
+                    Thông tin bắt buộc
+                  </p>
                 </div>
 
                 <ul
                   *ngIf="!isBookingLoading && bookingCode?.value?.length >= 2 && selectedBooking?.bookingCode != bookingCode?.value "
                   class="absolute bg-white shadow rounded w-full z-50 mt-1 max-h-60 overflow-y-auto">
-                    <li *ngFor="let booking of bookings" (click)="selectBooking(booking)"
+                  <li *ngFor="let booking of bookings" (click)="selectBooking(booking)"
                     class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                    {{ booking?.bookingCode }}  ({{ booking?.bookedPerson?.fullName }}) 
+                    {{ booking?.bookingCode }} ({{ booking?.bookedPerson?.fullName }})
                   </li>
-                  
+
                   <li *ngIf="bookings.length === 0" class="px-3 py-2 text-gray-500 italic">
                     Không tìm thấy booking
                   </li>
@@ -246,28 +246,24 @@
 
 
 @if(showSuccess) {
-  <!-- Warning Notification (Only One at a Time) -->
-  <div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
-      <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
-          <span class="text-green-500 text-xl mr-2">✔</span>
-          <p class="text-green-800 text-sm">
-            Tạo phiếu thu thành công
-          </p>
-      </div>
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+  <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+    <span class="text-green-500 text-xl mr-2">✔</span>
+    <p class="text-green-800 text-sm">
+      Tạo phiếu thu thành công
+    </p>
   </div>
-  }
+</div>
+}
 
-  @if(showError) {
-    <!-- Warning Notification (Only One at a Time) -->
-    <div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
-        <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
-            <span class="text-red-500 text-xl mr-2">X</span>
-            <p class="text-red-800 text-sm">
-              Tạo phiếu thu thất bại
-        </div>
-    </div>
-    }
-
-
-
-
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+  <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+    <span class="text-red-500 text-xl mr-2">X</span>
+    <p class="text-red-800 text-sm">
+      Tạo phiếu thu thất bại
+  </div>
+</div>
+}
