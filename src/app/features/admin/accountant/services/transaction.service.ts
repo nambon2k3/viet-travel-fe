@@ -41,4 +41,14 @@ export class TransactionService {
         return this.http.post(`${environment.apiUrl}accountant/transactions/update`, data);
     }
 
+    getBookingData(keyword: string) {
+        return this.http.get(`${environment.apiUrl}accountant/transactions/bookings/list`, {
+            params: {keyword: keyword}
+        });
+    }
+
+    createTransaction(formData: any) {
+        return this.http.post(`${environment.apiUrl}accountant/transactions/create`, formData);
+    }
+
 }
