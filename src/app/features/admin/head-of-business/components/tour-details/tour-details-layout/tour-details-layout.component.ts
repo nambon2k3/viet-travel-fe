@@ -38,7 +38,6 @@ export class TourDetailsLayoutComponent {
       this.tourService.getTourById(id!).subscribe({
         next: (response: any) => {
           this.tour = response.data;
-          console.log('Tour details loaded:', this.tour);
         },
         error: (err: any) => {
           console.error('Failed to load tour details:', err);

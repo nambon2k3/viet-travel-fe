@@ -1,152 +1,60 @@
-<div id="updateTourDayModal" tabindex="-1" aria-hidden="true"
-    class="fixed hidden inset-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto h-full bg-black bg-opacity-50">
-    <div class="flex items-center justify-center h-full">
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[800px]">
-
-            <div class="rounded-md p-6 bg-white mt-4">
-                <form class="space-y-4" [formGroup]="editTourForm">
-                    <div>
-                        <label class="block mb-1 font-bold">Ngày</label>
-                        <input type="number" value="1" class="w-full p-2 bg-gray-300 border rounded" readonly>
-                    </div>
-
-                    <div>
-                        <label class="block mb-1 font-bold">Tiêu Đề Ngày Tour</label>
-                        <input type="text" value="Hà Nội - Tuần Chùa" class="w-full p-2 border rounded">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="">
-                            <!-- Dropdown search button -->
-                            <label class="block mb-1 font-bold">Bữa Ăn</label>
-                            <button id="dropdownMealButton" data-dropdown-toggle="dropdownMeal"
-                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                type="button">Chọn Bữa Ăn<svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 1 4 4 4-4" />
-                                </svg></button>
-                            <!-- Dropdown menu -->
-                            <div id="dropdownMeal"
-                                class="z-10 hidden bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700">
-                                <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownMealButton">
-                                    <li>
-                                        <div
-                                            class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
-                                            <input id="checkbox-item-11" type="checkbox" value=""
-                                                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                            <label for="checkbox-item-11"
-                                                class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">Bữa
-                                                sáng</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div
-                                            class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
-                                            <input checked id="checkbox-item-12" type="checkbox" value=""
-                                                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                            <label for="checkbox-item-12"
-                                                class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">Bữa
-                                                trưa</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div
-                                            class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
-                                            <input id="checkbox-item-13" type="checkbox" value=""
-                                                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                            <label for="checkbox-item-13"
-                                                class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">Bữa
-                                                tối</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <a href="#"
-                                    class="flex items-center p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
-                                    <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        fill="currentColor" viewBox="0 0 20 18">
-                                        <path
-                                            d="M6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Zm11-3h-6a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2Z" />
-                                    </svg>
-                                    Xoá lựa chọn
-                                </a>
-                            </div>
-                        </div>
-                        <div>
-                            <!-- Dropdown search button -->
-                            <label class="block mb-1 font-bold">Dịch Vụ</label>
-                            <button id="dropdownServiceButton" data-dropdown-toggle="dropdownService"
-                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                type="button">Chọn Dịch Vụ<svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 1 4 4 4-4" />
-                                </svg></button>
-                            <!-- Dropdown menu -->
-                            <div id="dropdownService"
-                                class="z-10 hidden bg-white rounded-lg shadow-sm w-60 dark:bg-gray-700">
-                                <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
-                                    aria-labelledby="dropdownServiceButton">
-                                    <li>
-                                        <div
-                                            class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
-                                            <input id="checkbox-item-11" type="checkbox" value=""
-                                                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                            <label for="checkbox-item-11"
-                                                class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">Nhà
-                                                Hàng</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div
-                                            class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
-                                            <input checked id="checkbox-item-12" type="checkbox" value=""
-                                                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                            <label for="checkbox-item-12"
-                                                class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">Vận
-                                                Chuyển</label>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div
-                                            class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
-                                            <input id="checkbox-item-13" type="checkbox" value=""
-                                                class="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
-                                            <label for="checkbox-item-13"
-                                                class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">Khách
-                                                Sạn</label>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <a href="#"
-                                    class="flex items-center p-3 text-sm font-medium text-red-600 border-t border-gray-200 rounded-b-lg bg-gray-50 dark:border-gray-600 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-red-500 hover:underline">
-                                    <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        fill="currentColor" viewBox="0 0 20 18">
-                                        <path
-                                            d="M6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Zm11-3h-6a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2Z" />
-                                    </svg>
-                                    Xoá lựa chọn
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block mb-1 font-bold">Điểm Đến</label>
-                        <input type="text" value="Quảng Ninh" class="w-full p-2 mb-6 border rounded">
-                    </div>
-
-                    <app-blog-content [content]="description"></app-blog-content>
-
-                    <div class="flex justify-end space-x-4">
-                        <button (click)="onCancel()"
-                            class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Hủy Bỏ</button>
-                        <button class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded">Cập Nhật Hoạt Động
-                            Tour</button>
-                    </div>
-                </form>
-            </div>
+<div id="editTourDayModal" tabindex="-1" aria-hidden="true"
+    class="fixed top-0 left-0 right-0 z-50 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50 hidden">
+    <div class="relative w-full max-w-lg bg-white rounded-lg shadow-lg p-5">
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Cập Nhật Ngày
+                Tour</h3>
+            <button (click)="closeModal()" class="text-gray-500 hover:text-gray-700">
+                ✖
+            </button>
         </div>
+        <form class="space-y-4" [formGroup]="editTourForm" (ngSubmit)="onSubmit()">
+            <div>
+                <label class="block mb-1 mt-2 font-bold">Tiêu Đề Ngày Tour</label>
+                <input type="text" formControlName="title" class="w-full p-2 border rounded"
+                    placeholder="e.g., Hà Nội - Tuần Chùa">
+            </div>
+
+            <div class="w-1/2">
+                <label class="block mb-1 font-bold">Địa điểm</label>
+                <ng-select class="custom bg-white border border-gray-300 rounded-md" formControlName="locationId"
+                    [items]="dropdownList" bindLabel="name" bindValue="id" placeholder="Chọn địa điểm"
+                    [searchable]="true" (search)="onSearch($event)">
+                </ng-select>
+                <span *ngIf="editTourForm.get('locationId')?.invalid && editTourForm.get('locationId')?.touched"
+                    class="text-red-500 text-sm">
+                    Vui lòng chọn địa điểm
+                </span>
+            </div>
+            <div class=" my-3">
+                <label class="block mb-1 font-bold">Dịch vụ đi kèm</label>
+                <div class=" grid grid-cols-2 gap-4">
+                    <div class="w-full">
+                        <ng-multiselect-dropdown formControlName="mealPlan" [placeholder]="'Chọn bữa ăn'" idField="id"
+                            textField="name" [settings]="dropdownSettings" [data]="dropdownMealList"
+                            (onFilterChange)="onSearch($event)">
+                        </ng-multiselect-dropdown>
+                    </div>
+                    <div class="w-full">
+                        <ng-multiselect-dropdown formControlName="serviceCategories" [placeholder]="'Chọn Dịch Vụ'"
+                            idField="id" textField="name" [settings]="dropdownSettings" [data]="dropdownServiceList"
+                            (onFilterChange)="onSearch($event)">
+                        </ng-multiselect-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <app-blog-content [content]="description" formControlName="content"></app-blog-content>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button type="button" (click)="closeModal()"
+                    class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Hủy
+                    Bỏ</button>
+                <button type="submit" (click)="closeModal()"
+                    class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded">Cập Nhật Ngày
+                    Tour</button>
+            </div>
+        </form>
     </div>
 </div>

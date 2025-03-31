@@ -68,4 +68,13 @@ export class TourService {
   createTourDay(tourId: string, formData: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/create`, formData);
   }
+
+  updateTourDay(tourId: string, id: string, formData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/update/${id}`, formData);
+  }
+
+  changeTourDayStatus(tourId: string, tourDayId: string, isDeleted: boolean): Observable<any> {
+    const params = new HttpParams().set('isDeleted', isDeleted.toString());
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/${tourDayId}/status`, params );
+  }
 }
