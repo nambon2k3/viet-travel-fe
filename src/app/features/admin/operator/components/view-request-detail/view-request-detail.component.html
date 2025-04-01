@@ -1,4 +1,4 @@
-<div class="w-full p-6 bg-white rounded-md shadow-md">
+<div class="w-full p-6 bg-white rounded-md shadow-md" *ngIf="requestDetail">
   <!-- Tiêu đề -->
   <div class="flex items-center justify-between border-b pb-4">
     <div class="flex items-center gap-3">
@@ -6,30 +6,26 @@
         <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="Người dùng" class="w-full h-full rounded-full">
       </span>
       <div>
-        <p class="font-semibold text-lg">Lan Thân</p>
-        <p class="text-gray-500 text-sm">01/04/2025 12:21:45</p>
+        <p class="font-semibold text-lg">{{ requestDetail.proposer }}</p>
+        <p class="text-gray-500 text-sm">{{ requestDetail.updatedAt | date:'dd/MM/yyyy HH:mm:ss' }}</p>
       </div>
     </div>
   </div>
 
-  <!-- Ghi chú dịch vụ -->
-  <div class="bg-gray-100 p-3 rounded-md mt-4">
-    <p class="font-semibold text-gray-700">Ghi chú dịch vụ:</p>
-    <p class="text-gray-600 text-sm">Đây là ghi chú từ nhân viên bán hàng. Đây là ghi chú từ nhân viên bán hàng.</p>
-  </div>
+  
 
   <!-- Yêu cầu dịch vụ -->
-  <div class="mt-10">
+  <div class="mt-6">
     <h2 class="text-lg font-bold">Danh sách yêu cầu dịch vụ</h2>
-    <p class="text-sm text-gray-600">Mã ID: 123   |   Mã đặt chỗ: 234</p>
-    <p class="text-lg font-bold mt-10">Tour Đà Nẵng - Hội An 4N3Đ</p>
-    <p class="text-sm text-gray-600">Tour riêng</p>
-    <p class="text-sm text-gray-600">Ngày bắt đầu: 02/02/2025</p>
-    <p class="text-sm text-gray-600">Ngày kết thúc: 06/02/2025</p>
+    <p class="text-sm text-gray-600">Mã ID: {{ requestDetail.tourBookingServiceId }} &nbsp;|&nbsp; Mã đặt chỗ: {{ requestDetail.bookingCode }}</p>
+    <p class="text-lg font-bold mt-6">{{ requestDetail.tourName }}</p>
+    <p class="text-sm text-gray-600">Loại Tour: {{ requestDetail.tourType }}</p>
+    <p class="text-sm text-gray-600">Ngày bắt đầu: {{ requestDetail.startDate | formatDate }}</p>
+    <p class="text-sm text-gray-600">Ngày kết thúc: {{ requestDetail.endDate | formatDate }}</p>
   </div>
 
   <!-- Bảng -->
-  <div class="mt-10">
+  <div class="mt-8">
     <table class="w-full border-collapse border rounded-lg overflow-hidden text-sm">
       <thead>
         <tr class="bg-gray-200 text-gray-700">
@@ -43,38 +39,34 @@
       <tbody>
         <tr class="text-center">
           <td class="p-2 border">1</td>
-          <td class="p-2 border">Phòng Deluxe</td>
-          <td class="p-2 border">5.000.000</td>
-          <td class="p-2 border">2</td>
-          <td class="p-2 border">10.000.000</td>
-        </tr>
-        <tr class="text-center bg-gray-100">
-          <td class="p-2 border">2</td>
-          <td class="p-2 border">Tổ chức sinh nhật</td>
-          <td class="p-2 border">2.000.000</td>
-          <td class="p-2 border">1</td>
-          <td class="p-2 border">2.000.000</td>
+          <td class="p-2 border">{{ requestDetail.serviceName }}</td>
+          <td class="p-2 border">{{ requestDetail.nettPrice | currencyVnd }}</td>
+          <td class="p-2 border">{{ requestDetail.requestQuantity }}</td>
+          <td class="p-2 border">{{ requestDetail.totalPrice | currencyVnd }}</td>
         </tr>
       </tbody>
       <tfoot>
         <tr class="bg-gray-200 font-bold text-center">
           <td colspan="4" class="p-2 border">Tổng giá</td>
-          <td class="p-2 border">7.500.000</td>
+          <td class="p-2 border">{{ requestDetail.totalPrice | currencyVnd }}</td>
         </tr>
       </tfoot>
     </table>
   </div>
 
   <!-- Lý do -->
-  <div class="mt-6">
-    <p class="font-semibold text-gray-700">Lý do</p>
-    <textarea class="w-full p-3 border rounded-md bg-gray-100 text-gray-600" rows="3" placeholder="Khách hàng sẽ..."></textarea>
+  <!-- Ghi chú dịch vụ -->
+  <div class="bg-gray-100 p-3 rounded-md mt-8">
+    <p class="font-semibold text-gray-700">Lý do:</p>
+    <p class="text-gray-600 text-sm">{{ requestDetail.reason }}</p>
   </div>
 
   <!-- Nút điều khiển -->
   <div class="flex justify-end gap-3 mt-4">
     <button (click)="onCanceled()" class="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400">Hủy</button>
-    <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Từ chối</button>
-    <button class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Phê duyệt</button>
+    <button (click)="onRejected()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Từ chối</button>
+    <button (click)="onApproved()" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Phê duyệt</button>
   </div>
 </div>
+
+<app-spinner [isLoading]="isLoading"></app-spinner>

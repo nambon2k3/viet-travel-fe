@@ -22,7 +22,7 @@
                     <th class="p-2">Số lượng yêu cầu</th>
                     <th class="p-2">Đơn hàng</th>
                     <th class="p-2">Thanh toán</th>
-                    <th class="p-2">Thao tác</th>
+                    <th class="p-2 text-center">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,7 +52,7 @@
 
                                 </li>
                                 <li>
-                                    <button (click)="openDeleteModal(service)"
+                                    <button (click)="openDeleteModal(i)"
                                         class="mx-auto w-fit cursor-pointer rounded-[30px] bg-red-500/20 px-2 py-0.5 text-xs font-medium text-red-800 flex mt-3">
                                         Hủy đơn hàng
                                     </button>
@@ -86,7 +86,7 @@
                             </ul>
                         </div>
                     </td>
-                    <td class="p-2">
+                    <td class="p-2 text-center">
                         <button class="text-white px-2 py-1 rounded-md" (click)="openServiceDetail(service)">
                             <svg class="w-6 h-6 text-green-700 dark:text-green-700" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -98,15 +98,15 @@
                         </button>
                         <app-service-detail [service]="service" #changeServiceModal></app-service-detail>
 
-                        <!-- Delete Button -->
-                        <button (click)="openDeleteModal(i)" class="text-white px-2 py-1 rounded-md">
-                            <svg class="w-6 h-6 text-red-500 dark:text-red-500" aria-hidden="true"
+                        
+                        <!-- <button (click)="openDeleteModal(i)" class="text-white px-2 py-1 rounded-md">
+                            <svg class="w-6 hidden h-6 text-red-500 dark:text-red-500" aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
                             </svg>
-                        </button>
+                        </button> -->
                         <!-- Delete Modal -->
                         <div id="deleteTourPaxModal-{{i}}" tabindex="-1" aria-hidden="true"
                             class="fixed hidden inset-0 z-50 flex items-center justify-center w-full h-full bg-black bg-opacity-50">

@@ -31,7 +31,31 @@ export class StaffService {
             params = params.set('isDeleted', isDeleted);
         }
 
-        return this.http.get(`${environment.apiUrl}admin/users`, { params });
+        return this.http.get(`${environment.apiUrl}admin/users/staff`, { params });
+    }
+
+    getCustomerByPage(
+        page: number = 0,
+        size: number = 10,
+        keyword?: string,
+        isDeleted?: boolean,
+        sortField: string = 'createdAt',
+        sortDirection: string = 'desc'
+    ): Observable<any> {
+        let params = new HttpParams()
+            .set('page', page)
+            .set('size', size)
+            .set('sortField', sortField)
+            .set('sortDirection', sortDirection);
+
+        if (keyword) {
+            params = params.set('keyword', keyword);
+        }
+        if (isDeleted !== undefined) {
+            params = params.set('isDeleted', isDeleted);
+        }
+
+        return this.http.get(`${environment.apiUrl}admin/users/customers`, { params });
     }
 
 
