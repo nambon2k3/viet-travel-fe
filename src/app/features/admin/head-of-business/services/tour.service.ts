@@ -41,6 +41,10 @@ export class TourService {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/detail/${id}`);
   }
 
+  getTourScheduleById(id: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/detail-schedule/${id}`);
+  }
+
   getTourDayById(tourId: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/list`);
   }
@@ -76,5 +80,29 @@ export class TourService {
   changeTourDayStatus(tourId: string, tourDayId: string, isDeleted: boolean): Observable<any> {
     const params = new HttpParams().set('isDeleted', isDeleted.toString());
     return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/${tourDayId}/status`, params );
+  }
+
+  calculateEndDates(tourId: string, startDate: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}head-of-business/tour/schedule/calculate-end-dates/${tourId}`, { params: { startDate }});
+  }
+
+  getAvailableOperators(tourId: string, startDate: string, endDate: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}head-of-business/tour/schedule/available-operators`, { params: { tourId, startDate, endDate }});
+  }
+
+  getTourPax(tourId: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-pax`);
+  }
+
+  createTourSchedule(formData: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/schedule/set`, formData);
+  }
+
+  updateTourSchedule(formData: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/schedule/update`, formData);
+  }
+
+  cancelTourSchedule(scheduleId: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/schedule/cancel/${scheduleId}`, {});
   }
 }

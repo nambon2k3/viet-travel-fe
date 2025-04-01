@@ -125,7 +125,7 @@ export class Menu {
           label: 'Users',
           children: [
             { label: 'Staff', route: '/admin/user' },
-            { label: 'Customer', route: '/admin/user' },
+            { label: 'Customer', route: '/admin/customer' },
           ],
         },
       ],

@@ -2,6 +2,7 @@ import { Route } from "@angular/router";
 import { LayoutComponent } from "../layout/layout.component";
 import { ListStaffComponent } from "./components/list-staff/list-staff.component";
 import { PostStaffDetailComponent } from "./components/post-staff-detail/post-staff-detail.component";
+import { ListCustomerComponent } from "./components/list-customer/list-customer.component";
 
 export const SYSTEM_ADMIN_ROUTES: Route[] = [
   {
@@ -16,7 +17,10 @@ export const SYSTEM_ADMIN_ROUTES: Route[] = [
         path: 'user-details',
         component: PostStaffDetailComponent,
       },
-      
+      {
+        path: 'customer',
+        component: ListCustomerComponent,
+      },
     ]
   },
 ];

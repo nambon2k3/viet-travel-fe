@@ -91,10 +91,9 @@ export class OrderServiceComponent {
       
       <strong>Tổng số tiền:</strong> <span>${data.emailContent.match(/Tổng số tiền: (.*)/)?.[1] || 'N/A'}</span><br><br>
       
-      <b>Vui lòng xác nhận yêu cầu tại đường link sau:</b><br>
-      ${data.emailContent.match(/http[^\s]+/)?.[0]}<br><br>
+      <b>Vui lòng xác nhận yêu cầu tại website của chúng tôi.</b><br><br>
       
-      Kính mong quý đối tác cho chúng tôi biết phản hồi trong thời gian sớm nhất.<br><br>
+      Kính mong quý đối tác cho chúng tôi biết phản hồi trong thời gian sớm nhất!<br><br>
       
       Best Regards,<br>
       <strong>Viet Travel</strong>

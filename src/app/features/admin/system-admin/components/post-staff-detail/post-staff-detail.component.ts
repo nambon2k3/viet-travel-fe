@@ -7,7 +7,6 @@ import { User } from '../../../../../core/models/user.model';
 import { CommonModule } from '@angular/common';
 import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AdminService } from '../../../admin.service';
-import e from 'express';
 
 @Component({
   selector: 'app-staff-detail',
@@ -43,6 +42,7 @@ export class PostStaffDetailComponent {
   };
 
   selectedItems: any = [];
+  isCustomerOnly: boolean = false;
 
   constructor(
     private staffService: StaffService,
@@ -53,17 +53,6 @@ export class PostStaffDetailComponent {
   ) { }
 
   ngOnInit(): void {
-    this.dropdownSettings = {
-      singleSelection: false,
-      idField: 'item_id',
-      textField: 'item_text',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 5,
-      searchPlaceholderText: 'Search Roles Name',
-      allowSearchFilter: true
-    };
-
     this.initForm();
     this.route.queryParams.subscribe(params => {
       this.staffId = params['id'];
@@ -98,15 +87,19 @@ export class PostStaffDetailComponent {
     const roleNames = this.editUserForm.get('roleNames')?.value || [];
   }
 
-
   onDeSelect(item: any) {
     const roleNames = this.editUserForm.get('roleNames')?.value || [];
     this.editUserForm.get('roleNames')?.setValue(roleNames.filter((role: string) => role !== item.item_text));
   }
 
   onSelectAll(items: any) {
+    console.log("Before update:", this.selectedItems);
+    this.selectedItems = [...items];
+    console.log("After update:", this.selectedItems);
     this.editUserForm.get('roleNames')?.setValue(items.map((item: any) => item.item_text));
   }
+  
+  
 
   resetItems(): void {
     this.selectedItems = this.selectedItems.map((role: any) => ({
@@ -164,6 +157,8 @@ export class PostStaffDetailComponent {
             status: this.staff.deleted ? 'inactive' : 'active'
           });
 
+          this.isCustomerOnly = this.staff.roleNames && this.staff.roleNames.length === 1 && this.staff.roleNames[0] === 'CUSTOMER';
+
           this.selectedItems = this.staff.roleNames ? this.staff.roleNames.map((role: string) => ({
             item_id: role,
             item_text: role
@@ -184,7 +179,7 @@ export class PostStaffDetailComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/admin/user']);
+    window.history.back();
   }
 
   saveChanges(): void {

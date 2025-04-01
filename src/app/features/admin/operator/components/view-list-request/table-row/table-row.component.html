@@ -2,23 +2,25 @@
   <td>{{ request.tourName }}</td>
 
   <td>
-    {{ request.bookingId }}
+    {{ request.bookingCode }}
   </td>
 
   <td>
-    {{ request.note | truncate:20}}
+    {{ request.reason | truncate:20}}
   </td>
 
   <td>
-    {{ request.status }}
+    <span [class]="getStatusClass(request.status)">
+      {{ getStatusInVietnamese(request.status) }}
+    </span>
   </td>
 
   <td>
-    {{ request.type }}
+    {{ request.tourType }}
   </td>
 
   <td>
-    {{ request.createdAt | formatDate }}
+    {{ request.updatedAt | formatDate }}
   </td>
 
   <td>
