@@ -9,6 +9,7 @@ import { ListTourPublicComponent } from "./components/list-tour-public/list-tour
 import { CreatePublicBookingComponent } from "./components/create-public-booking/create-public-booking.component";
 import { TourBookingServiceComponent } from "./components/tour-booking-service/tour-booking-service.component";
 import { CreateTourPrivateContentComponent } from "./components/create-tour-private-content/create-tour-private-content.component";
+import { TourServiceComponent } from "./components/tour-service/tour-service.component";
 
 export const SALESMAN_ROUTES: Route[] = [
   {
@@ -47,6 +48,10 @@ export const SALESMAN_ROUTES: Route[] = [
         path: 'tour-private-content/:id',
         component: CreateTourPrivateContentComponent
       },
+      {
+        path: 'tour-private-service',
+        component: TourServiceComponent
+      }
     ]
   },
   {

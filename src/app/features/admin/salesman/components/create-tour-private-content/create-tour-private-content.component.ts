@@ -8,6 +8,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Modal } from 'flowbite';
 import { start } from 'node:repl';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
+import { tick } from '@angular/core/testing';
 
 @Component({
   selector: 'app-create-tour-private-content',
@@ -64,7 +65,8 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
       serviceCategory: this.fb.group({
         restaurant: [false],
         hotel: [false],
-        activity: [false]
+        activity: [false],
+        ticket: [false]
       }, { validators: this.atLeastOneChecked }),
       deleted: [false],
       locationId: ['', Validators.required],
@@ -166,7 +168,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
       const serviceCategories = {
         restaurant: false,
         hotel: false,
-        transport: false,
+        ticket: false,
         activity: false
       };
     
@@ -179,6 +181,9 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
           serviceCategories.hotel = true;
         }
         if (service.serviceCategory.categoryName === "Activity") {
+          serviceCategories.activity = true;
+        }
+        if (service.serviceCategory.categoryName === "Flight Ticket") {
           serviceCategories.activity = true;
         }
       });
@@ -204,7 +209,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
     this.selectedDayIndex = index;
     const day = this.tourDays.at(index).value;
 
-    const serviceCategory = day.serviceCategory || { restaurant: false, hotel: false, activity: false };
+    const serviceCategory = day.serviceCategory || { restaurant: false, hotel: false, activity: false, ticket: false };
 
     this.editTourDayForm.patchValue({
       title: day.title,
@@ -214,7 +219,8 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
       serviceCategory: {
         restaurant: serviceCategory.restaurant || false,
         hotel: serviceCategory.hotel || false,
-        activity: serviceCategory.activity || false
+        activity: serviceCategory.activity || false,
+        ticket: serviceCategory.ticket || false
       },
       locationId: day.locationId
     });
@@ -249,7 +255,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
     if (!serviceCategory) return { atLeastOneRequired: true };
   
     // Check if at least one checkbox isLoading: boolean = false; selected
-    if (!serviceCategory.restaurant && !serviceCategory.hotel && !serviceCategory.activity) {
+    if (!serviceCategory.restaurant && !serviceCategory.hotel && !serviceCategory.ticket) {
       return { atLeastOneRequired: true };
     }
   
@@ -281,6 +287,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
         if (day.serviceCategory?.restaurant) selectedCategories.push(2); // ID for "Nhà hàng"
         if (day.serviceCategory?.hotel) selectedCategories.push(1); // ID for "Khách sạn"
         if (day.serviceCategory?.activity) selectedCategories.push(4); // ID for "Hoạt động"
+        if (day.serviceCategory?.ticket) selectedCategories.push(5); // ID for "Hoạt động"
   
         return {
           id: day.id,

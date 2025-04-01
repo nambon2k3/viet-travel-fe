@@ -76,6 +76,13 @@ export class TourService {
         });
     }
 
+    getServiceCategoriesWithTourDays(tourId: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/tour-days/service-categories/list/${tourId}`);
+    }
+
+    getTourLocations(tourId: number): Observable<any> {
+        return this.http.get(`${environment.apiUrl}salesman/tours/locations/${tourId}`);
+    }
     
 
 }
