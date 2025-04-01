@@ -126,7 +126,7 @@ export class PostReceiptComponent {
   }
 
   getTotalAmount(): number {
-    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount, 0);
+    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount * row.quantity, 0);
   }
 
   onCancel() {

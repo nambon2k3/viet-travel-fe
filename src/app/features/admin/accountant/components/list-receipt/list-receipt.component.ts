@@ -153,7 +153,7 @@ export class ListReceiptComponent implements AfterViewInit{
       content: ['', Validators.required],
       amount: [0, [Validators.required, Validators.min(0)]],
       discount: [0],
-      quantity: [1],
+      quantity: [1, [Validators.required, Validators.min(1)]],
       finalAmount: [0], // Initialize finalAmount with amount
       status: ['PENDING']
     });
@@ -178,7 +178,7 @@ export class ListReceiptComponent implements AfterViewInit{
   }
 
   getTotalAmount(): number {
-    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount, 0);
+    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount , 0);
   }
 
   get costAccounts(): FormArray {

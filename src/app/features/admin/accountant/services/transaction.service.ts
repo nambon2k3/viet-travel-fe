@@ -51,4 +51,10 @@ export class TransactionService {
         return this.http.post(`${environment.apiUrl}accountant/transactions/create`, formData);
     }
 
+    getProviderData(bookingId: number) {
+        return this.http.get(`${environment.apiUrl}accountant/transactions/providers`, {
+            params: {bookingId: bookingId}
+        });
+    }
+
 }
