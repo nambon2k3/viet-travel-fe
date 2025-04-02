@@ -3,7 +3,6 @@ import { Router, Event, NavigationEnd, RouterOutlet } from '@angular/router';
 import { SsrService } from '../../../../core/services/ssr.service';
 import { Modal } from 'flowbite';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
-import { WishlistComponent } from "../../../customer/components/wishlist/wishlist.component";
 
 @Component({
   selector: 'app-public-layout',

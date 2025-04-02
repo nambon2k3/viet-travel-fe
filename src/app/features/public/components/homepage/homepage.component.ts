@@ -35,11 +35,13 @@ export class HomepageComponent {
   ];
 
   addToWishlist(tour: any) {
+    console.log(tour);
     let wishlist = localStorage.getItem('wishlist');
     let wishlistArray = wishlist ? JSON.parse(wishlist) : [];
 
     if (!wishlistArray.find((item: any) => item.name === tour.name)) {
       wishlistArray.push({
+        id: tour.id,
         name: tour.name,
         location: tour.departLocation.name,
         imageUrl: tour.tourImages[0].imageUrl,
@@ -65,7 +67,6 @@ export class HomepageComponent {
   constructor(
     private homepageService: HomepageService,
     private router: Router,
-    private ssrService: SsrService,
   ) {
   }
 

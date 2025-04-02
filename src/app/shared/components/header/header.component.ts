@@ -94,6 +94,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     this.router.navigate(['/homepage']);
   }
 
+  openHistory(): void {
+    this.router.navigate(['/customer/booking-history']);
+  }
+
   ngAfterViewInit() {
     if (this.ssrService.isBrowser) {
       this.mainContent = document.getElementById('main-content');

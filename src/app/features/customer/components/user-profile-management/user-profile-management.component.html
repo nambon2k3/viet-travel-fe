@@ -99,16 +99,16 @@
 
     </div>
 
-    <div class="flex mt-4">
+    <div class="flex mt-6">
         <div class="inline w-1/3">
-            <div class="w-full bg-white rounded shadow p-4">
-                <div class="my-7 px-10"> Địa điểm: {{ userProfile.address}} </div>
-                <div class="my-4 px-10">Tham gia vào: {{ userProfile.createAt | formatDate }} </div>
+            <div class="w-full bg-white rounded shadow p-7">
+                <div class="my-7 px-10"> Địa điểm: {{ userProfile?.address}} </div>
+                <div class="my-7 px-10">Tham gia vào: {{ userProfile?.createAt | formatDate }} </div>
             </div>
-            <div class="w-full bg-white rounded shadow p-10 mt-4">
-                <h2 class="text-lg font-bold mb-10 ml-4">Chia sẻ lời khuyên du lịch của bạn</h2>
-                <div class="space-y-10">
-                    <div class="flex items-center bg-white border rounded-2xl p-4 mx-4">
+            <div class="w-full bg-white rounded shadow p-10 mt-6 h-2/3">
+                <h2 class="text-lg font-bold my-6 ml-4">Chia sẻ lời khuyên du lịch của bạn</h2>
+                <div class="space-y-12">
+                    <div class="flex items-center bg-white border rounded-2xl p-7 mx-4 my-10">
                         <svg class="w-6 h-6 text-gray-800 dark:text-black" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linejoin="round" stroke-width="2"
@@ -120,7 +120,7 @@
                             <p class="font-bold">Đăng ảnh của bạn</p>
                         </div>
                     </div>
-                    <div class="flex items-center bg-white border rounded-2xl p-4 mx-4 mb-10">
+                    <div class="flex items-center bg-white border rounded-2xl p-7 mx-4 my-10">
                         <svg class="w-6 h-6 text-gray-800 dark:text-black" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -135,9 +135,86 @@
         </div>
 
         <div class="w-2/3 ml-4 bg-white rounded shadow p-4">
-            <h2 class="text-lg font-bold text-center mb-4">Hoàn thiện hồ sơ của bạn</h2>
-            <p class="text-center text-gray-500">Thêm ảnh và thông tin vào hồ sơ của bạn để mọi người có thể dễ dàng tìm
-                thấy bạn và hiểu rõ hơn về bạn!</p>
+            <div class="flex-1 p-2 items-center justify-between">
+                <!-- Header -->
+                <div class="flex items-center justify-between w-full">
+                    <div class="w-2/3 bg-white p-4 rounded-md shadow">
+                        <input type="text"
+                            class="w-full px-2 rounded-md border-gray-300 focus:outline-none focus:border-none"
+                            placeholder="Tìm kiếm theo tên tour" [(ngModel)]="keyword"
+                            (keyup.enter)="fetchHistoryBooking()">
+
+                    </div>
+
+                    <div class="">
+                        <select name="status" class="border text-muted-foreground w-28! p-2 rounded-md shadow"
+                            [(ngModel)]="paymentStatus" (ngModelChange)="fetchHistoryBooking()">
+                            <option selected value="">Tất cả</option>
+                            <option value="PENDING">Đang chờ</option>
+                            <option value="COMPLETED">Đã hoàn thành</option>
+                            <option value="CANCELLED">Đã hủy</option>
+                            <option value="SUCCESS">Đã phê duyệt</option>
+                        </select>
+
+                        <select name="order" class="border text-muted-foreground w-28! ml-2 p-2 rounded-md shadow"
+                            [(ngModel)]="orderDate" (ngModelChange)="fetchHistoryBooking()">
+                            <option value="desc">Mới nhất</option>
+                            <option value="asc">Cũ nhất</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex space-x-4 mt-4 ">
+                    <button class="pb-2 border-b-2 border-blue-500 text-blue-500 font-bold">Danh sách đơn đặt</button>
+                </div>
+
+                <!-- Booking List -->
+                <div class="h-[40vh] overflow-y-auto custom-scrollbar">
+                    <div *ngFor="let booking of bookings" class="mt-6 bg-white p-4 border rounded-lg cursor-pointer"
+                        (click)="goToBookingDetail(booking.bookingCode)">
+                        <p class="text-gray-500">Ngày tạo: {{ booking.bookingDate | formatDate }}</p>
+                        <div class="flex mt-2">
+                            <img class="w-32 h-24 rounded-lg" [src]="booking.tourImage" alt="Tour Image">
+                            <div class="ml-4 mt-2">
+                                <h3 class="font-bold text-lg">{{ booking.tourName }}</h3>
+                                <p class="text-gray-600">Mã booking: <span class="font-bold">{{ booking.bookingCode
+                                        }}</span></p>
+                                <p [class]="getStatusClass(booking.bookingStatus)">
+                                    {{ getStatusInVietnamese(booking.bookingStatus) }} </p>
+                            </div>
+                            <div class="ml-auto text-right">
+                                <p class="text-green-600 font-semibold text-xl">{{ booking.bookingTotalAmount |
+                                    currencyVnd}} </p>
+                                <button
+                                    class="mt-4 bg-red-500 hover:bg-red-600 text-right text-white px-4 py-2 rounded-md">Hủy
+                                    đặt chỗ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="py-2 text-center">
+                <ul class="inline-flex space-x-2">
+                    <li *ngIf="currentPage > 0">
+                        <a (click)="changePage(currentPage - 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">«</a>
+                    </li>
+
+                    <li *ngFor="let page of [].constructor(totalPages); let i = index">
+                        <a (click)="changePage(i)" class="px-3 py-2 rounded-md border cursor-pointer"
+                            [class.bg-black]="i === currentPage" [class.text-white]="i === currentPage">
+                            {{ i + 1 }}
+                        </a>
+                    </li>
+
+                    <li *ngIf="currentPage < totalPages - 1">
+                        <a (click)="changePage(currentPage + 1)"
+                            class="px-3 py-2 rounded-md border cursor-pointer">»</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

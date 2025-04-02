@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { SsrService } from '../../../../core/services/ssr.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-wishlist',
@@ -12,7 +13,10 @@ import { SsrService } from '../../../../core/services/ssr.service';
 export class WishlistComponent implements OnInit {
   wishlist: any[] = [];
 
-  constructor(private ssrService: SsrService) {}
+  constructor(
+    private ssrService: SsrService,
+    private router : Router
+  ) {}
 
   ngOnInit() {
     const loc = this.ssrService.getLocalStorage();
@@ -25,5 +29,9 @@ export class WishlistComponent implements OnInit {
   removeFromWishlist(index: number) {
     this.wishlist.splice(index, 1);
     localStorage.setItem('wishlist', JSON.stringify(this.wishlist));
+  }
+
+  viewDetails(tourId: number): void {
+    this.router.navigate(['/tour-details', tourId]);
   }
 }
