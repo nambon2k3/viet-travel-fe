@@ -83,7 +83,6 @@ export class UserProfileManagementComponent implements OnInit, OnDestroy {
   }
 
   getPaymentStatus() {
-    console.log('Payment status:', this.paymentStatus);
     this.fetchHistoryBooking();
   }
 
@@ -91,7 +90,7 @@ export class UserProfileManagementComponent implements OnInit, OnDestroy {
     this.customerService.getHistoryBooking(this.currentPage, this.pageSize, this.keyword, this.paymentStatus, this.orderDate).subscribe({
       next: (res) => {
         this.bookings = res.data.items;
-        this.totalPages = Math.ceil(res.data.total / this.pageSize); // Tính tổng số trang
+        this.totalPages = Math.ceil(res.data.total / this.pageSize); 
       },
       error: (err) => {
         console.error('Fetching History Booking data:', err);

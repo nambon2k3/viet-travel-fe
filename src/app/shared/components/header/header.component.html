@@ -27,7 +27,20 @@
       <ul *ngIf="!isScrolled && isHomepage"
         class="hidden md:flex space-x-8 lg:space-x-14 text-lg font-semibold transition-all duration-300"
         [class.ml-0]="!isHomepage || (isHomepage && isScrolled)" [class.ml-[-53rem]]="isHomepage && !isScrolled">
-        <li><a href="#" class="hover:text-gray-600">Điểm đến</a></li>
+        <li>
+          <button id="dropdownLocationButton" data-dropdown-toggle="dropdownLocation" type="button"
+            class="hover:text-gray-600">
+            Điểm đến
+          </button>
+          <div id="dropdownLocation" class="z-10 hidden bg-white rounded-lg shadow-sm border p-4 w-auto">
+            <div class="grid grid-cols-3 gap-6">
+              <div *ngFor="let location of listLocation | slice:0:30 | shuffle " (click)="selectLocation(location.id)"
+                class="text-gray-700 hover:text-green-700 cursor-pointer text-sm font-medium">
+                {{ location.name }}
+              </div>
+            </div>
+          </div>
+        </li>
         <li><a href="#" class="hover:text-gray-600">Kế hoạch</a></li>
         <li><a href="/tours" class="hover:text-gray-600">Tour</a></li>
       </ul>
@@ -58,7 +71,8 @@
               </a>
             </li>
             <li>
-              <button type="button" data-modal-toggle="wishlistModal" data-modal-target="wishlistModal" data-dropdown-hide="dropdown"
+              <button type="button" data-modal-toggle="wishlistModal" data-modal-target="wishlistModal"
+                data-dropdown-hide="dropdown"
                 class="cursor-pointer block px-4 pr-8 py-2 text-gray-700 hover:bg-gray-100 hover:text-black transition duration-200">
                 Danh sách yêu thích
               </button>
@@ -71,7 +85,7 @@
             </li>
           </ul>
         </div>
-        <div >
+        <div>
           <app-wishlist #wishlistModal></app-wishlist>
         </div>
         <ng-template #signIn>

@@ -95,4 +95,5 @@ export interface TourDay {
   dayNumber: number;
   content: string;
   mealPlan: string;
+  serviceCategories: string[];
 }

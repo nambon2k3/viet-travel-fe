@@ -19,5 +19,9 @@ export class HomepageService {
       .set('numberLocation', numberLocation);
       return this.http.get<ApiResponse>(`${environment.apiUrl}public/homepage`, { params });
   }
+
+  getListLocation(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}public/list-location`);
+  }
 }
  

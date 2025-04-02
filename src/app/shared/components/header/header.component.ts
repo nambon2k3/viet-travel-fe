@@ -5,14 +5,17 @@ import { CustomerService } from '../../../features/customer/services/customer.se
 import { NavigationEnd, Router } from '@angular/router';
 import { SsrService } from '../../../core/services/ssr.service';
 import { WishlistComponent } from '../../../features/customer/components/wishlist/wishlist.component';
+import { HomepageService } from '../../../features/public/services/homepage.service';
+import { ShufflePipe } from "../../pipes/shuffle.pipe";
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [
     CommonModule,
-    WishlistComponent
-  ],
+    WishlistComponent,
+    ShufflePipe
+],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
@@ -25,16 +28,19 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   isLoggedIn: boolean = false;
   username: string = '';
   isHomepage: boolean = false;
+  listLocation: any[] = [];
 
   constructor(
     private customerService: CustomerService,
     private userStorageService: UserStorageService,
     private ssrService: SsrService,
+    private publicService: HomepageService,
     public router: Router
   ) { }
 
   ngOnInit(): void {
     this.checkLoginStatus();
+    this.getListLocation();
     this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
 
     this.router.events.subscribe((event) => {
@@ -56,6 +62,23 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
         });
       }
     }
+  }
+
+  selectLocation(id : number) {
+    this.router.navigate(['/location-details', id]);
+  }
+
+  getListLocation() {
+    this.publicService.getListLocation().subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.listLocation = res.data;
+        } 
+      },
+      error: (err) => {
+        console.error('Error loading list location', err);
+      },
+    });
   }
 
   checkLoginStatus() {

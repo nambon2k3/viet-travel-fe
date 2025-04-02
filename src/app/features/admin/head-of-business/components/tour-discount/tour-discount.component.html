@@ -323,6 +323,80 @@
     </table>
   </div>
 
+  <!-- Flight Section -->
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <div class="flex items-center">
+        <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">5</div>
+        <h2 class="text-lg font-semibold ml-4">Vé máy bay</h2>
+      </div>
+      <button data-modal-target="addFlightModal" data-modal-toggle="addFlightModal"
+        class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded" (click)="openAddFlightModal()">Thêm
+        mới</button>
+    </div>
+    <table class="w-full border border-gray-300 rounded-lg">
+      <thead>
+        <tr class="bg-gray-100 border-b border-gray-300">
+          <th class="p-2 text-center min-w-[90px]">Ngày</th>
+          <th class="p-2 text-left min-w-[150px]">Tên hoạt động</th>
+          <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
+          <th class="p-2 text-center min-w-[100px]">Giá Net</th>
+          <th class="p-2 text-center min-w-[250px]">Giá vé</th>
+          <th class="p-2 text-center min-w-[100px]">Hành Động</th>
+        </tr>
+        <tr class="bg-gray-200 border-b border-gray-300">
+          <th colspan="4"></th>
+          <th class="p-2 text-right" [ngClass]="{'w-1/3': transports.length === 0, 'w-full': transports.length > 0}">
+            <table class="border-collapse inline-table w-full">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">{{ range }} khách</td>
+                </tr>
+              </tbody>
+            </table>
+          </th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="activities.length === 0">
+          <td colspan="6" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
+        </tr>
+        <tr class="border-b border-gray-300" *ngFor="let flight of activities; let i = index"
+          [class.bg-gray-50]="i % 2 === 0">
+          <td class="p-2 text-center whitespace-nowrap">{{ flight.dayNumber }}</td>
+          <td class="p-2 whitespace-nowrap">{{ flight.name }}</td>
+          <td class="p-2 whitespace-nowrap">{{ flight.serviceProviderName }}</td>
+          <td class="p-2 text-center whitespace-nowrap">{{ flight.nettPrice | currencyVnd }}</td>
+          <td class="p-2 text-center w-1/3">
+            <table class="border-collapse inline-table w-full text-center">
+              <tbody>
+                <tr>
+                  <td *ngFor="let range of priceRanges" class="text-center pr-2">
+                    {{ (flight.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="p-2 text-center">
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddFlightModal(flight.id)">
+              <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+              </svg>
+            </button>
+            <app-add-flight #addFlightModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
+              [locations]="locations" (flightAdded)="addNewFlight($event)"></app-add-flight>
+            <button class="text-red-500 hover:text-red-700"
+              (click)="deleteFlight(i, flight.id, flight.dayNumber)">X</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- Table Layout with Stripes -->
   <div class="mb-6">
     <div class="flex justify-between items-center mb-4">
@@ -383,3 +457,5 @@
   (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
 <app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (activityAdded)="addNewActivity($event)"></app-add-activity>
+<app-add-flight #addFlightModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
+  (flightAdded)="addNewFlight($event)"></app-add-flight>
