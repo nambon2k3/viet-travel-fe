@@ -43,9 +43,9 @@
                 <h2 class="text-2xl font-bold mb-4">Khoảng giá</h2>
 
                 <div class="relative mt-4 slider-container">
-                    <input type="range" min="0" max="200000000" [(ngModel)]="minPrice" (input)="updateSlider()"
+                    <input type="range" min="0" max="200000000" [(ngModel)]="minPrice"
                         class="absolute w-full opacity-0 z-10">
-                    <input type="range" min="0" max="200000000" [(ngModel)]="maxPrice" (input)="updateSlider()"
+                    <input type="range" min="0" max="200000000" [(ngModel)]="maxPrice"
                         class="absolute w-full opacity-0 z-10">
 
                     <div class="relative w-full h-2 bg-gray-200 rounded-md">
@@ -89,7 +89,7 @@
 
 
                 <button class="bg-green-700 text-white hover:bg-green-800 px-4 py-2 rounded-lg mt-4 w-full"
-                    (click)="applyFilters()">Lọc</button>
+                    (click)="updateSlider()">Lọc</button>
             </div>
         </div>
 

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../core/services/ssr.service';
@@ -9,20 +9,24 @@ import { FooterComponent } from "../../../../shared/components/footer/footer.com
 import { Router } from '@angular/router';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Locations } from '../../../../core/models/location.model';
+import { HomepageService } from '../../services/homepage.service';
+import { WishlistService } from '../../../customer/components/wishlist/wishlist.service';
+import { WishlistComponent } from '../../../customer/components/wishlist/wishlist.component';
 
 @Component({
   selector: 'app-tour',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyVndPipe, FooterComponent, NgSelectModule],
+  imports: [CommonModule, FormsModule, CurrencyVndPipe, FooterComponent, NgSelectModule, WishlistComponent],
   templateUrl: './tour.component.html',
   styleUrl: './tour.component.css'
 })
 export class TourComponent implements OnInit {
+  @ViewChild('wishlistModal') wishlistModal!: WishlistComponent;
   tours = signal<Tour[]>([]);
   locations = signal<Locations[]>([]);
   totalItems = 0;
   size = 10;
-  keyword : any = null;
+  keyword: any = null;
   currentPage: number = 0;
   totalPages: number = 0;
   private map: any;
@@ -33,7 +37,7 @@ export class TourComponent implements OnInit {
   minPercent = 0;
   maxPercent = 100;
   duration = 0;
-  departLocationId : any = null;
+  departLocationId: any = null;
   sortBy = '';
   fromDate = new Date('2021-01-01');
 
@@ -43,7 +47,9 @@ export class TourComponent implements OnInit {
   constructor(
     private tourService: TourService,
     private ssrService: SsrService,
-    private router: Router
+    private router: Router,
+    private homepageService: HomepageService,
+    private wishlistService: WishlistService,
   ) { }
 
   ngOnInit(): void {
@@ -63,6 +69,27 @@ export class TourComponent implements OnInit {
   getDepartLocationName(): string {
     const firstTour = this.tours()[this.tours().length - 1];
     return firstTour?.departLocation?.name || 'Không xác định';
+  }
+
+  addToWishlist(tour: any) {
+    this.homepageService.addWishlist(tour).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.wishlistService.triggerWishlistUpdate();
+        }
+      },
+      error: (err) => {
+        console.error('Error adding to wishlist:', err);
+      },
+    });
+  }
+
+  currentDate = new Date();
+
+   getUpcomingSchedules(tourdate : any) {
+    return tourdate.tourSchedules
+      .filter((schedule : any) => new Date(schedule.startDate) >= this.currentDate)
+      .slice(0, 4);
   }
 
   getTours(): void {

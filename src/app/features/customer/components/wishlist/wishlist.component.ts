@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { SsrService } from '../../../../core/services/ssr.service';
 import { Router } from '@angular/router';
+import { HomepageService } from '../../../public/services/homepage.service';
+import { WishlistService } from './wishlist.service';
 
 @Component({
   selector: 'app-wishlist',
@@ -12,23 +13,60 @@ import { Router } from '@angular/router';
 })
 export class WishlistComponent implements OnInit {
   wishlist: any[] = [];
+  isLoading: boolean = true;
+  error: string | null = null;
 
   constructor(
-    private ssrService: SsrService,
-    private router : Router
+    private router: Router,
+    private homepageService: HomepageService,
+    private wishlistService: WishlistService 
   ) {}
 
   ngOnInit() {
-    const loc = this.ssrService.getLocalStorage();
-    if (loc) {
-      const storedWishlist = localStorage.getItem('wishlist');
-      this.wishlist = storedWishlist ? JSON.parse(storedWishlist) : [];
-    }
+    this.fetchWishlist();
+    this.wishlistService.wishlistUpdate$.subscribe(() => {
+      this.fetchWishlist();
+    });
   }
 
-  removeFromWishlist(index: number) {
-    this.wishlist.splice(index, 1);
-    localStorage.setItem('wishlist', JSON.stringify(this.wishlist));
+  fetchWishlist() {
+    this.isLoading = true;
+    this.error = null;
+
+    this.homepageService.getWishlist().subscribe({
+      next: (response) => {
+        if (response.code === 200 && response.data) {
+          this.wishlist = response.data;
+          this.isLoading = false;
+        } else {
+          this.error = 'Failed to load wishlist';
+          this.isLoading = false;
+        }
+      },
+      error: (err) => {
+        this.error = 'An error occurred while fetching the wishlist';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  removeFromWishlist(wishlistId: number) {
+    this.isLoading = true;
+    this.homepageService.deleteWishlist(wishlistId).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.wishlist = this.wishlist.filter(item => item.id !== wishlistId);
+          this.isLoading = false;
+        } else {
+          this.error = 'Failed to remove item from wishlist';
+          this.isLoading = false;
+        }
+      },
+      error: (err) => {
+        this.error = 'An error occurred while removing the item';
+        this.isLoading = false;
+      },
+    });
   }
 
   viewDetails(tourId: number): void {

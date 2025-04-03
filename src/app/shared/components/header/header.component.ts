@@ -13,8 +13,8 @@ import { ShufflePipe } from "../../pipes/shuffle.pipe";
   standalone: true,
   imports: [
     CommonModule,
-    WishlistComponent,
-    ShufflePipe
+    ShufflePipe,
+    WishlistComponent
 ],
   templateUrl: './header.component.html',
 })
