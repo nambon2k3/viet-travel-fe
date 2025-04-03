@@ -98,4 +98,20 @@ export class BookingService {
         return this.http.post(`${environment.apiUrl}salesman/tours/create`, formData);
     }
 
+    updateBookingStatus(bookingId: number, bookingStatus: any): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/update-status`, {
+            id: bookingId,
+            bookingStatus: bookingStatus
+        });
+
+    }
+
+    cancelBooking(formData: any): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/cancel`, formData);
+    }
+
+    takeBooking(bookingId: number, saleId: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/take-booking`, { bookingId, saleId });
+    }
+
 }

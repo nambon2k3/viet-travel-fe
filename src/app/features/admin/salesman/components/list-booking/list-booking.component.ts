@@ -21,7 +21,7 @@ export class ListBookingComponent {
 
   totalItems = 0;
   page = 0;
-  size = 20;
+  size = 10;
   totalPages = signal(0)
   isLoading: boolean = false;
 
@@ -69,6 +69,25 @@ export class ListBookingComponent {
         console.error('Failed to load bookings:', err);
       }
     });
+  }
+
+  reloadBooking() {
+    this.triggerSuccess();
+    this.loadBookings();
+  }
+
+  showSuccess: boolean = false;
+
+
+  successMessage: string = 'Nhận booking thành công!';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
   }
 
 

@@ -15,6 +15,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { BlogContentComponent } from '../../../marketer/components/blog-detail/blog-content/blog-content.component';
 import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 import { Modal } from 'flowbite';
+import { AddTransportationComponent } from "../../../head-of-business/components/tour-discount/add-transportation/add-transportation.component";
 @Component({
   selector: 'app-list-tour-private',
   imports: [TableActionComponent,
@@ -27,8 +28,8 @@ import { Modal } from 'flowbite';
     ReactiveFormsModule,
     CommonModule,
     NgMultiSelectDropDownModule,
-    BlogContentComponent
-  ],
+    BlogContentComponent,
+    SpinnerComponent],
   templateUrl: './list-tour-private.component.html',
   styleUrl: './list-tour-private.component.css'
 })
@@ -121,9 +122,11 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
 
   loadTours() {
+    this.isLoading = true;
     this.tourService.getTourByPage(this.page, this.size, this.keyword, undefined, undefined, this.keyword, "PRIVATE").subscribe({
       next: (response) => {
         this.tourDatas = response.data.items;
+        this.isLoading = false;
       },
       error: (error) => {
         console.log(error);

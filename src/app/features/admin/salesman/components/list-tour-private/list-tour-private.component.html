@@ -1,4 +1,8 @@
+
+<app-spinner [isLoading]="isLoading"></app-spinner>
 <div class="mb-2 flex justify-between">
+
+  
 
 
   <div class="inline-block">
@@ -8,9 +12,9 @@
       <span class="text-foreground">{{ totalItems }}</span>
     </div>
   </div>
-  <app-spinner [isLoading]="isLoading"></app-spinner>
+ 
 
-  <div>
+  <div  [class]="{ 'opacity-50': isLoading }">
     <button data-modal-target="create-tour-modal" data-modal-toggle="create-tour-modal" type="button"
       class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="mr-3"
@@ -21,7 +25,7 @@
       </svg>
       Tạo mới chương trình tour →
     </button>
-    <div id="create-tour-modal" tabindex="-1"
+    <div id="create-tour-modal" tabindex="-1" 
       class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
       <div class="relative p-4 w-full max-w-6xl max-h-full">
         <!-- Modal content -->

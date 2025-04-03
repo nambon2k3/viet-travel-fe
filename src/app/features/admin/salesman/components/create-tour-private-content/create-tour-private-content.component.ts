@@ -9,7 +9,6 @@ import { Modal } from 'flowbite';
 import { start } from 'node:repl';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 import { tick } from '@angular/core/testing';
-
 @Component({
   selector: 'app-create-tour-private-content',
   imports: [BlogContentComponent, DatePipe, CommonModule, ReactiveFormsModule, RouterModule, SpinnerComponent],
@@ -136,8 +135,15 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
       next: (response) => {
 
         this.tourData = response.data;
+        console.log(this.tourData);
 
         this.isLoading = false; // Stop loading
+
+
+        this.tourData.tourDays = this.tourData.tourDays.sort((a : any, b: any) => a.dayNumber - b.dayNumber);
+
+        console.log(this.tourData)
+
 
         this.patchTourDays(this.tourData.tourDays);
 
@@ -150,7 +156,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
           tourScheduleId: this.tourData.tourSchedules.at(0)?.id,
         });
 
-        console.log(this.tourData);
+        
 
       },
       error: (error) => {
@@ -328,7 +334,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
 
   showSuccess() {
     this.success = true;
-    this.second = 3; // Set countdown to 3 seconds
+    this.second = 2; // Set countdown to 3 seconds
     const intervalId = setInterval(() => {
       this.second--; // Decrease countdown
       if (this.second === 0) {
@@ -339,8 +345,8 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
     // Hide warning after 3 seconds
     setTimeout(() => {
       this.success = false;
-      this.router.navigate(['/salesman/list-tour-private']);
-    }, 3000);
+      this.router.navigate(['/salesman/tour-private-service', this.tourId]); // Navigate to the desired route
+    }, 2000);
   }
   
 

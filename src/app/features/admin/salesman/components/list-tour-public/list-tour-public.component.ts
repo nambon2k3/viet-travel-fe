@@ -21,7 +21,7 @@ import { TourService } from '../../services/tour.service';
 export class ListTourPublicComponent {
   totalItems = 0;
     page = 0;
-    size = 20;
+    size = 10;
     totalPages = signal(0)
     isLoading: boolean = false;
   
@@ -48,6 +48,7 @@ export class ListTourPublicComponent {
     
 
     loadTours() {
+      this.isLoading = true;
       this.tourService.getTourByPage(
         this.page,
         this.size,
@@ -58,6 +59,7 @@ export class ListTourPublicComponent {
       ).subscribe({
         next: (response) => {
           this.tourDatas = response.data.items;
+          this.isLoading = false;
         },
         error: (error) => {
           console.log(error);

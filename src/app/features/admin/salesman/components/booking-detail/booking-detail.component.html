@@ -47,13 +47,29 @@
                     [routerLink]=" ['../../tour-list-booking/', bookingDetail?.tour?.id, bookingDetail?.schedule?.scheduleId]">
                     &lt; Quay lại danh sách
                 </a>
+
+                @if(!bookingDetail?.status.includes('CANCEL')) {
                 <button type="button" data-modal-target="cancel-booking-modal" data-modal-toggle="cancel-booking-modal"
                     class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4  focus:outline-none focus:ring-red-300 font-medium rounded text-sm px-5 py-2.5 text-center">
                     Hủy Đơn hàng
                 </button>
-                <button class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-                    Chuyển điều hành
+                }
+
+
+                @if(bookingDetail?.status === 'PENDING' && bookingDetail?.schedule?.availableSeats >=
+                bookingDetail?.seats) {
+                <button (click)="successBooking()"
+                    class="flex items-center px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-blue-700">
+                    Chuyển thành công
                 </button>
+                }
+
+                @if(bookingDetail?.status === 'PENDING' || bookingDetail?.status === 'SUCCESS') {
+                <button (click)="successBooking()"
+                    class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                    Chuyển booking
+                </button>
+                }
             </div>
         </div>
     </div>
@@ -67,7 +83,7 @@
                     Đang xử lý
                     }
                     @if(bookingDetail?.status === 'SUCCESS') {
-                        Thành công
+                    Thành công
                     }
                 </span>
             </div>
@@ -98,13 +114,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
-                <button  [routerLink]=" ['/salesman/tour-booking-service/', bookingDetail?.id]"
+                <button [routerLink]=" ['/salesman/tour-booking-service/', bookingDetail?.id]"
                     class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
                     Dịch vụ trong tour
                 </button>
-                <button
-                    class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">Note
-                    liên hệ</button>
             </div>
         </div>
     </div>
@@ -132,31 +145,31 @@
                         </button>
                     </div>
                     <div class="p-4 md:p-5 space-y-4">
-                        <form class="mx-auto">
+                        <form [formGroup]="cancelBookingForm" class="mx-auto">
                             <label for="message"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phương thức
                                 hủy</label>
-                            <select id="message"
-                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="1">Hoàn tiền</option>
-                                <option value="2">Không hoàn tiền</option>
+                            <select id="message" formControlName="status"
+                                class="block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="CANCELLED_WITH_REFUND">Hoàn tiền</option>
+                                <option value="REQUEST_CANCELLED_WITH_REFUND">Không hoàn tiền</option>
                             </select>
 
                             <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lý
                                 do</label>
-                            <textarea id="message" rows="4"
-                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            <textarea id="message" rows="4" formControlName="reason"
+                                class="block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Nhập lý do..."></textarea>
                         </form>
                     </div>
                     <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                        <button data-modal-hide="cancel-booking-modal" type="button"
+                        <button data-modal-hide="cancel-booking-modal" type="button" (click)="cancelBooking()"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Xác nhận
                         </button>
                         <button data-modal-hide="cancel-booking-modal" type="button"
                             class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                            Từ chối
+                            Thoát
                         </button>
                     </div>
                 </div>
@@ -198,7 +211,8 @@
         <div class="bg-white p-4  mt-4">
             <div class="flex justify-between items-center py-5">
                 <h2 class="text-sm font-semibold">Danh sách khách hàng</h2>
-                <button data-modal-target="customers-modal" data-modal-toggle="customers-modal"
+                @if(!bookingDetail?.status.includes('CANCEL')) {
+                    <button data-modal-target="customers-modal" data-modal-toggle="customers-modal"
                     class="px-4 py-2 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 flex items-center gap-2">
                     <svg class="w-5 h-5 text-white-800 dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -209,6 +223,8 @@
                     </svg>
                     Cập Nhật
                 </button>
+                }
+                
             </div>
             <div id="customers-modal" tabindex="-1" aria-hidden="false"
                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -559,8 +575,15 @@
                 <p class="flex flex-col justify-center items-center gap-4">
                     <span>Tình Trạng</span>
                     <span>
+                        @if(bookingDetail?.status.includes('CANCEL')) {
+                            <span
+                            class="inline-flex items-center bg-red-100 text-green-800 text-xs rounded-full font-medium px-2.5 py-0.5  dark:bg-green-900 dark:text-green-300">
+                            <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                            Đã hủy
+                        </span>
+                        }
 
-                        @if(remainingAmount === 0) {
+                        @else if(remainingAmount === 0) {
                         <span
                             class="inline-flex items-center bg-green-100 text-green-800 text-xs rounded-full font-medium px-2.5 py-0.5  dark:bg-green-900 dark:text-green-300">
                             <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
@@ -631,7 +654,7 @@
                             @if(transaction?.paymentMethod === 'CASH') {
                             Tiền Mặt
                             } @else {
-                            Banking
+                            Chuyển khoản
                             }
                         </td>
                         <td class="flex items-center justify-center p-2">
@@ -674,12 +697,6 @@
                             <td class="p-2 font-semibold">Tổng số khách hàng</td>
                             <td class="p-2">
                                 {{bookingDetail?.seats}}
-                            </td>
-                        </tr>
-                        <tr class="border-b pb-4">
-                            <td class="p-2 font-semibold">Tổng số dịch vụ</td>
-                            <td class="p-2">
-                                2
                             </td>
                         </tr>
                         <tr class="pb-4">
@@ -871,3 +888,26 @@
         </div>
     </div>
 </div>
+
+@if(showSuccess) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-green-500 text-xl mr-2">✔</span>
+        <p class="text-green-800 text-sm">
+            {{ successMessage }}
+        </p>
+    </div>
+</div>
+}
+
+@if(showError) {
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+    <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+        <span class="text-red-500 text-xl mr-2">X</span>
+        <p class="text-red-800 text-sm">
+            {{ errorMessage }}
+    </div>
+</div>
+}

@@ -100,6 +100,12 @@ export class BookingDetailComponent implements AfterViewInit {
       costAccount: this.fb.array([]) // Array chứa các dòng cost
     });
     
+
+    this.cancelBookingForm = this.fb.group({
+      bookingId: [null],
+      status: ['REQUEST_CANCELLED_WITH_REFUND', Validators.required],
+      reason: [null],
+    });
   }
 
 
@@ -182,6 +188,10 @@ export class BookingDetailComponent implements AfterViewInit {
 
         this.transactionForm.patchValue({
           bookingCode: this.bookingDetail.bookingCode
+        });
+
+        this.cancelBookingForm.patchValue({
+          bookingId: this.bookingDetail.id,
         });
 
         console.log(this.bookingDetail);
@@ -331,6 +341,75 @@ export class BookingDetailComponent implements AfterViewInit {
     return (transaction.amount || 0) - paidAmount;
   }
 
+  isLoading: boolean = false;
+
+  cancelBooking() {
+    if (this.cancelBookingForm.valid) {
+      const formData = this.cancelBookingForm.value;
+      console.log('Cancel Booking Form Submitted:', formData);
+
+      this.isLoading = true; // Set loading state to true
+
+      this.bookingService.cancelBooking(formData).subscribe({
+        next: (response: any) => {
+          console.log('Booking Cancelled:', response);
+          this.triggerSuccess();
+          this.isLoading = false; // Reset loading state
+        },
+        error: (error: any) => {
+          console.error('Cancellation Failed:', error);
+          this.triggerError();
+          this.isLoading = false; // Reset loading state
+        }
+      });
+    } else {
+      console.log('Cancel Booking Form is invalid:', this.cancelBookingForm.value);
+    }
+  }
+
+  successBooking(): void {
+    this.bookingService.updateBookingStatus(this.tourBookingId!, 'SUCCESS').subscribe({
+      next: (response) => {
+        console.log('Booking Success:', response);
+        this.triggerSuccess();
+      },
+      error: (error) => {
+        console.error('Booking Failed:', error);
+        this.triggerError();
+      }
+    });
+  }
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+
+  successMessage: string = 'Chuyển đổi trạng thái thành công!';
+  errorMessage: string = 'Đã có lỗi xảy ra! Vui lòng thử lại.';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+      this.successMessage = 'Thêm dịch vụ thành công!';
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
+  }
+
+
+  cancelBookingForm: FormGroup;
+  
 
 
   onSubmit(): void {

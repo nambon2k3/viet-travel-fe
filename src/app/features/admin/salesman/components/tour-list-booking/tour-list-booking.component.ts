@@ -8,9 +8,11 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { BookingService } from '../../services/booking.service';
 import { TourService } from '../../services/tour.service';
 import { ActivatedRoute } from '@angular/router';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
+import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 @Component({
   selector: 'app-tour-list-booking',
-  imports: [FullCalendarModule, CommonModule, RouterModule, DatePipe],
+  imports: [FullCalendarModule, CommonModule, RouterModule, DatePipe, SpinnerComponent],
   templateUrl: './tour-list-booking.component.html',
   styleUrl: './tour-list-booking.component.css',
   providers: [DatePipe]
@@ -66,16 +68,20 @@ export class TourListBookingComponent {
 
   uniqueMonths = new Set<string>();
 
+  userId: number = 0;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private tourService: TourService,
     private datePipe: DatePipe,
+    private userStorageService: UserStorageService
   ) {
   }
 
 
   ngOnInit(): void {
+    this.userId = this.userStorageService.getUserId()!;
     this.route.paramMap.subscribe(params => {
       const tourId = Number(params.get('tourId'));
       const scheduleId = params.get('scheduleId') ? Number(params.get('scheduleId')) : undefined;
@@ -97,8 +103,10 @@ export class TourListBookingComponent {
 
   pendingSeats: number = 0;
   bookedSeats: number = 0;
+  cancelSeats: number = 0;
 
   getTourDetails(tourId: number, scheduleId?: number) {
+    this.isLoading = true;
     this.tourService.getListBooking(tourId, scheduleId).subscribe({
       next: (response) => {
         this.tourDetails = response.data;
@@ -120,8 +128,11 @@ export class TourListBookingComponent {
 
         const successBookins = bookings.filter((booking: any) => booking.status === 'SUCCESS');
 
+        const cancelBooking = bookings.filter((booking: any) => booking.status?.includes('CANCEL'));
+
         this.pendingSeats = pendingBookings.reduce((acc: number, booking: any) => acc + booking.seats, 0);
         this.bookedSeats = successBookins.reduce((acc: number, booking: any) => acc + booking.seats, 0);
+        this.cancelSeats = cancelBooking.reduce((acc: number, booking: any) => acc + booking.seats, 0);
 
 
         console.log('Selected Schedule: ', this.selectedSchedule)
@@ -163,6 +174,54 @@ export class TourListBookingComponent {
 
   isLoadCalendar() {
     this.loadCalendar = true;
+  }
+
+
+  sendOperator() {
+    this.isLoading = true;
+    if(this.selectedSchedule?.tourPax?.maxPax - this.bookedSeats < 0) {
+      this.triggerError();
+      this.isLoading = false;
+      return;
+
+    }
+
+    this.tourService.sendOperator(this.tourId!, this.selectedSchedule.id).subscribe({
+      next: (response : any) => {
+        console.log('Response', response);
+        this.isLoading = false;
+        this.triggerSuccess();
+      },
+      error: (err: any) => {
+        console.error('Failed to load blog:', err);
+      }
+    });
+  }
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+
+  successMessage: string = 'Chuyển điều hành thành công!';
+  errorMessage: string = 'Số chỗ vượt quá giới hạn vui lòng chuyển booking hoặc hủy.';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
   }
 
 

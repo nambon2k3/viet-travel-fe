@@ -85,4 +85,19 @@ export class TourService {
     }
     
 
+    updateTourServies(formData: any) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/tours/services`, formData);
+    }
+
+    sendPricing(tourId: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/tours/send-pricing`, tourId );
+    }
+
+    sendOperator(tourId: number, tourScheduleId: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/tours/send-operator`, {
+            tourId: tourId,
+            tourScheduleId: tourScheduleId
+        });
+    }
+
 }

@@ -49,7 +49,7 @@ export const SALESMAN_ROUTES: Route[] = [
         component: CreateTourPrivateContentComponent
       },
       {
-        path: 'tour-private-service',
+        path: 'tour-private-service/:tourId',
         component: TourServiceComponent
       }
     ]
