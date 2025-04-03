@@ -17,7 +17,22 @@ export class HomepageService {
       .set('numberBlog', numberBlog)
       .set('numberActivity', numberActivity)
       .set('numberLocation', numberLocation);
-      return this.http.get<ApiResponse>(`${environment.apiUrl}public/homepage`, { params });
+    return this.http.get<ApiResponse>(`${environment.apiUrl}public/homepage`, { params });
+  }
+
+  getListLocation(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}public/list-location`);
+  }
+
+  getWishlist(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}wishlist/list-wishlist`);
+  }
+
+  deleteWishlist(wishlistId: number): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}wishlist/delete-wishlist?wishlistId=${wishlistId}`);
+  }
+
+  addWishlist(itemId: number): Observable<any> {
+    return this.http.put(`${environment.apiUrl}wishlist/add-wishlist?itemId=${itemId}`, {});
   }
 }
- 

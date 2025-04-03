@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FooterComponent } from "../../../../shared/components/footer/footer.component";
 import { HomepageService } from '../../services/homepage.service';
 import { Activity, Blog, Tour, Location } from '../../../../core/models/homepage.model';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
-import { SsrService } from '../../../../core/services/ssr.service';
+import { WishlistService } from '../../../customer/components/wishlist/wishlist.service';
+import { WishlistComponent } from "../../../customer/components/wishlist/wishlist.component";
 
 @Component({
   selector: 'app-homepage',
@@ -15,11 +16,13 @@ import { SsrService } from '../../../../core/services/ssr.service';
     CommonModule,
     FooterComponent,
     CurrencyVndPipe,
-  ],
+    WishlistComponent
+],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent {
+  @ViewChild('wishlistModal') wishlistModal!: WishlistComponent;
   selectedCategory: string = 'Tìm kiếm tất cả';
   searchPlaceholder: string = 'Địa điểm, hoạt động, khách sạn...';
   searchTitle: string = 'Hiện thực hóa chuyến du lịch trong mơ';
@@ -35,18 +38,16 @@ export class HomepageComponent {
   ];
 
   addToWishlist(tour: any) {
-    let wishlist = localStorage.getItem('wishlist');
-    let wishlistArray = wishlist ? JSON.parse(wishlist) : [];
-
-    if (!wishlistArray.find((item: any) => item.name === tour.name)) {
-      wishlistArray.push({
-        name: tour.name,
-        location: tour.departLocation.name,
-        imageUrl: tour.tourImages[0].imageUrl,
-      });
-
-      localStorage.setItem('wishlist', JSON.stringify(wishlistArray));
-    }
+    this.homepageService.addWishlist(tour).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.wishlistService.triggerWishlistUpdate();
+        }
+      },
+      error: (err) => {
+        console.error('Error adding to wishlist:', err);
+      },
+    });
   }
 
   selectCategory(category: any) {
@@ -65,7 +66,7 @@ export class HomepageComponent {
   constructor(
     private homepageService: HomepageService,
     private router: Router,
-    private ssrService: SsrService,
+    private wishlistService: WishlistService,
   ) {
   }
 

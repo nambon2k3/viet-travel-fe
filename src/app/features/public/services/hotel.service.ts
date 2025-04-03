@@ -32,7 +32,7 @@ export class HotelService {
     return this.http.get<ApiResponse<Hotel>>(`${environment.apiUrl}public/list-hotel`, { params });
   }
 
-  getHotelDetail(id: number): Observable<any> {
+  getHotelDetail(id: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}public/hotel-detail/${id}`);
   }  
 }

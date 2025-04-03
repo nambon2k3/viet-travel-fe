@@ -9,7 +9,6 @@ import { TourService } from '../../../services/tour.service';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Modal } from 'flowbite';
 import { SsrService } from '../../../../../../core/services/ssr.service';
-import { After } from 'v8';
 
 interface Meal {
   id: string;
@@ -59,6 +58,7 @@ export class UpdateTourDayComponent implements AfterViewInit{
     { id: 'Transport', name: 'Vận Chuyển' },
     { id: 'Hotel', name: 'Khách Sạn' },
     { id: 'Activity', name: 'Hoạt Động' },
+    { id: 'Flight Ticket', name: 'Vé máy bay' },
   ];
 
   constructor(
@@ -108,7 +108,7 @@ export class UpdateTourDayComponent implements AfterViewInit{
         content: this.day.content,
         mealPlan: this.parseMealPlan(this.day.mealPlan),
         locationId: this.day.location.id,
-        serviceCategories: this.day.serviceCategories, // Đã là mảng, không cần parse
+        serviceCategories: this.day.serviceCategories, 
       });
     }
   }
@@ -122,11 +122,6 @@ export class UpdateTourDayComponent implements AfterViewInit{
       this.modal = new Modal(modalElement);
     }
     this.loadLocations();
-  }
-
-  parseServiceCategories(serviceCategories: string): Meal[] {
-    const serviceIds: string[] = serviceCategories.match(/\d+/g) || [];
-    return this.serviceOptions.filter(service => serviceIds.includes(service.id));
   }
 
   onSubmit() {

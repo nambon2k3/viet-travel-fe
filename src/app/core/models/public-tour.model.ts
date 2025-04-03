@@ -32,6 +32,12 @@ export interface ApiResponse<T> {
     departLocation: Locations;
     tourImages: TourImage[];
     priceFrom: number;
+    tourSchedules: TourSchedule[];
+  }
+
+  export interface TourSchedule {
+    scheduleId: number;
+    startDate: string;
   }
   
   export interface Items {

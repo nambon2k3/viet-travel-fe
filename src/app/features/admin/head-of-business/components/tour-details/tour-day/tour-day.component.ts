@@ -56,7 +56,6 @@ export class TourDayComponent implements OnInit {
   }
 
   onEdit(day: TourDay): void {
-    console.log('Edit Tour Day:', day);
     if(this.editTourDayModal) {
       this.editTourDayModal.tourId = this.tourId;
       this.editTourDayModal.day = day;

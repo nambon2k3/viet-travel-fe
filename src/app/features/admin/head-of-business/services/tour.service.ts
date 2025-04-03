@@ -74,7 +74,7 @@ export class TourService {
   }
 
   updateTourDay(tourId: string, id: string, formData: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/update/${id}`, formData);
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/update/${id}`, formData);
   }
 
   changeTourDayStatus(tourId: string, tourDayId: string, isDeleted: boolean): Observable<any> {

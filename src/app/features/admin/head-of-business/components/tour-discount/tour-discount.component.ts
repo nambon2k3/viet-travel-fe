@@ -11,6 +11,7 @@ import { TourDiscountService } from '../../services/discount.service';
 import { ConfigPriceComponent } from './config-price/config-price.component';
 import { FormsModule } from '@angular/forms';
 import { ConfigMarkupComponent } from "./config-markup/config-markup.component";
+import { AddFlightComponent } from './add-flight/add-flight.component';
 
 interface PriceRange {
   [key: string]: number;
@@ -80,6 +81,7 @@ interface ApiResponse {
     AddTransportationComponent,
     AddRestaurantComponent,
     AddActivityComponent,
+    AddFlightComponent,
     ConfigTourPaxComponent,
     ConfigPriceComponent,
     FormsModule,
@@ -90,6 +92,7 @@ interface ApiResponse {
 })
 export class TourDiscountComponent implements OnInit {
   @ViewChild('addHotelModal') addHotelModal!: AddHotelComponent;
+  @ViewChild('addFlightModal') addFlightModal!: AddFlightComponent;
   @ViewChild('addTransportationModal') addTransportationModal!: AddTransportationComponent;
   @ViewChild('addRestaurantModal') addRestaurantModal!: AddRestaurantComponent;
   @ViewChild('addActivityModal') addActivityModal!: AddActivityComponent;
@@ -102,6 +105,7 @@ export class TourDiscountComponent implements OnInit {
   tourDays: number[] = [];
   tourId: number = 0;
   hotels: Service[] = [];
+  flights: Service[] = [];
   transports: Service[] = [];
   restaurants: Service[] = [];
   activities: Service[] = [];
@@ -152,7 +156,7 @@ export class TourDiscountComponent implements OnInit {
           this.priceRanges = data.paxOptions.map(pax => pax.paxRange);
           this.prices = data.paxOptions;
           this.tourType = data.tourType;
-          
+
           data.serviceCategories.forEach(category => {
             switch (category.categoryName) {
               case 'Hotel':
@@ -163,6 +167,9 @@ export class TourDiscountComponent implements OnInit {
                 break;
               case 'Restaurant':
                 this.restaurants = category.services.map(service => this.mapService(service));
+                break;
+              case 'Flight Ticket':
+                this.flights = category.services.map(service => this.mapService(service));
                 break;
               case 'Activity':
                 this.activities = category.services.map(service => this.mapService(service));
@@ -247,6 +254,13 @@ export class TourDiscountComponent implements OnInit {
     });
   }
 
+  calculateFinalTourPrices() {
+    this.priceRanges.forEach(range => {
+      const sellingPrice = this.getPriceByRange(range)?.sellingPrice || 0;
+      this.finalTourPrices[range] = sellingPrice * (1 + this.markupPercentage / 100);
+    });
+  }
+
   calculateTotalPrices() {
     this.priceRanges.forEach(range => {
       const minPax = this.getMinPax(range);
@@ -284,15 +298,7 @@ export class TourDiscountComponent implements OnInit {
     this.markupPercentage = markup;
     this.calculateFinalTourPrices();
   }
-  
 
-  calculateFinalTourPrices() {
-    this.priceRanges.forEach(range => {
-      const sellingPrice = this.getPriceByRange(range)?.sellingPrice || 0;
-      this.finalTourPrices[range] = sellingPrice * (1 + this.markupPercentage / 100);
-    });
-  }
-  
 
   backToList() {
     this.router.navigate(['head-business/list-tour']);
@@ -307,11 +313,12 @@ export class TourDiscountComponent implements OnInit {
     }
   }
 
-  openConfigMarkup() {
-    if (this.configMarkupModal) {
-      this.configMarkupModal.tourId = this.tourId || null;
-      this.configMarkupModal.getMarkup();
-      this.configMarkupModal.showModal();
+  openAddFlightModal(serviceId?: number, dayNumber?: number) {
+    if (this.addHotelModal) {
+      this.addHotelModal.serviceId = serviceId || null;
+      this.addHotelModal.day = dayNumber || null;
+      this.addHotelModal.fetchHotelDetails();
+      this.addHotelModal.showModal();
     }
   }
 
@@ -339,6 +346,14 @@ export class TourDiscountComponent implements OnInit {
       this.addActivityModal.day = dayNumber || null;
       this.addActivityModal.fetchActivityDetails();
       this.addActivityModal.showModal();
+    }
+  }
+  
+  openConfigMarkup() {
+    if (this.configMarkupModal) {
+      this.configMarkupModal.tourId = this.tourId || null;
+      this.configMarkupModal.getMarkup();
+      this.configMarkupModal.showModal();
     }
   }
 
@@ -372,6 +387,37 @@ export class TourDiscountComponent implements OnInit {
       }
     });
     this.hotels.splice(index, 1);
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculateFinalTourPrices();
+  }
+
+  addNewFlight(event: { flight: Service, isUpdate: boolean }) {
+    const { flight, isUpdate } = event;
+    if (isUpdate && this.addFlightModal.serviceId) {
+      const index = this.flights.findIndex(h => h.id === this.addFlightModal.serviceId);
+      if (index !== -1) {
+        this.flights[index] = flight;
+      }
+    } else {
+      this.flights.push(flight);
+    }
+    window.location.reload();
+  }
+
+  deleteFlight(index: number, serviceId: number, dayNumber: number) {
+    this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          console.log('Flight deleted successfully');
+          window.location.reload();
+        } else {
+          console.error('Error deleting hotel:', response.message);
+        }
+      }
+    });
+    this.flights.splice(index, 1);
     this.calculateTourDays();
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
