@@ -5,17 +5,15 @@ export interface ServiceBase {
   nettPrice: number;
   sellingPrice: number;
   imageUrl: string;
-  startDate: string;
-  endDate: string;
+  startDate: string; // hoặc Date, tùy backend trả về
+  endDate: string;   // hoặc Date
   deleted: boolean;
-  serviceCategoryId: number;
-  serviceCategoryName: string;
-  serviceProviderId: number;
-  serviceProviderName: string;
-  serviceProviderAbbreviation: string;
-  serviceProviderImageUrl: string;
-  createdAt: string;
-  updatedAt: string;
+  serviceCategoryId?: number;
+  serviceCategoryName?: string;
+  serviceProviderId?: number;
+  serviceProviderName?: string; // Đảm bảo có trường này
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ServiceResponse {
@@ -66,6 +64,19 @@ export interface Transport {
   serviceId: number;
   createdAt: string;
   updatedAt: string;
+}
+
+// Interface mở rộng để thêm displayText
+export interface RoomWithDisplay extends Room {
+  displayText?: string;
+}
+
+export interface MealWithDisplay extends Meal {
+  displayText?: string;
+}
+
+export interface TransportWithDisplay extends Transport {
+  displayText?: string;
 }
 
 export interface TourDayService {

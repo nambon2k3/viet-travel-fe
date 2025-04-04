@@ -25,7 +25,7 @@ export class TableRowComponent {
 
   openDetail(service: ServiceBase): void {
     if (service.id !== undefined) {
-      this.router.navigate([`/service-provider/services/${service.id}/edit`]);
+      this.router.navigate([`/service-provider/service/${service.id}/edit`]);
     } else {
       console.error('Service ID is undefined');
     }

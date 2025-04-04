@@ -21,18 +21,18 @@ export class ServiceService {
         isDeleted?: boolean,
         sortField: string = 'createdAt',
         sortDirection: string = 'desc'
-    ): Observable<ApiResponse<PaginatedData<ServiceBase>>> {
+      ): Observable<ApiResponse<PaginatedData<ServiceBase>>> {
         let params = new HttpParams()
-            .set('page', page.toString())
-            .set('size', size.toString())
-            .set('sortField', sortField)
-            .set('sortDirection', sortDirection);
-
+          .set('page', page.toString())
+          .set('size', size.toString())
+          .set('sortField', sortField)
+          .set('sortDirection', sortDirection);
+    
         if (keyword) params = params.set('keyword', keyword);
         if (isDeleted !== undefined) params = params.set('isDeleted', isDeleted.toString());
-
+    
         return this.http.get<ApiResponse<PaginatedData<ServiceBase>>>(`${this.baseUrl}/list`, { params });
-    }
+      }
 
     getTourDayServicesByService(
         serviceId: number,

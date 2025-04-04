@@ -229,19 +229,19 @@ export class UpdateServiceProviderComponent implements OnInit {
   }
 
   onLocationSelect(item: any): void {
-    console.log('Selected Item from Dropdown:', item); // Log item được chọn từ dropdown
+    console.log('Selected Item from Dropdown:', item);
     const selectedLocation = this.locations.find(loc => loc.id === item.id);
-    console.log('All Locations:', this.locations); // Log toàn bộ mảng locations
-    console.log('Found Selected Location:', selectedLocation); // Log location được tìm thấy
+    console.log('All Locations:', this.locations);
+    console.log('Found Selected Location:', selectedLocation);
   
     if (selectedLocation) {
       this.selectedLocationId = selectedLocation.id;
       this.serviceProviderForm.patchValue({
         locationId: this.selectedLocationId,
         geoPosition: {
-          id: selectedLocation.geoPosition?.id || null,
-          latitude: selectedLocation.geoPosition?.latitude || 0,
-          longitude: selectedLocation.geoPosition?.longitude || 0
+          id: selectedLocation.geoPositionId || null, // Lấy geoPositionId trực tiếp
+          latitude: selectedLocation.latitude || 0,    // Lấy latitude trực tiếp
+          longitude: selectedLocation.longitude || 0   // Lấy longitude trực tiếp
         }
       });
       console.log('Updated geoPosition:', this.serviceProviderForm.get('geoPosition')?.value);
@@ -299,11 +299,16 @@ export class UpdateServiceProviderComponent implements OnInit {
   submitForm(): void {
     const formData = this.serviceProviderForm.getRawValue();
     const selectedLocation = this.locations.find(loc => loc.id === formData.locationId);
-
+  
     const updatedData = {
       id: formData.id,
       ...formData,
       locationName: selectedLocation ? selectedLocation.name : null,
+      geoPosition: {
+        id: selectedLocation?.geoPositionId || null, // Dùng geoPositionId
+        latitude: selectedLocation?.latitude || 0,
+        longitude: selectedLocation?.longitude || 0
+      },
       serviceCategories: this.selectedCategories.map((cat: any) => ({
         id: cat.id,
         categoryName: cat.categoryName

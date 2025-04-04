@@ -1,11 +1,13 @@
-<div class="mb-2 flex justify-between">
+<!-- src/app/features/service-provider/components/service/service.component.html -->
+<div class="p-4">
+  <div class="mb-2 flex justify-between">
     <div class="inline-block">
       <h3 class="text-foreground font-semibold">Dịch vụ</h3>
-      <p class="text-lg mb-4" *ngIf="serviceProviderName">({{ serviceProviderName }})</p>
       <div class="text-muted-foreground space-x-1 text-xs font-medium">
         <a href="" class="hover:text-primary">Tất cả Dịch vụ:</a>
         <span class="text-foreground">{{ totalItems() }}</span>
       </div>
+      <div>Nhà cung cấp: <p class="text-lg" *ngIf="serviceProviderName()">({{ serviceProviderName() }})</p></div>
     </div>
     <app-spinner [isLoading]="isLoading"></app-spinner>
     <div class="inline-block space-x-4">
@@ -16,7 +18,7 @@
       </button>
     </div>
   </div>
-  
+
   <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2 bg-white">
     <app-table-action [totalItems]="totalItems()" [size]="pageItemCount()" (searchFilters)="onSearch($event)"></app-table-action>
     <div class="scrollbar-thumb-rounded scrollbar-track-rounded scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted grow overflow-x-auto px-5">
@@ -29,7 +31,7 @@
             <tr class="hover:bg-card/50" app-table-row [service]="service"></tr>
           } @empty {
             <tr>
-              <td class="py-4 text-center text-sm" colspan="8">Không có Dịch vụ nào</td>
+              <td class="py-4 text-center text-sm" colspan="9">Không có Dịch vụ nào</td>
             </tr>
           }
         </tbody>
@@ -37,3 +39,4 @@
     </div>
     <app-table-footer [totalPages]="totalPages()" [currentPage]="page()" (pageChange)="onPageChange($event)" (pageSizeChange)="onPageSizeChange($event)"></app-table-footer>
   </div>
+</div>

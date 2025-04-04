@@ -62,8 +62,8 @@ export class AddServiceProviderComponent implements OnInit {
       locationId: [null, Validators.required],
       geoPosition: this.fb.group({
         id: [null],
-        latitude: [{ value: 0, disabled: true }],
-        longitude: [{ value: 0, disabled: true }]
+        latitude: [0],
+        longitude: [0]
       }),
       serviceCategories: [[]]
     });
@@ -99,7 +99,7 @@ export class AddServiceProviderComponent implements OnInit {
       }
     });
   }
-  
+
   onCancel(): void {
     this.router.navigate(['/ceo/service-provider']);
   }
@@ -155,15 +155,15 @@ export class AddServiceProviderComponent implements OnInit {
     console.log('Selected Item from Dropdown:', item);
     const selectedLocation = this.locations.find(loc => loc.id === item.id);
     console.log('Found Selected Location:', selectedLocation);
-
+  
     if (selectedLocation) {
       this.selectedLocationId = selectedLocation.id;
       this.serviceProviderForm.patchValue({
         locationId: this.selectedLocationId,
         geoPosition: {
-          id: selectedLocation.geoPosition?.id || null,
-          latitude: selectedLocation.geoPosition?.latitude || 0,
-          longitude: selectedLocation.geoPosition?.longitude || 0
+          id: selectedLocation.geoPositionId || null, // Sử dụng geoPositionId
+          latitude: selectedLocation.latitude || 0,
+          longitude: selectedLocation.longitude || 0
         }
       });
       console.log('Updated Form Value:', this.serviceProviderForm.getRawValue());
@@ -171,7 +171,7 @@ export class AddServiceProviderComponent implements OnInit {
       console.log('No matching location found for item:', item);
     }
   }
-
+  
   onLocationDeSelect(): void {
     this.selectedLocationId = null;
     this.serviceProviderForm.patchValue({
@@ -198,8 +198,13 @@ export class AddServiceProviderComponent implements OnInit {
       formData.append('file', this.selectedFile);
       this.serviceProvidedService.uploadImage(formData).subscribe({
         next: (response: any) => {
-          this.serviceProviderForm.get('imageUrl')?.setValue(response.data);
-          this.submitForm();
+          if (response?.code === 200) {
+            this.serviceProviderForm.patchValue({ imageUrl: response.data });
+            this.submitForm();
+          } else {
+            this.isLoading = false;
+            this.errorMessage = response?.message || 'Lỗi khi tải lên hình ảnh.';
+          }
         },
         error: (error: any) => {
           this.isLoading = false;
@@ -219,24 +224,23 @@ export class AddServiceProviderComponent implements OnInit {
   submitForm(): void {
     const formData = this.serviceProviderForm.getRawValue();
     const selectedLocation = this.locations.find(loc => loc.id === formData.locationId);
-
+  
     const newData = {
       ...formData,
-      locationId: this.selectedLocationId, // Đảm bảo gửi locationId
+      locationId: this.selectedLocationId,
       locationName: selectedLocation ? selectedLocation.name : null,
       geoPosition: {
-        id: selectedLocation?.geoPosition?.id || null,
-        latitude: selectedLocation?.geoPosition?.latitude || 0,
-        longitude: selectedLocation?.geoPosition?.longitude || 0
+        latitude: selectedLocation?.latitude || 0, // Chỉ gửi latitude
+        longitude: selectedLocation?.longitude || 0 // Chỉ gửi longitude
       },
       serviceCategories: this.selectedCategories.map((cat: any) => ({
         id: cat.id,
         categoryName: cat.categoryName
       }))
     };
-
-    console.log('Payload sent to create:', newData); // Log payload trước khi gửi
-
+  
+    console.log('Payload sent to create:', newData);
+  
     this.serviceProvidedService.createServiceProvider(newData).pipe(
       catchError((error: any) => {
         this.isLoading = false;

@@ -1,34 +1,48 @@
-import { Component, Input} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { AngularSvgIconModule } from 'angular-svg-icon';
-
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ServiceRequest } from '../../../../../core/models/service-request.model';
 import { ServiceRequestService } from '../../../services/service-request.service';
+import { ServiceProviderBookingServiceDTO, TourBookingServiceStatusDisplay } from '../../../../../core/models/service-request.model';
+
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, CommonModule],
+  imports: [CommonModule],
   templateUrl: './table-row.component.html',
-  styleUrl: './table-row.component.css',
+  styleUrls: ['./table-row.component.css'],
+  standalone: true,
 })
 export class TableRowComponent {
-
-  @Input() serviceRequest: ServiceRequest = <ServiceRequest>{};
-
-  authorName: string = 'Loading...';
-  serviceProvider: string[] = [];
+  @Input() serviceRequest: ServiceProviderBookingServiceDTO = <ServiceProviderBookingServiceDTO>{};
 
   constructor(
-    private serviceRequestService: ServiceRequestService,
-    private router : Router
+    private router: Router,
+    private serviceRequestService: ServiceRequestService
   ) {}
 
-
-  onUpdate(): void{
-    
+  formatDate(dateString?: string): string {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
   }
 
-  
+  getStatusDisplay(status: string): string {
+    return TourBookingServiceStatusDisplay[status as keyof typeof TourBookingServiceStatusDisplay] || status;
+  }
 
+  openDetail(): void {
+    if (this.serviceRequest.id !== undefined) {
+      this.router.navigate(['/service-provider/request-detail'], {
+        queryParams: { id: this.serviceRequest.id },
+      });
+    } else {
+      console.error('Service Request ID is undefined');
+    }
+  }
 }

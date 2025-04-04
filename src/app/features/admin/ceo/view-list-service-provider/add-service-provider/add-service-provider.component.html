@@ -4,7 +4,7 @@
   @if (isLoading) {
     <div class="text-center py-4">Đang tải...</div>
   } @else {
-    <form [formGroup]="serviceProviderForm">
+    <form [formGroup]="serviceProviderForm" (ngSubmit)="saveChanges()">
       <!-- Hình ảnh -->
       <label class="block mb-2 text-sm font-medium text-gray-700">Hình ảnh</label>
       <div class="flex flex-col items-center justify-center mb-4">
@@ -106,10 +106,10 @@
           class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300">
           Hủy
         </button>
-        <button type="button" (click)="saveChanges()"
+        <button type="submit"
           class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
-          [disabled]="serviceProviderForm.invalid || (selectedFile === null && !serviceProviderForm.get('imageUrl')?.value)">
-          Tạo mới
+          [disabled]="serviceProviderForm.invalid || isLoading">
+          {{ isLoading ? 'Đang tạo...' : 'Tạo mới' }}
         </button>
       </div>
     </form>
