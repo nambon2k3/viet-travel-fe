@@ -8,7 +8,10 @@ export const CEO_ROUTES: Route[] = [
     path: '',
     component: LayoutComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      { 
+        path: '', 
+        component: DashboardComponent 
+      },
       {
         path: 'service-provider',
         component: ViewListServiceProviderComponent
