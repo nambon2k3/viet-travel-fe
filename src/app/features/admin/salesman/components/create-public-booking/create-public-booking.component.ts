@@ -240,6 +240,11 @@ export class CreatePublicBookingComponent {
         console.log('Tour Detail', this.tourDetial);
         this.selectedSchedule = this.tourDetial.tourSchedule;
         this.calculatetotalAmountCost()
+        this.createBookingForm.patchValue({
+          sellingPrice: this.tourDetial.tourSchedule.sellingPrice,
+          extraHotelCost: this.tourDetial.tourSchedule.extraHotelCost,
+        })
+
       },
       error: (error) => {
         console.error(error);
@@ -295,6 +300,9 @@ export class CreatePublicBookingComponent {
         this.checkFormErrors(control, currentPath);
       } else if (control && control.invalid) {
         this.markControlTouched(currentPath);
+        // 👉 Log invalid control info here
+      console.log(`Invalid control at: ${currentPath}`);
+      console.log('Errors:', control.errors);
       }
     });
   }

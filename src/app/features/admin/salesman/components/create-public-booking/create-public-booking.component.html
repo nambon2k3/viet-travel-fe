@@ -21,7 +21,7 @@
                         <div class="flex items-center w-full">
                             <input type="text" placeholder="Tên Khách Hàng" class="flex-1 border rounded px-3 py-1.5"
                                 (focus)="markControlTouched('fullName')" formControlName="fullName">
-                            <button class="bg-green-500 text-white px-2.5 py-1 rounded">+</button>
+                            <button type="button" class="bg-green-500 text-white px-2.5 py-1 rounded">+</button>
                         </div>
 
                         <p *ngIf="
@@ -52,7 +52,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium">Email</label>
-                    <input type="email" class="w-full border rounded px-3 py-1.5" placeholder="Email khách hàng"
+                    <input type="text" class="w-full border rounded px-3 py-1.5" placeholder="Email khách hàng"
                         (focus)="markControlTouched('email')" formControlName="email">
                     <p *ngIf="
                             createBookingForm.get('email')?.invalid &&
