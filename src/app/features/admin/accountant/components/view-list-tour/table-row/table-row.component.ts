@@ -14,18 +14,18 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe'
 })
 export class TableRowComponent {
 
-  @Input() tour: TourAccountant = <TourAccountant>{};
+  @Input() tourShedule: any = <any>{};
+  @Input() index: any = <any>{};
 
   authorName: string = 'Loading...';
   tags: string[] = [];
 
   constructor(
     private router: Router
-  ) { }
+  ) { 
+  }
 
-  openDetail(tour: TourAccountant): void {
-    this.router.navigate(['/accountant/list-receipt'],  {
-      queryParams: { id: tour.id }
-    });
+  openDetail(tourSchedule: any): void {
+    this.router.navigate(['/accountant/booking-settlement/' + tourSchedule.id]);
   }
 }

@@ -5,6 +5,7 @@ import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableRowComponent } from './table-row/table-row.component';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { TourAccountant } from '../../../../../core/models/tour-accountant.model';
+import { TourService } from '../../services/tour.service';
 
 @Component({
   selector: 'app-view-list-tour',
@@ -19,40 +20,11 @@ import { TourAccountant } from '../../../../../core/models/tour-accountant.model
   styleUrl: './view-list-tour.component.css'
 })
 export class ViewListTourComponent {
-  tours = signal<TourAccountant[]>([
-    {
-      id: 1,
-      tourName: "Tour Cái Chiên - Đầu Rồng",
-      startDate: "02/02/2025",
-      totalCost: 20000000,
-      profit: 5000000,
-      bookingCode: 234,
-      status: "Đã quyết toán"
-    },
-    {
-      id: 2,
-      tourName: "Tour Cái Chiên - Đầu Rồng",
-      startDate: "03/02/2025",
-      totalCost: 30000000,
-      profit: 5000000,
-      bookingCode: 347,
-      status: "Collected"
-    },
-    {
-      id: 3,
-      tourName: "Tour Đà Nẵng - Hội An 4D...",
-      startDate: "02/02/2025",
-      totalCost: 20000000,
-      profit: 5000000,
-      bookingCode: 345,
-      status: "Đã thanh toán"
-    }
-  ]);
-
-  totalItems = this.tours().length;
+  tourShedules: any;
+  totalItems = 0;
   page = 0;
   size = 10;
-  totalPages = signal(Math.ceil(this.totalItems / this.size));
+  totalPages = signal(0);
   isLoading: boolean = false;
 
   keyword = '';
@@ -60,7 +32,11 @@ export class ViewListTourComponent {
   sortField = 'createdAt';
   sortDirection = 'desc';
 
-  constructor() {}
+  constructor(
+    private router: Router,
+    //private bookingService: BookingService
+    private tourService: TourService
+  ) {}
 
   ngOnInit(): void {
     this.loadTours();
@@ -68,9 +44,27 @@ export class ViewListTourComponent {
 
   loadTours(): void {
     this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 500); // Simulate loading time
+    this.tourService.getListSettlementTourSchedule(
+      this.page,
+      this.size,
+      this.keyword,
+      this.isDeleted,
+      this.sortField,
+      this.sortDirection
+    ).subscribe({
+      next: (response) => {
+        this.tourShedules = response.data.items;
+        console.log(this.tourShedules);
+        
+        this.totalItems = response.data.total;
+        this.size = response.data.size;
+        this.totalPages.set(Math.ceil(this.totalItems / this.size));
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load tours:', err);
+      }
+    });
   }
 
   onSearch(filters: any): void {
@@ -94,15 +88,4 @@ export class ViewListTourComponent {
     this.loadTours();
   }
 
-  toggleTours(checked: boolean): void {
-    this.tours.update((tours) => {
-      return tours.map((tour) => {
-        return { ...tour, selected: checked };
-      });
-    });
-  }
-
-  filteredTours = computed(() => {
-    return this.tours();
-  });
 }

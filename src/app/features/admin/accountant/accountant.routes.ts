@@ -6,6 +6,7 @@ import { ViewListTourComponent } from "./components/view-list-tour/view-list-tou
 import { ListRefundComponent } from "./components/list-refund/list-refund.component";
 import { ListPaymentComponent } from "./components/list-payment/list-payment.component";
 import { PostReceiptComponent } from "./components/post-receipt/post-receipt.component";
+import { BookingSettlementComponent } from "./components/booking-settlement/booking-settlement.component";
 
 export const ACCOUNTANT_ROUTES: Route[] = [
   {
@@ -36,6 +37,10 @@ export const ACCOUNTANT_ROUTES: Route[] = [
         path: 'invoice-details',
         component: PostReceiptComponent
       },
+      {
+        path: 'booking-settlement/:tourScheduleId',
+        component: BookingSettlementComponent
+      }
     ]
   },
 ];

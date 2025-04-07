@@ -20,8 +20,8 @@ export class TableRowComponent {
     private router: Router
   ) { }
 
-  openDetail(refund: RefundRecord): void {
-    this.router.navigate(['/accountant/refund-details'],  {
+  openDetail(refund: any): void {
+    this.router.navigate(['/accountant/invoice-details'],  {
       queryParams: { id: refund.id }
     });
   }

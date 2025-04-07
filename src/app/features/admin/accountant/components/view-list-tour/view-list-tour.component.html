@@ -18,11 +18,11 @@
       <table
         class="text-muted-foreground table w-full table-auto border-collapse border-0 text-left align-middle leading-5">
         <thead class="border-muted/20 text-muted-foreground border text-xs">
-          <tr app-table-header (onCheck)="toggleTours($event)"></tr>
+          <tr app-table-header ></tr>
         </thead>
         <tbody>
-          @for (tour of filteredTours(); track $index) {
-          <tr class="hover:bg-card/50" app-table-row [tour]="tour"></tr>
+          @for (tourShedule of tourShedules; track $index) {
+          <tr class="hover:bg-card/50" app-table-row [tourShedule]="tourShedule" [index]="$index"></tr>
           } @empty {
           <tr>
             <td class="py-4 text-center text-sm" colspan="7">Không tìm thấy tour nào</td>
