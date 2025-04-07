@@ -3,19 +3,22 @@ import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../../services/tour.service';
 import { CommonModule } from '@angular/common';
 import { BirthDate } from "../../../../../../shared/pipes/birthdate.pipe";
+import { SpinnerComponent } from "../../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-list-customer',
   standalone: true,
   imports: [
     CommonModule,
-    BirthDate
+    BirthDate,
+    SpinnerComponent
 ],
   templateUrl: './list-customer.component.html',
   styleUrl: './list-customer.component.css'
 })
 export class ListCustomerComponent implements OnInit {
   listCustomers: any[] = [];
+  isLoading: boolean = false;
 
   constructor(private route: ActivatedRoute, private tourService: TourService) { }
 
@@ -29,8 +32,10 @@ export class ListCustomerComponent implements OnInit {
   }
 
   loadCustomers(id: number): void {
+    this.isLoading = true;
     this.tourService.getTourCustomers(id).subscribe({
       next: (response : any) => {
+        this.isLoading = false;
         if (response.code === 200) {
           this.listCustomers = response.data;
         } else {
@@ -38,16 +43,9 @@ export class ListCustomerComponent implements OnInit {
         }
       },
       error: (error : any) => {
+        this.isLoading = false;
         console.error('Lỗi khi tải danh sách khách hàng:', error);
       }
     });
   }
-
-  onEditCustomer(customer: any) {
-    console.log('Chỉnh sửa:', customer);
-  }
-  
-  onDeleteCustomer(customer: any) {
-    console.log('Xóa:', customer);
-  }  
 }

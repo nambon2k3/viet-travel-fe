@@ -172,5 +172,8 @@
             <button class="border px-4 py-2 rounded bg-black text-white" data-modal-hide="chooseServiceModal"
                 (click)="addServicesToFinalList()">Thêm dịch vụ</button>
         </div>
+        
+        <div *ngIf="errorMessage" class="global-error text-red-500 ml-4 pb-2">
+            {{ errorMessage }}
     </div>
 </div>

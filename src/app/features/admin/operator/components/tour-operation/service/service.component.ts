@@ -10,6 +10,34 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe'
 import { TourService } from '../../../services/tour.service';
 import { ServiceDetailComponent } from './service-detail/service-detail.component';
 import { PayServiceComponent } from './pay-service/pay-service.component';
+import { SpinnerComponent } from '../../../../../../shared/components/spinner/spinner.component'; // Import SpinnerComponent
+
+interface Service {
+  bookingServiceId: number;
+  bookingCode: string;
+  bookingStatus: string;
+  location: string;
+  bookingId: number;
+  id: number;
+  providerName: string;
+  uniqueId: string;
+  name: string;
+  type: string;
+  date: string;
+  quantity: number;
+  requestQuantity: number;
+  amountToPayForBooking: number;
+  paidForBooking: number;
+  serviceName: string;
+  order: string;
+  payment: string;
+  status: string;
+}
+
+interface ServiceGroup {
+  bookingCode: string;
+  services: Service[];
+}
 
 @Component({
   selector: 'app-service',
@@ -23,18 +51,21 @@ import { PayServiceComponent } from './pay-service/pay-service.component';
     ServiceDetailComponent,
     CurrencyVndPipe,
     FormatDatePipe,
-    PayServiceComponent
-]
+    PayServiceComponent,
+    SpinnerComponent // Add SpinnerComponent to imports
+  ]
 })
 export class ServiceComponent {
-  selectedService: any = null;
-  services: any[] = [];
+  selectedService: Service | null = null;
+  services: Service[] = [];
+  groupedServices: ServiceGroup[] = [];
   totalService: number = 0;
   paid: number = 0;
   remain: number = 0;
   totalCost: number = 0;
-  tourGuide: any = null;
+  tourGuide: string | null = null;
   scheduleId: number | null = null;
+  isLoading: boolean = false;
 
   @ViewChild('chooseServiceModal') chooseServiceModal!: PostServiceComponent;
   @ViewChild('changeServiceModal') changeServiceModal!: ServiceDetailComponent;
@@ -45,38 +76,46 @@ export class ServiceComponent {
   constructor(
     private ssrService: SsrService,
     private tourService: TourService,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       const id = params['id'];
       if (id) {
-        this.scheduleId = id;
-        this.fetchServices(id);
-        this.fetchTourGuide(id);
+        this.scheduleId = +id;
+        this.fetchServices(this.scheduleId);
+        this.fetchTourGuide(this.scheduleId);
+      } else {
+        console.error('ID không hợp lệ.');
       }
     });
   }
 
-  fetchTourGuide(id: number) {
+  fetchTourGuide(id: number): void {
+    this.isLoading = true;
     this.tourService.getTourById(id).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200) {
           this.tourGuide = response.data.tourGuideName;
         } else {
-          console.error('Lỗi:', response.message);
+          console.error('Lỗi khi tải thông tin hướng dẫn viên:', response.message);
         }
       },
       error: (error: any) => {
+        this.isLoading = false;
         console.error('Lỗi khi tải chi tiết tour:', error);
       }
     });
   }
 
-  fetchServices(id: number) {
+  fetchServices(id: number): void {
+    this.isLoading = true;
     this.tourService.getServices(id).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200) {
           this.services = response.data.services.map((service: any) => ({
             bookingServiceId: service.bookingServiceId,
@@ -104,15 +143,29 @@ export class ServiceComponent {
           this.remain = response.data.remainingAmount;
           this.totalCost = response.data.totalAmount;
 
-          this.inits();
+          this.groupServices();
+          this.initDropdowns();
         } else {
-          console.error('Lỗi:', response.message);
+          console.error('Lỗi khi tải danh sách dịch vụ:', response.message);
         }
       },
       error: (error: any) => {
+        this.isLoading = false;
         console.error('Lỗi khi tải danh sách dịch vụ:', error);
       }
     });
+  }
+
+  groupServices(): void {
+    const grouped = this.services.reduce((acc: { [key: string]: Service[] }, service: Service) => {
+      (acc[service.bookingCode] = acc[service.bookingCode] || []).push(service);
+      return acc;
+    }, {});
+
+    this.groupedServices = Object.keys(grouped).map(bookingCode => ({
+      bookingCode,
+      services: grouped[bookingCode]
+    }));
   }
 
   mapOrderStatus(status: string): string {
@@ -143,7 +196,6 @@ export class ServiceComponent {
     return statusMap[status] || 'Nhà hàng';
   }
 
-  // Map payment status to Vietnamese
   mapPaymentStatus(status: string): string {
     const paymentStatusMap: { [key: string]: string } = {
       'UNPAID': 'Chưa thanh toán',
@@ -153,7 +205,6 @@ export class ServiceComponent {
     return paymentStatusMap[status] || 'Chưa thanh toán';
   }
 
-  // Map status to colors for both order and payment
   getStatusColor(status: string): string {
     const colorMap: { [key: string]: string } = {
       'Đã phê duyệt': 'bg-green-500/20 text-green-800',
@@ -171,48 +222,56 @@ export class ServiceComponent {
       'Thanh toán một phần': 'bg-orange-400/20 text-orange-800'
     };
     return colorMap[status] || 'bg-gray-500/20 text-gray-800';
-}
+  }
 
-  async inits() {
+  async initDropdowns(): Promise<void> {
     const { Dropdown } = await import('flowbite');
     const doc = this.ssrService.getDocument();
 
     if (doc) {
-      this.services.forEach(service => {
-        const orderButton = doc.getElementById(`dropdownOrderButton-${service.uniqueId}`);
-        const orderDropdown = doc.getElementById(`dropdownOrder-${service.uniqueId}`);
-        if (orderButton && orderDropdown) {
-          new Dropdown(orderDropdown, orderButton);
-        } else {
-          console.error(`Order dropdown elements not found for service ${service.uniqueId}`);
-        }
+      this.groupedServices.forEach(group => {
+        group.services.forEach(service => {
+          const orderButton = doc.getElementById(`dropdownOrderButton-${service.uniqueId}`);
+          const orderDropdown = doc.getElementById(`dropdownOrder-${service.uniqueId}`);
+          if (orderButton && orderDropdown) {
+            new Dropdown(orderDropdown, orderButton);
+          } else {
+            console.warn(`Order dropdown elements not found for service ${service.uniqueId}`);
+          }
 
-        const paymentButton = doc.getElementById(`dropdownPaymentButton-${service.uniqueId}`);
-        const paymentDropdown = doc.getElementById(`dropdownPayment-${service.uniqueId}`);
-        if (paymentButton && paymentDropdown) {
-          new Dropdown(paymentDropdown, paymentButton);
-        } else {
-          console.error(`Payment dropdown elements not found for service ${service.uniqueId}`);
-        }
+          const paymentButton = doc.getElementById(`dropdownPaymentButton-${service.uniqueId}`);
+          const paymentDropdown = doc.getElementById(`dropdownPayment-${service.uniqueId}`);
+          if (paymentButton && paymentDropdown) {
+            new Dropdown(paymentDropdown, paymentButton);
+          } else {
+            console.warn(`Payment dropdown elements not found for service ${service.uniqueId}`);
+          }
+        });
       });
     }
   }
 
-  deleteService(serviceId: number) {
+  deleteService(serviceId: number): void {
+    this.isLoading = true;
     this.tourService.deleteService(serviceId).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200) {
+          console.log('Dịch vụ đã được xóa thành công!');
+          this.fetchServices(this.scheduleId!);
+          this.fetchTourGuide(this.scheduleId!);
         } else {
-          console.error('Lỗi:', response.message);
+          console.error('Lỗi khi xóa dịch vụ:', response.message);
         }
       },
       error: (error: any) => {
+        this.isLoading = false;
         console.error('Lỗi khi xóa dịch vụ:', error);
       }
     });
   }
 
-  openDeleteModal(index: number) {
+  openDeleteModal(index: number): void {
     const doc = this.ssrService.getDocument();
     if (doc) {
       const modalElement = doc.getElementById(`deleteTourPaxModal-${index}`) as HTMLElement;
@@ -223,7 +282,7 @@ export class ServiceComponent {
     }
   }
 
-  closeDeleteModal(index: number) {
+  closeDeleteModal(index: number): void {
     const doc = this.ssrService.getDocument();
     if (doc) {
       const modalElement = doc.getElementById(`deleteTourPaxModal-${index}`) as HTMLElement;
@@ -236,48 +295,47 @@ export class ServiceComponent {
     this.fetchTourGuide(this.scheduleId!);
   }
 
-  changeOrderStatus(service: any, status: string) {
+  openPayModal(service: Service): void {
     this.selectedService = service;
-    service.order = this.mapOrderStatus(status);
-  }
-
-  changePaymentStatus(service: any, status: string) {
-    service.payment = this.mapPaymentStatus(status);
-  }
-
-  openPayModal(service: any) {
     this.paymentModal.selectedService = service;
     this.paymentModal.open();
   }
 
-  openServiceDetail(service: any) {
+  openServiceDetail(service: Service): void {
+    this.selectedService = service;
     this.changeServiceModal.service = service;
     this.changeServiceModal.getServiceDetail();
     this.changeServiceModal.open();
   }
 
-  openOrderModal(service: any) {
+  openOrderModal(service: Service): void {
+    this.selectedService = service;
     this.orderModal.selectedService = service;
     this.orderModal.open();
   }
 
-  onEmailSent(event: any) {
-    this.fetchServices(this.scheduleId!);
-    this.fetchTourGuide(this.scheduleId!);
-  }
-
-  onServiceAdded(event: any) {
-    this.fetchServices(this.scheduleId!);
-    this.fetchTourGuide(this.scheduleId!);
-  }
-
-  onPaymentSent(event: any) {
-    this.fetchServices(this.scheduleId!);
-    this.fetchTourGuide(this.scheduleId!);
-  }
-
-  openTourGuidePayModal(service: any) {
+  openTourGuidePayModal(service: Service): void {
+    this.selectedService = service;
     this.tourGuidePayModal.selectedService = service;
+    this.tourGuidePayModal.tourGuide = this.tourGuide;
     this.tourGuidePayModal.open();
+  }
+
+  onEmailSent(event: any): void {
+    console.log('Email đã được gửi thành công!');
+    this.fetchServices(this.scheduleId!);
+    this.fetchTourGuide(this.scheduleId!);
+  }
+
+  onServiceAdded(event: any): void {
+    console.log('Dịch vụ đã được thêm thành công!');
+    this.fetchServices(this.scheduleId!);
+    this.fetchTourGuide(this.scheduleId!);
+  }
+
+  onPaymentSent(event: any): void {
+    console.log('Thanh toán đã được gửi thành công!');
+    this.fetchServices(this.scheduleId!);
+    this.fetchTourGuide(this.scheduleId!);
   }
 }

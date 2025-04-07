@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TourService } from '../../../services/tour.service';
 import { TruncatePipe } from "../../../../../../shared/pipes/truncate.pipe";
 import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe";
+import { SpinnerComponent } from "../../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-transaction',
@@ -11,8 +12,9 @@ import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe"
   imports: [
     CommonModule,
     TruncatePipe,
-    FormatDatePipe
-  ],
+    FormatDatePipe,
+    SpinnerComponent
+],
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.css']
 })
@@ -20,6 +22,7 @@ export class TransactionComponent {
   listTransactions: any[] = [];
   id: number = 0;
   status: string = '';
+  isLoading: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,8 +40,10 @@ export class TransactionComponent {
   }
 
   loadTransactions(id: number): void {
+    this.isLoading = true;
     this.tourService.getTransactions(id).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200) {
           this.listTransactions = response.data;
         } else {
@@ -46,6 +51,7 @@ export class TransactionComponent {
         }
       },
       error: (error: any) => {
+        this.isLoading = false;
         console.error('Lỗi khi tải danh sách transaction:', error.message);
       }
     });

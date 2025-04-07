@@ -33,7 +33,6 @@ export class ViewListRequestComponent {
   sortDirection = 'desc';
 
   constructor(
-    private router: Router,
     private requestService: RequestService) { }
 
   ngOnInit(): void {

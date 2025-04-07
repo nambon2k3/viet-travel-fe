@@ -12,6 +12,7 @@ import { ConfigPriceComponent } from './config-price/config-price.component';
 import { FormsModule } from '@angular/forms';
 import { ConfigMarkupComponent } from "./config-markup/config-markup.component";
 import { AddFlightComponent } from './add-flight/add-flight.component';
+import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 
 interface PriceRange {
   [key: string]: number;
@@ -85,8 +86,9 @@ interface ApiResponse {
     ConfigTourPaxComponent,
     ConfigPriceComponent,
     FormsModule,
-    ConfigMarkupComponent
-  ],
+    ConfigMarkupComponent,
+    SpinnerComponent
+],
   templateUrl: './tour-discount.component.html',
   styleUrls: ['./tour-discount.component.css']
 })
@@ -117,7 +119,7 @@ export class TourDiscountComponent implements OnInit {
   minsalePrices: PriceRange = {};
   markupPercentage: number = 0;
   finalTourPrices: PriceRange = {};
-
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -148,8 +150,10 @@ export class TourDiscountComponent implements OnInit {
   }
 
   fetchTourData(id: number) {
+    this.isLoading = true;
     this.tourDiscountService.getTourDiscount(id).subscribe({
       next: (response: ApiResponse) => {
+        this.isLoading = false;
         if (response.code === 200) {
           const data = response.data;
           this.tourName = data.tourName;
@@ -184,14 +188,17 @@ export class TourDiscountComponent implements OnInit {
         }
       },
       error: (error: any) => {
+        this.isLoading = false;
         console.error('HTTP error fetching tour data:', error);
       }
     });
   }
 
   fetchLocations() {
+    this.isLoading = true;
     this.tourDiscountService.getLocations(this.tourId).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200) {
           const mappedLocations = response.data.items.map((item: any) => ({
             id: item.id,
@@ -201,6 +208,7 @@ export class TourDiscountComponent implements OnInit {
         }
       },
       error: (error: any) => {
+        this.isLoading = false;
         console.error('Error fetching locations:', error);
       }
     });

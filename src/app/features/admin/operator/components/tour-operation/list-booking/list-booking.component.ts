@@ -3,18 +3,21 @@ import { CurrencyVndPipe } from "../../../../../../shared/pipes/currency-vnd.pip
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { TourService } from '../../../services/tour.service';
+import { SpinnerComponent } from "../../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-list-booking',
   imports: [
-    CurrencyVndPipe, 
-    CommonModule
-  ],
+    CurrencyVndPipe,
+    CommonModule,
+    SpinnerComponent
+],
   templateUrl: './list-booking.component.html',
   styleUrl: './list-booking.component.css'
 })
 export class ListBookingComponent {
   listBookings: any[] = [];
+  isLoading: boolean = false;
   
     constructor(private route: ActivatedRoute, private tourService: TourService) { }
   
@@ -28,8 +31,10 @@ export class ListBookingComponent {
     }
   
     loadBookings(id: number): void {
+      this.isLoading = true;
       this.tourService.getTourBookings(id).subscribe({
         next: (response : any) => {
+          this.isLoading = false;
           if (response.code === 200) {
             this.listBookings = response.data;
           } else {
@@ -37,16 +42,9 @@ export class ListBookingComponent {
           }
         },
         error: (error : any) => {
+          this.isLoading = false;
           console.error('Lỗi khi tải danh sách khách hàng:', error);
         }
       });
     }
-
-  editBooking(booking: any) {
-    console.log('Edit booking:', booking);
-  }
-
-  deleteBooking(id: number) {
-    console.log('Delete booking:', id);
-  }
 }

@@ -58,7 +58,7 @@ export class ViewListTourComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Failed to load tours:', err);
+        console.error('Lỗi khi tải tour:', err);
       }
     });
   }

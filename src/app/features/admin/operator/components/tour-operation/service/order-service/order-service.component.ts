@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Modal } from 'flowbite';
 import { SsrService } from '../../../../../../../core/services/ssr.service';
 import { BlogContentComponent } from "../../../../../marketer/components/blog-detail/blog-content/blog-content.component";
+import { response } from 'express';
 
 @Component({
   selector: 'app-order-service',
@@ -21,6 +22,7 @@ export class OrderServiceComponent {
   @Output() emailSent: EventEmitter<any> = new EventEmitter<any>();
   requestDate: string = new Date().toISOString().split('T')[0];
   private modal: Modal | null = null;
+  errorMessage: string | null = null;
 
   emailData = {
     bookingServiceId: 0,
@@ -64,12 +66,15 @@ export class OrderServiceComponent {
     };
 
     try {
-      const response = await this.tourService.previewEmail(payload).toPromise() as { data: any };
-      if (response) {
+      const response = await this.tourService.previewEmail(payload).toPromise() as { data: any, code: number,  message: string };
+      if (response.code === 200) {
         this.emailData = { ...response.data };
+      } else {
+        this.errorMessage = response.message || 'Có lỗi xảy ra khi lấy thông tin email.';
       }
-    } catch (error) {
-      console.error('Error fetching email preview:', error);
+    } catch (error : any) {
+      this.errorMessage = error?.message || 'Có lỗi xảy ra khi lấy thông tin email.';
+      console.error('Có lỗi xảy ra khi lấy thông tin email:', error);
     }
   }
 

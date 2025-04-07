@@ -32,8 +32,8 @@ export class ConfigPriceComponent {
       const netPrice = this.totalSellingPrice[p.paxRange] / this.getMinPax(p.paxRange);
       return {
         ...p,
-        fixedCostFormatted: p.fixedCost.toLocaleString('vi-VN'),
-        sellingPriceFormatted: (netPrice + p.fixedCost).toLocaleString('vi-VN')
+        fixedCostFormatted: p.fixedCost?.toLocaleString('vi-VN'),
+        sellingPriceFormatted: (netPrice + p.fixedCost)?.toLocaleString('vi-VN')
       };
     });
   }
@@ -61,8 +61,8 @@ export class ConfigPriceComponent {
           return {
             id: p.id,
             paxRange: p.paxRange,
-            fixedCostFormatted: p.fixedCost.toLocaleString('vi-VN'),
-            sellingPriceFormatted: (netPrice + p.fixedCost).toLocaleString('vi-VN')
+            fixedCostFormatted: p.fixedCost?.toLocaleString('vi-VN'),
+            sellingPriceFormatted: (netPrice + p.fixedCost)?.toLocaleString('vi-VN')
           };
         });
       }

@@ -1,4 +1,5 @@
 <div class="mt-4 overflow-x-auto bg-white shadow-md rounded-lg">
+  <app-spinner [isLoading]="isLoading"></app-spinner>
     <table class="w-full border-collapse border border-gray-300">
         <thead class="bg-green-700">
             <tr>
@@ -40,7 +41,7 @@
                     </span>
                 </td>
                 <td class="border border-gray-300 p-2">{{ booking.bookedAt | date: 'dd/MM/yyyy' }}</td>
-                <td class="border border-gray-300 p-2">{{ booking.bookingStatus }}</td>
+                <td class="border border-gray-300 p-2">{{ booking.bookingStatus === 'SUCCESS' ? 'Thành công' : "Đã hủy yêu cầu và hoàn tiền" }}</td>
                 <td class="border border-gray-300 p-2">{{ booking.saleName || 'N/A' }}</td>
             </tr>
         </tbody>

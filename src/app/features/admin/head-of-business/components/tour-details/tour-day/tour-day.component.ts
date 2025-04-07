@@ -6,6 +6,7 @@ import { TourService } from '../../../services/tour.service';
 import { TourDay } from '../../../../../../core/models/tour.model';
 import { UpdateTourDayComponent } from '../update-tour-day/update-tour-day.component';
 import { CreateTourDayComponent } from './create-tour-day/create-tour-day.component';
+import { SpinnerComponent } from "../../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-tour-day',
@@ -14,8 +15,9 @@ import { CreateTourDayComponent } from './create-tour-day/create-tour-day.compon
     CommonModule,
     FormsModule,
     UpdateTourDayComponent,
-    CreateTourDayComponent
-  ],
+    CreateTourDayComponent,
+    SpinnerComponent
+],
   templateUrl: './tour-day.component.html',
   styleUrls: ['./tour-day.component.css']
 })
@@ -25,6 +27,7 @@ export class TourDayComponent implements OnInit {
 
   tourId: string | null = null;
   tourDays: TourDay[] = [];
+  isLoading: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,17 +42,20 @@ export class TourDayComponent implements OnInit {
   }
 
   getTourDays(): void {
+    this.isLoading = true;
     if (this.tourId) {
       this.tourService.getTourDayById(this.tourId).subscribe({
         next: (response: any) => {
+          this.isLoading = false;
           if (response.code === 200) {
             this.tourDays = response.data;
           } else {
-            console.error('Failed to get Tour Days: Invalid response code', response.message);
+            console.error('Lỗi: ', response.message);
           }
         },
         error: (err: any) => {
-          console.error('Failed to get Tour Days:', err);
+          this.isLoading = false;
+          console.error('Lỗi: ', err);
         },
       });
     }
@@ -69,18 +75,20 @@ export class TourDayComponent implements OnInit {
   }
 
   onDelete(id: any): void {
+    this.isLoading = true;
     if (this.tourId) {
       this.tourService.changeTourDayStatus(this.tourId, id, true).subscribe({
         next: (response: any) => {
+          this.isLoading = false;
           if (response.code === 200) {
-            console.log('Tour Day deleted successfully:', response.data);
             window.location.reload();
           } else {
-            console.error('Failed to delete Tour Day:', response.message);
+            console.error('Lỗi: ', response.message);
           }
         },
         error: (err: any) => {
-          console.error('Failed to delete Tour Day:', err);
+          this.isLoading = false;
+          console.error('Lỗi: ', err);
         },
       });
     }
