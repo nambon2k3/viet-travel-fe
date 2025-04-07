@@ -16,7 +16,7 @@ import { SpinnerComponent } from '../../../../../shared/components/spinner/spinn
     CurrencyVndPipe,
     CommonModule,
     SpinnerComponent
-],
+  ],
   templateUrl: './post-receipt.component.html',
   styleUrls: ['./post-receipt.component.css']
 })
@@ -24,7 +24,7 @@ export class PostReceiptComponent {
   receiptForm: FormGroup;
 
   transaction: any;
-  
+
   isLoading: boolean = false;
 
   showSuccess: boolean = false;
@@ -51,7 +51,7 @@ export class PostReceiptComponent {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.receiptId = params['id']; 
+      this.receiptId = params['id'];
     });
 
     if (this.receiptId) {
@@ -85,7 +85,33 @@ export class PostReceiptComponent {
         costAccountsArray.clear(); // Clear existing entries if any
 
         this.transaction.costAccount.forEach((account: any) => {
-          costAccountsArray.push(this.fb.group(account));
+
+          const costAccountGroup = this.fb.group(account);
+
+          // Listen for changes in 'amount' and update 'finalAmount'
+          costAccountGroup.get('amount')?.valueChanges.subscribe((newAmount) => {
+            const quantity = costAccountGroup.get('quantity')?.value || 1;
+            const discount = costAccountGroup.get('discount')?.value || 0;
+
+            costAccountGroup.get('finalAmount')?.setValue((Number(newAmount) * Number(quantity)) * (100 - Number(discount)) / 100.0, { emitEvent: false });
+          });
+
+          costAccountGroup.get('quantity')?.valueChanges.subscribe((newQuantity) => {
+            const amount = costAccountGroup.get('amount')?.value || 1;
+            const discount = costAccountGroup.get('discount')?.value || 0;
+
+            costAccountGroup.get('finalAmount')?.setValue((Number(amount) * Number(newQuantity)) * (100 - Number(discount)) / 100.0, { emitEvent: false });
+          });
+
+          costAccountGroup.get('discount')?.valueChanges.subscribe((newDiscount) => {
+
+            const quantity = Number(costAccountGroup.get('quantity')?.value || 1);
+            const amount = Number(costAccountGroup.get('amount')?.value || 0);
+
+            costAccountGroup.get('finalAmount')?.setValue((amount * quantity) * (100 - Number(newDiscount)) / 100.0, { emitEvent: false });
+          });
+
+          costAccountsArray.push(costAccountGroup);
         });
 
         console.log('Form values after patching:', this.receiptForm.value);
@@ -112,12 +138,30 @@ export class PostReceiptComponent {
       finalAmount: [0], // Initialize finalAmount with amount
       status: ['PENDING']
     });
-  
+
     // Listen for changes in 'amount' and update 'finalAmount'
     costAccountGroup.get('amount')?.valueChanges.subscribe((newAmount) => {
-      costAccountGroup.get('finalAmount')?.setValue(newAmount, { emitEvent: false });
+      const quantity = costAccountGroup.get('quantity')?.value || 1;
+      const discount = costAccountGroup.get('discount')?.value || 0;
+
+      costAccountGroup.get('finalAmount')?.setValue((newAmount! * quantity) * (100 - discount!) / 100.0, { emitEvent: true });
     });
-  
+
+    costAccountGroup.get('quantity')?.valueChanges.subscribe((newQuantity) => {
+      const amount = costAccountGroup.get('amount')?.value || 1;
+      const discount = costAccountGroup.get('discount')?.value || 0;
+
+      costAccountGroup.get('finalAmount')?.setValue((Number(amount) * Number(newQuantity)) * (100 - Number(discount)) / 100.0, { emitEvent: false });
+    });
+
+    costAccountGroup.get('discount')?.valueChanges.subscribe((newDiscount) => {
+
+      const quantity = costAccountGroup.get('quantity')?.value || 1;
+      const amount = costAccountGroup.get('amount')?.value || 0;
+
+      costAccountGroup.get('finalAmount')?.setValue((amount! * quantity) * (100 - newDiscount!) / 100.0, { emitEvent: true });
+    });
+
     this.costAccounts.push(costAccountGroup);
   }
 
@@ -126,11 +170,11 @@ export class PostReceiptComponent {
   }
 
   getTotalAmount(): number {
-    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount * row.quantity, 0);
+    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount * row.quantity * (100 - row.discount) / 100.0, 0);
   }
 
   onCancel() {
-    if(this.transaction.category == 'RECEIPT'){
+    if (this.transaction.category == 'RECEIPT') {
       this.router.navigate(['/accountant/list-receipt']);
 
     } else {
@@ -159,11 +203,11 @@ export class PostReceiptComponent {
       this.receiptForm.markAllAsTouched(); // Mark all fields as touched to show validation errors
     }
   }
-  
+
   triggerSuccess() {
     this.showSuccess = true;
 
-    
+
     // Hide warning after 3 seconds
     setTimeout(() => {
       this.showSuccess = false;

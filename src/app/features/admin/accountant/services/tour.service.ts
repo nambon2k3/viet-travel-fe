@@ -10,7 +10,7 @@ export class TourService {
 
   constructor(private http: HttpClient) { }
 
-  getTourByPage(
+  getListSettlementTourSchedule(
     page: number = 0,
     size: number = 10,
     keyword?: string,
@@ -18,6 +18,7 @@ export class TourService {
     sortField: string = 'createdAt',
     sortDirection: string = 'desc'
   ): Observable<any> {
+
     let params = new HttpParams()
       .set('page', page)
       .set('size', size)
@@ -30,19 +31,18 @@ export class TourService {
     if (isDeleted !== undefined) {
       params = params.set('isDeleted', isDeleted);
     }
-
-    return this.http.get(`${environment.apiUrl}marketing/blog/list`, { params });
+    return this.http.get(`${environment.apiUrl}accountant/tour-schedules/list-settlements`, { params });
   }
 
-  updateTourStatus(id: number, isDeleted: boolean): Observable<any> {
-    return this.http.post(`${environment.apiUrl}marketing/blog/change-status/${id}`, isDeleted);
+
+
+  getSettlementDetails(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}accountant/settlements/details`, { params: { tourScheduleId: id } });
+  } 
+
+
+  finishSettlement(id: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}accountant/settlements/finish`, { tourScheduleId: id });
   }
 
-  getTourById(id: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}marketing/blog/details/${id}`);
-  }
-
-  update(formData: any, id: number): Observable<any> {
-    return this.http.put(`${environment.apiUrl}marketing/blog/update/${id}`, formData);
-  }
 }
