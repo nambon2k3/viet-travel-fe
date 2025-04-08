@@ -40,6 +40,11 @@ export class TourBookingConfirmComponent {
 
   }
 
+  forwardPayment() {
+    console.log(this.bookingData.paymentUrl)
+    window.location.href = `${this.bookingData.paymentUrl}`;
+  }
+
 
   getBookingDetailByBookingCode(bookingCode: string) {
     this.bookingInforService.getBookingDetails(bookingCode).subscribe({

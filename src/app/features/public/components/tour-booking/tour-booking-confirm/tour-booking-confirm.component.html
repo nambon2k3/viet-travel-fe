@@ -153,7 +153,9 @@
                         <tr class="border-b">
                             <td class="font-semibold p-3">Phương thức:</td>
                             <td class="p-3">
-                                <span class="font-semibold">{{bookingData?.paymentMethod}}</span>
+                                <span class="font-semibold">
+                                    {{bookingData?.paymentMethod}}
+                                </span>
                                 <a href="#" class="text-blue-600 underline ml-2">Thay đổi phương thức thanh toán</a>
                             </td>
                         </tr>
@@ -166,6 +168,8 @@
                                 <div class="w-full mt-5">
                                     <p><strong>STK:</strong> 2003883886 - Nguyen Viet Hoai Nam</p>
                                     <p class="mt-2"><strong>Ngân Hàng:</strong> MB Bank</p>
+                                    <p class="mt-2"><strong>Nội dung chuyển khoản:</strong> {{bookingData?.bookingCode}}</p>
+                                    <p  class="mt-2">Thanh toán trực tiếp  <span class="text-blue-600 underline ml-2 hover:cursor-pointer hover:text-blue-800 " (click)="forwardPayment()" >tại đây</span>  </p>
                                 </div>
                                 }
                             </td>
