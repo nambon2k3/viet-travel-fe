@@ -4,6 +4,7 @@ import { ViewListServiceProviderComponent } from "./view-list-service-provider/v
 import { LayoutComponent } from "../layout/layout.component";
 import { AddServiceProviderComponent } from "./view-list-service-provider/add-service-provider/add-service-provider.component";
 import { UpdateServiceProviderComponent } from "./view-list-service-provider/update-service-provider/update-service-provider.component";
+import { TourRequestComponent } from "./tour-request/tour-request.component";
 
 export const CEO_ROUTES: Route[] = [
   {
@@ -25,6 +26,10 @@ export const CEO_ROUTES: Route[] = [
       {
         path: 'service-provider/:id/edit',
         component: UpdateServiceProviderComponent
+      },
+      {
+        path: 'tour-request',
+        component: TourRequestComponent
       },
       // {
       //   path: 'service-provider/:id/services',
