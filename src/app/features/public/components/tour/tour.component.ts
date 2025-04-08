@@ -54,6 +54,7 @@ export class TourComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTours();
+    this.getLocations();
   }
 
   getDestinationName(): string {
@@ -80,6 +81,17 @@ export class TourComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error adding to wishlist:', err);
+      },
+    });
+  }
+
+  getLocations(): void {
+    this.tourService.getLocations().subscribe({
+      next: (response) => {
+        this.locations.set(response.data);
+      },
+      error: (err) => {
+        console.error('Failed to load locations:', err);
       },
     });
   }
@@ -111,18 +123,17 @@ export class TourComponent implements OnInit {
       )
       .subscribe({
         next: (response) => {
-          this.tours.set(response.data.tours.items);
-          this.locations.set(response.data.locations);
-          this.totalItems = response.data.tours.total;
-          this.currentPage = response.data.tours.page;
-          this.size = response.data.tours.size;
+          this.tours.set(response.data.items);
+          this.totalItems = response.data.total;
+          this.currentPage = response.data.page;
+          this.size = response.data.size;
           this.totalPages = Math.ceil(this.totalItems / this.size);
           if (this.ssrService.isBrowser) {
             this.updateMap();
           }
         },
         error: (err) => {
-          console.error('Failed to load tours:', err);
+          console.error('Lỗi: ', err);
         },
       });
   }

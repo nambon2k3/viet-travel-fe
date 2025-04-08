@@ -64,6 +64,14 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     }
   }
 
+  toggleDropdown() {
+    const dropdown = document.getElementById('dropdownLocation');
+    if (dropdown) {
+      dropdown.classList.toggle('hidden');
+    }
+  }
+  
+
   selectLocation(id : number) {
     this.router.navigate(['/location-details', id]);
   }

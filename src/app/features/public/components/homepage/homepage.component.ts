@@ -60,7 +60,7 @@ export class HomepageComponent {
   locations: Location[] = [];
   blogs: Blog[] = [];
   blog: Blog | undefined;
-  activities: Activity[] = [];
+  activities: any[] = [];
   topTourOfYear: Tour | undefined;
 
   constructor(

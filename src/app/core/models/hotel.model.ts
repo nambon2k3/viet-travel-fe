@@ -7,17 +7,6 @@ export interface ApiResponse<T> {
 }
 
 export interface ApiData<T> {
-  locationDTOS: Locations[];
-  publicServiceProviderDTOS: PaginatedData<T>;
-}
-
-export interface PaginatedData<T> {
-  code: number;
-  message: string;
-  data: ApiInner<T>;
-}
-
-export interface ApiInner<T> {
   items: T[];
   total: number;
   page: number;

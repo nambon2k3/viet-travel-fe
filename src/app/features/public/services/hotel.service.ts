@@ -35,4 +35,8 @@ export class HotelService {
   getHotelDetail(id: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}public/hotel-detail/${id}`);
   }  
+
+  getLocations(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}public/list-location`);
+  }
 }
