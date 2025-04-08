@@ -42,6 +42,16 @@ export class TourOperationLayoutComponent {
     });
   }
 
+  sendTour() {
+    this.tourService.sendTour(this.tourId!).subscribe(response => {
+      if (response.code === 200) {
+        this.router.navigate(['/operator/view-list-tour']);
+      } else {
+        this.errorMessage = response.message;
+      }
+    });
+  }
+
   tour: any;
   tags: string = '';
   errorMessage: string = '';

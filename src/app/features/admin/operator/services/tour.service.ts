@@ -124,4 +124,8 @@ export class TourService {
   payService(formData: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}operator/pay-service`, formData);
   }
+
+  sendTour(id: number): Observable<any> {
+    return this.http.put(`${environment.apiUrl}operator/tours/send-accountant/${id}`, {});
+  }
 }
