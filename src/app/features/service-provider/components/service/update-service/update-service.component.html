@@ -1,0 +1,111 @@
+<!-- src/app/features/service-provider/components/service/update-service/update-service.component.html -->
+<div class="rounded-md bg-white p-6">
+    <h2 class="text-lg font-bold mb-4">Cập nhật Dịch vụ</h2>
+  
+    @if (isLoading) {
+      <div class="text-center py-4">Đang tải...</div>
+    } @else {
+      <form [formGroup]="serviceForm">
+        <!-- Hình ảnh -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Hình ảnh</label>
+        <div class="flex flex-col items-center justify-center mb-4">
+          <img *ngIf="imagePreview" [src]="imagePreview" alt="Xem trước hình ảnh"
+            class="w-full h-64 object-cover rounded-md mb-2" />
+          <input type="file" (change)="onFileSelected($event)" class="w-full" accept="image/*" />
+        </div>
+  
+        <!-- Tên dịch vụ -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Tên Dịch vụ</label>
+        <input type="text" formControlName="name" class="w-full p-2 border rounded-md mb-4"
+          placeholder="Nhập tên dịch vụ" />
+        <div *ngIf="serviceForm.get('name')?.invalid && serviceForm.get('name')?.touched"
+          class="text-red-500 text-sm mb-2">
+          Tên dịch vụ là bắt buộc
+        </div>
+  
+        <!-- Giá Nett -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Giá Nett</label>
+        <input type="number" formControlName="nettPrice" class="w-full p-2 border rounded-md mb-4"
+          placeholder="Nhập giá nett" min="0" />
+        <div *ngIf="serviceForm.get('nettPrice')?.invalid && serviceForm.get('nettPrice')?.touched"
+          class="text-red-500 text-sm mb-2">
+          Giá nett là bắt buộc và phải lớn hơn hoặc bằng 0
+        </div>
+  
+        <!-- Giá Bán -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Giá Bán</label>
+        <input type="number" formControlName="sellingPrice" class="w-full p-2 border rounded-md mb-4"
+          placeholder="Nhập giá bán" min="0" />
+        <div *ngIf="serviceForm.get('sellingPrice')?.invalid && serviceForm.get('sellingPrice')?.touched"
+          class="text-red-500 text-sm mb-2">
+          Giá bán là bắt buộc và phải lớn hơn hoặc bằng 0
+        </div>
+  
+        <!-- Ngày bắt đầu -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Ngày Bắt đầu</label>
+        <input type="datetime-local" formControlName="startDate" class="w-full p-2 border rounded-md mb-4" />
+        <div *ngIf="serviceForm.get('startDate')?.invalid && serviceForm.get('startDate')?.touched"
+          class="text-red-500 text-sm mb-2">
+          Ngày bắt đầu là bắt buộc
+        </div>
+  
+        <!-- Ngày kết thúc -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Ngày Kết thúc</label>
+        <input type="datetime-local" formControlName="endDate" class="w-full p-2 border rounded-md mb-4" />
+        <div *ngIf="serviceForm.get('endDate')?.invalid && serviceForm.get('endDate')?.touched"
+          class="text-red-500 text-sm mb-2">
+          Ngày kết thúc là bắt buộc
+        </div>
+  
+        <!-- Room Details -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Chi tiết Phòng</label>
+        <ng-multiselect-dropdown
+          [placeholder]="'Chọn loại phòng'"
+          [settings]="dropdownSettings"
+          [data]="roomOptions"
+          [(ngModel)]="selectedRooms"
+          formControlName="roomDetails"
+          class="w-full mb-4">
+        </ng-multiselect-dropdown>
+  
+        <!-- Meal Details -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Chi tiết Bữa ăn</label>
+        <ng-multiselect-dropdown
+          [placeholder]="'Chọn loại bữa ăn'"
+          [settings]="dropdownSettings"
+          [data]="mealOptions"
+          [(ngModel)]="selectedMeals"
+          formControlName="mealDetails"
+          class="w-full mb-4">
+        </ng-multiselect-dropdown>
+  
+        <!-- Transport Details -->
+        <label class="block mb-2 text-sm font-medium text-gray-700">Chi tiết Phương tiện</label>
+        <ng-multiselect-dropdown
+          [placeholder]="'Chọn phương tiện'"
+          [settings]="dropdownSettings"
+          [data]="transportOptions"
+          [(ngModel)]="selectedTransports"
+          formControlName="transportDetails"
+          class="w-full mb-4">
+        </ng-multiselect-dropdown>
+  
+        <!-- Thông báo -->
+        <p *ngIf="errorMessage" class="text-red-500 text-sm mb-3">{{ errorMessage }}</p>
+        <p *ngIf="successMessage" class="text-green-500 text-sm mb-3">{{ successMessage }}</p>
+  
+        <!-- Nút hành động -->
+        <div class="flex mt-4 justify-end space-x-2">
+          <button type="button" (click)="onCancel()"
+            class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300">
+            Hủy
+          </button>
+          <button type="button" (click)="saveChanges()"
+            class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
+            [disabled]="serviceForm.invalid">
+            Lưu thay đổi
+          </button>
+        </div>
+      </form>
+    }
+  </div>

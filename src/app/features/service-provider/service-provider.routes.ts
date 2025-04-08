@@ -1,11 +1,9 @@
 import { Route } from "@angular/router";
 import { LayoutComponent } from "../admin/layout/layout.component";
-import { ServiceContactComponent } from "./components/service-contact/service-contact.component";
-import { ServiceProvidedComponent } from "./components/service-provided/service-provided.component";
-import { AddServiceContactComponent } from "./components/service-contact/add-service-contact/add-service-contact.component";
-import { UpdateServiceContactComponent } from "./components/service-contact/update-service-contact/update-service-contact.component";
-import { AddServiceProvidedComponent } from "./components/service-provided/add-service-provided/add-service-provided.component";
-import { UpdateServiceProvidedComponent } from "./components/service-provided/update-service-provided/update-service-provided.component";
+import { ServiceRequestComponent } from "./components/service-request/service-request.component";
+import { RequestDetailComponent } from "./components/service-request/request-detail/request-detail.component";
+import { ServiceComponent } from "./components/service/service.component";
+import { UpdateServiceComponent } from "./components/service/update-service/update-service.component";
 
 
 export const SERVICE_PROVIDER_ROUTES: Route[] = [
@@ -14,28 +12,20 @@ export const SERVICE_PROVIDER_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       {
-        path: 'service-contact',
-        component: ServiceContactComponent,
+        path: 'service',
+        component: ServiceComponent,
       },
       {
-        path: 'services',
-        component: ServiceProvidedComponent,
+        path: 'service/:id/edit',
+        component: UpdateServiceComponent
       },
       {
-        path: 'add-service-contact',
-        component: AddServiceContactComponent,
+        path: 'service-request',
+        component: ServiceRequestComponent,
       },
       {
-        path: 'update-service-contact',
-        component: UpdateServiceContactComponent,
-      },
-      {
-        path: 'add-services',
-        component: AddServiceProvidedComponent,
-      },
-      {
-        path: 'update-services',
-        component: UpdateServiceProvidedComponent,
+        path: 'request-detail',
+        component: RequestDetailComponent,
       }
       ]
   },
