@@ -19,4 +19,8 @@ export class PlanService {
       params: { name: name }
     });
   }
+
+  generatePlan(data: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}public/plans/generate`, data);
+  }
 }
