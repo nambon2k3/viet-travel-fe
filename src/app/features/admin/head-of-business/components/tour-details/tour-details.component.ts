@@ -4,13 +4,13 @@ import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModu
 import { Router, ActivatedRoute } from '@angular/router';
 import { BlogContentComponent } from '../../../marketer/components/blog-detail/blog-content/blog-content.component';
 import { NgMultiSelectDropDownModule, IDropdownSettings } from 'ng-multiselect-dropdown';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { LocationService } from '../../services/location/location.service';
 import { TourService } from '../../services/tour.service';
 import { TourDetailHOB } from '../../../../../core/models/tour.model';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AdminService } from '../../../admin.service';
+import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 
 interface Location {
   id: number;
@@ -31,8 +31,9 @@ interface Tag {
     NgMultiSelectDropDownModule,
     ReactiveFormsModule,
     BlogContentComponent,
-    NgSelectModule
-  ],
+    NgSelectModule,
+    SpinnerComponent
+],
   templateUrl: './tour-details.component.html',
   styleUrls: ['./tour-details.component.css'],
 })
@@ -52,6 +53,7 @@ export class TourDetailsComponent implements OnInit {
   selectedFiles: File[] = [];
   previewImage: string | null = null;
   selectedFile: File | null = null;
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -133,35 +135,47 @@ export class TourDetailsComponent implements OnInit {
   }
 
   loadTourDetails(id: string): void {
+    this.isLoading = true;
     this.tourService.getTourById(id).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         const tourData: TourDetailHOB = response.data;
         this.mapTourDataToForm(tourData);
       },
       error: (err: any) => {
-        console.error('Failed to load tour details:', err);
+        this.isLoading = false;
+        console.error('Lỗi: ', err);
       },
     });
   }
 
   loadLocations(keyword: string = ''): void {
+    this.isLoading = true;
     this.locationService.getLocationByPage(0, 100, keyword).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         this.locations = response.data.items;
         this.dropdownList = this.locations;
       },
       error: (err: any) => {
-        console.error('Failed to load locations:', err);
+        this.isLoading = false;
+        console.error('Lỗi: ', err);
       },
     });
   }
 
   getAllTags(): void {
+    this.isLoading = true;
     this.tourService.getAllTags().subscribe({
       next: (response) => {
+        this.isLoading = false;
         this.tags = response.data;
         this.dropdownTagList = this.tags;
-      }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Lỗi: ', err);
+      },
     });
   }
 
@@ -189,6 +203,7 @@ export class TourDetailsComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.isLoading = true;
     const requestBody = {
       ...this.editTourForm.value,
       tagIds: this.editTourForm.value.tagIds.map((tag: any) => tag.id), // Đảm bảo gửi ID
@@ -199,21 +214,25 @@ export class TourDetailsComponent implements OnInit {
     if (this.tourId) {
       this.tourService.updateTour(requestBody).subscribe({
         next: (response: any) => {
+          this.isLoading = false;
           console.log('Tour updated successfully:', response);
           this.router.navigate(['/head-business/list-tour']);
         },
         error: (err: any) => {
-          console.error('Failed to update tour:', err);
+          this.isLoading = false;
+          console.error('Lỗi: ', err);
         },
       });
     } else {
       this.tourService.createTour(requestBody).subscribe({
         next: (response: any) => {
+          this.isLoading = false;
           console.log('Tour created successfully:', response);
           this.router.navigate(['/head-business/list-tour']);
         },
         error: (err: any) => {
-          console.error('Failed to create tour:', err);
+          this.isLoading = false;
+          console.error('Lỗi: ', err);
         },
       });
     }
@@ -247,6 +266,7 @@ export class TourDetailsComponent implements OnInit {
   }
 
   saveChanges(): void {
+    this.isLoading = true;
     const formData = new FormData();
     this.selectedFiles.forEach(file => {
       formData.append('file', file);
@@ -254,11 +274,13 @@ export class TourDetailsComponent implements OnInit {
 
     this.adminService.uploadImage(formData).subscribe({
       next: (response) => {
+        this.isLoading = false;
         const uploadedImages = response.data;
         const currentImages = this.editTourForm.get('tourImages')?.value || null;
         this.editTourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
       },
       error: (err) => {
+        this.isLoading = false;
         console.error('Lỗi tải ảnh:', err);
       }
     });

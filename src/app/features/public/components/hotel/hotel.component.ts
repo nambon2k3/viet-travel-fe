@@ -46,6 +46,7 @@ export class HotelComponent implements OnInit {
 
   ngOnInit(): void {
     this.getHotels();
+    this.getLocations();
   }
 
   goToDetail(id: number): void {
@@ -67,6 +68,17 @@ export class HotelComponent implements OnInit {
     return firstTour?.location?.name || 'Không xác định';
   }
 
+  getLocations(): void {
+    this.hotelService.getLocations().subscribe({
+      next: (response) => {
+        this.locations.set(response.data);
+      },
+      error: (err) => {
+        console.error('Lỗi: ', err);
+      }
+    });
+  }
+
   getHotels(): void {
     this.hotelService.getHotels(
       this.currentPage,
@@ -78,15 +90,14 @@ export class HotelComponent implements OnInit {
       //sortBy ?: string
     ).subscribe({
       next: (response) => {
-        this.hotels.set(response.data.publicServiceProviderDTOS.data.items);
-        this.locations.set(response.data.locationDTOS);
-        this.totalItems = response.data.publicServiceProviderDTOS.data.total;
-        this.currentPage = response.data.publicServiceProviderDTOS.data.page;
-        this.size = response.data.publicServiceProviderDTOS.data.size;
+        this.hotels.set(response.data.items);
+        this.totalItems = response.data.total;
+        this.currentPage = response.data.page;
+        this.size = response.data.size;
         this.totalPages = (Math.ceil(this.totalItems / this.size));
       },
       error: (err) => {
-        console.error('Failed to load hotels:', err);
+        console.error('Lỗi: ', err);
       }
     });
   }
@@ -165,7 +176,7 @@ export class HotelComponent implements OnInit {
     setTimeout(async () => {
       const mapElement = document.getElementById('map');
       if (!mapElement) {
-        console.warn('Map element not found');
+        console.warn('Không tìm thấy bản đồ');
         return;
       }
   

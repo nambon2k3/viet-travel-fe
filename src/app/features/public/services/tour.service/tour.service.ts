@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiResponse, TourListResponse } from '../../../../core/models/public-tour.model';
 import { environment } from '../../../../../environments/environment';
 
 @Injectable({
@@ -19,7 +18,7 @@ export class TourService {
     duration?: number,
     fromDate?: Date,
     departLocationId?: number
-  ): Observable<ApiResponse<TourListResponse>> {
+  ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
@@ -31,6 +30,10 @@ export class TourService {
     if (fromDate) params = params.set('fromDate', fromDate.toISOString().split('T')[0]);
     if (departLocationId) params = params.set('departLocationId', departLocationId);
 
-    return this.http.get<ApiResponse<TourListResponse>>(`${environment.apiUrl}public/list-tour`, { params });
+    return this.http.get(`${environment.apiUrl}public/list-tour`, { params });
+  }
+
+  getLocations(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}public/list-location`);
   }
 }

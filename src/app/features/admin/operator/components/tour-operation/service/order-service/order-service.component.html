@@ -43,5 +43,9 @@
                 Gửi yêu cầu đặt dịch vụ
             </button>
         </div>
+        <div *ngIf="errorMessage" class="global-error text-red-500 ml-4 pb-2">
+            {{ errorMessage }}
+        </div>
     </div>
+    
 </div>

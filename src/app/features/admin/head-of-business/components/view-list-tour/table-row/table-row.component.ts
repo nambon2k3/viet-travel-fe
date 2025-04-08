@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Router } from '@angular/router';
@@ -14,11 +14,16 @@ import { TourService } from '../../../services/tour.service';
 export class TableRowComponent {
   @Input() tour: TourHOB = <TourHOB>{};
   @Output() tourUpdated = new EventEmitter<void>();
+  isDropdownOpen: boolean = false;
 
   constructor(
     private tourService: TourService,
     private router: Router
   ) { }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
 
   deleteTour(): void {
     this.tourService.deleteTour(this.tour.id).subscribe({

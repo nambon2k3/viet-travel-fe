@@ -18,6 +18,7 @@ export class PostServiceComponent {
   @Output() serviceAdded = new EventEmitter<any[]>();
   @Input() scheduleId: number | null = null;
   modal: Modal | null = null;
+  errorMessage: string | null = null;
 
   locations = signal<any[]>([]);
   categories = signal<any[]>([]);
@@ -64,35 +65,33 @@ export class PostServiceComponent {
           }));
           this.bookings.set(formattedBookings);
         } else {
-          console.error('Error fetching bookings:', response.message);
+          this.errorMessage = response.message;
+          console.error('Lỗi khi lấy danh sách đặt chỗ:', response.message);
         }
       },
       error: (error) => {
-        console.error('Error fetching bookings:', error);
+        console.error('Lỗi khi lấy danh sách đặt chỗ:', error);
       }
     });
   }
 
   fetchLocationsAndCategories() {
-    this.tourService.getLocationsAndCategories().subscribe({
+    this.tourService.getLocationsAndCategories(this.scheduleId!).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
           const locationsArray = Object.entries(response.data.locations).map(([id, name]) => ({
             id: Number(id),
             name
           }));
-          const categoriesArray = Object.entries(response.data.serviceCategories).map(([id, name]) => ({
-            id: Number(id),
-            name
-          }));
           this.locations.set(locationsArray);
-          this.categories.set(categoriesArray);
+          this.categories.set(this.mapCategoriesToVietnamese(response.data.serviceCategories));
         } else {
-          console.error('Error fetching locations and categories:', response.message);
+          this.errorMessage = response.message;
+          console.error('Lỗi khi lấy vị trí và danh mục:', response.message);
         }
       },
       error: (error) => {
-        console.error('Error fetching locations and categories:', error);
+        console.error('Lỗi khi lấy vị trí và danh mục:', error);
       }
     });
   }
@@ -110,17 +109,33 @@ export class PostServiceComponent {
             this.selectedProviderId = null;
             this.services.set([]);
           } else {
-            console.error('Error fetching providers:', response.message);
+            this.errorMessage = response.message;
+            console.error('Lỗi khi lấy nhà cung cấp dịch vụ:', response.message);
           }
         },
         error: (error) => {
-          console.error('Error fetching providers:', error);
+          console.error('Lỗi khi lấy nhà cung cấp dịch vụ:', error);
         }
       });
     } else {
       this.providers.set([]);
       this.services.set([]);
     }
+  }
+
+  mapCategoriesToVietnamese(categories: { [key: string]: string }): { id: number, name: string }[] {
+    const translations: { [key: string]: string } = {
+      'Hotel': 'Khách sạn',
+      'Restaurant': 'Nhà hàng',
+      'Transport': 'Phương tiện di chuyển',
+      'Activity': 'Hoạt động',
+      'Flight Ticket': 'Vé máy bay'
+    };
+
+    return Object.entries(categories).map(([id, name]) => ({
+      id: Number(id),
+      name: translations[name] || name // fallback nếu không có bản dịch
+    }));
   }
 
   fetchServices() {
@@ -138,11 +153,12 @@ export class PostServiceComponent {
               this.fetchServiceDetails(service.id);
             });
           } else {
-            console.error('Error fetching services:', response.message);
+            this.errorMessage = response.message;
+            console.error('Lỗi khi lấy danh sách dịch vụ:', response.message);
           }
         },
         error: (error) => {
-          console.error('Error fetching services:', error);
+          console.error('Lỗi khi lấy danh sách dịch vụ:', error);
         }
       });
     } else {
@@ -169,11 +185,12 @@ export class PostServiceComponent {
           });
           this.services.set(updatedServices);
         } else {
-          console.error('Error fetching service details:', response.message);
+          this.errorMessage = response.message;
+          console.error('Lỗi khi lấy chi tiết dịch vụ:', response.message);
         }
       },
       error: (error) => {
-        console.error('Error fetching service details:', error);
+        console.error('Lỗi khi lấy chi tiết dịch vụ:', error);
       }
     });
   }
@@ -223,14 +240,14 @@ export class PostServiceComponent {
 
   addServicesToFinalList() {
     if (!this.selectedBookingId) {
-      console.error('Please select a booking first');
+      console.error('Vui lòng chọn một đặt chỗ trước');
       return;
     }
-  
+
     const payloads = this.servicePrices.map(service => {
       if (!service.serviceId) {
-        console.error('Service ID is missing for service:', service);
-        throw new Error('Service ID cannot be null');
+        console.error('Thiếu ID dịch vụ cho dịch vụ:', service);
+        throw new Error('ID dịch vụ không thể null');
       }
       return {
         bookingId: this.selectedBookingId,
@@ -240,19 +257,20 @@ export class PostServiceComponent {
         reason: ''
       };
     });
-  
+
     for (const payload of payloads) {
       this.tourService.addServices(payload).subscribe({
         next: (response: any) => {
           if (response.code === 200) {
             this.serviceAdded.emit(this.servicePrices);
-            console.log('Service added successfully:', response);
+            console.log('Thêm dịch vụ thành công:', response);
           } else {
-            console.error('Error adding service:', response.message);
+            this.errorMessage = response.message;
+            console.error('Lỗi khi thêm dịch vụ:', response.message);
           }
         },
         error: (error) => {
-          console.error('Error adding service:', error);
+          console.error('Lỗi khi thêm dịch vụ:', error);
         },
         complete: () => {
           if (payload === payloads[payloads.length - 1]) {

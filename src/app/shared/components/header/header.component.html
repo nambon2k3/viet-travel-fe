@@ -28,7 +28,7 @@
         class="hidden md:flex space-x-8 lg:space-x-14 text-lg font-semibold transition-all duration-300"
         [class.ml-0]="!isHomepage || (isHomepage && isScrolled)" [class.ml-[-53rem]]="isHomepage && !isScrolled">
         <li>
-          <button id="dropdownLocationButton" data-dropdown-toggle="dropdownLocation" type="button"
+          <button id="dropdownLocationButton" data-dropdown-toggle="dropdownLocation" type="button" 
             class="hover:text-gray-600">
             Điểm đến
           </button>
@@ -113,10 +113,18 @@
             </a>
           </li>
           <li>
-            <button id="dropdownLocationButton" data-dropdown-toggle="dropdownLocation"
+            <button id="dropdownLocationButton1" data-dropdown-toggle="dropdownLocation1"
               class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">
               Địa điểm
             </button>
+            <div id="dropdownLocation1" class="z-10 hidden bg-white rounded-lg shadow-sm border p-4 w-auto">
+              <div class="grid grid-cols-3 gap-6">
+                <div *ngFor="let location of listLocation | slice:0:30 | shuffle " (click)="selectLocation(location.id)"
+                  class="text-gray-700 hover:text-green-700 cursor-pointer text-sm font-medium">
+                  {{ location.name }}
+                </div>
+              </div>
+            </div>
           </li>
           <li>
             <a href="/plans" class="hover:border-green-800 cursor-pointer hover:border-b-4 transition-all duration-300">

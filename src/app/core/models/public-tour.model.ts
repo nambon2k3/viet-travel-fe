@@ -1,12 +1,5 @@
-import { GeoPosition } from "./homepage.model";
-import { Locations } from "./location.model";
+import { Locations } from "./location.model";  
 
-export interface ApiResponse<T> {
-    code: number;
-    message: string;
-    data: T;
-  }
-  
   export interface Pagination {
     page: number;
     size: number;
@@ -38,18 +31,5 @@ export interface ApiResponse<T> {
   export interface TourSchedule {
     scheduleId: number;
     startDate: string;
-  }
-  
-  export interface Items {
-    page: number;
-    size: number;
-    total: number;
-    items: Tour[];
-  }
-
-  
-  export interface TourListResponse {
-    locations : Locations[];
-    tours: Items;
   }
   

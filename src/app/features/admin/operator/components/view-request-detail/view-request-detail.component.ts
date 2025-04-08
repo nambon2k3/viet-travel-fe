@@ -40,6 +40,8 @@ interface RequestDetail {
 export class ViewRequestDetailComponent implements OnInit {
   requestDetail: RequestDetail | null = null;
   isLoading: boolean = false;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   constructor(
     private router: Router,
@@ -63,12 +65,13 @@ export class ViewRequestDetailComponent implements OnInit {
         if (response.code === 200) {
           this.requestDetail = response.data;
         } else {
-          console.error('Failed to load request detail:', response.message);
+          this.errorMessage = response.message;
+          console.error('Lỗi khi tải chi tiết yêu cầu:', response.message);
         }
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error fetching request detail:', err);
+        console.error('Lỗi khi tải chi tiết yêu cầu:', err);
         this.isLoading = false;
       }
     });
@@ -79,31 +82,37 @@ export class ViewRequestDetailComponent implements OnInit {
   }
 
   onApproved(): void {
+    this.isLoading = true;
     this.requestService.updateRequestStatus(this.requestDetail?.tourBookingServiceId!).subscribe({
       next: (response) => {
         if (response.code === 200) {
-          this.router.navigate(['/operator/view-list-request']);
+          this.successMessage = response.message;
         } else {
-          console.error('Failed to approve request:', response.message);
+          this.errorMessage = response.message;
+          console.error('Lỗi khi chấp thuận yêu cầu:', response.message);
         }
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error approving request:', err);
+        console.error('Lỗi khi chấp thuận yêu cầu:', err);
       }
     });
   }
 
   onRejected(): void {
+    this.isLoading = true;
     this.requestService.rejectRequest(this.requestDetail?.tourBookingServiceId!).subscribe({
       next: (response) => {
         if (response.code === 200) {
-          this.router.navigate(['/operator/view-list-request']);
+          this.successMessage = response.message;
         } else {
-          console.error('Failed to rejectRequest:', response.message);
+          this.errorMessage = response.message;
+          console.error('Lỗi khi từ chối yêu cầu:', response.message);
         }
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error rejectRequest:', err);
+        console.error('Lỗi khi từ chối yêu cầu:', err);
       }
     });
   }

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { CurrencyVndPipe } from "../../../../../../shared/pipes/currency-vnd.pipe";
 import { TourService } from '../../../services/tour.service';
 import { ActivatedRoute } from '@angular/router';
+import { SpinnerComponent } from "../../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-summary',
@@ -11,11 +12,13 @@ import { ActivatedRoute } from '@angular/router';
   standalone: true,
   imports: [
     CommonModule,
-    CurrencyVndPipe
-  ]
+    CurrencyVndPipe,
+    SpinnerComponent
+]
 })
 export class SummaryComponent implements OnInit {
   id: number | null = null;
+  isLoading: boolean = false;
   totalCollect = {
     total: 0,
     companyCollect: 0,
@@ -51,8 +54,10 @@ export class SummaryComponent implements OnInit {
   }
 
   fetchTourSummary(id: number): void {
+    this.isLoading = true;
     this.tourService.getSummary(id).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200 && response.data) {
           const tourData = response.data;
   
@@ -79,6 +84,7 @@ export class SummaryComponent implements OnInit {
         }
       },
       error: (error) => {
+        this.isLoading = false;
         console.error('Error fetching tour summary:', error);
       }
     });

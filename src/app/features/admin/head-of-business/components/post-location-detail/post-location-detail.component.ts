@@ -7,14 +7,16 @@ import { catchError, of } from 'rxjs';
 import { LocationService } from '../../services/location/location.service';
 import { CommonModule } from '@angular/common';
 import { VietnamMapComponent } from "./vietnam-map/vietnam-map.component";
+import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-post-location-detail',
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    VietnamMapComponent
-  ],
+    VietnamMapComponent,
+    SpinnerComponent
+],
   templateUrl: './post-location-detail.component.html',
   styleUrl: './post-location-detail.component.css'
 })
@@ -26,6 +28,7 @@ export class PostLocationDetailComponent {
   selectedFile: File | null = null;
   locationId: string | null = null;
   location: Locations = <Locations>{};
+  isLoading: boolean = false;
 
   constructor(
     private locationService: LocationService,
@@ -59,8 +62,10 @@ export class PostLocationDetailComponent {
   }
 
   loadLocationById(id: string): void {
+    this.isLoading = true;
     this.locationService.getLocationById(id).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response?.code === 200) {
           this.location = response.data;
           this.editLocationForm.patchValue({
@@ -83,6 +88,7 @@ export class PostLocationDetailComponent {
         }
       },
       error: (err) => {
+        this.isLoading = false;
         console.error('Không thể tải địa điểm:', err);
         this.errorMessage = 'Đã xảy ra lỗi khi tải địa điểm.';
       }
@@ -127,6 +133,7 @@ export class PostLocationDetailComponent {
   }
 
   updateLocation(): void {
+    this.isLoading = true;
     if (!this.selectedFile && !this.imagePreview) {
       this.editLocationForm.get('image')?.setValue(null);
     } else if (this.imagePreview) {
@@ -138,6 +145,7 @@ export class PostLocationDetailComponent {
     this.locationService.updateLocation(formData)
       .pipe(
         catchError((error) => {
+          this.isLoading = false;
           const apiError = error?.error?.message || 'Đã xảy ra lỗi khi cập nhật địa điểm.';
           this.errorMessage = apiError;
           this.successMessage = null;
@@ -145,6 +153,7 @@ export class PostLocationDetailComponent {
         })
       )
       .subscribe((response: any) => {
+        this.isLoading = false;
         if (response?.code === 200) {
           this.successMessage = response?.message || 'Đã cập nhật địa điểm thành công.';
           this.errorMessage = null;
@@ -156,6 +165,7 @@ export class PostLocationDetailComponent {
   }
 
   createLocation(): void {
+    this.isLoading = true;
     if (!this.selectedFile && !this.imagePreview) {
       this.editLocationForm.get('image')?.setValue(null);
     } else if (this.imagePreview) {
@@ -167,6 +177,7 @@ export class PostLocationDetailComponent {
     this.locationService.createLocation(formData)
       .pipe(
         catchError((error) => {
+          this.isLoading = false;
           const apiError = error?.error?.message || 'Đã xảy ra lỗi khi tạo địa điểm.';
           this.errorMessage = apiError;
           this.successMessage = null;
@@ -174,6 +185,7 @@ export class PostLocationDetailComponent {
         })
       )
       .subscribe((response: any) => {
+        this.isLoading = false;
         if (response?.code === 200) {
           this.successMessage = response?.message || 'Đã tạo địa điểm thành công.';
           this.errorMessage = null;

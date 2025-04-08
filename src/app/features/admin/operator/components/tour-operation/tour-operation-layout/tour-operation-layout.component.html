@@ -9,27 +9,25 @@
             </svg>
             Quay lại danh sách</button>
         <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" type="button"
-            class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Nhận điều hành</button>
+            class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Chuyển quyết toán</button>
     </div>
 </div>
 <div class="bg-yellow-100 shadow-md w-full mt-4 pt-4">
     <div class="ml-7 text-xl font-semibold">
-        <span class="text-red-600 font-bold">MS001</span>
-        <span class="font-bold">_ Đà Nẵng -
-            Huế - Bà Nà - Hội An</span>
-        <span class="ml-4 font-bold">Thời gian khởi hành: 02/02/2025</span>
+        <span class="text-red-600 font-bold">VT{{ tour?.scheduleId }}_</span>
+        <span class="font-bold">{{ tour?.tourName }}</span>
+        <span class="ml-4 font-bold">Thời gian khởi hành: {{ tour?.startDate | formatDate }}</span>
     </div>
     <div class="flex space-x-2 text-sm text-gray-600 mt-2 ml-7">
-        <span class="pr-5">Ngày tạo: 24-08-2003</span> |
-        <span class="px-5">Loại Booking: ONLINE</span> |
-        <span class="px-5">Trạng thái:
+        <span class="pr-5">Ngày tạo: {{ tour?.createdAt | formatDate}}</span> |
+        <span class="px-5">Loại tour:
             <span
                 class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                 <span class="w-2 h-2 me-1 bg-blue-500 rounded-full"></span>
-                PENDING
+                {{ tour?.tourType }}
             </span>
         </span> |
-        <span class="px-5">Điều hành: ONLINE</span>
+        <span class="px-5">Điều hành: {{ tour?.operatorName }}</span>
     </div>
     <nav class="flex justify-between px-8 space-x-6 mt-4  text-green-700 font-semibold">
         <a [routerLink]="['/operator/tour-operation/overview']" [queryParams]="{ id: tourId }"
@@ -40,7 +38,8 @@
             khách hàng</a>
 
         <a [routerLink]="['/operator/tour-operation/list-booking']" [queryParams]="{ id: tourId }"
-            routerLinkActive="border-b-2 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Danh sách booking</a>
+            routerLinkActive="border-b-2 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Danh sách
+            booking</a>
 
         <a [routerLink]="['/operator/tour-operation/list-service']" [queryParams]="{ id: tourId }"
             routerLinkActive="border-b-2 pb-2 border-green-700 font-semibold" class="hover:text-green-800">Dịch vụ</a>
@@ -80,7 +79,7 @@
                 <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn điều
                     hành
                     cho tour này?</h3>
-                <button data-modal-hide="popup-modal" type="button" (click)="operateTour(tourId)"
+                <button data-modal-hide="popup-modal" type="button" (click)="sendTour()"
                     class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                     Có, tôi chắc chắn
                 </button>
@@ -91,6 +90,7 @@
         </div>
     </div>
 </div>
+
 <div class="">
     <router-outlet></router-outlet>
 </div>

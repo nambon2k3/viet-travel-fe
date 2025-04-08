@@ -93,8 +93,8 @@ export class TourService {
     return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/summary`);
   }
 
-  getLocationsAndCategories(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}operator/tour-service/list-location-and-service-category`);
+  getLocationsAndCategories(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-service/list-location-and-service-category/${id}`);
   }
 
   getServiceProviders(selectedLocationId: number, selectedCategoryId: number): Observable<any> {
@@ -123,5 +123,9 @@ export class TourService {
 
   payService(formData: any): Observable<any> {
     return this.http.post(`${environment.apiUrl}operator/pay-service`, formData);
+  }
+
+  sendTour(id: number): Observable<any> {
+    return this.http.put(`${environment.apiUrl}operator/tours/send-accountant/${id}`, {});
   }
 }

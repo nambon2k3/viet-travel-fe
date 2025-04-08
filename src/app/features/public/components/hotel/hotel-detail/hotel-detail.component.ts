@@ -35,7 +35,6 @@ export class HotelDetailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.isLoading = true;
     const hotelId = this.route.snapshot.paramMap.get('id');
     if (hotelId) {
       this.loadHotelDetail(hotelId);
@@ -45,15 +44,16 @@ export class HotelDetailComponent implements OnInit {
   }
 
   loadHotelDetail(id: string) {
+    this.isLoading = true;
     this.hotelService.getHotelDetail(id).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200 && response.data) {
           this.hotelDetails = response.data.serviceProvider;
           this.allRooms = response.data.rooms;
           this.rooms = [...this.allRooms]; // Use all rooms as is
           this.price = this.rooms.length > 0 ? this.rooms[0].sellingPrice : (this.hotelDetails.minRoomPrice || 0);
           this.otherServices = response.data.otherHotels;
-          this.isLoading = false;
 
           if (this.ssrService.isBrowser) {
             this.initMap();
@@ -61,8 +61,8 @@ export class HotelDetailComponent implements OnInit {
         }
       },
       error: (err: any) => {
-        console.error('Error fetching hotel details', err);
         this.isLoading = false;
+        console.error('Error fetching hotel details', err);
       },
     });
   }
@@ -98,6 +98,12 @@ export class HotelDetailComponent implements OnInit {
 
       
   }
+
+  getStarsArray(star: number | undefined): any[] {
+    if (!star) return [];
+    return Array(Math.round(star)).fill(0);
+  }
+  
 
   showOrHide() {
     this.isShow = !this.isShow;

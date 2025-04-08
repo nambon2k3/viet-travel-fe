@@ -3,7 +3,8 @@
   <div class="flex items-center justify-between border-b pb-4">
     <div class="flex items-center gap-3">
       <span class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-full">
-        <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="Người dùng" class="w-full h-full rounded-full">
+        <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="Người dùng"
+          class="w-full h-full rounded-full">
       </span>
       <div>
         <p class="font-semibold text-lg">{{ requestDetail.proposer }}</p>
@@ -12,12 +13,13 @@
     </div>
   </div>
 
-  
+
 
   <!-- Yêu cầu dịch vụ -->
   <div class="mt-6">
     <h2 class="text-lg font-bold">Danh sách yêu cầu dịch vụ</h2>
-    <p class="text-sm text-gray-600">Mã ID: {{ requestDetail.tourBookingServiceId }} &nbsp;|&nbsp; Mã đặt chỗ: {{ requestDetail.bookingCode }}</p>
+    <p class="text-sm text-gray-600">Mã ID: {{ requestDetail.tourBookingServiceId }} &nbsp;|&nbsp; Mã đặt chỗ: {{
+      requestDetail.bookingCode }}</p>
     <p class="text-lg font-bold mt-6">{{ requestDetail.tourName }}</p>
     <p class="text-sm text-gray-600">Loại Tour: {{ requestDetail.tourType }}</p>
     <p class="text-sm text-gray-600">Ngày bắt đầu: {{ requestDetail.startDate | formatDate }}</p>
@@ -65,7 +67,17 @@
   <div class="flex justify-end gap-3 mt-4">
     <button (click)="onCanceled()" class="bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400">Hủy</button>
     <button (click)="onRejected()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Từ chối</button>
-    <button (click)="onApproved()" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Phê duyệt</button>
+    <button (click)="onApproved()" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Phê
+      duyệt</button>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="global-error text-red-500 mt-6">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="global-error text-green-700 mt-6">
+    {{ successMessage }}
   </div>
 </div>
 

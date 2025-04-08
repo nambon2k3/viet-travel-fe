@@ -4,8 +4,6 @@ import { FooterComponent } from "../../../../shared/components/footer/footer.com
 import { ActivatedRoute, Router } from '@angular/router';
 import { Locations } from '../../../../core/models/location.model';
 import { DestinationService } from '../../services/destination.service';
-import { Blog } from '../../../../core/models/blog.model';
-import { Activity, Tour } from '../../../../core/models/homepage.model';
 
 @Component({
   selector: 'app-destination',
@@ -15,13 +13,12 @@ import { Activity, Tour } from '../../../../core/models/homepage.model';
   styleUrls: ['./destination.component.css']
 })
 export class DestinationComponent implements OnInit {
-  location: Locations | null = null;
-  blogs: Blog[] | null = null;
-  activities: Activity[] | null = null;
-  tours: Tour[] | null = null;
+  mainLocation: Locations | null = null;
+  blogs: any[] | null = null;
+  activities: any[] | null = null;
+  tours: any[] | null = null;
   hotels: any[] | null = null;
-
-  recommendedLocations: Locations[] = [];
+  recommendedLocations: any[] | null = null;
   currentIndex: number = 0;
 
   constructor(
@@ -40,7 +37,7 @@ export class DestinationComponent implements OnInit {
   loadLocation(id: string) {
     this.destinationService.getDestinationById(id).subscribe({
       next: (res) => {
-        this.location = res.data;
+        this.mainLocation = res.data;
         this.blogs = res.data.blogs;
         this.activities = res.data.activities;
         this.tours = res.data.tours;
@@ -57,12 +54,12 @@ export class DestinationComponent implements OnInit {
     if (this.currentIndex > 0) {
       this.currentIndex--;
     } else {
-      this.currentIndex = this.recommendedLocations.length - 3;
+      this.currentIndex = this.recommendedLocations!.length - 3;
     }
   }
   
   nextSlide() {
-    if (this.currentIndex < this.recommendedLocations.length - 3) {
+    if (this.currentIndex < this.recommendedLocations!.length - 3) {
       this.currentIndex++;
     } else {
       this.currentIndex = 0; 
@@ -81,15 +78,31 @@ export class DestinationComponent implements OnInit {
     if (price > 0 && price != null) {
       return 'Giá từ: ' + price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) + '/ người';
     } else {
-      return 'Miễn phí';
+      return 'Liên hệ';
     }
   }
 
   openBlogDetail(blogid: number | undefined) {
     if (blogid) {
       this.router.navigate(['/blog-details', blogid]);
-    } else {
-      console.error('Invalid blog id');
+    }
+  }
+
+  openTourDetail(tourid: number | undefined) {
+    if (tourid) {
+      this.router.navigate(['/tour-details', tourid]);
+    }
+  }
+
+  openHotelDetail(hotelid: number | undefined) {
+    if (hotelid) {
+      this.router.navigate(['/hotel-details', hotelid]);
+    }
+  }
+
+  openDetail(locId: number | undefined) {
+    if (locId) {
+      this.router.navigate(['/location-details', locId]);
     }
   }
 }

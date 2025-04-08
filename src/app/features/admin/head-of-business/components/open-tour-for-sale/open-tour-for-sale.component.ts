@@ -9,11 +9,12 @@ import { CreateOpenTourDayComponent } from './create-open-tour-day/create-open-t
 import { UpdateOpenTourDayComponent } from './update-open-tour-day/update-open-tour-day.component';
 import { TourService } from '../../services/tour.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-open-tour-for-sale',
   standalone: true,
-  imports: [FullCalendarModule, CommonModule, FormsModule, CreateOpenTourDayComponent, UpdateOpenTourDayComponent],
+  imports: [FullCalendarModule, CommonModule, FormsModule, CreateOpenTourDayComponent, UpdateOpenTourDayComponent, SpinnerComponent],
   templateUrl: './open-tour-for-sale.component.html',
   styleUrls: ['./open-tour-for-sale.component.css']
 })
@@ -22,6 +23,7 @@ export class OpenTourForSaleComponent implements OnInit {
   @ViewChild('createOpenTourDayModal') createOpenTourDayModal!: CreateOpenTourDayComponent;
   @ViewChild('updateOpenTourDayModal') updateOpenTourDayModal!: UpdateOpenTourDayComponent;
 
+  isLoading: boolean = false;
   selectedMonth: string;
   tourId: string | null = null;
   tourData: any;
@@ -81,7 +83,7 @@ export class OpenTourForSaleComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/head-business/tour-list']);
+    this.router.navigate(['/head-business/list-tour']);
   }
 
   onDaySetted(event: any) {
@@ -89,8 +91,10 @@ export class OpenTourForSaleComponent implements OnInit {
   }
 
   loadTourDetail(id: string) {
+    this.isLoading = true;
     this.tourService.getTourScheduleById(id).subscribe({
       next: (response) => {
+        this.isLoading = false;
         this.tourData = response.data;
 
         if (this.tourData?.tourSchedules?.length > 0) {
@@ -104,6 +108,7 @@ export class OpenTourForSaleComponent implements OnInit {
         this.updateCalendarEvents();
       },
       error: (error) => {
+        this.isLoading = false;
         console.error('Error fetching tour detail:', error);
       }
     });
