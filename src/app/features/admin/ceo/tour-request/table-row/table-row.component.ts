@@ -38,7 +38,7 @@ export class TableRowComponent {
 
   openDetail(): void {
     if (this.tour.id !== undefined) {
-      this.router.navigate(['/admin/ceo/tour-request/detail'], {
+      this.router.navigate(['/ceo/tour-request-detail'], {
         queryParams: { id: this.tour.id },
       });
     } else {
