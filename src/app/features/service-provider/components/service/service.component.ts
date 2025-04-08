@@ -104,8 +104,7 @@ export class ServiceComponent {
   }
 
   onAdd(): void {
-    console.log('Navigating to add service page...');
-    this.router.navigate(['/service-provider/services/add']);
+    this.router.navigate(['/service-provider/service/add']);
   }
 
   onSearch(filters: any): void {

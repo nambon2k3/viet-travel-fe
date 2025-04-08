@@ -20,6 +20,10 @@ export const SERVICE_PROVIDER_ROUTES: Route[] = [
         component: UpdateServiceComponent
       },
       {
+        path: 'service/add',
+        component: UpdateServiceComponent
+      },
+      {
         path: 'service-request',
         component: ServiceRequestComponent,
       },
