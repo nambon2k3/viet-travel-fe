@@ -34,8 +34,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   isHomepage: boolean = false;
   listLocation: any[] = [];
   searchQuery: string = '';
-  searchResults: any[] = []; // Lưu kết quả tìm kiếm
-  private searchSubject = new Subject<string>(); // Sử dụng Subject để debounce
+  searchResults: any[] = [];
+  private searchSubject = new Subject<string>();
 
   constructor(
     private customerService: CustomerService,
@@ -44,7 +44,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     private publicService: HomepageService,
     public router: Router
   ) {
-    // Debounce tìm kiếm (chỉ gửi API sau 300ms không có thay đổi)
     this.searchSubject.pipe(debounceTime(300)).subscribe(query => {
       if (query && query.trim().length > 0) {
         this.searchTours(query);
@@ -229,6 +228,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   onLogout() {
     UserStorageService.signOut(this.userStorageService);
     this.isLoggedIn = false;
-    this.router.navigate(['/']);
+    this.router.navigate(['/homepage']);
   }
 }

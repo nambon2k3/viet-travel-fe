@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { SsrService } from '../ssr.service';
 
@@ -90,9 +90,10 @@ export class UserStorageService {
     return this.getCookie(TOKEN);
   }
 
-  public getTokenAsync(): Observable<string | null> {
-    return of(this.getToken());
+  public getTokenAsync(): Promise<string | null> {
+    return Promise.resolve(this.getToken());
   }
+  
 
   public getUser(): any {
     const userJson = this.getCookie(USER);
@@ -105,7 +106,7 @@ export class UserStorageService {
   }
 
   static signOut(userStorageService: UserStorageService): void {
-    userStorageService.deleteCookie('TOKEN');
-    userStorageService.deleteCookie('USER');
+    userStorageService.deleteCookie(TOKEN);
+    userStorageService.deleteCookie(USER);
   }
 }

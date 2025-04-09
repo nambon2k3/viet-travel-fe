@@ -59,15 +59,15 @@ export class DashboardComponent implements OnInit {
     selectable: true,
     group: ScaleType.Ordinal,
     domain: [
-      '#FF6EC7', // futuristic pink
-      '#FFD700', // digital gold
-      '#00FF94', // green neon
-      '#FF3CAC', // gradient pink-red
-      '#845EC2', // lavender tech
-      '#2C73D2', // soft blue
-      '#0081CF', // cyber blue
-      '#FF9671', // modern orange
-      '#FFC75F'  // light amber
+      '#374F43', 
+      '#25344F', 
+      '#617891',
+      '#D5B893',
+      '#6F4D38', 
+      '#632024',
+      '#44576D', 
+      '#768A96', 
+      '#AAC7D8', 
     ]
   };  
 
