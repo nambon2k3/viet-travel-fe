@@ -235,13 +235,14 @@
               <img [src]="tour?.tourImages?.[0]?.imageUrl" alt="" class="w-full h-full object-cover">
             </div>
             <!-- Favorite Icon -->
-            <div class="absolute top-3 left-3 bg-white hover:bg-gray-200 rounded-full p-2 shadow-md z-10">
-              <svg class="w-6 h-6 text-gray-800 cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            <button (click)="addToWishlist(tour.id)" data-modal-toggle="wishlistModal" data-modal-target="wishlistModal"
+              class="absolute top-2 left-2 bg-white p-2 rounded-full shadow-md">
+              <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z" />
               </svg>
-            </div>
+            </button>
             <!-- Info Section -->
             <div
               class="absolute bottom-3 left-3 right-3 p-4 bg-white bg-opacity-80 hover:bg-opacity-70 text-black rounded-lg transition-all duration-300">

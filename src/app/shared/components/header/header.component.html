@@ -12,14 +12,27 @@
         [class.max-h-[60px]]="!isHomepage || (isHomepage && isScrolled)" [class.max-h-0]="isHomepage && !isScrolled">
         <div class="bg-white-100 py-2">
           <div
-            class="max-w-7xl mx-auto flex items-center bg-white rounded-full px-4 pr-32 py-2 w-full border border-gray-300 shadow-sm">
+            class="max-w-7xl mx-auto flex items-center bg-white rounded-full px-4 pr-32 py-2 w-full border border-gray-300 shadow-sm relative">
             <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round"
                 d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"></path>
             </svg>
             <input type="text" placeholder="Tìm kiếm..."
-              class="w-full outline-none px-4 text-gray-700 placeholder-gray-400 text-lg bg-transparent" />
+            (click)="onDropdownClick()"
+              class="w-full outline-none px-4 text-gray-700 placeholder-gray-400 text-lg bg-transparent"
+              (input)="onSearchInput($event)" [(ngModel)]="searchQuery" />
+          </div>
+          <!-- Dropdown cho kết quả tìm kiếm -->
+          <div *ngIf="searchResults.length > 0 && isHomepage && isScrolled" 
+            #searchDropdown 
+            class="absolute z-10 bg-white rounded-lg shadow-md mt-2 w-[22%] max-h-80 overflow-y-hidden"
+            id="searchDropdown">
+            <div *ngFor="let result of searchResults" class="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
+              (click)="selectSearchResult(result.id)">
+              <img [src]="result.imageUrl || ''" alt="Tour Image" class="w-12 h-12 object-cover mr-2">
+              <span class="text-gray-700">{{ result.name }}</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, AfterViewInit, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { UserStorageService } from '../../../core/services/user-storage/user-storage.service';
 import { CustomerService } from '../../../features/customer/services/customer.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { SsrService } from '../../../core/services/ssr.service';
 import { WishlistComponent } from '../../../features/customer/components/wishlist/wishlist.component';
 import { HomepageService } from '../../../features/public/services/homepage.service';
-import { ShufflePipe } from "../../pipes/shuffle.pipe";
+import { ShufflePipe } from '../../pipes/shuffle.pipe';
+import { FormsModule } from '@angular/forms';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -14,13 +16,15 @@ import { ShufflePipe } from "../../pipes/shuffle.pipe";
   imports: [
     CommonModule,
     ShufflePipe,
-    WishlistComponent
-],
+    WishlistComponent,
+    FormsModule
+  ],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   @ViewChild('wishlistModal') wishlistModal!: WishlistComponent;
-  
+  @ViewChild('searchDropdown') searchDropdownRef!: ElementRef;
+
   userProfile: any;
   isScrolled = false;
   private mainContent: HTMLElement | null | undefined;
@@ -29,6 +33,9 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   username: string = '';
   isHomepage: boolean = false;
   listLocation: any[] = [];
+  searchQuery: string = '';
+  searchResults: any[] = []; // Lưu kết quả tìm kiếm
+  private searchSubject = new Subject<string>(); // Sử dụng Subject để debounce
 
   constructor(
     private customerService: CustomerService,
@@ -36,7 +43,16 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     private ssrService: SsrService,
     private publicService: HomepageService,
     public router: Router
-  ) { }
+  ) {
+    // Debounce tìm kiếm (chỉ gửi API sau 300ms không có thay đổi)
+    this.searchSubject.pipe(debounceTime(300)).subscribe(query => {
+      if (query && query.trim().length > 0) {
+        this.searchTours(query);
+      } else {
+        this.searchResults = [];
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.checkLoginStatus();
@@ -47,6 +63,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
       if (event instanceof NavigationEnd) {
         window.scrollTo(0, 0);
         this.isHomepage = this.router.url === '/homepage' || this.router.url === '/';
+        this.searchResults = []; // Reset kết quả khi chuyển trang
       }
     });
 
@@ -64,15 +81,49 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
     }
   }
 
+  // Xử lý sự kiện khi người dùng gõ
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery = input.value;
+    this.searchSubject.next(this.searchQuery); // Gửi từ khóa để debounce
+  }
+
+  // Gọi API tìm kiếm tour
+  searchTours(keyword: string): void {
+    this.publicService.searchTours(keyword).subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.searchResults = res.data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            imageUrl: item.tourImages[0].imageUrl,
+          }));
+        } else {
+          this.searchResults = [];
+        }
+      },
+      error: (err) => {
+        console.error('Error searching tours', err);
+        this.searchResults = [];
+      }
+    });
+  }
+
+  // Chọn một kết quả từ dropdown
+  selectSearchResult(id: number): void {
+    this.router.navigate(['/tour-details', id]); // Điều hướng đến chi tiết tour
+    this.searchResults = []; // Reset kết quả sau khi chọn
+    this.searchQuery = ''; // Reset input
+  }
+
   toggleDropdown() {
     const dropdown = document.getElementById('dropdownLocation');
     if (dropdown) {
       dropdown.classList.toggle('hidden');
     }
   }
-  
 
-  selectLocation(id : number) {
+  selectLocation(id: number) {
     this.router.navigate(['/location-details', id]);
   }
 
@@ -81,7 +132,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
       next: (res) => {
         if (res.data) {
           this.listLocation = res.data;
-        } 
+        }
       },
       error: (err) => {
         console.error('Error loading list location', err);
@@ -112,6 +163,20 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
       },
     });
   }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (this.searchDropdownRef && !this.searchDropdownRef.nativeElement.contains(event.target)) {
+      // Click nằm ngoài dropdown
+      this.searchResults = []; // hoặc đặt biến điều khiển hiển thị khác
+    }
+  }
+
+  onDropdownClick(): void {
+    if (this.searchQuery && this.searchQuery.trim().length > 0) {
+      this.searchTours(this.searchQuery);
+    }
+  }  
 
   toggleProfileMenu() {
     this.isProfileOpen = !this.isProfileOpen;
@@ -146,8 +211,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
       document.removeEventListener('show.bs.modal', () => { });
       document.removeEventListener('hide.bs.modal', () => { });
     }
+    this.searchSubject.unsubscribe(); // Hủy subscription khi component destroy
   }
-
 
   onScroll = () => {
     if (this.ssrService.isBrowser) {

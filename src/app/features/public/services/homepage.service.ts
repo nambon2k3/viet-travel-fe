@@ -35,4 +35,9 @@ export class HomepageService {
   addWishlist(itemId: number): Observable<any> {
     return this.http.put(`${environment.apiUrl}wishlist/add-wishlist?itemId=${itemId}`, {});
   }
+
+  searchTours(keyword: string): Observable<any> {
+    const params = { keyword };
+    return this.http.get(`${environment.apiUrl}public/search`, { params });
+  }
 }

@@ -25,13 +25,25 @@
                 </path>
             </svg>
 
-            <input type="text" [placeholder]="searchPlaceholder"
-                class="w-full outline-none px-4 text-gray-700 placeholder-gray-400 text-lg bg-transparent">
+            <input type="text" [placeholder]="searchPlaceholder" (click)="onDropdownClick()"
+                class="w-full outline-none px-4 text-gray-700 placeholder-gray-400 text-lg bg-transparent"
+                (input)="onSearchInput($event)" [(ngModel)]="searchQuery" />                
 
-            <button class="bg-green-600 w-1/5 text-white font-semibold px-6 py-2 rounded-full hover:bg-green-700">
+            <button class="bg-green-600 w-1/5 text-white font-semibold px-6 py-2 rounded-full hover:bg-green-700"
+            (click)="onDropdownClick()">
                 Tìm kiếm
             </button>
         </div>
+        <div *ngIf="searchResults.length > 0" 
+            #searchDropdown 
+            class="absolute z-10 bg-white rounded-lg shadow-md mt-20 w-full max-w-3xl max-h-80 overflow-y-hidden"
+            id="searchDropdown">
+            <div *ngFor="let result of searchResults" class="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
+              (click)="selectSearchResult(result.id)">
+              <img [src]="result.imageUrl || ''" alt="Tour Image" class="w-12 h-12 object-cover mr-2">
+              <span class="text-gray-700">{{ result.name }}</span>
+            </div>
+          </div>
     </div>
 </div>
 
