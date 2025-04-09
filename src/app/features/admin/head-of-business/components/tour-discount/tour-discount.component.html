@@ -75,7 +75,7 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (hotel.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (hotel.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
@@ -150,7 +150,7 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (transport.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (transport.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
@@ -226,7 +226,7 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (restaurant.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (restaurant.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
@@ -300,7 +300,7 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (activity.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (activity.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
@@ -374,7 +374,7 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (flight.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (flight.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>

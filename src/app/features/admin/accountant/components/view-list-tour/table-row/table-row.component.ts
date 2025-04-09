@@ -3,12 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { TourAccountant } from '../../../../../../core/models/tour-accountant.model';
-import { CurrencyVndPipe } from '../../../../../../shared/pipes/currency-vnd.pipe';
 import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe';
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, CommonModule, FormatDatePipe, CurrencyVndPipe],
+  imports: [FormsModule, AngularSvgIconModule, CommonModule, FormatDatePipe],
   templateUrl: './table-row.component.html',
   styleUrl: './table-row.component.css',
 })

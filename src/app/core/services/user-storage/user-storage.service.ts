@@ -87,13 +87,22 @@ export class UserStorageService {
   }
 
   public getToken(): string | null {
-    return this.getCookie(TOKEN);
+    const document = this.ssrService.getDocument();
+    if (document) {
+      return this.getCookie(TOKEN);
+    }
+    return null;
   }
 
+
   public getTokenAsync(): Promise<string | null> {
-    return Promise.resolve(this.getToken());
+    const document = this.ssrService.getDocument();
+    if (document) {
+      return Promise.resolve(this.getToken());
+    }
+    return Promise.resolve(null);
   }
-  
+
 
   public getUser(): any {
     const userJson = this.getCookie(USER);
