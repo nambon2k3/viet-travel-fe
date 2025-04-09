@@ -23,8 +23,14 @@
 
       <label class="block mt-3 mb-2 text-sm font-medium text-gray-700">Hình ảnh</label>
       <div class="flex flex-col items-center justify-center mb-4">
-        <img *ngIf="imagePreview" [src]="imagePreview" alt="Xem trước hình ảnh"
-             class="w-full h-64 object-cover rounded-md mb-2" />
+        <div class="relative w-full">
+          <img *ngIf="imagePreview" [src]="imagePreview" alt="Xem trước hình ảnh"
+               class="w-full h-64 object-cover rounded-md mb-2" />
+          <button *ngIf="imagePreview" type="button" (click)="removeImage()"
+                  class="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-sm rounded-md hover:bg-red-600">
+            Xóa ảnh
+          </button>
+        </div>
         <input type="file" (change)="onFileSelected($event)" class="w-full" accept="image/*" />
       </div>
 

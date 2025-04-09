@@ -7,7 +7,7 @@
         <a href="" class="hover:text-primary">Tất cả Dịch vụ:</a>
         <span class="text-foreground">{{ totalItems() }}</span>
       </div>
-      <div>Nhà cung cấp: <p class="text-lg" *ngIf="serviceProviderName()">({{ serviceProviderName() }})</p></div>
+      <div class="text-foreground font-semibold">Nhà cung cấp: <p class="text-xs" *ngIf="serviceProviderName()">{{ serviceProviderName() }}</p></div>
     </div>
     <app-spinner [isLoading]="isLoading"></app-spinner>
     <div class="inline-block space-x-4">

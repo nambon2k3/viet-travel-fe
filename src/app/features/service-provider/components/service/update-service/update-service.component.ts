@@ -53,14 +53,13 @@ export class UpdateServiceComponent implements OnInit {
     private serviceService: ServiceService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.serviceForm = this.fb.group({
       id: [null],
       name: [null, Validators.required],
       nettPrice: [null, [Validators.required, Validators.min(0)]],
-      // Removed sellingPrice
       imageUrl: [null],
       startDate: [null, Validators.required],
       endDate: [null, Validators.required],
@@ -259,6 +258,13 @@ export class UpdateServiceComponent implements OnInit {
         this.successMessage = null;
       }
     });
+  }
+
+  // Thêm vào trong class UpdateServiceComponent
+  removeImage(): void {
+    this.imagePreview = null;
+    this.selectedFile = null;
+    this.serviceForm.patchValue({ imageUrl: null }); // Reset imageUrl trong form nếu cần
   }
 
   onCategoryChange(selectedCategory: any): void {
