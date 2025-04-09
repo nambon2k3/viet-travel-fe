@@ -3,7 +3,7 @@
   <button (click)="toggleMenu()" class="bg-card relative flex rounded-full text-sm" type="button">
     <span class="sr-only">Mở menu người dùng</span>
     <img clickOutside (clickOutside)="isOpen = false" class="h-9 w-9 rounded-full"
-      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUs8rjHsbBmOAkXL-4lZk9oaUNdAUD64enNQ&s" alt="" />
+      src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="" />
   </button>
   <!-- Dropdown -->
   <div [@openClose]="isOpen ? 'open' : 'closed'"
@@ -11,7 +11,7 @@
     <div class="flext-row flex items-center px-4 pb-4">
       <div class="w-10 shrink-0">
         <img class="h-9 w-9 rounded-full mr-4"
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUs8rjHsbBmOAkXL-4lZk9oaUNdAUD64enNQ&s" alt="" />
+          src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="" />
       </div>
       <div class="text-foreground  px-2 text-sm font-semibold">
         <p class="text-muted-foreground truncate text-ellipsis text-xs ml-2 font-semibold">{{ user?.username }}</p>

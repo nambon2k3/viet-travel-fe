@@ -3,11 +3,7 @@ import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef, 
 import { isPlatformBrowser, CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // <-- Import FormsModule
 import { NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
-import { Subscription } from 'rxjs';
 import { Color } from '@swimlane/ngx-charts';
-import { LegendPosition } from '@swimlane/ngx-charts';
-
-// Use correct service name and path
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe"; // <-- Adjust path
 import { AdminService, DashboardData } from '../../admin.service';
 import { FormatDatePipe } from "../../../../shared/pipes/format-date.pipe";
@@ -58,12 +54,23 @@ export class DashboardComponent implements OnInit {
   newUserChartData: ChartDataPoint[] = [];
   tourTypeChartData: ChartDataPoint[] = [];
 
-  chartColorScheme: Color = { /* ... color scheme ... */
-     name: 'travel-modern',
-     selectable: true,
-     group: ScaleType.Ordinal,
-     domain: ['#3b82f6','#f97316','#208012','#a5b4fc','#f9a8d4','#a78bfa']
-  };
+  chartColorScheme: Color = {
+    name: 'travel-futuristic',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: [
+      '#FF6EC7', // futuristic pink
+      '#FFD700', // digital gold
+      '#00FF94', // green neon
+      '#FF3CAC', // gradient pink-red
+      '#845EC2', // lavender tech
+      '#2C73D2', // soft blue
+      '#0081CF', // cyber blue
+      '#FF9671', // modern orange
+      '#FFC75F'  // light amber
+    ]
+  };  
+
   chartScaleType = ScaleType.Ordinal;
   showXAxis = true;
   showYAxis = true;

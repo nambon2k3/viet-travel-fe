@@ -119,11 +119,16 @@ export class Menu {
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Users',
+          label: 'Người dùng',
           children: [
             { label: 'Staff', route: '/admin/user' },
             { label: 'Customer', route: '/admin/customer' },
           ],
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Danh mục dịch vụ',
+          route: '/admin/service-category',
         },
       ],
     },

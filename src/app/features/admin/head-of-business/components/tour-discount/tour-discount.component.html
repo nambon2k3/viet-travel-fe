@@ -363,7 +363,7 @@
         <tr *ngIf="activities.length === 0">
           <td colspan="6" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
         </tr>
-        <tr class="border-b border-gray-300" *ngFor="let flight of activities; let i = index"
+        <tr class="border-b border-gray-300" *ngFor="let flight of flights; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2 text-center whitespace-nowrap">{{ flight.dayNumber }}</td>
           <td class="p-2 whitespace-nowrap">{{ flight.name }}</td>
@@ -430,10 +430,10 @@
           <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cơ bản (1 khách)</td>
             <td *ngFor="let range of priceRanges" class="py-2 text-center">
-              {{ getPriceByRange(range)?.sellingPrice | currencyVnd }}
+              {{ minsalePrices[range] / getMinPax(range) | currencyVnd }}
             </td>
           </tr>
-          <tr class="odd:bg-white even:bg-gray-50" *ngIf="tourType === 'SIC'">
+          <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cuối (1 khách)</td>
             <td *ngFor="let range of priceRanges" class="py-2 text-center">
               {{ finalTourPrices[range] | currencyVnd }}

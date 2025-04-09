@@ -229,6 +229,6 @@ export class HeaderComponent implements AfterViewInit, OnDestroy, OnInit {
   onLogout() {
     UserStorageService.signOut(this.userStorageService);
     this.isLoggedIn = false;
-    this.router.navigate(['/homepage']);
+    this.router.navigate(['/']);
   }
 }

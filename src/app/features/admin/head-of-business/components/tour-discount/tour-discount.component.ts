@@ -258,6 +258,7 @@ export class TourDiscountComponent implements OnInit {
       this.transports.forEach(t => total += t.nettPrice * minPax);
       this.restaurants.forEach(r => total += r.nettPrice * minPax);
       this.activities.forEach(a => total += a.nettPrice * minPax);
+      this.flights.forEach(a => total += a.nettPrice * minPax);
       this.mintotalNetPrices[range] = total;
     });
   }
@@ -273,7 +274,7 @@ export class TourDiscountComponent implements OnInit {
     this.priceRanges.forEach(range => {
       const minPax = this.getMinPax(range);
       let total = 0;
-      [this.hotels, this.transports, this.restaurants, this.activities].forEach(services => {
+      [this.hotels, this.transports, this.restaurants, this.activities, this.flights].forEach(services => {
         services.forEach(service => {
           if (service.paxPrices && service.paxPrices[range]) {
             total += (service.paxPrices[range].sellingPrice || 0) * minPax;
@@ -288,7 +289,7 @@ export class TourDiscountComponent implements OnInit {
     return parseInt(range.split('-')[0], 10);
   }
 
-  getPriceByRange(range: string): PaxOption | undefined {
+  getPriceByRange(range: string): PaxOption | undefined {    
     return this.prices.find(p => p.paxRange === range);
   }
 
@@ -323,10 +324,10 @@ export class TourDiscountComponent implements OnInit {
 
   openAddFlightModal(serviceId?: number, dayNumber?: number) {
     if (this.addHotelModal) {
-      this.addHotelModal.serviceId = serviceId || null;
-      this.addHotelModal.day = dayNumber || null;
-      this.addHotelModal.fetchHotelDetails();
-      this.addHotelModal.showModal();
+      this.addFlightModal.serviceId = serviceId || null;
+      this.addFlightModal.day = dayNumber || null;
+      this.addFlightModal.fetchFlights();
+      this.addFlightModal.showModal();
     }
   }
 
