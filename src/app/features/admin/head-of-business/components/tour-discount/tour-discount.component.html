@@ -41,8 +41,8 @@
           <th class="p-2 text-left">Tên khách sạn</th>
           <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-left">Địa chỉ</th>
-          <th class="p-2 text-center">Giá Net</th>
-          <th class="p-2 text-center">Giá phòng</th>
+          <th class="p-2 text-center">Giá Net (đôi)</th>
+          <th class="p-2 text-center">Giá phòng (đôi)</th>
           <th class="p-2 text-center">Hành động</th>
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
@@ -448,6 +448,7 @@
 <!-- Include the new popup components -->
 <app-config-tour-pax (close)="closeTourPax()" [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
 <app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalSellingPrice]="minsalePrices"
+  [extraHotelCost]="extraHotelCost" [nettPricePerPax]="mintotalNetPrices"
   (confirm)="handlePriceConfirm($event)"></app-config-price>
 <app-config-markup #configMarkupModal [tourId]="tourId" (confirm)="handleMarkupConfirm($event)"></app-config-markup>
 <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"

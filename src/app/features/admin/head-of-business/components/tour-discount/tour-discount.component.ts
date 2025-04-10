@@ -116,6 +116,7 @@ export class TourDiscountComponent implements OnInit {
   locations = signal<any[]>([]);
 
   mintotalNetPrices: PriceRange = {};
+  extraHotelCost: PriceRange = {};
   minsalePrices: PriceRange = {};
   markupPercentage: number = 0;
   finalTourPrices: PriceRange = {};
@@ -165,6 +166,13 @@ export class TourDiscountComponent implements OnInit {
             switch (category.categoryName) {
               case 'Hotel':
                 this.hotels = category.services.map(service => this.mapService(service));
+                for (const hotel of this.hotels) {
+                  if (hotel.paxPrices) {
+                    for (const range of Object.keys(hotel.paxPrices)) {
+                      this.extraHotelCost[range] = hotel.paxPrices[range].sellingPrice / 2;
+                    }
+                  }
+                }
                 break;
               case 'Transport':
                 this.transports = category.services.map(service => this.mapService(service));
@@ -254,12 +262,13 @@ export class TourDiscountComponent implements OnInit {
     this.priceRanges.forEach(range => {
       const minPax = this.getMinPax(range);
       let total = 0;
-      this.hotels.forEach(h => total += h.nettPrice * minPax);
+      this.hotels.forEach(h => total += (Number(h.nettPrice) / 2) * minPax);
       this.transports.forEach(t => total += t.nettPrice * minPax);
       this.restaurants.forEach(r => total += r.nettPrice * minPax);
       this.activities.forEach(a => total += a.nettPrice * minPax);
       this.flights.forEach(a => total += a.nettPrice * minPax);
       this.mintotalNetPrices[range] = total;
+      console.log('Total Net Price:', this.mintotalNetPrices[range]);
     });
   }
 
@@ -274,16 +283,26 @@ export class TourDiscountComponent implements OnInit {
     this.priceRanges.forEach(range => {
       const minPax = this.getMinPax(range);
       let total = 0;
-      [this.hotels, this.transports, this.restaurants, this.activities, this.flights].forEach(services => {
+  
+      // Hotels: giá chia 2
+      this.hotels.forEach(hotel => {
+        if (hotel.paxPrices && hotel.paxPrices[range]) {
+          total += ((hotel.paxPrices[range].sellingPrice || 0) / 2) * minPax;
+        }
+      });
+  
+      // Các dịch vụ còn lại: giữ nguyên
+      [this.transports, this.restaurants, this.activities, this.flights].forEach(services => {
         services.forEach(service => {
           if (service.paxPrices && service.paxPrices[range]) {
             total += (service.paxPrices[range].sellingPrice || 0) * minPax;
           }
         });
       });
+  
       this.minsalePrices[range] = total;
     });
-  }
+  }  
 
   getMinPax(range: string): number {
     return parseInt(range.split('-')[0], 10);

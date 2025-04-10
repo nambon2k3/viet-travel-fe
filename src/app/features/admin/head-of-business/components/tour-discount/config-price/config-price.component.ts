@@ -41,6 +41,8 @@ export class ConfigPriceComponent {
   @Output() confirm = new EventEmitter<PaxOption[]>();
   @Output() cancel = new EventEmitter<void>();
   @Input() totalSellingPrice: PriceRange = {};
+  @Input() extraHotelCost: PriceRange = {};
+  @Input() nettPricePerPax: PriceRange = {};
 
   constructor(
     private discountService: TourDiscountService,
@@ -102,6 +104,8 @@ export class ConfigPriceComponent {
       minPax: this.getMinPax(p.paxRange),
       maxPax: this.getMaxPax(p.paxRange),
       paxRange: p.paxRange,
+      extraHotelCost: this.extraHotelCost[p.paxRange] || 0,
+      nettPricePerPax: this.nettPricePerPax[p.paxRange] || 0,
       fixedCost: parseInt(p.fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0,
       sellingPrice: parseInt(p.sellingPriceFormatted.replace(/[^0-9]/g, ''), 10) || 0,
       validFrom: new Date(this.startDate).toISOString(),
