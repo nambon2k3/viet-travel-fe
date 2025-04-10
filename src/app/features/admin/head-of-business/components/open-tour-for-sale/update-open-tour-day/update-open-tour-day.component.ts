@@ -13,7 +13,7 @@ import { TourService } from '../../../services/tour.service';
   standalone: true,
   imports: [FullCalendarModule, CommonModule, FormsModule],
   templateUrl: './update-open-tour-day.component.html',
-  styleUrl: './update-open-tour-day.component.css'
+  styleUrls: ['./update-open-tour-day.component.css']
 })
 export class UpdateOpenTourDayComponent {
   @Input() selectedEvent!: EventInput;
@@ -29,6 +29,12 @@ export class UpdateOpenTourDayComponent {
   name: string = '';
 
   calculatedEndDates: string[] = [];
+
+  // New properties for popup
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  isSuccess: boolean = false;
+
   constructor(
     private router: Router,
     private ssrService: SsrService,
@@ -77,7 +83,7 @@ export class UpdateOpenTourDayComponent {
           this.calculatedEndDate = response.data[0].endDate;
         },
         error: (error) => {
-          console.error('Error calculating end dates:', error);
+          this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
           this.calculatedEndDate = '';
         }
       });
@@ -96,10 +102,10 @@ export class UpdateOpenTourDayComponent {
       next: (response) => {
         this.daySetted.emit(response.data);
         this.close();
-        console.log("Cập nhật thành công", response);
+        this.showPopupMessage('Cập nhật lịch trình tour thành công!', true);
       },
       error: (error) => {
-        console.error("Lỗi:", error);
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
       }
     });
   }
@@ -109,13 +115,12 @@ export class UpdateOpenTourDayComponent {
       next: (response) => {
         this.daySetted.emit(response.data);
         this.close();
-        console.log("Cập nhật thành công", response);
+        this.showPopupMessage('Xoá ngày thành công!', true);
       },
       error: (error) => {
-        console.error("Lỗi:", error);
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
       }
     });
-    this.modalInstance.hide();
   }
 
   viewListBooking() {
@@ -123,5 +128,16 @@ export class UpdateOpenTourDayComponent {
       this.modalInstance.hide();
     }
     this.router.navigate(['/head-business/tour-list-booking']);
+  }
+
+  // New method to show popup message
+  showPopupMessage(message: string, isSuccess: boolean) {
+    this.popupMessage = message;
+    this.isSuccess = isSuccess;
+    this.showPopup = true;
+
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2000); // Hide after 2 seconds
   }
 }

@@ -88,8 +88,8 @@ export class AddRestaurantComponent implements AfterViewInit {
   restaurants = signal<any[]>([]);
 
   constructor(
-    private ssrService: SsrService,
     private fb: FormBuilder,
+    private ssrService: SsrService,
     private tourDiscountService: TourDiscountService
   ) {
     this.initializeForm();
@@ -335,7 +335,6 @@ export class AddRestaurantComponent implements AfterViewInit {
   }
 
   showModal() {
-    this.fetchRestaurantDetails();
     this.modal?.show();
   }
 

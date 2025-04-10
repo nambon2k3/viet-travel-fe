@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from '../../../../../../../shared/pipes/currency-vnd.pipe';
 import { SsrService } from '../../../../../../../core/services/ssr.service';
@@ -16,6 +16,7 @@ import { error } from 'console';
 })
 export class ServiceDetailComponent {
   @Input() service: any | null = null;
+  @Output() serviceChange: any | null = null;
   modal: Modal | null = null;
   serviceDetail: any | null = null;
   quantity: number = 1;
@@ -71,6 +72,7 @@ export class ServiceDetailComponent {
         if (response.code === 200) {
           this.serviceDetail = response.data;
           this.calculateTotal();
+          this.serviceChange.emit(this.serviceDetail); 
           this.close();
 
         } else {

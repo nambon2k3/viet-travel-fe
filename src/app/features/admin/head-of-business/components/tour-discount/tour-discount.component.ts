@@ -88,7 +88,7 @@ interface ApiResponse {
     FormsModule,
     ConfigMarkupComponent,
     SpinnerComponent
-],
+  ],
   templateUrl: './tour-discount.component.html',
   styleUrls: ['./tour-discount.component.css']
 })
@@ -122,6 +122,11 @@ export class TourDiscountComponent implements OnInit {
   finalTourPrices: PriceRange = {};
   isLoading: boolean = false;
 
+  // New properties for popup
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  isSuccess: boolean = false;
+
   constructor(
     private router: Router,
     private tourDiscountService: TourDiscountService,
@@ -140,14 +145,18 @@ export class TourDiscountComponent implements OnInit {
   }
 
   getMarkup() {
-    this.tourDiscountService.getMarkup(this.tourId).subscribe(response => {
-      if (response?.data?.markUpPercent) {
-        this.markupPercentage = response.data.markUpPercent;
-      } else {
-        this.markupPercentage = 0;
+    this.tourDiscountService.getMarkup(this.tourId).subscribe({
+      next: (response) => {
+        if (response?.data?.markUpPercent) {
+          this.markupPercentage = response.data.markUpPercent;
+        } else {
+          this.markupPercentage = 0;
+        }
+      },
+      error: (error) => {
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi lấy thông tin lợi nhuận.', false);
       }
-    }
-    );
+    });
   }
 
   fetchTourData(id: number) {
@@ -193,11 +202,13 @@ export class TourDiscountComponent implements OnInit {
           this.calculateTotalNetPrice();
           this.calculateTotalPrices();
           this.calculateFinalTourPrices();
+        } else {
+          this.showPopupMessage(response.message || 'Lỗi khi tải dữ liệu tour.', false);
         }
       },
-      error: (error: any) => {
+      error: (error) => {
         this.isLoading = false;
-        console.error('HTTP error fetching tour data:', error);
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi tải dữ liệu tour.', false);
       }
     });
   }
@@ -213,11 +224,13 @@ export class TourDiscountComponent implements OnInit {
             name: item.name
           }));
           this.locations.set(mappedLocations);
+        } else {
+          this.showPopupMessage(response.message || 'Lỗi khi tải danh sách địa điểm.', false);
         }
       },
-      error: (error: any) => {
+      error: (error) => {
         this.isLoading = false;
-        console.error('Error fetching locations:', error);
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi tải danh sách địa điểm.', false);
       }
     });
   }
@@ -268,7 +281,6 @@ export class TourDiscountComponent implements OnInit {
       this.activities.forEach(a => total += a.nettPrice * minPax);
       this.flights.forEach(a => total += a.nettPrice * minPax);
       this.mintotalNetPrices[range] = total;
-      console.log('Total Net Price:', this.mintotalNetPrices[range]);
     });
   }
 
@@ -284,14 +296,12 @@ export class TourDiscountComponent implements OnInit {
       const minPax = this.getMinPax(range);
       let total = 0;
   
-      // Hotels: giá chia 2
       this.hotels.forEach(hotel => {
         if (hotel.paxPrices && hotel.paxPrices[range]) {
           total += ((hotel.paxPrices[range].sellingPrice || 0) / 2) * minPax;
         }
       });
   
-      // Các dịch vụ còn lại: giữ nguyên
       [this.transports, this.restaurants, this.activities, this.flights].forEach(services => {
         services.forEach(service => {
           if (service.paxPrices && service.paxPrices[range]) {
@@ -320,13 +330,15 @@ export class TourDiscountComponent implements OnInit {
       }
     });
     this.calculateTotalPrices();
+    this.calculateFinalTourPrices();
+    this.showPopupMessage('Cấu hình giá thành công!', true);
   }
 
   handleMarkupConfirm(markup: number) {
     this.markupPercentage = markup;
     this.calculateFinalTourPrices();
+    this.showPopupMessage('Cấu hình lợi nhuận thành công!', true);
   }
-
 
   backToList() {
     this.router.navigate(['head-business/list-tour']);
@@ -342,7 +354,7 @@ export class TourDiscountComponent implements OnInit {
   }
 
   openAddFlightModal(serviceId?: number, dayNumber?: number) {
-    if (this.addHotelModal) {
+    if (this.addFlightModal) {
       this.addFlightModal.serviceId = serviceId || null;
       this.addFlightModal.day = dayNumber || null;
       this.addFlightModal.fetchFlights();
@@ -387,7 +399,6 @@ export class TourDiscountComponent implements OnInit {
 
   closeTourPax() {
     this.fetchTourData(this.tourId);
-
   }
 
   addNewHotel(event: { hotel: Service, isUpdate: boolean }) {
@@ -401,24 +412,28 @@ export class TourDiscountComponent implements OnInit {
       this.hotels.push(hotel);
     }
     window.location.reload();
+    this.showPopupMessage('Thêm/Cập nhật khách sạn thành công!', true);
   }
 
   deleteHotel(index: number, serviceId: number, dayNumber: number) {
     this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
-          console.log('Hotel deleted successfully');
+          this.hotels.splice(index, 1);
+          this.calculateTourDays();
+          this.calculateTotalNetPrice();
+          this.calculateTotalPrices();
+          this.calculateFinalTourPrices();
           window.location.reload();
+          this.showPopupMessage('Xóa khách sạn thành công!', true);
         } else {
-          console.error('Error deleting hotel:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi xóa khách sạn.', false);
         }
+      },
+      error: (error) => {
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi xóa khách sạn.', false);
       }
     });
-    this.hotels.splice(index, 1);
-    this.calculateTourDays();
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculateFinalTourPrices();
   }
 
   addNewFlight(event: { flight: Service, isUpdate: boolean }) {
@@ -432,24 +447,28 @@ export class TourDiscountComponent implements OnInit {
       this.flights.push(flight);
     }
     window.location.reload();
+    this.showPopupMessage('Thêm/Cập nhật vé máy bay thành công!', true);
   }
 
   deleteFlight(index: number, serviceId: number, dayNumber: number) {
     this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
-          console.log('Flight deleted successfully');
+          this.flights.splice(index, 1);
+          this.calculateTourDays();
+          this.calculateTotalNetPrice();
+          this.calculateTotalPrices();
+          this.calculateFinalTourPrices();
           window.location.reload();
+          this.showPopupMessage('Xóa vé máy bay thành công!', true);
         } else {
-          console.error('Error deleting hotel:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi xóa vé máy bay.', false);
         }
+      },
+      error: (error) => {
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi xóa vé máy bay.', false);
       }
     });
-    this.flights.splice(index, 1);
-    this.calculateTourDays();
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculateFinalTourPrices();
   }
 
   addNewTransportation(event: { transport: Service, isUpdate: boolean }) {
@@ -463,24 +482,28 @@ export class TourDiscountComponent implements OnInit {
       this.transports.push(transport);
     }
     window.location.reload();
+    this.showPopupMessage('Thêm/Cập nhật phương tiện thành công!', true);
   }
 
   deleteTransportation(index: number, serviceId: number, dayNumber: number) {
     this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
-          console.log('Transportation deleted successfully');
+          this.transports.splice(index, 1);
+          this.calculateTourDays();
+          this.calculateTotalNetPrice();
+          this.calculateTotalPrices();
+          this.calculateFinalTourPrices();
           window.location.reload();
+          this.showPopupMessage('Xóa phương tiện thành công!', true);
         } else {
-          console.error('Error deleting hotel:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi xóa phương tiện.', false);
         }
+      },
+      error: (error) => {
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi xóa phương tiện.', false);
       }
     });
-    this.transports.splice(index, 1);
-    this.calculateTourDays();
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculateFinalTourPrices();
   }
 
   addNewRestaurant(event: { restaurant: Service, isUpdate: boolean }) {
@@ -494,23 +517,28 @@ export class TourDiscountComponent implements OnInit {
       this.restaurants.push(restaurant);
     }
     window.location.reload();
+    this.showPopupMessage('Thêm/Cập nhật nhà hàng thành công!', true);
   }
 
   deleteRestaurant(index: number, serviceId: number, dayNumber: number) {
     this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
-          console.log('Restaurant deleted successfully');
+          this.restaurants.splice(index, 1);
+          this.calculateTourDays();
+          this.calculateTotalNetPrice();
+          this.calculateTotalPrices();
+          this.calculateFinalTourPrices();
           window.location.reload();
+          this.showPopupMessage('Xóa nhà hàng thành công!', true);
         } else {
-          console.error('Error deleting hotel:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi xóa nhà hàng.', false);
         }
+      },
+      error: (error) => {
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi xóa nhà hàng.', false);
       }
     });
-    this.calculateTourDays();
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculateFinalTourPrices();
   }
 
   addNewActivity(event: { activity: Service, isUpdate: boolean }) {
@@ -524,23 +552,38 @@ export class TourDiscountComponent implements OnInit {
       this.activities.push(activity);
     }
     window.location.reload();
+    this.showPopupMessage('Thêm/Cập nhật hoạt động thành công!', true);
   }
 
   deleteActivity(index: number, serviceId: number, dayNumber: number) {
     this.tourDiscountService.deleteService(this.tourId, serviceId, dayNumber).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
-          this.fetchTourData(this.tourId);
-          console.log('Activity deleted successfully');
+          this.activities.splice(index, 1);
+          this.calculateTourDays();
+          this.calculateTotalNetPrice();
+          this.calculateTotalPrices();
+          this.calculateFinalTourPrices();
+          window.location.reload();
+          this.showPopupMessage('Xóa hoạt động thành công!', true);
         } else {
-          console.error('Error deleting hotel:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi xóa hoạt động.', false);
         }
+      },
+      error: (error) => {
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi xóa hoạt động.', false);
       }
     });
-    this.activities.splice(index, 1);
-    this.calculateTourDays();
-    this.calculateTotalNetPrice();
-    this.calculateTotalPrices();
-    this.calculateFinalTourPrices();
+  }
+
+  // New method to show popup message
+  showPopupMessage(message: string, isSuccess: boolean) {
+    this.popupMessage = message;
+    this.isSuccess = isSuccess;
+    this.showPopup = true;
+
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2000); // Hide after 2 seconds
   }
 }
