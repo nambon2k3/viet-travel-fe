@@ -6,9 +6,10 @@ import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BookingService } from '../../services/booking.service';
 import { Modal } from 'flowbite';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 @Component({
   selector: 'app-booking-detail',
-  imports: [DatePipe, CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule],
+  imports: [DatePipe, CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule, SpinnerComponent],
   templateUrl: './booking-detail.component.html',
   styleUrl: './booking-detail.component.css'
 })
@@ -36,13 +37,39 @@ export class BookingDetailComponent implements AfterViewInit {
 
 
   transactionDetailModal: Modal | null = null;
+  forwardBookingModal: Modal | null = null;
+
+  forwardSchedules: any[] = [];
 
 
 
   ngAfterViewInit(): void {
     this.transactionDetailModal = new Modal(document.getElementById('transaction-modal'));
+    this.forwardBookingModal = new Modal(document.getElementById('forward-booking-modal'));
   }
 
+
+  openForwardBookingModal() {
+    this.forwardBookingModal?.show();
+    this.getForwardSchedules(this.tourId!, this.scheduleId!);
+  }
+
+  closeForwardBookingModal() {
+    this.forwardBookingModal?.hide();
+  }
+
+
+  getForwardSchedules(tourId: number, sheduleId: number) {
+    this.bookingService.getForwardTourSchedules(tourId, sheduleId, this.bookingDetail.seats).subscribe({
+      next: (response) => {
+        console.log(response.data)
+        this.forwardSchedules = response.data
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    })
+  }
 
   transactionForm: FormGroup;
 
@@ -108,6 +135,8 @@ export class BookingDetailComponent implements AfterViewInit {
     });
   }
 
+  tourId: number = 0;
+  scheduleId: number = 0;
 
 
   ngOnInit() {
@@ -171,6 +200,7 @@ export class BookingDetailComponent implements AfterViewInit {
   }
 
   getBookingDetail(tourBookingId: number) {
+    this.isLoading = true;
     this.tourService.getBookingDetail(tourBookingId).subscribe({
       next: (response) => {
         this.bookingDetail = response.data;
@@ -194,10 +224,16 @@ export class BookingDetailComponent implements AfterViewInit {
           bookingId: this.bookingDetail.id,
         });
 
+        this.tourId = this.bookingDetail?.tour?.id;
+        this.scheduleId = this.bookingDetail?.schedule?.scheduleId;
+
         console.log(this.bookingDetail);
+
+        this.isLoading = false;
       },
       error: (error) => {
         console.log(error);
+        this.isLoading = false;
       }
     });
   }

@@ -13,6 +13,7 @@ import { response } from 'express';
 })
 export class TableRowComponent {
   @Input() tourData: any = <any>{};
+  @Input() index: any = <any>{};
 
   ngOnInit(): void {
     console.log(this.tourData)

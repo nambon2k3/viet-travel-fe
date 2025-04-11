@@ -8,6 +8,7 @@ import { environment } from '../../../../../environments/environment';
 })
 export class PlanService {
 
+
   constructor(private http: HttpClient) { }
 
   getLocationData(): Observable<any> {
@@ -22,5 +23,10 @@ export class PlanService {
 
   generatePlan(data: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}public/plans/generate`, data);
+  }
+
+
+  getPlanById(planId: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}public/plans/details/${planId}`);
   }
 }

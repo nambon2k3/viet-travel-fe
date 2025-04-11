@@ -1,17 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { PlanService } from '../../services/plan.service/plan.service';
 import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Modal } from 'flowbite';
+import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
+import { SpinnerComponent } from '../../../../shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-plan',
-  imports: [CommonModule, CommonModule, ReactiveFormsModule, RouterModule, FormsModule],
+  imports: [CommonModule, CommonModule, ReactiveFormsModule, RouterModule, FormsModule, SpinnerComponent],
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.css'
 })
-export class PlanComponent {
+export class PlanComponent implements AfterViewInit{
 
   suggesLocations: any;
 
@@ -22,21 +25,29 @@ export class PlanComponent {
   locations: any;
   selectedLocation: any;
 
+  isGenerating: boolean = false;
 
   constructor(
     private planService: PlanService,
     private router: RouterModule,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private userStorageService : UserStorageService,
+    private route: Router
   ) {
 
     this.generatePlanForm = this.fb.group({
       locationId: ['', [Validators.required]],
-      locationName: ['', [Validators.required]],
-      startDate: ['', [Validators.required]],
-      endDate: ['', [Validators.required]],
+      locationName: [''],
+      userId: ['', [Validators.required]],
+      startDate: [''],
+      endDate: [''],
       preferences: ['Đồ ăn ngon, Nghệ thuật và văn hóa', [Validators.required]],
       planType: ['', [Validators.required]],
       travelingWithChildren: [false],
+    });
+
+    this.addInterestForm = this.fb.group({
+      interest: ['']
     });
 
 
@@ -60,28 +71,67 @@ export class PlanComponent {
 
   }
 
+  addInterest() {
+    this.otherInterest = this.addInterestForm.value.interest;
+    
+  }
+
+  interestModal: Modal | null = null;
+
+  ngAfterViewInit(): void {
+    
+    this.interestModal = new Modal(document.getElementById('interest-modal'));
+
+  }
+
+  openModal() {
+    if(this.interestModal) {
+      this.interestModal.show();
+    } else {
+      console.log('Open modal Failed')
+    }
+  }
+
+  closeModal() {
+    if(this.interestModal) {
+      this.interestModal.hide();
+    } else {
+      console.log('Hide modal Failed')
+    }
+  }
+
   get locationName() {
     return this.generatePlanForm.get('locationName');
   }
 
   maxEndDate: string = '';
+  minEndDate: string = '';
 
   calculateEndDate() {
     const startDate = this.generatePlanForm.get('startDate')?.value;
 
     if (startDate) {
       const start = new Date(startDate);
+      this.minEndDate = start.toISOString().split('T')[0];
       start.setDate(start.getDate() + 7); // Calculate End Date
       const endDateFormatted = start.toISOString().split('T')[0];
 
       this.maxEndDate = endDateFormatted;
 
 
+      
 
 
-    } // Set maxEndDate to 7 days after start date}
+
+    } // Set maxEndDate to 7 days after start date} 
+     else {
+      this.minEndDate = new Date().toISOString().split('T')[0];
+     }
   }
 
+  addInterestForm: FormGroup;
+
+  otherInterest: string= '';
 
   selectLocation(location: any) {
     console.log('Selected location:', location);
@@ -95,6 +145,10 @@ export class PlanComponent {
     // Initialization logic can go here
     this.getLocations();
     this.setMinStartDate();
+
+    this.generatePlanForm.patchValue({
+      userId: this.userStorageService.getUserId()
+    })
   }
 
   getLocations() {
@@ -119,20 +173,32 @@ export class PlanComponent {
       const formData = this.generatePlanForm.value;
       formData.isTravelingWithChildren = this.isTravelingWithChildren; // Set the traveling with children flag
 
+      this.selectedInterests.push(this.otherInterest);
+
+      formData.preferences = this.selectedInterests.join(', ');
+
       console.log('Form submitted:', this.generatePlanForm.value);
+
+
+      this.isGenerating = true;
+
       // Handle form submission logic here
       this.planService.generatePlan(formData).subscribe(
         (response) => {
-          const cleanJsonString = response.data
-            .replace(/^```json\n/, '')  // Remove the opening triple backticks
-            .replace(/\n```$/, '');
-          let parsedData: any;
-          try {
-            parsedData = JSON.parse(cleanJsonString);
-            console.log('Parsed JSON:', parsedData);
-          } catch (error) {
-            console.error('Error parsing JSON:', error);
-          }
+          // const cleanJsonString = response.data
+          //   .replace(/^```json\n/, '')  // Remove the opening triple backticks
+          //   .replace(/\n```$/, '');
+          // let parsedData: any;
+          // try {
+          //   parsedData = JSON.parse(cleanJsonString);
+          //   console.log('Parsed JSON:', parsedData);
+          // } catch (error) {
+          //   console.error('Error parsing JSON:', error);
+          // }
+
+          this.isGenerating = false;
+          console.log(response)
+          this.route.navigate(['/plan-detail/' + response.data]);
         },
         (error) => {
           console.error('Error generating plan:', error);
@@ -148,6 +214,39 @@ export class PlanComponent {
     this.selectedTrip = trip;
     this.generatePlanForm.patchValue({ planType: trip.label });
     console.log('Selected trip:', trip);
+  }
+
+
+  interests: string[] = [
+    'Các điểm tham quan nổi bật',
+    'Ẩm thực tuyệt vời',
+    'Viên ngọc ẩn',
+    'Tour & Trải nghiệm',
+    'Khám phá Rome về đêm',
+    'Hầm mộ bí mật của Rome',
+    'Nghệ thuật & nhạc kịch vượt thời gian',
+    'Ẩm thực La Mã',
+    'Di tích lịch sử',
+    'Bảo tàng & phòng trưng bày nghệ thuật',
+    'Mua sắm',
+    'Quán rượu vang'
+  ];
+
+  selectedInterests: string[] = [];
+
+  toggleInterest(interest: string): void {
+    const index = this.selectedInterests.indexOf(interest);
+    if (index === -1) {
+      this.selectedInterests.push(interest);
+    } else {
+      this.selectedInterests.splice(index, 1);
+    }
+
+    console.log('Selected interests: ', this.selectedInterests)
+  }
+
+  isSelected(interest: string): boolean {
+    return this.selectedInterests.includes(interest);
   }
 
 

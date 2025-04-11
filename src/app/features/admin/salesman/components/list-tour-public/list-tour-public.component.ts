@@ -60,6 +60,11 @@ export class ListTourPublicComponent {
         next: (response) => {
           this.tourDatas = response.data.items;
           this.isLoading = false;
+          this.totalItems = response.data.total;
+          this.page = response.data.page;
+          this.size = response.data.size;
+          this.totalPages.set(Math.ceil(this.totalItems / this.size));
+          this.isLoading = false;
         },
         error: (error) => {
           console.log(error);

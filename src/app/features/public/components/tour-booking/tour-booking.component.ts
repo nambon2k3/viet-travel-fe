@@ -221,6 +221,7 @@ export class TourBookingComponent implements OnInit{
       console.log('Form Submitted:', this.bookingForm.value);
       this.warningMessage = 'Please fill in all required fields';
       this.triggerWarning();
+      this.bookingForm.markAllAsTouched()
     }
   }
 

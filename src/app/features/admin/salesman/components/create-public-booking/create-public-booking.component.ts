@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { TourService } from '../../services/tour.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -8,13 +8,15 @@ import { BookingService } from '../../services/booking.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { scheduled } from 'rxjs';
 import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
+import { Modal } from 'flowbite';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 @Component({
   selector: 'app-create-public-booking',
-  imports: [DatePipe, CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule, FormsModule],
+  imports: [DatePipe, CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule, FormsModule, SpinnerComponent],
   templateUrl: './create-public-booking.component.html',
   styleUrl: './create-public-booking.component.css'
 })
-export class CreatePublicBookingComponent {
+export class CreatePublicBookingComponent implements AfterViewInit{
 
 
   createBookingForm: FormGroup;
@@ -38,6 +40,12 @@ export class CreatePublicBookingComponent {
 
 
   tourId?: number;
+
+  userForm!: FormGroup;
+
+  isCreateUserLoading: boolean = false;
+
+  isPageLoading = false;
 
 
   get fullName() {
@@ -98,6 +106,17 @@ export class CreatePublicBookingComponent {
       extraHotelCost: [0, Validators.required],
     });
 
+    this.userForm = this.fb.group({
+      fullName: ['', Validators.required],
+      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      gender: ['MALE', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      phone: ['', [Validators.required]],
+      address: ['', Validators.required],
+      emailConfirmed: [true]
+    });
+
     this.addCustomer()
 
 
@@ -132,6 +151,78 @@ export class CreatePublicBookingComponent {
 
     
 
+  }
+
+  customerModal: Modal | null = null;
+
+  ngAfterViewInit(): void {
+    this.customerModal = new Modal(document.getElementById('customer-modal'));
+  }
+
+  openModal() {
+    if(this.customerModal) {
+      this.customerModal.show();
+    } else {
+      console.log('Cannot open');
+    }
+  }
+
+  closeModal() {
+    if(this.customerModal) {
+      this.customerModal.hide();
+    } else {
+      console.log('Cannot hide');
+    }
+  }
+
+  onUserFormSubmit(): void {
+    if (this.userForm.valid) {
+      console.log(this.userForm.value);
+
+      this.bookingService.createCustomer(this.userForm.value).subscribe({
+        next: (response) => {
+          console.log('Response: ', response);
+          this.triggerSuccess();
+          this.selectUser(response.data);
+        },
+        error: (error) => {
+          console.error(error);
+          this.errorMessage = error;
+          this.triggerError();
+        }
+      });
+
+
+    } else {
+      this.userForm.markAllAsTouched();
+    }
+
+    
+  }
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+
+  successMessage: string = 'Tạo khách hàng thành công';
+  errorMessage: string = 'Tạo khách hàng thất bại';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
   }
 
 
@@ -232,8 +323,11 @@ export class CreatePublicBookingComponent {
     this.customersFormArray.removeAt(index);
   }
 
+  tourType: any;
+
 
   getTourDetail(tourId: number, scheduleId:number): void {
+    this.isPageLoading = true;
     this.tourService.getTourDetail(tourId, scheduleId).subscribe({
       next: (response) => {
         this.tourDetial = response.data;
@@ -244,10 +338,24 @@ export class CreatePublicBookingComponent {
           sellingPrice: this.tourDetial.tourSchedule.sellingPrice,
           extraHotelCost: this.tourDetial.tourSchedule.extraHotelCost,
         })
+        this.isPageLoading = false;
+
+        this.tourType = this.tourDetial.tourType;
+
+        if(this.tourType === 'PRIVATE'){
+          const seats = this.tourDetial.tourSchedule.maxPax;
+
+          console.log('Seats', seats)
+          
+          for(let i = 0; i < seats - 1; i++) {
+            this.addCustomer();
+          }
+        }
 
       },
       error: (error) => {
         console.error(error);
+        this.isPageLoading = false;
       }
     });
   }
@@ -259,13 +367,21 @@ export class CreatePublicBookingComponent {
     if(this.createBookingForm.valid) {
       console.log('Form Value Valid', this.createBookingForm.value);
       
+      this.isPageLoading = true;
+
       this.bookingService.createBooking(this.createBookingForm.value).subscribe({
         next: (response) => {
           console.log('Create Booking Response', response);
+          this.isPageLoading = false
           //this.router.navigate(['/admin/salesman/bookings']);
+          this.showSuccessCreate();
+          
         },
         error: (error) => {
           console.error(error);
+          this.isPageLoading = false;
+          this.errorMessage = error;
+          this.triggerError()
         }
       });
 
@@ -305,6 +421,26 @@ export class CreatePublicBookingComponent {
       console.log('Errors:', control.errors);
       }
     });
+  }
+
+  success: boolean = false;
+  second: number = 2;
+
+  showSuccessCreate() {
+    this.success = true;
+    this.second = 2; // Set countdown to 3 seconds
+    const intervalId = setInterval(() => {
+      this.second--; // Decrease countdown
+      if (this.second === 0) {
+        clearInterval(intervalId); // Stop interval when reaching 0
+      }
+    }, 1000);
+    
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.success = false;
+      this.router.navigate(['/salesman/tour-list-booking/' + this.tourId +'/' + this.selectedScheduleId]); // Navigate to the desired route
+    }, 2000);
   }
 
 

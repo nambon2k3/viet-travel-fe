@@ -1,0 +1,103 @@
+<div class="space-y-10 p-6 max-w-7xl mx-auto pt-12">
+
+  <app-spinner [isLoading]="isLoading"></app-spinner>
+
+  <header class="max-w-7xl mx-auto px-6 pt-10 pb-4 border-b border-gray-200">
+    <p class="text-gray-600 text-sm mb-2">Nhìn lại đề xuất của chúng tôi cho chuyến đi của bạn</p>
+    <h1 class="text-4xl font-bold mb-2">{{planContent?.plan.location}}</h1>
+    <p class="text-gray-700 text-sm">{{planContent?.plan.plan_category}} • April • {{planContent?.plan.numberDays}} ngày</p>
+  </header>
+
+  <!-- Section: Cultural Gems -->
+  <section>
+    <h2 class="text-2xl font-semibold text-gray-800">
+      {{planContent?.plan.title}}
+    </h2>
+    <p class="text-gray-600 mt-2">
+      {{planContent?.plan.description}}
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+
+      @for (activity of activities; track $index) {
+        <div class="relative bg-white shadow rounded overflow-hidden">
+          <img [src]="activity?.imageUrl" alt="Petit Palais" class="w-full h-48 object-cover" />
+          <div class="absolute top-2 right-2 bg-white rounded-full p-1">
+            <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0..." clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-gray-800">{{activity?.title}}</h3>
+            <p class="text-sm text-emerald-700">{{activity?.category}} </p>
+            <p class="text-sm text-gray-500">Thời lượng: 2- 3 giờ</p>
+            <p class="text-sm text-gray-500"><strong>Nội dung: </strong> <span class="italic">{{activity?.content}}</span></p>
+          </div>
+        </div>
+      }
+
+      
+
+      <!-- Duplicate the card above and replace data for each item -->
+    </div>
+  </section>
+
+  <!-- Section: Dinner Picks -->
+  <section>
+    <h2 class="text-2xl font-semibold text-gray-800">
+      Nhà hàng bạn có thể ghé qua
+    </h2>
+    <p class="text-gray-600 mt-2">Một vài nhà hàng phù hợp với chuyến đi của bạn</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+
+      
+      <!-- Repeat Card Format with Different Content -->
+      @for (restaurant of restaurants; track $index) {
+        <div class="relative bg-white shadow rounded overflow-hidden">
+          <img [src]="restaurant?.image_url" alt="Petit Palais" class="w-full h-48 object-cover" />
+          <div class="absolute top-2 right-2 bg-white rounded-full p-1">
+            <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0..." clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-gray-800"> {{restaurant?.name}}</h3>
+            <p class="text-sm text-gray-500">Địa chỉ: {{restaurant?.address}}</p>
+          </div>
+        </div>
+      }
+
+      
+
+
+    </div>
+  </section>
+
+  <!-- Section: Gardens and River Views -->
+  <section>
+    <h2 class="text-2xl font-semibold text-gray-800">
+      Khách sạn bạn có thể ghé qua
+    </h2>
+    <p class="text-gray-600 mt-2">
+      Dưới đây là những khách sạn được đánh giá cao, thuận tiện cho việc di chuyển và nghỉ ngơi trong hành trình của bạn.
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+      @for (restaurant of restaurants; track $index) {
+        <div class="relative bg-white shadow rounded overflow-hidden">
+          <img [src]="restaurant?.image_url" alt="Petit Palais" class="w-full h-48 object-cover" />
+          <div class="absolute top-2 right-2 bg-white rounded-full p-1">
+            <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0..." clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-gray-800"> {{restaurant?.name}}</h3>
+            <p class="text-sm text-gray-500">Địa chỉ: {{restaurant?.address}}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</div>
