@@ -156,7 +156,7 @@
                                 <span class="font-semibold">
                                     {{bookingData?.paymentMethod}}
                                 </span>
-                                <a href="#" class="text-blue-600 underline ml-2">Thay đổi phương thức thanh toán</a>
+                                <span class="text-blue-600 underline ml-2 hover:cuisor-pointer hover:text-blue-800" (click)="changePaymentMethod()">Thay đổi phương thức thanh toán</span>
                             </td>
                         </tr>
                         <tr class="border-b">
@@ -247,3 +247,28 @@
         </div>
     </div>
 </div>
+
+
+
+@if(showSuccess) {
+    <!-- Warning Notification (Only One at a Time) -->
+    <div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+        <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+            <span class="text-green-500 text-xl mr-2">✔</span>
+            <p class="text-green-800 text-sm">
+                {{ successMessage }}
+            </p>
+        </div>
+    </div>
+    }
+    
+    @if(showError) {
+    <!-- Warning Notification (Only One at a Time) -->
+    <div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+        <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+            <span class="text-red-500 text-xl mr-2">X</span>
+            <p class="text-red-800 text-sm">
+                {{ errorMessage }}
+        </div>
+    </div>
+    }
