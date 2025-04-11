@@ -45,35 +45,33 @@
     }
   </td>
 
-  <td>
-    <div class="relative">
+  <td class="relative">
+    <div >
       <!-- Nút trigger để mở/đóng dropdown -->
-      <button (click)="toggleDropdown()"
-        class="flex items-center justify-between w-32 bg-green-700 hover:bg-green-800 text-white font-medium rounded-full text-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors duration-200">
-        Tùy chọn
-        <svg class="w-4 h-4 ml-2 transition-transform duration-200" aria-hidden="true"
+      <button (click)="toggleDropdown($event)"
+        class="flex items-center justify-between w-12  text-white font-medium rounded-full text-sm px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 transition-colors duration-200">
+        <svg class="w-4 h-4 transition-transform duration-200 text-green-700 hover:text-green-800" aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
           <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="m1 1 4 4 4-4" />
         </svg>
-
       </button>
 
-      <!-- Dropdown menu, hiển thị/ẩn bằng @if/@else -->
       @if (isDropdownOpen) {
       <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50">
         <ul class="py-1 text-sm text-gray-700">
           <li>
+            <a href="#" 
+               class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+               (click)="openDetail(tour); isDropdownOpen = false; $event.preventDefault()">Chi tiết</a>
+          </li>          
+          <li>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-              (click)="openDetail(tour); toggleDropdown(); $event.preventDefault()">Chi tiết</a>
+              (click)="openDiscount(tour); isDropdownOpen = false; $event.preventDefault()">Chiết tính</a>
           </li>
           <li>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-              (click)="openDiscount(tour); toggleDropdown(); $event.preventDefault()">Chiết tính</a>
-          </li>
-          <li>
-            <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
-              (click)="openSaleTour(tour); toggleDropdown(); $event.preventDefault()">Mở bán</a>
+              (click)="openSaleTour(tour); isDropdownOpen = false; $event.preventDefault()">Mở bán</a>
           </li>
         </ul>
       </div>

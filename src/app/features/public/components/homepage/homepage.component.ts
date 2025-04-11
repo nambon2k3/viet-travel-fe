@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, ViewChild } from '@angular/core';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { FooterComponent } from "../../../../shared/components/footer/footer.component";
 import { HomepageService } from '../../services/homepage.service';
@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { WishlistService } from '../../../customer/components/wishlist/wishlist.service';
 import { WishlistComponent } from "../../../customer/components/wishlist/wishlist.component";
+import { debounceTime, Subject } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-homepage',
@@ -16,17 +18,23 @@ import { WishlistComponent } from "../../../customer/components/wishlist/wishlis
     CommonModule,
     FooterComponent,
     CurrencyVndPipe,
-    WishlistComponent
-],
+    WishlistComponent,
+    FormsModule
+  ],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
 export class HomepageComponent {
   @ViewChild('wishlistModal') wishlistModal!: WishlistComponent;
+  @ViewChild('searchDropdown') searchDropdownRef!: ElementRef;
+
   selectedCategory: string = 'Tìm kiếm tất cả';
   searchPlaceholder: string = 'Địa điểm, hoạt động, khách sạn...';
   searchTitle: string = 'Hiện thực hóa chuyến du lịch trong mơ';
   userProfile: any;
+  searchQuery: string = '';
+  searchResults: any[] = []; // Lưu kết quả tìm kiếm
+  private searchSubject = new Subject<string>(); // Sử dụng Subject để debounce
 
   categories = [
     { name: 'Tìm kiếm tất cả', title: "Hiện thực hóa chuyến du lịch trong mơ", placeholder: 'Địa điểm, hoạt động, khách sạn...' },
@@ -50,6 +58,54 @@ export class HomepageComponent {
     });
   }
 
+  onSearchInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.searchQuery = input.value;
+    this.searchSubject.next(this.searchQuery); // Gửi từ khóa để debounce
+  }
+
+  // Gọi API tìm kiếm tour
+  searchTours(keyword: string): void {
+    this.homepageService.searchTours(keyword).subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.searchResults = res.data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            imageUrl: item.tourImages[0].imageUrl,
+          }));
+        } else {
+          this.searchResults = [];
+        }
+      },
+      error: (err) => {
+        console.error('Error searching tours', err);
+        this.searchResults = [];
+      }
+    });
+  }
+
+  // Chọn một kết quả từ dropdown
+  selectSearchResult(id: number): void {
+    this.router.navigate(['/tour-details', id]); // Điều hướng đến chi tiết tour
+    this.searchResults = []; // Reset kết quả sau khi chọn
+    this.searchQuery = ''; // Reset input
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    if (this.searchDropdownRef && !this.searchDropdownRef.nativeElement.contains(event.target)) {
+      // Click nằm ngoài dropdown
+      this.searchResults = []; // hoặc đặt biến điều khiển hiển thị khác
+    }
+  }
+
+  onDropdownClick(): void {
+    if (this.searchQuery && this.searchQuery.trim().length > 0) {
+      this.searchTours(this.searchQuery);
+    }
+  }
+
   selectCategory(category: any) {
     this.selectedCategory = category.name;
     this.searchPlaceholder = category.placeholder;
@@ -68,6 +124,13 @@ export class HomepageComponent {
     private router: Router,
     private wishlistService: WishlistService,
   ) {
+     this.searchSubject.pipe(debounceTime(300)).subscribe(query => {
+          if (query && query.trim().length > 0) {
+            this.searchTours(query);
+          } else {
+            this.searchResults = [];
+          }
+        });
   }
 
   ngOnInit() {

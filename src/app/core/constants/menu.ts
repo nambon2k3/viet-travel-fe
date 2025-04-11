@@ -3,18 +3,16 @@ import { MenuItem } from '../models/menu.model';
 export class Menu {
   public static pages: MenuItem[] = [
     {
-      group: 'Provider',
+      group: 'Nhà cung cấp',
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
-          label: 'Provider',
+          label: 'Dịch vụ',
           route: '/service-provider',
           children: [
-            { label: 'Service Contact', route: '/service-provider/service-contact' },
-            { label: 'Service', route: '/service-provider/service' },
-            { label: 'Review Services', route: '/service-provider/review-service' },
-            { label: 'Booking Services', route: '/service-provider/booking-service' },
+            { label: 'Dịch vụ', route: '/service-provider/service' },
+            { label: 'Yêu cầu Dịch vụ', route: '/service-provider/service-request' },
           ],
         },
       ],
@@ -105,13 +103,13 @@ export class Menu {
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Tour Confirmation',
-          route: '/ceo/staff',
+          label: 'Duyệt Tour',
+          route: '/ceo/tour-request',
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Providers',
-          route: '/ceo/staff',
+          label: 'Nhà cung cấp',
+          route: '/ceo/service-provider',
         }
       ],
     },
@@ -121,11 +119,16 @@ export class Menu {
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Users',
+          label: 'Người dùng',
           children: [
             { label: 'Staff', route: '/admin/user' },
             { label: 'Customer', route: '/admin/customer' },
           ],
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Danh mục dịch vụ',
+          route: '/admin/service-category',
         },
       ],
     },

@@ -26,21 +26,21 @@
 }
 
 .text-red-600 {
-  color: #FBCFE8;
+  color: rgb(181, 175, 178);
 }
 
 th {
-  background-color: #EDE9FE;
-  color: #6D28D9;
+  background-color: #d3dae3;
+  color: #44576D;
   font-weight: bold;
 }
 
 tr:nth-child(even) {
-  background-color: #F5F3FF;
+  background-color: #eff3f9;
 }
 
 tr:hover {
-  background-color: #EDE9FE;
+  background-color: #eff3f9;
 }
 
 button {

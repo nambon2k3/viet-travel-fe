@@ -38,6 +38,11 @@ export class UpdateTourPaxComponent {
     validTo: new Date().toISOString().split('T')[0]
   };
 
+  // New properties for popup
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  isSuccess: boolean = false;
+
   constructor(private tourDiscountService: TourDiscountService) {}
 
   ngOnInit() {
@@ -51,10 +56,12 @@ export class UpdateTourPaxComponent {
           this.tourPax = response.data;
           this.tourPax.validFrom = new Date(this.tourPax.validFrom).toISOString().split('T')[0];
           this.tourPax.validTo = new Date(this.tourPax.validTo).toISOString().split('T')[0];
+        } else {
+          this.showPopupMessage(response.message || 'Lỗi khi tải dữ liệu cấu hình khách hàng.', false);
         }
       },
-      error: (error: any) => {
-        console.error('Error fetching tour pax data:', error);
+      error: (error) => {
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi tải dữ liệu cấu hình khách hàng.', false);
       }
     });
   }
@@ -64,15 +71,29 @@ export class UpdateTourPaxComponent {
       next: (response: any) => {
         if (response.code === 200) {
           this.confirmUpdate.emit();
+          this.showPopupMessage('Cập nhật cấu hình khách hàng thành công!', true);
+        } else {
+          this.showPopupMessage(response.message || 'Lỗi khi cập nhật cấu hình khách hàng.', false);
         }
       },
-      error: (error: any) => {
-        console.error('Error updating tour pax:', error);
+      error: (error) => {
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi cập nhật cấu hình khách hàng.', false);
       }
     });
   }
 
   onCancel() {
     this.cancel.emit();
+  }
+
+  // New method to show popup message
+  showPopupMessage(message: string, isSuccess: boolean) {
+    this.popupMessage = message;
+    this.isSuccess = isSuccess;
+    this.showPopup = true;
+
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2000); // Hide after 2 seconds
   }
 }

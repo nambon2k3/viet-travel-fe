@@ -10,7 +10,7 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe'
 import { TourService } from '../../../services/tour.service';
 import { ServiceDetailComponent } from './service-detail/service-detail.component';
 import { PayServiceComponent } from './pay-service/pay-service.component';
-import { SpinnerComponent } from '../../../../../../shared/components/spinner/spinner.component'; // Import SpinnerComponent
+import { SpinnerComponent } from '../../../../../../shared/components/spinner/spinner.component';
 
 interface Service {
   bookingServiceId: number;
@@ -52,7 +52,7 @@ interface ServiceGroup {
     CurrencyVndPipe,
     FormatDatePipe,
     PayServiceComponent,
-    SpinnerComponent // Add SpinnerComponent to imports
+    SpinnerComponent
   ]
 })
 export class ServiceComponent {
@@ -66,6 +66,11 @@ export class ServiceComponent {
   tourGuide: string | null = null;
   scheduleId: number | null = null;
   isLoading: boolean = false;
+
+  // New properties for popup
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  isSuccess: boolean = false;
 
   @ViewChild('chooseServiceModal') chooseServiceModal!: PostServiceComponent;
   @ViewChild('changeServiceModal') changeServiceModal!: ServiceDetailComponent;
@@ -88,7 +93,7 @@ export class ServiceComponent {
         this.fetchServices(this.scheduleId);
         this.fetchTourGuide(this.scheduleId);
       } else {
-        console.error('ID không hợp lệ.');
+        this.showPopupMessage('ID không hợp lệ.', false);
       }
     });
   }
@@ -101,12 +106,12 @@ export class ServiceComponent {
         if (response.code === 200) {
           this.tourGuide = response.data.tourGuideName;
         } else {
-          console.error('Lỗi khi tải thông tin hướng dẫn viên:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi tải thông tin hướng dẫn viên.', false);
         }
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.error('Lỗi khi tải chi tiết tour:', error);
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi tải thông tin hướng dẫn viên.', false);
       }
     });
   }
@@ -146,12 +151,12 @@ export class ServiceComponent {
           this.groupServices();
           this.initDropdowns();
         } else {
-          console.error('Lỗi khi tải danh sách dịch vụ:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi tải danh sách dịch vụ.', false);
         }
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.error('Lỗi khi tải danh sách dịch vụ:', error);
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi tải danh sách dịch vụ.', false);
       }
     });
   }
@@ -236,7 +241,7 @@ export class ServiceComponent {
           if (orderButton && orderDropdown) {
             new Dropdown(orderDropdown, orderButton);
           } else {
-            console.warn(`Order dropdown elements not found for service ${service.uniqueId}`);
+            this.showPopupMessage(`Không tìm thấy phần tử dropdown cho đơn hàng của dịch vụ ${service.uniqueId}`, false);
           }
 
           const paymentButton = doc.getElementById(`dropdownPaymentButton-${service.uniqueId}`);
@@ -244,7 +249,7 @@ export class ServiceComponent {
           if (paymentButton && paymentDropdown) {
             new Dropdown(paymentDropdown, paymentButton);
           } else {
-            console.warn(`Payment dropdown elements not found for service ${service.uniqueId}`);
+            this.showPopupMessage(`Không tìm thấy phần tử dropdown cho thanh toán của dịch vụ ${service.uniqueId}`, false);
           }
         });
       });
@@ -257,16 +262,16 @@ export class ServiceComponent {
       next: (response: any) => {
         this.isLoading = false;
         if (response.code === 200) {
-          console.log('Dịch vụ đã được xóa thành công!');
           this.fetchServices(this.scheduleId!);
           this.fetchTourGuide(this.scheduleId!);
+          this.showPopupMessage(response.message || 'Dịch vụ đã được xóa thành công!', true);
         } else {
-          console.error('Lỗi khi xóa dịch vụ:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi xóa dịch vụ.', false);
         }
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.error('Lỗi khi xóa dịch vụ:', error);
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi xóa dịch vụ.', false);
       }
     });
   }
@@ -322,20 +327,37 @@ export class ServiceComponent {
   }
 
   onEmailSent(event: any): void {
-    console.log('Email đã được gửi thành công!');
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
+    this.showPopupMessage('Email đã được gửi thành công!', true);
   }
 
   onServiceAdded(event: any): void {
-    console.log('Dịch vụ đã được thêm thành công!');
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
+    this.showPopupMessage('Dịch vụ đã được thêm thành công!', true);
+  }
+
+  onServiceChanged(event: any): void {
+    this.fetchServices(this.scheduleId!);
+    this.fetchTourGuide(this.scheduleId!);
+    this.showPopupMessage('Dịch vụ đã được cập nhật thành công!', true);
   }
 
   onPaymentSent(event: any): void {
-    console.log('Thanh toán đã được gửi thành công!');
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
+    this.showPopupMessage('Thanh toán đã được gửi thành công!', true);
+  }
+
+  // New method to show popup message
+  showPopupMessage(message: string, isSuccess: boolean) {
+    this.popupMessage = message;
+    this.isSuccess = isSuccess;
+    this.showPopup = true;
+
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2000); // Hide after 2 seconds
   }
 }

@@ -36,9 +36,14 @@ export class CreateTourPaxComponent {
     extraHotelCost: 0,
     nettPricePerPax: 0,
     sellingPrice: 0,
-    validFrom: new Date().toISOString(), // Default to current date
-    validTo: new Date().toISOString()   // Default to current date
+    validFrom: new Date().toISOString().split('T')[0], // Default to current date (date only)
+    validTo: new Date().toISOString().split('T')[0]   // Default to current date (date only)
   };
+
+  // New properties for popup
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  isSuccess: boolean = false;
 
   constructor(private tourDiscountService: TourDiscountService) {}
 
@@ -58,13 +63,29 @@ export class CreateTourPaxComponent {
       next: (response: any) => {
         if (response.code === 201) {
           this.confirmCreate.emit();
+          this.showPopupMessage('Tạo mới cấu hình khách hàng thành công!', true);
         } else {
-          console.error('Error creating tour pax:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi tạo mới cấu hình khách hàng.', false);
         }
       },
       error: (error) => {
-        console.error('HTTP error creating tour pax:', error);
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi tạo mới cấu hình khách hàng.', false);
       }
     });
+  }
+
+  onCancel() {
+    this.cancel.emit();
+  }
+
+  // New method to show popup message
+  showPopupMessage(message: string, isSuccess: boolean) {
+    this.popupMessage = message;
+    this.isSuccess = isSuccess;
+    this.showPopup = true;
+
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2000); // Hide after 2 seconds
   }
 }

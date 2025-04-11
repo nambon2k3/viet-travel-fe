@@ -35,6 +35,11 @@ export class CreateOpenTourDayComponent {
   paxId: string = ''; 
   addByMonth: boolean = false;
 
+  // New properties for popup
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  isSuccess: boolean = false;
+
   constructor(
     private ssrService: SsrService,
     private tourService: TourService
@@ -62,7 +67,7 @@ export class CreateOpenTourDayComponent {
           }
         },
         error: (error) => {
-          console.error('Error calculating end dates:', error);
+          this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
           this.calculatedEndDate = '';
         }
       });
@@ -77,7 +82,7 @@ export class CreateOpenTourDayComponent {
           this.dropdownList = response.data || [];
         },
         error: (error) => {
-          console.error('Error fetching available operators:', error);
+          this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
           this.dropdownList = [];
         }
       });
@@ -91,7 +96,7 @@ export class CreateOpenTourDayComponent {
           this.dropdownPaxList = response.data || [];
         },
         error: (error) => {
-          console.error('Error fetching tour pax:', error);
+          this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
           this.dropdownPaxList = [];
         }
       });
@@ -149,8 +154,8 @@ export class CreateOpenTourDayComponent {
       );
 
       this.calculatedEndDates = endDates.map(response => response.data[0].endDate);
-    } catch (error) {
-      console.error('Error calculating end dates:', error);
+    } catch (error: any) {
+      this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
     }
   }
 
@@ -168,18 +173,21 @@ export class CreateOpenTourDayComponent {
     }
   }
 
+  // New method to show popup message
+  showPopupMessage(message: string, isSuccess: boolean) {
+    this.popupMessage = message;
+    this.isSuccess = isSuccess;
+    this.showPopup = true;
 
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2000); // Hide after 2 seconds
+  }
 
   createTourSaleDay() {
-    if (!this.tourId || !this.operatorId || !this.paxId) {
-      console.error("Missing required fields!");
-      return;
-    }
-
     if (this.addByMonth) {
-      // Kiểm tra xem startDates và calculatedEndDates có cùng số lượng phần tử không
       if (this.startDates.length !== this.calculatedEndDates.length) {
-        console.error("Mismatch between startDates and endDates!");
+        this.showPopupMessage('Số lượng ngày bắt đầu và ngày kết thúc không khớp!', false);
         return;
       }
 
@@ -194,15 +202,13 @@ export class CreateOpenTourDayComponent {
           tourPaxId: this.paxId
         };
 
-        console.log("Request Body:", requestBody);
-
         this.tourService.createTourSchedule(requestBody).subscribe({
           next: (response) => {
             this.daySetted.emit(response.data);
-            console.log("Successfully created tour schedule:", response);
+            this.showPopupMessage('Tạo lịch trình tour thành công!', true);
           },
           error: (error) => {
-            console.error("Error creating tour schedule:", error);
+            this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
           }
         });
       });
@@ -218,10 +224,10 @@ export class CreateOpenTourDayComponent {
       this.tourService.createTourSchedule(requestBody).subscribe({
         next: (response) => {
           this.daySetted.emit(response.data);
-          console.log("Successfully created tour schedule:", response);
+          this.showPopupMessage('Tạo lịch trình tour thành công!', true);
         },
         error: (error) => {
-          console.error("Error creating tour schedule:", error);
+          this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
         }
       });
     }

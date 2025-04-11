@@ -23,3 +23,23 @@ td {
 .hidden {
   display: none;
 }
+
+.status-label {
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  user-select: none; /* Ngăn chặn chọn văn bản */
+}
+
+.status-label:hover {
+  opacity: 0.9; /* Hiệu ứng hover nhẹ */
+}
+
+/* Đảm bảo text không bị ngắt dòng */
+.status-label.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+/* Tùy chỉnh kích thước và khoảng cách nếu cần */
+td.p-3 {
+  vertical-align: middle; /* Căn giữa theo chiều dọc */
+}

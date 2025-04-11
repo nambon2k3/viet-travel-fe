@@ -7,11 +7,17 @@ import { ServiceService } from '../../../services/service.service';
 import { ApiResponse } from '../../../../../core/models/api-response.model';
 import { ServiceResponse, RoomWithDisplay, MealWithDisplay, TransportWithDisplay } from '../../../../../core/models/service.model';
 import { NgMultiSelectDropDownModule, IDropdownSettings } from 'ng-multiselect-dropdown';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-update-service',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, NgMultiSelectDropDownModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    NgMultiSelectDropDownModule,
+    NgSelectModule
+  ],
   templateUrl: './update-service.component.html',
   styleUrls: ['./update-service.component.css']
 })
@@ -30,7 +36,9 @@ export class UpdateServiceComponent implements OnInit {
   selectedRooms: RoomWithDisplay[] = [];
   selectedMeals: MealWithDisplay[] = [];
   selectedTransports: TransportWithDisplay[] = [];
-  dropdownSettings: IDropdownSettings = {
+  categoryOptions: any[] = [];
+
+  detailsDropdownSettings: IDropdownSettings = {
     singleSelection: false,
     idField: 'id',
     textField: 'displayText',
@@ -45,14 +53,13 @@ export class UpdateServiceComponent implements OnInit {
     private serviceService: ServiceService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.serviceForm = this.fb.group({
-      id: [null, Validators.required],
+      id: [null],
       name: [null, Validators.required],
       nettPrice: [null, [Validators.required, Validators.min(0)]],
-      sellingPrice: [null, [Validators.required, Validators.min(0)]],
       imageUrl: [null],
       startDate: [null, Validators.required],
       endDate: [null, Validators.required],
@@ -61,18 +68,27 @@ export class UpdateServiceComponent implements OnInit {
       categoryName: [null],
       providerId: [null, Validators.required],
       providerName: [null],
-      roomDetails: [[]],
-      mealDetails: [[]],
-      transportDetails: [[]]
+      roomDetails: this.fb.group({
+        capacity: [null, [Validators.required, Validators.min(0)]],
+        availableQuantity: [null, [Validators.required, Validators.min(0)]],
+        facilities: [null, Validators.required]
+      }),
+      mealDetails: this.fb.group({
+        type: [null, Validators.required],
+        mealDetail: [null, Validators.required]
+      }),
+      transportDetails: this.fb.group({
+        seatCapacity: [null, [Validators.required, Validators.min(0)]]
+      })
     });
 
-    this.loadDropdownOptions();
+    this.loadCategories();
 
     const id = this.route.snapshot.paramMap.get('id');
-    console.log('Service ID from route:', id);
     if (id) {
-      const parsedId = parseInt(id, 10);
+      const parsedId = parseInt(id);
       if (!isNaN(parsedId)) {
+        console.log('Service ID from route:', parsedId);
         this.loadService(parsedId);
       } else {
         this.errorMessage = 'ID dịch vụ không hợp lệ.';
@@ -80,81 +96,72 @@ export class UpdateServiceComponent implements OnInit {
         console.error('Invalid service ID:', id);
       }
     } else {
-      this.errorMessage = 'Không tìm thấy ID dịch vụ.';
-      this.isLoading = false;
-      console.error('No service ID found in route');
+      this.isLoading = false; // No ID means create mode
     }
   }
 
-  loadDropdownOptions(): void {
-    this.roomOptions = [
-      { id: 1, capacity: 2, availableQuantity: 10, deleted: false, serviceId: 0, facilities: 'TV, Wifi', createdAt: '', updatedAt: '', displayText: 'Phòng 2 người (TV, Wifi)' },
-      { id: 2, capacity: 4, availableQuantity: 5, deleted: false, serviceId: 0, facilities: 'AC, Balcony', createdAt: '', updatedAt: '', displayText: 'Phòng 4 người (AC, Balcony)' }
-    ];
-    this.mealOptions = [
-      { id: 1, type: 'BREAKFAST', serviceId: 0, deleted: false, mealDetail: 'Buffet sáng', createdAt: '', updatedAt: '', displayText: 'Bữa sáng - Buffet sáng' },
-      { id: 2, type: 'LUNCH', serviceId: 0, deleted: false, mealDetail: 'Cơm trưa', createdAt: '', updatedAt: '', displayText: 'Bữa trưa - Cơm trưa' }
-    ];
-    this.transportOptions = [
-      { id: 1, seatCapacity: 50, deleted: false, serviceId: 0, createdAt: '', updatedAt: '', displayText: 'Xe bus 50 chỗ' },
-      { id: 2, seatCapacity: 4, deleted: false, serviceId: 0, createdAt: '', updatedAt: '', displayText: 'Xe máy 4 chỗ' }
-    ];
-    console.log('Dropdown options loaded:', { roomOptions: this.roomOptions, mealOptions: this.mealOptions, transportOptions: this.transportOptions });
+  loadCategories(): void {
+    this.serviceService.getCategories().subscribe({
+      next: (response: ApiResponse<any>) => {
+        if (response.code === 200) {
+          this.categoryOptions = response.data.map((category: any) => ({
+            ...category,
+            translatedCategoryName: this.translateCategory(category.categoryName)
+          }));
+          if (this.serviceForm.get('id')?.value) {
+            const currentCategoryId = this.serviceForm.get('categoryId')?.value;
+            if (currentCategoryId) {
+              const category = this.categoryOptions.find(c => c.id === currentCategoryId);
+              this.serviceForm.patchValue({ categoryName: category?.categoryName || '' }, { emitEvent: false });
+            }
+          }
+        } else {
+          this.errorMessage = 'Không thể tải danh mục.';
+          console.error('Failed to load categories:', response);
+        }
+      },
+      error: (err) => {
+        this.errorMessage = 'Lỗi khi tải danh mục: ' + (err.message || 'Vui lòng thử lại.');
+        console.error('Categories load error:', err);
+      }
+    });
   }
 
   loadService(id: number): void {
-    console.log('Fetching service details for ID:', id);
+    console.log('Service ID from route:', id);
+    this.isLoading = true;
     this.serviceService.getServiceDetails(id).subscribe({
       next: (response: ApiResponse<any>) => {
-        console.log('API response:', response);
         if (response.code === 200) {
           this.service = response.data;
-          console.log('Service data received:', this.service);
-
           this.imagePreview = this.service.imageUrl || null;
-          this.selectedRooms = this.service.roomDetails ? [{ ...this.service.roomDetails, displayText: `Phòng ${this.service.roomDetails.capacity} người (${this.service.roomDetails.facilities})` }] : [];
-          this.selectedMeals = this.service.mealDetails ? [{ ...this.service.mealDetails, displayText: `Bữa ${this.service.mealDetails.type} - ${this.service.mealDetails.mealDetail}` }] : [];
-          this.selectedTransports = this.service.transportDetails ? [{ ...this.service.transportDetails, displayText: `Phương tiện ${this.service.transportDetails.seatCapacity} chỗ` }] : [];
+          const category = this.categoryOptions.find(c => c.id === this.service.categoryId);
 
-          console.log('Selected items:', {
-            selectedRooms: this.selectedRooms,
-            selectedMeals: this.selectedMeals,
-            selectedTransports: this.selectedTransports
-          });
-
-          const formData = {
+          this.serviceForm.patchValue({
             id: this.service.id,
             name: this.service.name,
             nettPrice: this.service.nettPrice,
-            sellingPrice: this.service.sellingPrice,
             imageUrl: this.service.imageUrl,
-            startDate: this.service.startDate,
-            endDate: this.service.endDate,
+            startDate: this.service.startDate ? new Date(this.service.startDate).toISOString().split('T')[0] : null,
+            endDate: this.service.endDate ? new Date(this.service.endDate).toISOString().split('T')[0] : null,
             deleted: this.service.deleted,
             categoryId: this.service.categoryId,
-            categoryName: this.service.categoryName,
-            providerId: this.service.providerId,
-            providerName: this.service.providerName,
-            roomDetails: this.selectedRooms,
-            mealDetails: this.selectedMeals,
-            transportDetails: this.selectedTransports
-          };
-          console.log('Form data to patch:', formData);
-          this.serviceForm.patchValue(formData);
-          console.log('Form value after patch:', this.serviceForm.value);
+            categoryName: category?.categoryName || '',
+            roomDetails: this.service.roomDetails || { capacity: null, availableQuantity: null, facilities: null },
+            mealDetails: this.service.mealDetails || { type: null, mealDetail: null },
+            transportDetails: this.service.transportDetails || { seatCapacity: null }
+          });
+
           this.isLoading = false;
         } else {
-          // Xử lý lỗi 404 hoặc các mã khác
           this.errorMessage = response.message || 'Không thể tải thông tin dịch vụ.';
           this.isLoading = false;
-          console.error('API returned non-success code:', response.code, response.message);
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = `Không thể tải thông tin dịch vụ: ${err.status} - ${err.error?.message || 'Meal not found hoặc lỗi khác, vui lòng kiểm tra backend.'}`;
+        this.errorMessage = `Không thể tải thông tin dịch vụ: ${err.status} - ${err.error?.message || 'Vui lòng kiểm tra backend.'}`;
         console.error('API error:', err);
-        console.error('Error response:', err.error);
       }
     });
   }
@@ -177,15 +184,28 @@ export class UpdateServiceComponent implements OnInit {
   }
 
   saveChanges(): void {
-    if (this.serviceForm.invalid) {
-      this.errorMessage = 'Vui lòng kiểm tra lại thông tin.';
-      console.error('Form invalid:', this.serviceForm.errors);
-      return;
-    }
 
     this.isLoading = true;
+    this.errorMessage = null;
+    this.successMessage = null;
+
     const formData = this.serviceForm.getRawValue();
-    console.log('Form data to submit:', formData);
+
+    // Format dates to LocalDateTime string (e.g., "2025-04-08T00:00:00.000Z")
+    formData.startDate = this.formatToLocalDateTime(formData.startDate);
+    formData.endDate = this.formatToLocalDateTime(formData.endDate);
+
+    // Remove details if category doesn't require them
+    const categoryName = formData.categoryName;
+    if (categoryName !== 'Hotel') {
+      delete formData.roomDetails;
+    }
+    if (categoryName !== 'Restaurant') {
+      delete formData.mealDetails;
+    }
+    if (categoryName !== 'Transport') {
+      delete formData.transportDetails;
+    }
 
     if (this.selectedFile) {
       const uploadData = new FormData();
@@ -194,49 +214,96 @@ export class UpdateServiceComponent implements OnInit {
         next: (response: ApiResponse<any>) => {
           if (response.code === 200) {
             formData.imageUrl = response.data;
+            console.log('Form submitted:', this.serviceForm.value);
             this.submitForm(formData);
           } else {
             this.isLoading = false;
-            this.errorMessage = 'Tải lên hình ảnh thất bại.';
-            console.error('Image upload failed:', response);
+            this.errorMessage = 'Tải lên hình ảnh thất bại: ' + response.message;
           }
         },
         error: (err) => {
           this.isLoading = false;
-          this.errorMessage = 'Lỗi khi tải lên hình ảnh: ' + (err.message || 'Vui lòng thử lại.');
-          console.error('Image upload error:', err);
+          this.errorMessage = 'Lỗi khi tải lên hình ảnh: ' + (err.error?.message || err.message || 'Vui lòng thử lại.');
         }
       });
     } else {
+      if (!formData.imageUrl && this.service?.imageUrl) {
+        formData.imageUrl = this.service.imageUrl;
+      }
+      console.log('Form submitted:', this.serviceForm.value);
       this.submitForm(formData);
     }
   }
 
   submitForm(formData: any): void {
-    formData.roomDetails = this.selectedRooms.length > 0 ? this.selectedRooms[0] : null;
-    formData.mealDetails = this.selectedMeals.length > 0 ? this.selectedMeals[0] : null;
-    formData.transportDetails = this.selectedTransports.length > 0 ? this.selectedTransports[0] : null;
-    console.log('Final data to submit:', formData);
+    const apiCall = formData.id
+      ? this.serviceService.updateService(formData.id, formData)
+      : this.serviceService.createService(formData);
 
-    this.serviceService.updateService(formData.id, formData).subscribe({
+    apiCall.subscribe({
       next: (response: ApiResponse<any>) => {
         this.isLoading = false;
         if (response.code === 200) {
-          this.successMessage = 'Cập nhật dịch vụ thành công.';
+          this.successMessage = formData.id ? 'Cập nhật dịch vụ thành công.' : 'Tạo dịch vụ thành công.';
           this.errorMessage = null;
-          //this.router.navigate(['/service-provider/service']);
-          console.log('Update successful:', response);
+          setTimeout(() => this.router.navigate(['/service-provider/service']), 1500);
         } else {
-          this.errorMessage = response.message || 'Cập nhật dịch vụ thất bại.';
+          this.errorMessage = response.message || (formData.id ? 'Cập nhật dịch vụ thất bại.' : 'Tạo dịch vụ thất bại.');
           this.successMessage = null;
-          console.error('Update failed:', response);
         }
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = 'Lỗi khi cập nhật dịch vụ: ' + (err.message || 'Vui lòng thử lại.');
-        console.error('Update error:', err);
+        this.errorMessage = 'Lỗi khi ' + (formData.id ? 'cập nhật' : 'tạo') + ' dịch vụ: ' + (err.error?.message || err.message || 'Vui lòng thử lại.');
+        this.successMessage = null;
       }
     });
+  }
+
+  // Thêm vào trong class UpdateServiceComponent
+  removeImage(): void {
+    this.imagePreview = null;
+    this.selectedFile = null;
+    this.serviceForm.patchValue({ imageUrl: null }); // Reset imageUrl trong form nếu cần
+  }
+
+  onCategoryChange(selectedCategory: any): void {
+    if (selectedCategory) {
+      this.serviceForm.patchValue({
+        categoryName: selectedCategory.categoryName || ''
+      });
+    } else {
+      this.serviceForm.patchValue({
+        categoryName: ''
+      });
+    }
+
+    // Reset details when category changes
+    this.serviceForm.patchValue({
+      roomDetails: { capacity: null, availableQuantity: null, facilities: null },
+      mealDetails: { type: null, mealDetail: null },
+      transportDetails: { seatCapacity: null }
+    });
+  }
+
+  // Helper function to format date to LocalDateTime string
+  private formatToLocalDateTime(dateStr: string | null): string {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    // Ensure the date is valid
+    if (isNaN(date.getTime())) return '';
+    // Format to ISO string and append .000Z to match LocalDateTime
+    return date.toISOString().split('.')[0] + '.000Z';
+  }
+
+  translateCategory(categoryName: string): string {
+    const translations: { [key: string]: string } = {
+      'Activity': 'Hoạt động',
+      'Flight Ticket': 'Vé máy bay',
+      'Hotel': 'Khách sạn',
+      'Restaurant': 'Nhà hàng',
+      'Transport': 'Phương tiện'
+    };
+    return translations[categoryName] || categoryName;
   }
 }

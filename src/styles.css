@@ -300,6 +300,31 @@ body {
   background: transparent;
 }
 
+.popup-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  z-index: 1000;
+  min-width: 300px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.popup-message.success {
+  background-color: #4CAF50; /* Green for success */
+  opacity: 1;
+}
+
+.popup-message.error {
+  background-color: #f44336; /* Red for error */
+  opacity: 1;
+}
 
 
 

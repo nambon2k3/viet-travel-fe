@@ -33,20 +33,23 @@ interface RequestDetail {
     SpinnerComponent,
     CurrencyVndPipe,
     FormatDatePipe
-],
+  ],
   templateUrl: './view-request-detail.component.html',
   styleUrls: ['./view-request-detail.component.css']
 })
 export class ViewRequestDetailComponent implements OnInit {
   requestDetail: RequestDetail | null = null;
   isLoading: boolean = false;
-  errorMessage: string | null = null;
-  successMessage: string | null = null;
+
+  // New properties for popup
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  isSuccess: boolean = false;
 
   constructor(
     private router: Router,
     private requestService: RequestService,
-    private route : ActivatedRoute
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -58,21 +61,20 @@ export class ViewRequestDetailComponent implements OnInit {
     });
   }
 
-  loadRequestDetail(tourBookingServiceId : any): void {
+  loadRequestDetail(tourBookingServiceId: any): void {
     this.isLoading = true;
     this.requestService.getRequestDetail(tourBookingServiceId).subscribe({
       next: (response) => {
+        this.isLoading = false;
         if (response.code === 200) {
           this.requestDetail = response.data;
         } else {
-          this.errorMessage = response.message;
-          console.error('Lỗi khi tải chi tiết yêu cầu:', response.message);
+          this.showPopupMessage(response.message || 'Lỗi khi tải chi tiết yêu cầu.', false);
         }
-        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Lỗi khi tải chi tiết yêu cầu:', err);
         this.isLoading = false;
+        this.showPopupMessage(err.message || 'Đã xảy ra lỗi khi tải chi tiết yêu cầu.', false);
       }
     });
   }
@@ -85,16 +87,16 @@ export class ViewRequestDetailComponent implements OnInit {
     this.isLoading = true;
     this.requestService.updateRequestStatus(this.requestDetail?.tourBookingServiceId!).subscribe({
       next: (response) => {
-        if (response.code === 200) {
-          this.successMessage = response.message;
-        } else {
-          this.errorMessage = response.message;
-          console.error('Lỗi khi chấp thuận yêu cầu:', response.message);
-        }
         this.isLoading = false;
+        if (response.code === 200) {
+          this.showPopupMessage(response.message || 'Phê duyệt yêu cầu thành công!', true);
+        } else {
+          this.showPopupMessage(response.message || 'Lỗi khi phê duyệt yêu cầu.', false);
+        }
       },
       error: (err) => {
-        console.error('Lỗi khi chấp thuận yêu cầu:', err);
+        this.isLoading = false;
+        this.showPopupMessage(err.message || 'Đã xảy ra lỗi khi phê duyệt yêu cầu.', false);
       }
     });
   }
@@ -103,17 +105,28 @@ export class ViewRequestDetailComponent implements OnInit {
     this.isLoading = true;
     this.requestService.rejectRequest(this.requestDetail?.tourBookingServiceId!).subscribe({
       next: (response) => {
-        if (response.code === 200) {
-          this.successMessage = response.message;
-        } else {
-          this.errorMessage = response.message;
-          console.error('Lỗi khi từ chối yêu cầu:', response.message);
-        }
         this.isLoading = false;
+        if (response.code === 200) {
+          this.showPopupMessage(response.message || 'Từ chối yêu cầu thành công!', true);
+        } else {
+          this.showPopupMessage(response.message || 'Lỗi khi từ chối yêu cầu.', false);
+        }
       },
       error: (err) => {
-        console.error('Lỗi khi từ chối yêu cầu:', err);
+        this.isLoading = false;
+        this.showPopupMessage(err.message || 'Đã xảy ra lỗi khi từ chối yêu cầu.', false);
       }
     });
+  }
+
+  // New method to show popup message
+  showPopupMessage(message: string, isSuccess: boolean) {
+    this.popupMessage = message;
+    this.isSuccess = isSuccess;
+    this.showPopup = true;
+
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2000); // Hide after 2 seconds
   }
 }

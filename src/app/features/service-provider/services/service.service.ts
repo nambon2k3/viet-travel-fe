@@ -65,4 +65,8 @@ export class ServiceService {
     uploadImage(formData: FormData): Observable<ApiResponse<any>> {
         return this.http.post<ApiResponse<any>>(`${environment.apiUrl}public/upload-file`, formData);
     }
+
+    getCategories(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/list-categories`);
+    }
 }

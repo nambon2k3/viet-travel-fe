@@ -4,7 +4,7 @@
         <div class="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[800px]">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    {{ serviceId ? 'Cập nhật khách sạn' : 'Thêm khách sạn' }}
+                    {{ serviceId ? 'Cập nhật vé máy bay' : 'Thêm vé máy bay' }}
                 </h3>
                 <button type="button" (click)="onCancel()" data-modal-hide="addFlightModal"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
@@ -41,9 +41,9 @@
                             </ng-select>
                         </div>
                         <div>
-                            <label for="selectedFlight" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Khách sạn</label>
+                            <label for="selectedFlight" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Vé máy bay</label>
                             <ng-select id="selectedFlight" formControlName="selectedFlight" [items]="flights()"
-                                bindValue="id" bindLabel="name" (change)="onFlightChange()" placeholder="Chọn khách sạn"
+                                bindValue="id" bindLabel="name" (change)="onFlightChange()" placeholder="Chọn vé máy bay"
                                 class="mt-2 custom bg-white border border-gray-300 rounded-md">
                             </ng-select>
                         </div>

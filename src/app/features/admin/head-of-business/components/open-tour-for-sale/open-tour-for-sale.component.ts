@@ -117,7 +117,6 @@ export class OpenTourForSaleComponent implements OnInit {
   onMonthChange(event: Event) {
     const target = event.target as HTMLInputElement;
     this.selectedMonth = target.value;
-    console.log('Selected month:', this.selectedMonth);
 
     const [year, month] = this.selectedMonth.split('-');
     const firstDayOfMonth = new Date(parseInt(year), parseInt(month), 1);

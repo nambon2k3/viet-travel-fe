@@ -1,5 +1,9 @@
 <!-- Tour Header -->
 <app-spinner [isLoading]="isLoading"></app-spinner>
+<div *ngIf="showPopup" class="popup-message" [ngClass]="{'success': isSuccess, 'error': !isSuccess}">
+  {{ popupMessage }}
+</div>
+
 <div class="flex items-center bg-yellow-50">
   <svg class="w-10 h-10 text-white bg-green-700 hover:bg-green-800 cursor-pointer dark:text-white" aria-hidden="true"
     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" (click)="backToList()">
@@ -41,8 +45,8 @@
           <th class="p-2 text-left">Tên khách sạn</th>
           <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-left">Địa chỉ</th>
-          <th class="p-2 text-center">Giá Net</th>
-          <th class="p-2 text-center">Giá phòng</th>
+          <th class="p-2 text-center">Giá Net (đôi)</th>
+          <th class="p-2 text-center">Giá phòng (đôi)</th>
           <th class="p-2 text-center">Hành động</th>
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
@@ -75,7 +79,7 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (hotel.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (hotel.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
@@ -90,8 +94,6 @@
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
-              (hotelAdded)="addNewHotel($event)"></app-add-hotel>
             <button class="text-red-500 hover:text-red-700"
               (click)="deleteHotel(i, hotel.id, hotel.dayNumber)">X</button>
           </td>
@@ -150,22 +152,21 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (transport.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (transport.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddTransportationModal(transport.id)">
+            <button class="text-green-700 hover:text-green-800 mr-2" 
+            (click)="openAddTransportationModal(transport.id, transport.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
-              [locations]="locations" (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
             <button class="text-red-500 hover:text-red-700"
               (click)="deleteTransportation(i, transport.id, transport.dayNumber)">X</button>
           </td>
@@ -226,22 +227,20 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (restaurant.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (restaurant.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddRestaurantModal(restaurant.id)">
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddRestaurantModal(restaurant.id, restaurant.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
-              [locations]="locations" (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
             <button class="text-red-500 hover:text-red-700"
               (click)="deleteRestaurant(i, restaurant.id, restaurant.dayNumber)">X</button>
           </td>
@@ -300,22 +299,20 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (activity.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (activity.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddActivityModal(activity.id)">
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddActivityModal(activity.id, activity.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
-              [locations]="locations" (activityAdded)="addNewActivity($event)"></app-add-activity>
             <button class="text-red-500 hover:text-red-700"
               (click)="deleteActivity(i, activity.id, activity.dayNumber)">X</button>
           </td>
@@ -363,7 +360,7 @@
         <tr *ngIf="activities.length === 0">
           <td colspan="6" class="p-4 text-center text-gray-500">Không có dịch vụ</td>
         </tr>
-        <tr class="border-b border-gray-300" *ngFor="let flight of activities; let i = index"
+        <tr class="border-b border-gray-300" *ngFor="let flight of flights; let i = index"
           [class.bg-gray-50]="i % 2 === 0">
           <td class="p-2 text-center whitespace-nowrap">{{ flight.dayNumber }}</td>
           <td class="p-2 whitespace-nowrap">{{ flight.name }}</td>
@@ -374,22 +371,20 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (flight.paxPrices[range]?.sellingPrice || 0) | currencyVnd }}
+                    {{ (flight.paxPrices[range].sellingPrice || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddFlightModal(flight.id)">
+            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddFlightModal(flight.id, flight.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
               </svg>
             </button>
-            <app-add-flight #addFlightModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
-              [locations]="locations" (flightAdded)="addNewFlight($event)"></app-add-flight>
             <button class="text-red-500 hover:text-red-700"
               (click)="deleteFlight(i, flight.id, flight.dayNumber)">X</button>
           </td>
@@ -430,10 +425,10 @@
           <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cơ bản (1 khách)</td>
             <td *ngFor="let range of priceRanges" class="py-2 text-center">
-              {{ getPriceByRange(range)?.sellingPrice | currencyVnd }}
+              {{ minsalePrices[range] / getMinPax(range) | currencyVnd }}
             </td>
           </tr>
-          <tr class="odd:bg-white even:bg-gray-50" *ngIf="tourType === 'SIC'">
+          <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cuối (1 khách)</td>
             <td *ngFor="let range of priceRanges" class="py-2 text-center">
               {{ finalTourPrices[range] | currencyVnd }}
@@ -448,6 +443,7 @@
 <!-- Include the new popup components -->
 <app-config-tour-pax (close)="closeTourPax()" [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
 <app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalSellingPrice]="minsalePrices"
+  [extraHotelCost]="extraHotelCost" [nettPricePerPax]="mintotalNetPrices"
   (confirm)="handlePriceConfirm($event)"></app-config-price>
 <app-config-markup #configMarkupModal [tourId]="tourId" (confirm)="handleMarkupConfirm($event)"></app-config-markup>
 <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"

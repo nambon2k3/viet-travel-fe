@@ -5,13 +5,16 @@ import { CalendarOptions } from '@fullcalendar/core';
 import { CommonModule, DatePipe, ViewportScroller } from '@angular/common';
 import { TourDetail, TourSchedule } from '../../../../../core/models/tour-detail.model';
 import { TourDetailService } from '../../../services/tour-detail.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import interactionPlugin from '@fullcalendar/interaction';
 import { BookingInfoService } from '../../../services/booking-infor.service';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { TruncatePipe } from "../../../../../shared/pipes/truncate.pipe";
 import { FooterComponent } from "../../../../../shared/components/footer/footer.component";
 import { initFlowbite } from 'flowbite';
+import { HomepageService } from '../../../services/homepage.service';
+import { WishlistService } from '../../../../customer/components/wishlist/wishlist.service';
+import { WishlistComponent } from '../../../../customer/components/wishlist/wishlist.component';
 
 @Component({
   selector: 'app-tour-detail',
@@ -29,6 +32,7 @@ export class TourDetailComponent implements AfterViewInit {
   minPrice: number | undefined;
 
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+  @ViewChild('wishlistModal') wishlistModal!: WishlistComponent;
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, interactionPlugin],
@@ -49,7 +53,9 @@ export class TourDetailComponent implements AfterViewInit {
     private router: Router,
     private datePipe: DatePipe,
     private bookingInforService: BookingInfoService,
-    private viewportScroller: ViewportScroller
+    private viewportScroller: ViewportScroller,
+    private homepageService: HomepageService,
+    private wishlistService: WishlistService,
   ) { }
 
   ngOnInit(): void {
@@ -62,7 +68,7 @@ export class TourDetailComponent implements AfterViewInit {
 
           this.events = this.tourDetails?.tourSchedules.map(schedule => ({
             scheduleId: schedule.scheduleId,
-            title: `${schedule.sellingPrice/1000}K`, // Show price in title
+            title: `${schedule.sellingPrice / 1000}K`, // Show price in title
             start: schedule.startDate.split("T")[0] // Extract only YYYY-MM-DD
           }));
 
@@ -98,6 +104,19 @@ export class TourDetailComponent implements AfterViewInit {
       console.error('Invalid tour id');
       this.isLoading = false;
     }
+  }
+
+  addToWishlist(tour: any) {
+    this.homepageService.addWishlist(tour).subscribe({
+      next: (response) => {
+        if (response.code === 200) {
+          this.wishlistService.triggerWishlistUpdate();
+        }
+      },
+      error: (err) => {
+        console.error('Error adding to wishlist:', err);
+      },
+    });
   }
 
   ngAfterViewInit(): void {

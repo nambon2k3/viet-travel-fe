@@ -13,7 +13,7 @@ export const CEO_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       { 
-        path: 'dashboard', 
+        path: '', 
         component: DashboardComponent 
       },
       {

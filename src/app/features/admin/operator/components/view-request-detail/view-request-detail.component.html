@@ -1,3 +1,7 @@
+<div *ngIf="showPopup" class="popup-message" [ngClass]="{'success': isSuccess, 'error': !isSuccess}">
+  {{ popupMessage }}
+</div>
+
 <div class="w-full p-6 bg-white rounded-md shadow-md" *ngIf="requestDetail">
   <!-- Tiêu đề -->
   <div class="flex items-center justify-between border-b pb-4">
@@ -13,12 +17,10 @@
     </div>
   </div>
 
-
-
   <!-- Yêu cầu dịch vụ -->
   <div class="mt-6">
     <h2 class="text-lg font-bold">Danh sách yêu cầu dịch vụ</h2>
-    <p class="text-sm text-gray-600">Mã ID: {{ requestDetail.tourBookingServiceId }} &nbsp;|&nbsp; Mã đặt chỗ: {{
+    <p class="text-sm text-gray-600">Mã ID: {{ requestDetail.tourBookingServiceId }}  |  Mã đặt chỗ: {{
       requestDetail.bookingCode }}</p>
     <p class="text-lg font-bold mt-6">{{ requestDetail.tourName }}</p>
     <p class="text-sm text-gray-600">Loại Tour: {{ requestDetail.tourType }}</p>
@@ -69,15 +71,6 @@
     <button (click)="onRejected()" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Từ chối</button>
     <button (click)="onApproved()" class="bg-green-700 text-white px-4 py-2 rounded-md hover:bg-green-800">Phê
       duyệt</button>
-  </div>
-
-  <!-- Error Message -->
-  <div *ngIf="errorMessage" class="global-error text-red-500 mt-6">
-    {{ errorMessage }}
-  </div>
-
-  <div *ngIf="successMessage" class="global-error text-green-700 mt-6">
-    {{ successMessage }}
   </div>
 </div>
 

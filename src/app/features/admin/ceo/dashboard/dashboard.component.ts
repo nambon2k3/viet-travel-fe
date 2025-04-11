@@ -3,11 +3,7 @@ import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef, 
 import { isPlatformBrowser, CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // <-- Import FormsModule
 import { NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
-import { Subscription } from 'rxjs';
 import { Color } from '@swimlane/ngx-charts';
-import { LegendPosition } from '@swimlane/ngx-charts';
-
-// Use correct service name and path
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe"; // <-- Adjust path
 import { AdminService, DashboardData } from '../../admin.service';
 import { FormatDatePipe } from "../../../../shared/pipes/format-date.pipe";
@@ -58,12 +54,23 @@ export class DashboardComponent implements OnInit {
   newUserChartData: ChartDataPoint[] = [];
   tourTypeChartData: ChartDataPoint[] = [];
 
-  chartColorScheme: Color = { /* ... color scheme ... */
-     name: 'travel-modern',
-     selectable: true,
-     group: ScaleType.Ordinal,
-     domain: ['#3b82f6','#f97316','#208012','#a5b4fc','#f9a8d4','#a78bfa']
-  };
+  chartColorScheme: Color = {
+    name: 'travel-futuristic',
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: [
+      '#374F43', 
+      '#25344F', 
+      '#617891',
+      '#D5B893',
+      '#6F4D38', 
+      '#632024',
+      '#44576D', 
+      '#768A96', 
+      '#AAC7D8', 
+    ]
+  };  
+
   chartScaleType = ScaleType.Ordinal;
   showXAxis = true;
   showYAxis = true;

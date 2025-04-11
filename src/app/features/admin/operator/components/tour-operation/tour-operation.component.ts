@@ -17,9 +17,13 @@ export class TourOperationComponent {
   @ViewChild('assignTourGuideModal') assignTourGuideModal!: AssignTourGuideComponent;
   tour: any;
   tags: string = '';
-  errorMessage: string = '';
   id: number = 0;
   isLoading: boolean = false;
+
+  // New properties for popup
+  showPopup: boolean = false;
+  popupMessage: string = '';
+  isSuccess: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,20 +45,32 @@ export class TourOperationComponent {
       next: (response: any) => {
         this.isLoading = false;
         if (response.code === 200) {
-          this.tour = response.data; // Ensure tour is set here
+          this.tour = response.data;
           this.tags = this.tour.tags?.map((tag: any) => tag.name).join(', ') || '';
         } else {
-          this.errorMessage = response.message;
+          this.showPopupMessage(response.message || 'Lỗi khi tải chi tiết tour.', false);
         }
       },
       error: (error: any) => {
         this.isLoading = false;
-        this.errorMessage = error.message;
+        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi tải chi tiết tour.', false);
       },
     });
   }
 
   onTourGuideAssigned(): void {
     this.getTourDetails(this.id);
+    this.showPopupMessage('Phân công hướng dẫn viên thành công!', true);
+  }
+
+  // New method to show popup message
+  showPopupMessage(message: string, isSuccess: boolean) {
+    this.popupMessage = message;
+    this.isSuccess = isSuccess;
+    this.showPopup = true;
+
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 2000); // Hide after 2 seconds
   }
 }
