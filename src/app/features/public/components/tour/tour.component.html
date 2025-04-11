@@ -42,9 +42,9 @@
                 <h2 class="font-bold mb-4">Khoảng giá</h2>
 
                 <div class="relative mt-4 slider-container">
-                    <input type="range" min="0" max="200000000" [(ngModel)]="minPrice"
+                    <input type="range" min="0" max="200000000" [(ngModel)]="minPrice" (input)="updateSliderUI()"
                         class="absolute w-full opacity-0 z-10">
-                    <input type="range" min="0" max="200000000" [(ngModel)]="maxPrice" 
+                    <input type="range" min="0" max="200000000" [(ngModel)]="maxPrice" (input)="updateSliderUI()"
                         class="absolute w-full opacity-0 z-10">
 
                     <div class="relative w-full h-2 bg-gray-200  rounded-md">
@@ -97,10 +97,10 @@
         <div class="w-full md:w-5/6">
             @for (tour of filteredTours(); track $index){
             <div class="rounded-lg flex items-start gap-4 mb-6">
-                <div class="max-w-7xl mx-auto bg-white hover:shadow-xl rounded-lg overflow-hidden flex cursor-pointer">
-                    <div class="relative w-2/5">
+                <div class="max-w-5xl mx-auto bg-white hover:shadow-xl rounded-lg overflow-hidden flex cursor-pointer">
+                    <div class="relative w-2/5 overflow-clip">
                         <img [src]="tour.tourImages[0].imageUrl" alt="Ảnh Tour"
-                            class="w-full h-full object-cover lazyload">
+                            class="w-[700px] h-72 object-cover overflow-hidden rounded-l-lg" />
                         <button (click)="addToWishlist(tour.id)" data-modal-toggle="wishlistModal"
                             data-modal-target="wishlistModal"
                             class="absolute top-2 left-2 bg-white p-2 rounded-full shadow-md">

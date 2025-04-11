@@ -60,6 +60,7 @@ export class UpdateServiceComponent implements OnInit {
       id: [null],
       name: [null, Validators.required],
       nettPrice: [null, [Validators.required, Validators.min(0)]],
+      sellingPrice: [null, [Validators.required, Validators.min(0)]],
       imageUrl: [null],
       startDate: [null, Validators.required],
       endDate: [null, Validators.required],
@@ -128,7 +129,6 @@ export class UpdateServiceComponent implements OnInit {
   }
 
   loadService(id: number): void {
-    console.log('Service ID from route:', id);
     this.isLoading = true;
     this.serviceService.getServiceDetails(id).subscribe({
       next: (response: ApiResponse<any>) => {
@@ -141,6 +141,7 @@ export class UpdateServiceComponent implements OnInit {
             id: this.service.id,
             name: this.service.name,
             nettPrice: this.service.nettPrice,
+            sellingPrice: this.service.sellingPrice,
             imageUrl: this.service.imageUrl,
             startDate: this.service.startDate ? new Date(this.service.startDate).toISOString().split('T')[0] : null,
             endDate: this.service.endDate ? new Date(this.service.endDate).toISOString().split('T')[0] : null,

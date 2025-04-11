@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ServiceBase } from '../../../../../core/models/service.model';
 import { ServiceService } from '../../../services/service.service';
+import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
+import { FormatDatePipe } from "../../../../../shared/pipes/format-date.pipe";
 
 @Component({
   selector: '[app-table-row]',
-  imports: [FormsModule, AngularSvgIconModule, CommonModule],
+  imports: [FormsModule, AngularSvgIconModule, CommonModule, FormatDatePipe],
   templateUrl: './table-row.component.html',
   styleUrls: ['./table-row.component.css'],
   standalone: true

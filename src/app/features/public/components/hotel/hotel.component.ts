@@ -139,6 +139,20 @@ export class HotelComponent implements OnInit {
     }
   }
 
+  updateSliderUI(): void {  
+    const minGap = 10;
+    if (this.maxPrice - this.minPrice < minGap) {
+      if (this.minPrice + minGap <= 100000) {
+        this.minPrice = this.maxPrice - minGap;
+      } else {
+        this.maxPrice = this.minPrice + minGap;
+      }
+    }
+  
+    this.minPercent = (this.minPrice / 200000000) * 100;
+    this.maxPercent = (this.maxPrice / 200000000) * 100;
+  }
+
   onSort(): void {
     this.applyFilters();
   }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, OnInit, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { SsrService } from '../../../../core/services/ssr.service';
@@ -219,6 +219,20 @@ export class TourComponent implements OnInit {
     this.maxPercent = (this.maxPrice / 200000000) * 100;
 
     this.applyFilters();
+  }
+
+  updateSliderUI(): void {
+    const minGap = 10;
+    if (this.maxPrice - this.minPrice < minGap) {
+      if (this.minPrice + minGap <= 100000) {
+        this.minPrice = this.maxPrice - minGap;
+      } else {
+        this.maxPrice = this.minPrice + minGap;
+      }
+    }
+  
+    this.minPercent = (this.minPrice / 200000000) * 100;
+    this.maxPercent = (this.maxPrice / 200000000) * 100;
   }
 
   ngAfterViewInit(): void {

@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomepageService } from '../../../public/services/homepage.service';
 import { WishlistService } from './wishlist.service';
+import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
 
 @Component({
   selector: 'app-wishlist',
@@ -19,14 +20,18 @@ export class WishlistComponent implements OnInit {
   constructor(
     private router: Router,
     private homepageService: HomepageService,
-    private wishlistService: WishlistService 
+    private wishlistService: WishlistService,
+    private userStorage: UserStorageService
   ) {}
 
   ngOnInit() {
+    const user = this.userStorage.getUser();
+    if (user) {
     this.fetchWishlist();
     this.wishlistService.wishlistUpdate$.subscribe(() => {
       this.fetchWishlist();
     });
+    }
   }
 
   fetchWishlist() {

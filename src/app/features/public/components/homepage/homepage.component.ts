@@ -92,6 +92,10 @@ export class HomepageComponent {
     this.searchQuery = ''; // Reset input
   }
 
+  openTourDetail(tourId: number): void {
+    this.router.navigate(['/tour-details', tourId]); 
+  }
+
   @HostListener('document:click', ['$event'])
   onClickOutside(event: MouseEvent) {
     if (this.searchDropdownRef && !this.searchDropdownRef.nativeElement.contains(event.target)) {
