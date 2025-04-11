@@ -132,4 +132,15 @@ export class BookingService {
         });
     }
 
+    getEmail(tourId: number, scheduleId:number) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/send-email`, {
+            tourId: tourId,
+            scheduleId: scheduleId
+        });
+    }
+
+    sendEmail(formData: any) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/send-email/submit`, formData);
+    }
+
 }

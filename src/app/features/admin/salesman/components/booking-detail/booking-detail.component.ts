@@ -7,9 +7,10 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { BookingService } from '../../services/booking.service';
 import { Modal } from 'flowbite';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
+import { BlogContentComponent } from '../../../marketer/components/blog-detail/blog-content/blog-content.component';
 @Component({
   selector: 'app-booking-detail',
-  imports: [DatePipe, CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule, SpinnerComponent],
+  imports: [DatePipe, CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule, SpinnerComponent, BlogContentComponent],
   templateUrl: './booking-detail.component.html',
   styleUrl: './booking-detail.component.css'
 })
@@ -46,6 +47,7 @@ export class BookingDetailComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.transactionDetailModal = new Modal(document.getElementById('transaction-modal'));
     this.forwardBookingModal = new Modal(document.getElementById('forward-booking-modal'));
+    this.priceModal = new Modal(document.getElementById('price-modal'));
   }
 
 
@@ -132,6 +134,12 @@ export class BookingDetailComponent implements AfterViewInit {
       bookingId: [null],
       status: ['REQUEST_CANCELLED_WITH_REFUND', Validators.required],
       reason: [null],
+    });
+
+    this.sendMailForm = this.fb.group({
+      email: [null, [Validators.required, Validators.email]],
+      subject: [null, Validators.required],
+      content: [null, Validators.required],
     });
   }
 
@@ -443,7 +451,51 @@ export class BookingDetailComponent implements AfterViewInit {
       this.showError = false;
     }, 4000);
   }
+  
+  getEmailContent() {
+    console.log(this.tourId, this.scheduleId);
+    this.bookingService.getEmail(this.tourId!, this.scheduleId!).subscribe({
+      next: (response) => {
+        console.log('Email sent:', response);
+        this.emailContent = response.data;
+        this.sendMailForm.patchValue({
+          content: response.data,
+          subject: '[VIET TRAVEL]: Báo giá tour: ' + this.bookingDetail?.tour?.name,
+          email: this.bookedPerson?.email
+        });
+      },
+      error: (error) => {
+        console.error('Email content get failed:', error);
+        this.triggerError();
+      }
+    });
+  }
 
+  sendMail() {
+    if(this.sendMailForm.valid) {
+
+      this.isLoading = true; // Set loading state to true
+
+      const formData = this.sendMailForm.value;
+      console.log('Send Mail Form Submitted:', formData);
+
+      this.bookingService.sendEmail(formData).subscribe({
+        next: (response) => {
+          console.log('Email sent:', response);
+          this.isLoading = false; // Reset loading state
+          this.triggerSuccess();
+        },
+        error: (error) => {
+          console.error('Email send failed:', error);
+          this.triggerError();
+          this.isLoading = false; // Reset loading state
+        }
+      });
+
+      this.closePriceModal();
+
+    }
+  }
 
   cancelBookingForm: FormGroup;
   
@@ -485,6 +537,21 @@ export class BookingDetailComponent implements AfterViewInit {
     return dateString ? new Date(dateString).toISOString().substring(0, 10) : '';
   }
 
+
+  sendMailForm: FormGroup;
+
+
+  emailContent: any;
+
+
+  priceModal: Modal | null = null;
+  openPriceModal(): void {
+    this.priceModal?.show();
+    this.getEmailContent();
+  }
+  closePriceModal(): void {
+    this.priceModal?.hide();
+  }
 
 
 }

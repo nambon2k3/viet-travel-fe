@@ -91,29 +91,15 @@
 
             <!-- Buttons Group -->
             <div class="flex space-x-2">
-                <button class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 20h9M12 4h9M4 9h16M4 15h16" />
-                    </svg>
-                    In đơn hàng
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <button class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
+                <button  type="button"
+                (click)="openPriceModal()"
+                class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 12H8m0 0l4-4m-4 4l4 4" />
                     </svg>
-                    Gửi email
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
+                    Gửi email báo giá
                 </button>
                 <button [routerLink]=" ['/salesman/tour-booking-service/', bookingDetail?.id]"
                     class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
@@ -745,7 +731,7 @@
                             </td>
                         </tr>
                         <tr class="pb-4">
-                            <td class="p-2 font-semibold">Tên Tour</td>
+                            <td class="p-2 font-semibold min-w-[150px]">Tên Tour</td>
                             <td class="p-2">
                                 {{bookingDetail?.tour?.name}}
                             </td>
@@ -966,4 +952,53 @@
             </div>
         </div>
     </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div id="price-modal" tabindex="-1" aria-hidden="true"
+    class="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50 hidden">
+    <div class="relative w-full max-w-5xl bg-white rounded-lg shadow-lg">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Gửi yêu cầu đặt chỗ dịch vụ</h3>
+            <button (click)="closePriceModal()" class="text-gray-500 hover:text-gray-700">
+                ✖
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4 h-[600px] overflow-y-auto">
+            <form [formGroup]="sendMailForm" class="space-y-4">
+    
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700" >Gửi đến:</label>
+                    <input type="text"  class="w-full p-2 border rounded-md bg-gray-200" formControlName="email">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700" >Tiêu đề:</label>
+                    <input type="text"  class="w-full p-2 border rounded-md bg-gray-200" formControlName="subject">
+                </div>
+
+                <app-blog-content [content]="''" formControlName="content" 
+                    class="w-full h-40 overflow-y-auto px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"></app-blog-content>
+            </form>
+
+            
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex justify-end px-6 py-4 border-t">
+            <button (click)="closePriceModal()" class="px-4 py-2 mr-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                Hủy
+            </button>
+            <button (click)="sendMail()" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                Gửi
+            </button>
+        </div>
+    </div>
+    
 </div>
