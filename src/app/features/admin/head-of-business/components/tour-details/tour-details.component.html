@@ -153,6 +153,10 @@
       <button type="button" (click)="onCancel()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
         Hủy bỏ
       </button>
+      <button type="submit" *ngIf="tourId" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded cursor-pointer"
+        (click)="onApprove()">
+        Gửi duyệt tour
+      </button>
       <button type="submit" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded cursor-pointer"
         (click)="onSubmit()">
         {{ tourId ? 'Cập nhật tour' : 'Tạo tour' }}

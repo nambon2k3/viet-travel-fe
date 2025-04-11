@@ -99,7 +99,7 @@
             <div class="rounded-lg flex items-start gap-4 mb-6">
                 <div class="max-w-5xl mx-auto bg-white hover:shadow-xl rounded-lg overflow-hidden flex cursor-pointer">
                     <div class="relative w-2/5 overflow-clip">
-                        <img [src]="tour.tourImages[0].imageUrl" alt="Ảnh Tour"
+                        <img [src]="tour.tourImages[0]?.imageUrl" alt="Ảnh Tour"
                             class="w-[700px] h-72 object-cover overflow-hidden rounded-l-lg" />
                         <button (click)="addToWishlist(tour.id)" data-modal-toggle="wishlistModal"
                             data-modal-target="wishlistModal"

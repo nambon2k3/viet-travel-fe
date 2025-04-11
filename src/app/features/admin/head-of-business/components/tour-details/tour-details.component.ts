@@ -215,7 +215,6 @@ export class TourDetailsComponent implements OnInit {
       this.tourService.updateTour(requestBody).subscribe({
         next: (response: any) => {
           this.isLoading = false;
-          console.log('Tour updated successfully:', response);
           this.router.navigate(['/head-business/list-tour']);
         },
         error: (err: any) => {
@@ -227,7 +226,6 @@ export class TourDetailsComponent implements OnInit {
       this.tourService.createTour(requestBody).subscribe({
         next: (response: any) => {
           this.isLoading = false;
-          console.log('Tour created successfully:', response);
           this.router.navigate(['/head-business/list-tour']);
         },
         error: (err: any) => {
@@ -237,6 +235,20 @@ export class TourDetailsComponent implements OnInit {
       });
     }
   }  
+
+  onApprove(): void {
+    this.isLoading = true;
+    this.tourService.approveTour(this.tourId!).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        this.router.navigate(['/head-business/list-tour']);
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        console.error('Lỗi: ', err);
+      },
+    });
+  }
 
   onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
