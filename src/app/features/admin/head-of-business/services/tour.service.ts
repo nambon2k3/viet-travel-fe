@@ -105,4 +105,8 @@ export class TourService {
   cancelTourSchedule(scheduleId: string): Observable<any> {
     return this.http.post(`${environment.apiUrl}head-of-business/tour/schedule/cancel/${scheduleId}`, {});
   }
+
+  approveTour(tourId: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/send-for-approval/${tourId}`, {});
+  }
 }

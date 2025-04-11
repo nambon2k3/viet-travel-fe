@@ -33,7 +33,6 @@
     background-color: #f3f4f6;
     color: #1f2937;
 }
-
 /* Hide default range styling */
 input[type="range"] {
     -webkit-appearance: none;
@@ -45,12 +44,13 @@ input[type="range"] {
     z-index: 2;
 }
 
-/* Custom track (hidden default) */
+/* Custom track (visible background) */
 input[type="range"]::-webkit-slider-runnable-track {
     height: 2px;
+    background: #e5e7eb; /* Light gray for better visibility */
 }
 
-/* Custom thumb styling (Centered) */
+/* Custom thumb styling */
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -63,7 +63,7 @@ input[type="range"]::-webkit-slider-thumb {
     pointer-events: auto;
     position: relative;
     z-index: 3;
-    transform: translateY(-30%);
+    transform: translateY(-50%); /* Center vertically better */
 }
 
 input[type="range"]::-moz-range-thumb {
@@ -75,12 +75,33 @@ input[type="range"]::-moz-range-thumb {
     cursor: pointer;
     pointer-events: auto;
     z-index: 3;
-    transform: translateY(-30%);
+    transform: translateY(-50%); /* Center vertically better */
 }
 
-/* Centering the range input itself */
+/* Slider container */
 .slider-container {
     position: relative;
-    height: 18px;
-    /* Adjust height to fit thumb */
+    height: 40px; /* Increased height to accommodate thumb and track */
+    margin-top: 20px;
+}
+
+/* Custom track overlay */
+.slider-container .track {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: #e5e7eb;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.slider-container .range {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(to right, #23a9f7, #23a9f7);
+    border-radius: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
 }

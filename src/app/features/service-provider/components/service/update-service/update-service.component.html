@@ -49,6 +49,14 @@
         Giá net là bắt buộc và phải lớn hơn hoặc bằng 0
       </div>
 
+      <label class="block mb-2 text-sm font-medium text-gray-700">Giá Bán</label>
+      <input type="number" formControlName="sellingPrice" class="w-full p-2 border rounded-md mb-4"
+             placeholder="Nhập giá bán" min="0" />
+      <div *ngIf="serviceForm.get('sellingPrice')?.invalid && serviceForm.get('sellingPrice')?.touched"
+           class="text-red-500 text-sm mb-2">
+        Giá bán là bắt buộc và phải lớn hơn hoặc bằng net
+      </div>
+
       <label class="block mb-2 text-sm font-medium text-gray-700">Ngày Bắt đầu</label>
       <input type="date" formControlName="startDate" class="w-full p-2 border rounded-md mb-4" />
       <div *ngIf="serviceForm.get('startDate')?.invalid && serviceForm.get('startDate')?.touched"
