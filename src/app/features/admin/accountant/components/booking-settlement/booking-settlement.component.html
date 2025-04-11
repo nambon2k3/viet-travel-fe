@@ -512,7 +512,7 @@
                                 <th class="p-2 border">STT</th>
                                 <th class="p-2 border">Nội dung *</th>
                                 <th class="p-2 border">Số tiền *</th>
-                                <th class="p-2 border" *ngIf="selectedTransaction?.category === 'PAYMENT' || selectedTransaction?.category === 'REFUND'">Số lượng</th>
+                                <th class="p-2 border" *ngIf="selectedTransaction?.category === 'PAYMENT' || selectedTransaction?.category === 'ADVANCED' || selectedTransaction?.category === 'REFUND'">Số lượng</th>
                                 <th class="p-2 border" *ngIf="selectedTransaction?.category === 'REFUND'">Chiết Khấu (%)</th>
                                 <th class="p-2 border">Trạng Thái</th>
                                 <th class="p-2 border">Thành tiền</th>
@@ -536,7 +536,7 @@
                                     <input type="number" formControlName="amount" placeholder="0"
                                         class="w-full px-2 py-1 border rounded text-right">
                                 </td>
-                                <td class="p-2 text-right" *ngIf="selectedTransaction?.category === 'PAYMENT' || selectedTransaction?.category === 'REFUND'">
+                                <td class="p-2 text-right" *ngIf="selectedTransaction?.category === 'PAYMENT' || selectedTransaction?.category === 'ADVANCED' || selectedTransaction?.category === 'REFUND'">
                                     <input type="number" formControlName="quantity" placeholder="0"
                                         class="w-full px-2 py-1 border rounded text-right">
                                 </td>

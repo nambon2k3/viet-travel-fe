@@ -18,6 +18,8 @@
   <!-- <app-spinner [isLoading]="!isLoading"></app-spinner> -->
 </div>
 
+<app-spinner [isLoading]="isLoading"></app-spinner>
+
 <div class="border-muted/20 bg-background flex min-w-full flex-col rounded-xl border p-2 bg-white">
   <app-table-action [totalItems]="totalItems" [size]="size" (searchFilters)="onSearch($event)">"></app-table-action>
   <div
@@ -144,9 +146,10 @@
 
                 <p class="w-full py-2 rounded-lg">
 
-                  <span class="bg-green-200 text-green-800 px-3 py-2 rounded text-xs">
-                    Phiếu Chi
-                  </span>
+                  <select formControlName="category" class="w-full border px-3 py-2 rounded-lg">
+                    <option value="PAYMENT">Phiếu chi</option>
+                    <option value="ADVANCED">Phiếu tạm ứng</option>
+                  </select>
                 </p>
               </div>
 

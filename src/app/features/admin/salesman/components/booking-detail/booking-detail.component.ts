@@ -408,6 +408,7 @@ export class BookingDetailComponent implements AfterViewInit {
       next: (response) => {
         console.log('Booking Success:', response);
         this.triggerSuccess();
+        this.bookingDetail = response.data;
       },
       error: (error) => {
         console.error('Booking Failed:', error);

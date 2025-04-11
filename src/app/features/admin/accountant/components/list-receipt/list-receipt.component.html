@@ -1,6 +1,6 @@
 <div class="mb-2 flex justify-between">
 
-
+  
   <div class="inline-block">
     <h3 class="text-foreground font-semibold">Kế toán</h3>
     <div class="text-muted-foreground space-x-1 text-xs font-medium">
@@ -8,6 +8,7 @@
       <span class="text-foreground">{{ totalItems }}</span>
     </div>
   </div>
+  <app-spinner [isLoading]="isLoading"></app-spinner>
 
   <div class="inline-block space-x-4">
     <button
@@ -142,9 +143,10 @@
 
                 <p class="w-full py-2 rounded-lg">
 
-                  <span class="bg-green-200 text-green-800 px-3 py-2 rounded text-xs">
-                    Phiếu thu
-                  </span>
+                  <select formControlName="category" class="w-full border px-3 py-2 rounded-lg">
+                    <option value="RECEIPT">Phiếu thu</option>
+                    <option value="COLLECTION">HDV thu hộ</option>
+                  </select>
                 </p>
               </div>
 
@@ -187,8 +189,8 @@
                       </p>
                     </td>
                     <td class="p-2 text-right">
-                      <input type="number" formControlName="amount" placeholder="0"
-                        class="w-full px-2 py-1 border rounded text-right">
+                      <input type="text" formControlName="amount" placeholder="0" appNumberFormat 
+                        class="w-full px-2 py-1 border rounded text-right" >
                     </td>
                     <td>
                       <select formControlName="status" class="w-full border px-2 py-1 rounded">

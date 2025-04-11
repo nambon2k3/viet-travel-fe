@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Modal } from 'flowbite';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
+import { AddTransportationComponent } from "../../../head-of-business/components/tour-discount/add-transportation/add-transportation.component";
 
 @Component({
   selector: 'app-list-receipt',
@@ -21,12 +23,13 @@ import { Modal } from 'flowbite';
     TableHeaderComponent,
     TableRowComponent,
     ReactiveFormsModule,
-    CurrencyVndPipe
+    CurrencyVndPipe,
+    SpinnerComponent,
   ],
   templateUrl: './list-receipt.component.html',
   styleUrl: './list-receipt.component.css'
 })
-export class ListReceiptComponent implements AfterViewInit{
+export class ListReceiptComponent implements AfterViewInit {
   receipts: any;
   totalItems = 0;
   page = 0;
@@ -41,9 +44,10 @@ export class ListReceiptComponent implements AfterViewInit{
 
   isBookingLoading: boolean = false;
 
+
   bookings: any[] = [];
 
-  createReceiptModal : Modal | null = null;
+  createReceiptModal: Modal | null = null;
 
   ngAfterViewInit(): void {
     this.createReceiptModal = new Modal(document.getElementById('create-receipt-modal'));
@@ -59,7 +63,7 @@ export class ListReceiptComponent implements AfterViewInit{
       bookingCode: ['', Validators.required],
       receivedBy: ['Viet Travel', Validators.required],
       paidBy: ['', Validators.required],
-      category: [{ value: 'RECEIPT', disabled: true }, Validators.required],
+      category: ['RECEIPT' , Validators.required],
       paymentMethod: ['CASH', Validators.required],
       notes: ['Phiếu thu tiền của khách'],
       costAccounts: this.fb.array([]), // Initialize FormArray,
@@ -67,29 +71,29 @@ export class ListReceiptComponent implements AfterViewInit{
 
 
     this.receiptForm.get('bookingCode')?.valueChanges
-          .pipe(
-            debounceTime(800),
-            distinctUntilChanged()
-          )
-          .subscribe(value => {
-            if (value && value.length >= 2) {
-              this.isBookingLoading = true;
-              if(value !== this.selectedBooking?.booking) {
-                this.transactionService.getBookingData(value).subscribe((res: any) => {
-                  this.bookings = res.data;
-                  this.isBookingLoading = false;
+      .pipe(
+        debounceTime(800),
+        distinctUntilChanged()
+      )
+      .subscribe(value => {
+        if (value && value.length >= 2) {
+          this.isBookingLoading = true;
+          if (value !== this.selectedBooking?.booking) {
+            this.transactionService.getBookingData(value).subscribe((res: any) => {
+              this.bookings = res.data;
+              this.isBookingLoading = false;
 
-                  console.log(this.bookings)
+              console.log(this.bookings)
 
-                }, () => this.isBookingLoading = false);
-              } else {
-                this.isBookingLoading = false;
-              }
-            } else {
-              this.bookings = [];
-              this.isBookingLoading = false
-            }
-          });
+            }, () => this.isBookingLoading = false);
+          } else {
+            this.isBookingLoading = false;
+          }
+        } else {
+          this.bookings = [];
+          this.isBookingLoading = false
+        }
+      });
 
   }
 
@@ -97,21 +101,28 @@ export class ListReceiptComponent implements AfterViewInit{
     this.loadReceipts();
   }
 
+
   showSuccess: boolean = false;
   showError: boolean = false;
 
   loadReceipts(): void {
+    this.isLoading = true;
     this.transactionService.getTransactionByPage(
       this.page,
       this.size,
       this.keyword,
       this.sortField,
       this.sortDirection,
-      "RECEIPT"
+      ["RECEIPT", "COLLECTION"]
     ).subscribe({
       next: (response) => {
         this.receipts = response.data.items;
         console.log('RECEPITS', this.receipts);
+        this.isLoading = false;
+        this.totalItems = response.data.total;
+        this.page = response.data.page;
+        this.size = response.data.size;
+        this.totalPages.set(Math.ceil(this.totalItems / this.size));
       },
       error: (error) => {
         console.log(error);
@@ -178,7 +189,7 @@ export class ListReceiptComponent implements AfterViewInit{
   }
 
   getTotalAmount(): number {
-    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount , 0);
+    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount, 0);
   }
 
   get costAccounts(): FormArray {
@@ -205,8 +216,8 @@ export class ListReceiptComponent implements AfterViewInit{
 
 
   onSubmit() {
-    if(this.receiptForm.valid) {
-      const formData = { ...this.receiptForm.value, totalAmount: this.getTotalAmount(), category: 'RECEIPT' };
+    if (this.receiptForm.valid) {
+      const formData = { ...this.receiptForm.value, totalAmount: this.getTotalAmount() };
 
       console.log('Process Data: ', formData)
 
@@ -224,7 +235,7 @@ export class ListReceiptComponent implements AfterViewInit{
         }
       })
 
-      
+
 
     } else {
       console.log('Invalid: ', this.receiptForm.value);
@@ -237,7 +248,7 @@ export class ListReceiptComponent implements AfterViewInit{
 
 
     this.createReceiptModal?.hide();
-    
+
     // Hide warning after 3 seconds
     setTimeout(() => {
       this.showSuccess = false;
@@ -247,7 +258,7 @@ export class ListReceiptComponent implements AfterViewInit{
   triggerError() {
     this.showError = true;
 
-    
+
     // Hide warning after 3 seconds
     setTimeout(() => {
       this.showError = false;

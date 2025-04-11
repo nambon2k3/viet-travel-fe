@@ -11,6 +11,7 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { CurrencyVndPipe } from '../../../../../shared/pipes/currency-vnd.pipe';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-list-refund',
@@ -22,7 +23,7 @@ import { CurrencyVndPipe } from '../../../../../shared/pipes/currency-vnd.pipe';
     CommonModule,
     CurrencyVndPipe,
     ReactiveFormsModule,
-
+    SpinnerComponent
   ],
   templateUrl: './list-refund.component.html',
   styleUrl: './list-refund.component.css'
@@ -105,17 +106,23 @@ export class ListRefundComponent implements AfterViewInit {
   }
 
   loadRefunds(): void {
+    this.isLoading = true;
     this.transactionService.getTransactionByPage(
       this.page,
       this.size,
       this.keyword,
       this.sortField,
       this.sortDirection,
-      "REFUND"
+      ['REFUND']
     ).subscribe({
       next: (response) => {
         this.refunds = response.data.items;
         console.log('REFUND', this.refunds);
+        this.isLoading = false;
+        this.totalItems = response.data.total;
+        this.page = response.data.page;
+        this.size = response.data.size;
+        this.totalPages.set(Math.ceil(this.totalItems / this.size));
       },
       error: (error) => {
         console.log(error);
