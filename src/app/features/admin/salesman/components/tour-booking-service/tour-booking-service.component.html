@@ -1,4 +1,7 @@
 <div class="flex flex-col min-h-screen bg-gray-200 gap-4">
+
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+
     <div class="col-span-12 bg-white h-fit">
         <div class="flex items-center justify-between mt-4 px-5 py-4">
             <!-- Left: Title -->
@@ -10,9 +13,16 @@
                     class="flex items-center px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300">
                     &lt; Quay lại danh sách
                 </a>
-                <button class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
-                    Kiểm tra dịch vụ
-                </button>
+
+
+
+                @if(tourType !== 'SIC' && hasNotOrdered) {
+                    <button class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700" (click)="checkingService()">
+                        Kiểm tra dịch vụ
+                    </button>
+                }
+
+                
             </div>
         </div>
     </div>
@@ -45,7 +55,6 @@
                                 <th class="p-2">Nhà cung cấp</th>
                                 <th class="p-2">Dịch vụ</th>
                                 <th class="p-2">Số lượng</th>
-                                <th class="p-2">Giá nett</th>
                                 <th class="p-2 text-center min-w-[150px]">Trạng thái</th>
                                 <th class="p-2 text-center">Hành động</th>
                             </tr>
@@ -58,7 +67,7 @@
                                     {{$index + 1}}
                                 </td>
                                 <td class="p-2">
-                                    {{bookingService?.service?.serviceCategory?.categoryName}}
+                                    {{serviceCategoryMap[bookingService?.service?.serviceCategory?.categoryName]}}
                                 </td>
                                 <td class="p-2">
                                     {{bookingService?.service?.serviceProvider?.name}}
@@ -70,12 +79,16 @@
                                     {{bookingService?.currentQuantity}}
                                 </td>
 
-                                <td class="p-2">
-                                    {{bookingService?.service?.nettPrice | currencyVnd}}
-
-                                </td>
-
                                 <td class="p-2 text-center">
+                                    @if(bookingService?.status === 'PENDING') {
+                                        <span
+                                            class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                            <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
+                                            <span>
+                                                Chờ xử lí
+                                            </span>
+                                        </span>
+                                        }
                                     @if(bookingService?.status === 'NOT_ORDERED') {
                                     <span
                                         class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
@@ -111,7 +124,7 @@
                                         class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
                                         <span>
-                                            Đã xác thực
+                                            Thành công
                                         </span>
                                     </span>
                                     }
@@ -161,15 +174,17 @@
                         <tr *ngFor="let key of statusKeys()" class="pb-4">
                             <td [class]="{
                                 'text-yellow-500': key === 'PENDING',
-                                'text-green-600': key === 'APPROVED',
+                                'text-green-600': key === 'SUCCESS',
                                 'text-red-500': key === 'REJECTED',
+                                'text-blue-500': key === 'CHECKING',
                                 'text-gray-500': key === 'NOT_ORDERED'
                               }" class="p-2 font-semibold">{{ statusLabels[key] }}</td>
                             <td [class]="{
-                                'text-yellow-500': key === 'PENDING',
-                                'text-green-600': key === 'APPROVED',
-                                'text-red-500': key === 'REJECTED',
-                                'text-gray-500': key === 'NOT_ORDERED'
+                                'text-yellow-600': key === 'PENDING',
+                                'text-green-600': key === 'SUCCESS',
+                                'text-red-600': key === 'REJECTED',
+                                'text-blue-600': key === 'CHECKING',
+                                'text-gray-600': key === 'NOT_ORDERED'
                               }" class="p-2 font-semibold">
                                 {{ getStatusCount(key) }}
                             </td>
@@ -191,7 +206,7 @@
             <div
                 class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Terms of Service
+                    Thay đổi dịch vụ
                 </h3>
                 <button type="button" (click)="closeServiceModal()"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -300,7 +315,7 @@
             <div
                 class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Terms of Service
+                    Thông tin dịch vụ
                 </h3>
                 <button type="button" (click)="closeServiceNotOrderModal()"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"

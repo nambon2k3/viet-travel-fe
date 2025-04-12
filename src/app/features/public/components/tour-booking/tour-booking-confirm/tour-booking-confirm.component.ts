@@ -92,6 +92,27 @@ export class TourBookingConfirmComponent {
   }
 
 
+  changePaymentMethod() {
+
+    const newMethod = this.bookingData.paymentMethod === 'CASH' ? 'BANKING' : 'CASH';
+
+    console.log(this.bookingData.id)
+
+    this.bookingInforService.changePaymentStatus(this.bookingData.id, newMethod).subscribe({
+      next: (response) => {
+        console.log(response)
+
+
+
+
+        this.bookingData.paymentMethod = newMethod;
+        this.triggerSuccess()
+      }, 
+      error: (error) => {
+        console.log(error)
+      }
+    })
+  }
 
   expiredDate?:Date;
 
@@ -105,6 +126,32 @@ export class TourBookingConfirmComponent {
 
   range(end: number): number[] {
     return Array.from({ length: end - 0 }, (_, i) => 0 + i);
+  }
+
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+
+  successMessage: string = 'Thay Đổi thành công';
+  errorMessage: string = 'Thay đổi thất bại';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
   }
 
 

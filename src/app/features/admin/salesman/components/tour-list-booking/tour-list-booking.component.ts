@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core/index.js';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -10,14 +10,16 @@ import { TourService } from '../../services/tour.service';
 import { ActivatedRoute } from '@angular/router';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
+import { Modal } from 'flowbite';
+import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 @Component({
   selector: 'app-tour-list-booking',
-  imports: [FullCalendarModule, CommonModule, RouterModule, DatePipe, SpinnerComponent],
+  imports: [FullCalendarModule, CommonModule, RouterModule, DatePipe, SpinnerComponent, CurrencyVndPipe],
   templateUrl: './tour-list-booking.component.html',
   styleUrl: './tour-list-booking.component.css',
   providers: [DatePipe]
 })
-export class TourListBookingComponent {
+export class TourListBookingComponent implements AfterViewInit {
 
   events: { scheduleId: number; title: string; start: string; }[] | undefined = [];
 
@@ -36,6 +38,24 @@ export class TourListBookingComponent {
     },
     dateClick: (arg) => this.handleDateClick(arg),
   };
+
+
+
+  operatorModal: Modal | null = null;
+
+  ngAfterViewInit() {
+    const modalElement = document.getElementById('operator-modal') as HTMLElement;
+    this.operatorModal = new Modal(modalElement);
+  }
+
+  openOperatorModal() {
+    this.operatorModal?.show();
+  }
+  closeOperatorModal() {
+    if (this.operatorModal) {
+      this.operatorModal.hide();
+    }
+  }
 
 
   handleDateClick(arg: any) {

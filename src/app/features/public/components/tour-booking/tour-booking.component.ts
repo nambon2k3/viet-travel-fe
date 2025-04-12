@@ -206,21 +206,24 @@ export class TourBookingComponent implements OnInit{
 
       const formData = this.bookingForm.value;
 
-      this.bookingInforService.submitBooking(formData).subscribe({
-        next: (response) => {
-          this.router.navigate(['/tour-booking-detail', response.data]);
-        },
-        error: (error) => {
-          console.error('Booking Failed:', error);
-          this.warningMessage = 'Failed to create booking. Please try again.';
-          this.triggerWarning();
-        }
-      });
+      console.log('Form Data:', formData);
+
+      // this.bookingInforService.submitBooking(formData).subscribe({
+      //   next: (response) => {
+      //     this.router.navigate(['/tour-booking-detail', response.data]);
+      //   },
+      //   error: (error) => {
+      //     console.error('Booking Failed:', error);
+      //     this.warningMessage = 'Failed to create booking. Please try again.';
+      //     this.triggerWarning();
+      //   }
+      // });
 
     } else {
       console.log('Form Submitted:', this.bookingForm.value);
       this.warningMessage = 'Please fill in all required fields';
       this.triggerWarning();
+      this.bookingForm.markAllAsTouched()
     }
   }
 

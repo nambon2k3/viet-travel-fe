@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class TransactionService {
 
@@ -16,14 +16,17 @@ export class TransactionService {
         keyword?: string,
         sortField: string = 'createdAt',
         sortDirection: string = 'desc',
-        transactionType?: string,
+        transactionTypes?: string[],
     ): Observable<any> {
         let params = new HttpParams()
             .set('page', page)
             .set('size', size)
             .set('sortField', sortField)
-            .set('sortDirection', sortDirection)
-            .set('transactionType', transactionType || '');
+            .set('sortDirection', sortDirection);
+
+        (transactionTypes || ['RECEIPT']).forEach((type: any) => {
+            params = params.append('transactionTypes', type);
+        });
 
         if (keyword) {
             params = params.set('keyword', keyword);
@@ -43,7 +46,7 @@ export class TransactionService {
 
     getBookingData(keyword: string) {
         return this.http.get(`${environment.apiUrl}accountant/transactions/bookings/list`, {
-            params: {keyword: keyword}
+            params: { keyword: keyword }
         });
     }
 
@@ -53,7 +56,7 @@ export class TransactionService {
 
     getProviderData(bookingId: number) {
         return this.http.get(`${environment.apiUrl}accountant/transactions/providers`, {
-            params: {bookingId: bookingId}
+            params: { bookingId: bookingId }
         });
     }
 

@@ -93,6 +93,10 @@ export class BookingService {
         return this.http.post(`${environment.apiUrl}salesman/bookings/services/checking-available`, tourBookingId);
     }
 
+    sendCheckingAllAvailable(tourBookingId: number): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/services/checking-available/all`, tourBookingId);
+    }
+
 
     createPrivateTour(formData: any) {
         return this.http.post(`${environment.apiUrl}salesman/tours/create`, formData);
@@ -112,6 +116,31 @@ export class BookingService {
 
     takeBooking(bookingId: number, saleId: number): Observable<any> {
         return this.http.post(`${environment.apiUrl}salesman/bookings/take-booking`, { bookingId, saleId });
+    }
+
+
+    createCustomer(formData: any) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/customers/create`, formData);
+    }
+
+
+    getForwardTourSchedules(tourId: Number, scheduleId: Number, seats: number) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/tours/forward/schedules`, {
+            tourId: tourId,
+            scheduleId: scheduleId,
+            seats: seats
+        });
+    }
+
+    getEmail(tourId: number, scheduleId:number) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/send-email`, {
+            tourId: tourId,
+            scheduleId: scheduleId
+        });
+    }
+
+    sendEmail(formData: any) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/send-email/submit`, formData);
     }
 
 }

@@ -11,6 +11,7 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { CurrencyVndPipe } from '../../../../../shared/pipes/currency-vnd.pipe';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-list-payment',
@@ -21,7 +22,8 @@ import { CommonModule } from '@angular/common';
     TableHeaderComponent,
     TableRowComponent,
     ReactiveFormsModule,
-    CurrencyVndPipe
+    CurrencyVndPipe,
+    SpinnerComponent
   ],
   templateUrl: './list-payment.component.html',
   styleUrl: './list-payment.component.css'
@@ -57,7 +59,7 @@ export class ListPaymentComponent implements AfterViewInit {
       bookingCode: ['', Validators.required],
       receivedBy: ['', Validators.required],
       paidBy: ['Viet Travel', Validators.required],
-      category: [{ value: 'PAYMENT', disabled: true }, Validators.required],
+      category: ['PAYMENT', Validators.required],
       paymentMethod: ['CASH', Validators.required],
       notes: ['Phiếu chi tiền dịch vụ'],
       costAccounts: this.fb.array([]), // Initialize FormArray,
@@ -109,17 +111,24 @@ export class ListPaymentComponent implements AfterViewInit {
   }
 
   loadPayments(): void {
+    this.isLoading = true;
     this.transactionService.getTransactionByPage(
       this.page,
       this.size,
       this.keyword,
       this.sortField,
       this.sortDirection,
-      "PAYMENT"
+      ["PAYMENT", "ADVANCED"]
     ).subscribe({
       next: (response) => {
         this.payments = response.data.items;
         console.log('RECEPITS', this.payments);
+        this.isLoading = 
+        this.totalItems = response.data.total;
+        this.page = response.data.page;
+        this.size = response.data.size;
+        this.totalPages.set(Math.ceil(this.totalItems / this.size));
+        this.isLoading = false;
       },
       error: (error) => {
         console.log(error);

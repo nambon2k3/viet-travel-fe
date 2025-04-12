@@ -11,6 +11,7 @@ import { TourBookingConfirmComponent } from "./components/tour-booking/tour-book
 import { HotelDetailComponent } from "./components/hotel/hotel-detail/hotel-detail.component";
 import { DestinationComponent } from "./components/destination/destination.component";
 import { PlanComponent } from "./components/plan/plan.component";
+import { PlanDetailComponent } from "./components/plan/plan-detail/plan-detail.component";
 
 export const PUBLIC_ROUTES: Route[] = [
   {
@@ -66,6 +67,10 @@ export const PUBLIC_ROUTES: Route[] = [
         path: 'location-details/:id',
         component: DestinationComponent,
       },
+      {
+        path: 'plan-detail/:id',
+        component: PlanDetailComponent,
+      }
     ]
   },
   

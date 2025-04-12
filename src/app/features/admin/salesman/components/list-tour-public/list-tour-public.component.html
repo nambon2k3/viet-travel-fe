@@ -27,7 +27,7 @@
         <tbody>
           @for (tourData of tourDatas; track $index) {
               
-            <tr class="hover:bg-card/50" app-table-row [tourData]="tourData"></tr>
+            <tr class="hover:bg-card/50" app-table-row [tourData]="tourData" [index]="$index"></tr>
 
             } @empty {
             <tr>

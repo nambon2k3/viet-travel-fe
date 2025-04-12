@@ -35,7 +35,8 @@
 </div> -->
 
 
-<div class="grid grid-cols-12 h-full bg-gray-200 gap-4">
+<div class="grid grid-cols-12 h-full bg-gray-200 gap-4" [class]="isLoading ? 'opacity-50' : ''">
+    <app-spinner [isLoading]="isLoading"></app-spinner>
     <div class="col-span-12 bg-white">
         <div class="flex items-center justify-between mt-4 px-5 py-4">
             <!-- Left: Title -->
@@ -58,15 +59,15 @@
 
                 @if(bookingDetail?.status === 'PENDING' && bookingDetail?.schedule?.availableSeats >=
                 bookingDetail?.seats) {
-                <button (click)="successBooking()"
+                <button (click)="successBooking()" type="button"
                     class="flex items-center px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-blue-700">
                     Chuyển thành công
                 </button>
                 }
 
                 @if(bookingDetail?.status === 'PENDING' || bookingDetail?.status === 'SUCCESS') {
-                <button (click)="successBooking()"
-                    class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                <button (click)="openForwardBookingModal()" type="button"
+                class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
                     Chuyển booking
                 </button>
                 }
@@ -90,29 +91,15 @@
 
             <!-- Buttons Group -->
             <div class="flex space-x-2">
-                <button class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 20h9M12 4h9M4 9h16M4 15h16" />
-                    </svg>
-                    In đơn hàng
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <button class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
+                <button  type="button"
+                (click)="openPriceModal()"
+                class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 12H8m0 0l4-4m-4 4l4 4" />
                     </svg>
-                    Gửi email
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 ml-1" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
+                    Gửi email báo giá
                 </button>
                 <button [routerLink]=" ['/salesman/tour-booking-service/', bookingDetail?.id]"
                     class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
@@ -212,7 +199,7 @@
             <div class="flex justify-between items-center py-5">
                 <h2 class="text-sm font-semibold">Danh sách khách hàng</h2>
                 @if(!bookingDetail?.status.includes('CANCEL')) {
-                    <button data-modal-target="customers-modal" data-modal-toggle="customers-modal"
+                <button data-modal-target="customers-modal" data-modal-toggle="customers-modal"
                     class="px-4 py-2 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 flex items-center gap-2">
                     <svg class="w-5 h-5 text-white-800 dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -224,7 +211,7 @@
                     Cập Nhật
                 </button>
                 }
-                
+
             </div>
             <div id="customers-modal" tabindex="-1" aria-hidden="false"
                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -576,7 +563,7 @@
                     <span>Tình Trạng</span>
                     <span>
                         @if(bookingDetail?.status.includes('CANCEL')) {
-                            <span
+                        <span
                             class="inline-flex items-center bg-red-100 text-green-800 text-xs rounded-full font-medium px-2.5 py-0.5  dark:bg-green-900 dark:text-green-300">
                             <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                             Đã hủy
@@ -744,7 +731,7 @@
                             </td>
                         </tr>
                         <tr class="pb-4">
-                            <td class="p-2 font-semibold">Tên Tour</td>
+                            <td class="p-2 font-semibold min-w-[150px]">Tên Tour</td>
                             <td class="p-2">
                                 {{bookingDetail?.tour?.name}}
                             </td>
@@ -911,3 +898,107 @@
     </div>
 </div>
 }
+
+
+
+<!-- Main modal -->
+<div id="forward-booking-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    Chuyển booking
+                </h3>
+                <button type="button" (click)="closeForwardBookingModal()"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-hide="foward-booking-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4">
+                <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn ngày
+                    khởi hành khác *:</label>
+                <select id="category"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                    <option *ngFor="let schedule of forwardSchedules" [value]="schedule?.scheduleId">
+                        {{schedule?.startDate | date: 'dd-MM-yyy'}} - {{schedule?.endDate | date: 'dd-MM-yyy'}} - Seats: {{schedule?.availableSeats}} 
+                    </option>
+
+                    <option *ngIf="forwardSchedules.length < 1" [value]="">
+                        Không có ngày phù hợp
+                    </option>
+                </select>
+            </div>
+            <!-- Modal footer -->
+            <div class="flex justify-end items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <button data-modal-hide="foward-booking-modal" type="button"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    Lưu
+                </button>
+                <button data-modal-hide="foward-booking-modal" type="button" (click)="closeForwardBookingModal()"
+                    class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                    Hủy Bỏ
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Modal -->
+<div id="price-modal" tabindex="-1" aria-hidden="true"
+    class="fixed inset-0 z-50 flex items-center justify-center w-full h-full bg-gray-900 bg-opacity-50 hidden">
+    <div class="relative w-full max-w-5xl bg-white rounded-lg shadow-lg">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+            <h3 class="text-lg font-semibold">Gửi yêu cầu đặt chỗ dịch vụ</h3>
+            <button (click)="closePriceModal()" class="text-gray-500 hover:text-gray-700">
+                ✖
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4 h-[600px] overflow-y-auto">
+            <form [formGroup]="sendMailForm" class="space-y-4">
+    
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700" >Gửi đến:</label>
+                    <input type="text"  class="w-full p-2 border rounded-md bg-gray-200" formControlName="email">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700" >Tiêu đề:</label>
+                    <input type="text"  class="w-full p-2 border rounded-md bg-gray-200" formControlName="subject">
+                </div>
+
+                <app-blog-content [content]="''" formControlName="content" 
+                    class="w-full h-40 overflow-y-auto px-3 py-2 mt-1 border rounded-lg focus:ring focus:ring-blue-300"></app-blog-content>
+            </form>
+
+            
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex justify-end px-6 py-4 border-t">
+            <button (click)="closePriceModal()" class="px-4 py-2 mr-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
+                Hủy
+            </button>
+            <button (click)="sendMail()" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                Gửi
+            </button>
+        </div>
+    </div>
+    
+</div>

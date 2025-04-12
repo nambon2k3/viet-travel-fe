@@ -1,7 +1,7 @@
 <ng-container>
   <td>{{ index + 1 }}</td>
 
-  <td>{{ tourShedule?.tour?.name }}</td>
+  <td class="max-w-[250px]">{{ tourShedule?.tour?.name }}</td>
 
   <td>
     {{ tourShedule?.startDate | formatDate }}
@@ -32,9 +32,17 @@
   </td>
 
   <td>
-    <span class="bg-yellow-200 text-yellow-800 px-3 py-2 rounded text-xs">
-      Quyết toán
-    </span>
+
+    @if(tourShedule?.status == "SETTLEMENT") {
+      <span class="bg-green-200 text-green-800 px-3 py-2 rounded text-xs">
+        Quyết toán
+      </span>
+    } @else {
+      <span class="bg-blue-200 text-blue-800 px-3 py-2 rounded text-xs">
+        Đang điều hành
+      </span>
+    }
+    
   </td>
 
   <td>

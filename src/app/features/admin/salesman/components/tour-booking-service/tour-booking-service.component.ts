@@ -7,12 +7,14 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
 import { BookingService } from '../../services/booking.service';
 import { Modal } from 'flowbite';
 import { CANCELLED } from 'node:dns';
+import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
+import { h } from '@fullcalendar/core/preact.js';
 
 @Component({
   selector: 'app-tour-booking-service',
-  imports: [CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, CurrencyVndPipe, ReactiveFormsModule, RouterModule, SpinnerComponent],
   templateUrl: './tour-booking-service.component.html',
-  styleUrl: './tour-booking-service.component.css'
+  styleUrl: './tour-booking-service.component.css',
 })
 export class TourBookingServiceComponent implements AfterViewInit{
 
@@ -24,10 +26,14 @@ export class TourBookingServiceComponent implements AfterViewInit{
 
   selectedTourBookingService: any;
 
+  isLoading: boolean = false;
+
   serviceCategoryMap: { [key: string]: string } = {
     'Hotel': 'Khách sạn',
     'Restaurant': 'Nhà hàng',
-    'Transport': 'Phương tiện'
+    'Transport': 'Phương tiện',
+    'Flight Ticket': 'Vé máy bay',
+    'Activity': 'Hoạt động',
   };
 
   constructor(
@@ -46,6 +52,8 @@ export class TourBookingServiceComponent implements AfterViewInit{
   serviceNotOrderModal: Modal | null = null;
 
   serviceModal: Modal | null = null;
+
+  tourType: any;
 
   ngAfterViewInit(): void {
     this.serviceModal = new Modal(document.getElementById('service-modal'));
@@ -117,17 +125,34 @@ export class TourBookingServiceComponent implements AfterViewInit{
     });
   }
 
+  hasNotOrdered:boolean = true;
+
   getBookingService(tourBookingId: number): void {
+    this.isLoading = true;
     this.bookingService.getBookingService(tourBookingId).subscribe({
       next: (response) => {
-        this.dayServices = response.data;
+        this.dayServices = response.data.servicesByDay;
+
+        this.tourType = response.data.tourType;
+
         this.dayServices.sort((a:any, b:any) => a.tourDay.dayNumber - b.tourDay.dayNumber);
         this.calculateSummary()
 
+        console.log('RESPONSE:', response);
+
+
+        const hasNotOrdered = this.dayServices.some((day: any) =>
+          day.bookingServices.some((service: any) => service.status === 'NOT_ORDERED')
+        );
+
+        this.hasNotOrdered = hasNotOrdered
+
         console.log('Day Services:', this.dayServices);
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Booking Failed:', error);
+        this.isLoading = false;
       }
     });
 
@@ -139,7 +164,9 @@ export class TourBookingServiceComponent implements AfterViewInit{
     APPROVED: 0,
     REJECTED: 0,
     NOT_ORDERED: 0,
-    CANCELLED: 0
+    CANCELLED: 0,
+    SUCCESS: 0,
+    CHECKING: 0
   };
 
   statusLabels: { [key: string]: string } = {
@@ -147,7 +174,9 @@ export class TourBookingServiceComponent implements AfterViewInit{
     APPROVED: 'Đã phê duyệt',
     REJECTED: 'Bị từ chối',
     NOT_ORDERED: 'Chưa đặt dịch vụ',
-    CANCELLED: 'Đã hủy'
+    CANCELLED: 'Đã hủy',
+    SUCCESS: 'Thành công',
+    CHECKING: 'Chờ xác thực'
   };
 
   statusKeys(): string[] {
@@ -166,7 +195,9 @@ export class TourBookingServiceComponent implements AfterViewInit{
       APPROVED: 0,
       REJECTED: 0,
       NOT_ORDERED: 0,
-      CANCELLED: 0
+      CANCELLED: 0,
+      SUCCESS: 0,
+      CHECKING: 0
     };
     this.dayServices.forEach((dayService: any) => {
       this.totalServices += dayService.bookingServices.length;
@@ -206,12 +237,20 @@ export class TourBookingServiceComponent implements AfterViewInit{
     // Logic đặt dịch vụ
     console.log('Đặt dịch vụ:', this.bookingServiceNotOrderForm.value);
 
+    this.isLoading = true;
+
     this.bookingService.sendCheckingAvailable(this.bookingServiceNotOrderForm.value.tourBookingServiceId).subscribe({
       next: (response) => {
+        this.isLoading = true;
         console.log('Updated service:', response);
         this.getBookingService(this.tourBookingId!);
         this.closeServiceNotOrderModal();
+      },
+      error: (error) => {
+        console.error('Booking Failed:', error);
+        this.isLoading = false;
       }
+
     });
 
   }
@@ -220,11 +259,18 @@ export class TourBookingServiceComponent implements AfterViewInit{
     // Logic lưu thay đổi
     console.log('Lưu thay đổi:', this.bookingServiceNotOrderForm.value);
 
+    this.isLoading = true;
+
     this.bookingService.updateServiceQuantity(this.bookingServiceNotOrderForm.value).subscribe({
       next: (response) => {
+        this.isLoading = false;
         console.log('Updated service:', response);
         this.getBookingService(this.tourBookingId!);
         this.closeServiceNotOrderModal();
+      },
+      error: (error) => {
+        console.error('Booking Failed:', error);
+        this.isLoading = false;
       }
     });
 
@@ -234,14 +280,40 @@ export class TourBookingServiceComponent implements AfterViewInit{
   cancelService() {
     // Logic hủy dịch vụ
     console.log('Hủy dịch vụ:', this.bookingServiceNotOrderForm.value);
+    this.isLoading = true;
 
     this.bookingService.cancelService(this.bookingServiceNotOrderForm.value.tourBookingServiceId).subscribe({
       next: (response) => {
         console.log('Canceled service:', response);
         this.getBookingService(this.tourBookingId!);
         this.closeServiceNotOrderModal();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Booking Failed:', error);
+        this.isLoading = false;
       }
     });
+  }
+
+
+  checkingService() {
+
+    console.log('Kiểm tra all dịch vụ:', this.bookingServiceNotOrderForm.value);
+
+    this.bookingService.sendCheckingAllAvailable(this.tourBookingId!).subscribe({
+      next: (response) => {
+        console.log('Updated service:', response);
+        this.getBookingService(this.tourBookingId!);
+        this.closeServiceNotOrderModal();
+      },
+      error: (error) => {
+        console.error('Booking Failed:', error);
+        this.isLoading = false;
+      }
+    });
+
+
   }
 
 }

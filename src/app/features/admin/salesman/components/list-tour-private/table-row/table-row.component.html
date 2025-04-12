@@ -1,7 +1,7 @@
 <ng-container>
   <td>
 
-    {{ tourData?.tour?.id }}
+    {{ index + 1 }}
   </td>
   <td>
     {{ tourData?.tour?.name }}
@@ -12,14 +12,6 @@
   </td>
 
 
-
-  <td>
-    @for (tag of tourData?.tour.tags; track $index) {
-    <span class="rounded-[30px] bg-yellow-500/10 px-2 py-0.5 text-xs font-medium text-yellow-800 inline-block mt-1">
-      {{ tag.name }}
-    </span>
-    }
-  </td>
 
   <td class="space-x-1">
     {{ tourData?.numberBooking }} <span class="text-gray-400">bks</span>
