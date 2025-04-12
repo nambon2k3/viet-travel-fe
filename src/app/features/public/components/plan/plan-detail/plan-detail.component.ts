@@ -49,43 +49,48 @@ export class PlanDetailComponent {
       next: (response) => {
         this.plan = response.data;
 
+
+
         const cleanJsonString = this.plan.content
           .replace(/^```json\n/, '')  // Remove the opening triple backticks
           .replace(/\n```$/, '');
         let parsedData: any;
+
+
+
         try {
           parsedData = JSON.parse(cleanJsonString);
           this.planContent = parsedData;
-          console.log('Parsed JSON:', this.planContent);
 
 
 
-          this.restaurants = this.planContent.plan.days
-            .map((dayObj: any) => {
-              const key = Object.keys(dayObj)[0]; // e.g., "day_1", "day_2"
-              return dayObj[key]?.restaurants || [];
-            })
-            .flat();
+          this.restaurants = Array.from(
+            new Map(
+              this.planContent.plan.days
+                .flatMap((dayObj: any) => dayObj.restaurants || [])
+                .map((rest: any) => [rest.name, rest]) // dùng name làm key
+            ).values()
+          );
+          
+          console.log('Restaurants (unique):', this.restaurants);
 
-          console.log('Restaurant: ', this.restaurants);
+          this.hotels = Array.from(
+            new Map(
+              this.planContent.plan.days
+                .map((dayObj: any) => dayObj.hotel) // truy cập trực tiếp
+                .filter((hotel: any) => hotel) // loại undefined/null
+                .map((hotel: any) => [hotel.name, hotel]) // dùng name làm key để loại trùng
+            ).values()
+          );
+          
+          console.log('Hotels (unique):', this.hotels);
 
-          this.hotels = this.planContent.plan.days
-            .map((dayObj: any) => {
-              const key = Object.keys(dayObj)[0]; // e.g., "day_1", "day_2"
-              return dayObj[key]?.hotels || [];
-            })
-            .flat();
-
-          console.log('Hotels: ', this.hotels);
+          console.log('hotels (unique):', this.hotels);
 
           this.activities = this.planContent.plan.days
-            .map((dayObj: any) => {
-              const key = Object.keys(dayObj)[0]; // e.g., "day_1", "day_2"
-              return dayObj[key]?.activities || [];
-            })
-            .flat();
+            .flatMap((dayObj: any) => dayObj.activities || []);
 
-          console.log('Activities: ', this.activities);
+          console.log('All activities:', this.activities);;
 
 
         } catch (error) {
