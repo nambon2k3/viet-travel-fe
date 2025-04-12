@@ -41,24 +41,14 @@ export class ServiceComponent {
   constructor(
     private router: Router,
     private serviceService: ServiceService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    console.log('ServiceComponent initialized. Loading services...');
     this.loadServices();
   }
 
   loadServices(): void {
     this.isLoading = true;
-    console.log('Calling getServices with params:', {
-      page: this.page(),
-      size: this.pageItemCount(),
-      keyword: this.searchQuery,
-      isDeleted: this.statusFilter === '2' ? true : this.statusFilter === '1' ? false : undefined,
-      sortField: 'createdAt',
-      sortDirection: this.orderFilter === '1' ? 'desc' : 'asc'
-    });
-
     this.serviceService.getServices(
       this.page(),
       this.pageItemCount(),
@@ -68,31 +58,16 @@ export class ServiceComponent {
       this.orderFilter === '1' ? 'desc' : 'asc'
     ).subscribe({
       next: (response: ApiResponse<PaginatedData<ServiceBase>>) => {
-        console.log('API response:', response);
         if (response.code === 200) {
           const data = response.data as PaginatedData<ServiceBase>;
-          console.log('Parsed data:', data);
-          console.log('Services received:', data.items);
           this.services.set(data.items || []);
-          console.log('Services signal updated:', this.services());
           this.totalItems.set(data.total || 0);
           this.page.set(data.page || 0);
           this.pageItemCount.set(data.size || 10);
           this.totalPages.set(Math.ceil(this.totalItems() / this.pageItemCount()));
-          console.log('Pagination info:', {
-            totalItems: this.totalItems(),
-            page: this.page(),
-            pageItemCount: this.pageItemCount(),
-            totalPages: this.totalPages()
-          });
           if (data.items && data.items.length > 0) {
             this.serviceProviderName.set(data.items[0].serviceProviderName || null);
-            console.log('Service provider name set to:', this.serviceProviderName());
-          } else {
-            console.log('No services found, serviceProviderName not set.');
           }
-        } else {
-          console.error('API returned non-success code:', response.code, response.message);
         }
         this.isLoading = false;
       },
@@ -108,7 +83,6 @@ export class ServiceComponent {
   }
 
   onSearch(filters: any): void {
-    console.log('Search filters received:', filters);
     this.searchQuery = filters.keyword || '';
     this.statusFilter = filters.status || '';
     this.orderFilter = filters.order || '1';
@@ -117,7 +91,6 @@ export class ServiceComponent {
   }
 
   onPageChange(newPage: number): void {
-    console.log('Page change requested to:', newPage);
     if (newPage >= 0 && newPage < this.totalPages()) {
       this.page.set(newPage);
       this.loadServices();
@@ -125,14 +98,12 @@ export class ServiceComponent {
   }
 
   onPageSizeChange(newSize: number): void {
-    console.log('Page size change requested to:', newSize);
     this.pageItemCount.set(newSize);
     this.page.set(0);
     this.loadServices();
   }
 
   toggleServices(checked: boolean): void {
-    console.log('Toggling services selection to:', checked);
     this.services.update((services) => {
       return services.map((service) => {
         return { ...service, selected: checked };
@@ -142,13 +113,11 @@ export class ServiceComponent {
 
   filteredServices = computed(() => {
     const filtered = this.services();
-    console.log('Filtered services computed:', filtered);
     return filtered;
   });
 
   onUpdate(service: ServiceBase): void {
     if (service.id !== undefined) {
-      console.log('Navigating to update service page for ID:', service.id);
       this.router.navigate([`/service-provider/service/${service.id}/edit`]); // Cập nhật routing
     } else {
       console.error('Service ID is undefined');
@@ -157,18 +126,14 @@ export class ServiceComponent {
 
   onDelete(service: ServiceBase): void {
     if (service.id !== undefined) {
-      console.log('Attempting to delete service with ID:', service.id);
       this.serviceService.updateServiceStatus(service.id, true).subscribe({
         next: (response) => {
           if (response.code === 200) {
-            console.log('Service deleted successfully:', response);
             this.services.update((services) => {
               return services.map(s =>
                 s.id === service.id ? { ...s, deleted: true } : s
               );
             });
-          } else {
-            console.error('Failed to delete service, response:', response);
           }
         },
         error: (err) => {

@@ -22,7 +22,7 @@
           <td class="p-2">{{ transaction.receivedBy }}</td>
           <td class="p-2">{{ transaction.category === 'RECEIPT' ? 'Phiếu thu' : 'Phiếu chi' }}</td>
           <td class="p-2">{{ transaction.createdAt | formatDate }}</td>
-          <td class="p-2">{{ transaction.amount }}</td>
+          <td class="p-2">{{ transaction.amount | currencyVnd }}</td>
           <td class="p-2">{{ mapPaymentStatus(transaction.paymentStatus) }}</td>
           <td class="p-2">{{ transaction.costAccount.content | truncate : 30 }}</td>
         </tr>

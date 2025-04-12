@@ -21,10 +21,10 @@
           <td class="p-2 text-center">{{ i + 1 }}</td>
           <td class="p-2">{{ day.title }}</td>
           <td class="p-2">
-            <span *ngFor="let service of day.serviceCategories" class="text-gray-700 mr-3">
+            <span *ngFor="let service of getTranslatedServices(day.id)" class="text-gray-700 mr-3">
               {{ service }}
             </span>
-          </td> <!-- Use getter and pipe -->
+          </td>
           <td class="p-2 text-center">
             <button (click)="onEdit(day)"
               class="px-4 py-2 mr-2 bg-green-700 hover:bg-green-800 text-white rounded">

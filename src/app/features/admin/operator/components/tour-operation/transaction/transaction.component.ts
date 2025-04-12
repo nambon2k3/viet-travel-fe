@@ -5,6 +5,7 @@ import { TourService } from '../../../services/tour.service';
 import { TruncatePipe } from "../../../../../../shared/pipes/truncate.pipe";
 import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe";
 import { SpinnerComponent } from "../../../../../../shared/components/spinner/spinner.component";
+import { CurrencyVndPipe } from "../../../../../../shared/pipes/currency-vnd.pipe";
 
 @Component({
   selector: 'app-transaction',
@@ -13,7 +14,8 @@ import { SpinnerComponent } from "../../../../../../shared/components/spinner/sp
     CommonModule,
     TruncatePipe,
     FormatDatePipe,
-    SpinnerComponent
+    SpinnerComponent,
+    CurrencyVndPipe
 ],
   templateUrl: './transaction.component.html',
   styleUrls: ['./transaction.component.css']

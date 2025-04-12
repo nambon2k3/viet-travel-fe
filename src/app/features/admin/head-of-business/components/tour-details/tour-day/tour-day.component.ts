@@ -17,7 +17,7 @@ import { SpinnerComponent } from "../../../../../../shared/components/spinner/sp
     UpdateTourDayComponent,
     CreateTourDayComponent,
     SpinnerComponent
-],
+  ],
   templateUrl: './tour-day.component.html',
   styleUrls: ['./tour-day.component.css']
 })
@@ -28,6 +28,7 @@ export class TourDayComponent implements OnInit {
   tourId: string | null = null;
   tourDays: TourDay[] = [];
   isLoading: boolean = false;
+  translatedTourDays: { [key: string]: string[] } = {}; // Lưu danh sách dịch vụ đã dịch cho mỗi ngày
 
   constructor(
     private route: ActivatedRoute,
@@ -49,6 +50,10 @@ export class TourDayComponent implements OnInit {
           this.isLoading = false;
           if (response.code === 200) {
             this.tourDays = response.data;
+            // Dịch serviceCategories cho mỗi ngày
+            this.tourDays.forEach(day => {
+              this.translatedTourDays[day.id] = this.translateServiceCategories(day.serviceCategories);
+            });
           } else {
             console.error('Lỗi: ', response.message);
           }
@@ -68,6 +73,18 @@ export class TourDayComponent implements OnInit {
       this.editTourDayModal.mapDataToForm(day);
       this.editTourDayModal.showModal();
     }
+  }
+
+  translateServiceCategories(categories: any[]): string[] {
+    const translationMap: { [key: string]: string } = {
+      "Restaurant": "Nhà hàng",
+      "Hotel": "Khách sạn",
+      "Activity": "Hoạt động",
+      "Transport": "Giao thông",
+      "Flight Ticket": "Vé máy bay"
+    };
+
+    return categories.map(category => translationMap[category] || category);
   }
 
   onCreate(): void {
@@ -92,5 +109,10 @@ export class TourDayComponent implements OnInit {
         },
       });
     }
+  }
+
+  // Getter để lấy danh sách dịch vụ đã dịch cho một ngày cụ thể
+  getTranslatedServices(dayId: number): string[] {
+    return this.translatedTourDays[dayId] || [];
   }
 }
