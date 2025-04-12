@@ -80,4 +80,18 @@ export class TableRowComponent {
       },
     });
   }
+
+  getVietnameseStatus(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      OPENED: 'Đang mở bán',
+      CLOSED: 'Đã đóng',
+      DRAFT: 'Bản nháp',
+      PENDING_PRICING: 'Chờ chiết tính',
+      APPROVED: 'Đã duyệt',
+      REJECTED: 'Bị từ chối',
+      PENDING: 'Chờ duyệt',
+    };
+    return statusMap[status] || 'Chưa cập nhật';
+  }
+  
 }
