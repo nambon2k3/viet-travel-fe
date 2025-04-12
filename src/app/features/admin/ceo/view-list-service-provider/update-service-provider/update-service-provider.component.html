@@ -106,6 +106,10 @@
           class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300">
           Hủy
         </button>
+        <button type="button" (click)="openService()"
+          class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600">
+          Xem Dịch vụ
+        </button>
         <button type="button" (click)="saveChanges()"
           class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600"
           [disabled]="serviceProviderForm.invalid || (selectedFile === null && !serviceProviderForm.get('imageUrl')?.value)">

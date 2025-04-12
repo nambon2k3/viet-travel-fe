@@ -31,7 +31,7 @@ export class TableRowComponent {
 
   openService(serviceProvider: ServiceProvider): void {
     if (serviceProvider.id !== undefined) {
-      this.router.navigate([`/ceo/service-provider/${serviceProvider.id}/services`]);
+      this.router.navigate([`/ceo/service/${serviceProvider.id}/services`]);
     }
     else {
       console.error('Service provider ID is undefined');

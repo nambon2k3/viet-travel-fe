@@ -1,13 +1,12 @@
-// src/app/features/service-provider/components/service/update-service/update-service.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ServiceService } from '../../../services/service.service';
 import { ApiResponse } from '../../../../../core/models/api-response.model';
 import { ServiceResponse, RoomWithDisplay, MealWithDisplay, TransportWithDisplay } from '../../../../../core/models/service.model';
 import { NgMultiSelectDropDownModule, IDropdownSettings } from 'ng-multiselect-dropdown';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ServiceService } from '../../../../service-provider/services/service.service';
 
 @Component({
   selector: 'app-update-service',
@@ -25,6 +24,7 @@ export class UpdateServiceComponent implements OnInit {
   serviceForm!: FormGroup;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  providerId: number | null = null;
   imagePreview: string | null = null;
   selectedFile: File | null = null;
   isLoading: boolean = true;
@@ -67,8 +67,7 @@ export class UpdateServiceComponent implements OnInit {
       deleted: [false],
       categoryId: [null, Validators.required],
       categoryName: [null],
-      providerId: [null, Validators.required],
-      providerName: [null],
+      providerId: [this.providerId, Validators.required],
       roomDetails: this.fb.group({
         capacity: [null, [Validators.required, Validators.min(0)]],
         availableQuantity: [null, [Validators.required, Validators.min(0)]],
@@ -85,6 +84,12 @@ export class UpdateServiceComponent implements OnInit {
 
     this.loadCategories();
 
+    const providerId = this.route.snapshot.paramMap.get('providerId');
+    if (providerId) {
+      this.providerId = parseInt(providerId);
+      this.serviceForm.patchValue({ providerId: this.providerId });
+    }
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       const parsedId = parseInt(id);
@@ -97,7 +102,7 @@ export class UpdateServiceComponent implements OnInit {
         console.error('Invalid service ID:', id);
       }
     } else {
-      this.isLoading = false; // No ID means create mode
+      this.isLoading = false;
     }
   }
 
@@ -136,6 +141,7 @@ export class UpdateServiceComponent implements OnInit {
           this.service = response.data;
           this.imagePreview = this.service.imageUrl || null;
           const category = this.categoryOptions.find(c => c.id === this.service.categoryId);
+          this.providerId = this.service.providerId;
 
           this.serviceForm.patchValue({
             id: this.service.id,
@@ -143,6 +149,7 @@ export class UpdateServiceComponent implements OnInit {
             nettPrice: this.service.nettPrice,
             sellingPrice: this.service.sellingPrice,
             imageUrl: this.service.imageUrl,
+            providerId: this.service.providerId,
             startDate: this.service.startDate ? new Date(this.service.startDate).toISOString().split('T')[0] : null,
             endDate: this.service.endDate ? new Date(this.service.endDate).toISOString().split('T')[0] : null,
             deleted: this.service.deleted,
@@ -181,7 +188,7 @@ export class UpdateServiceComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/service-provider/service']);
+    this.router.navigate([`/ceo/service/${this.providerId}`]);
   }
 
   saveChanges(): void {
@@ -247,7 +254,7 @@ export class UpdateServiceComponent implements OnInit {
         if (response.code === 200) {
           this.successMessage = formData.id ? 'Cập nhật dịch vụ thành công.' : 'Tạo dịch vụ thành công.';
           this.errorMessage = null;
-          setTimeout(() => this.router.navigate(['/service-provider/service']), 1500);
+          setTimeout(() => this.router.navigate(['/ceo/service/' + formData.providerId]), 1500);
         } else {
           this.errorMessage = response.message || (formData.id ? 'Cập nhật dịch vụ thất bại.' : 'Tạo dịch vụ thất bại.');
           this.successMessage = null;

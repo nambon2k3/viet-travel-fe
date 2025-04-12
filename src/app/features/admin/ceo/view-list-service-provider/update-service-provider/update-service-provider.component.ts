@@ -40,19 +40,11 @@ export class UpdateServiceProviderComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private serviceProvidedService: ServiceProvidedService,
-    private userStorageService: UserStorageService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    const token = this.userStorageService.getToken();
-    if (!token) {
-      alert('Vui lòng đăng nhập để cập nhật nhà cung cấp.');
-      this.router.navigate(['/login']);
-      return;
-    }
-
     this.serviceProviderForm = this.fb.group({
       id: [null, Validators.required],
       imageUrl: [null],
@@ -152,7 +144,7 @@ export class UpdateServiceProviderComponent implements OnInit {
       })
     );
   }
-  
+
 
   loadServiceProvider(id: number): void {
     this.serviceProvidedService.getServiceProviderById(id).subscribe({
@@ -167,17 +159,14 @@ export class UpdateServiceProviderComponent implements OnInit {
         })) || [];
         this.selectedCategories = selected;
 
-        console.log('Service Provider Data:', this.serviceProvider);
-        console.log('Locations at time of loadServiceProvider:', this.locations);
-
-        const location = this.locations.find(loc => loc.name === this.serviceProvider.locationName);
+        const location = this.locations.find(loc => loc.name === this.serviceProvider.location?.name);
         this.selectedLocationId = location ? location.id : null;
 
         if (!location) {
-          console.warn('Location not found for locationName:', this.serviceProvider.locationName);
+          console.warn('Location not found for:', this.serviceProvider.location?.name);
         } else {
           console.log('Found location:', location);
-          this.selectedLocation = [location]; // Gán địa điểm đã chọn cho ng-multiselect-dropdown
+          this.selectedLocation = [location];
         }
 
         this.serviceProviderForm.patchValue({
@@ -214,6 +203,14 @@ export class UpdateServiceProviderComponent implements OnInit {
     });
   }
 
+  openService(): void {
+    if (this.serviceProvider.id !== undefined) {
+      this.router.navigate([`/ceo/service/${this.serviceProvider.id}`]);
+    } else {
+      console.error('Service provider ID is undefined');
+    }
+  }
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -229,19 +226,15 @@ export class UpdateServiceProviderComponent implements OnInit {
   }
 
   onLocationSelect(item: any): void {
-    console.log('Selected Item from Dropdown:', item);
     const selectedLocation = this.locations.find(loc => loc.id === item.id);
-    console.log('All Locations:', this.locations);
-    console.log('Found Selected Location:', selectedLocation);
-  
     if (selectedLocation) {
       this.selectedLocationId = selectedLocation.id;
       this.serviceProviderForm.patchValue({
         locationId: this.selectedLocationId,
         geoPosition: {
-          id: selectedLocation.geoPositionId || null, // Lấy geoPositionId trực tiếp
-          latitude: selectedLocation.latitude || 0,    // Lấy latitude trực tiếp
-          longitude: selectedLocation.longitude || 0   // Lấy longitude trực tiếp
+          id: selectedLocation.geoPositionId || null,
+          latitude: selectedLocation.latitude || 0,
+          longitude: selectedLocation.longitude || 0
         }
       });
       console.log('Updated geoPosition:', this.serviceProviderForm.get('geoPosition')?.value);
@@ -299,7 +292,7 @@ export class UpdateServiceProviderComponent implements OnInit {
   submitForm(): void {
     const formData = this.serviceProviderForm.getRawValue();
     const selectedLocation = this.locations.find(loc => loc.id === formData.locationId);
-  
+
     const updatedData = {
       id: formData.id,
       ...formData,
