@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { ConfigMarkupComponent } from "./config-markup/config-markup.component";
 import { AddFlightComponent } from './add-flight/add-flight.component';
 import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
+import { initFlowbite } from 'flowbite';
+import { SsrService } from '../../../../../core/services/ssr.service';
 
 interface PriceRange {
   [key: string]: number;
@@ -67,6 +69,7 @@ interface ApiResponse {
     tourId: number;
     tourName: string;
     tourType: string;
+    totalDays: number;
     serviceCategories: ServiceCategory[];
     paxOptions: PaxOption[];
   };
@@ -104,6 +107,7 @@ export class TourDiscountComponent implements OnInit {
 
   tourName: string = '';
   tourType: string = '';
+  tourDay: number = 0;
   tourDays: number[] = [];
   tourId: number = 0;
   hotels: Service[] = [];
@@ -131,6 +135,7 @@ export class TourDiscountComponent implements OnInit {
     private router: Router,
     private tourDiscountService: TourDiscountService,
     private route: ActivatedRoute,
+    private ssrService: SsrService
   ) { }
 
   ngOnInit() {
@@ -167,6 +172,7 @@ export class TourDiscountComponent implements OnInit {
         if (response.code === 200) {
           const data = response.data;
           this.tourName = data.tourName;
+          this.tourDay = data.totalDays;
           this.priceRanges = data.paxOptions.map(pax => pax.paxRange);
           this.prices = data.paxOptions;
           this.tourType = data.tourType;
@@ -266,10 +272,9 @@ export class TourDiscountComponent implements OnInit {
   }
 
   calculateTourDays() {
-    const allServices = [...this.hotels, ...this.transports, ...this.restaurants, ...this.activities];
-    const maxDay = allServices.length > 0 ? Math.max(...allServices.map(service => service.dayNumber)) : 1;
+    const maxDay = this.tourDay;
     this.tourDays = Array.from({ length: maxDay }, (_, i) => i + 1);
-  }
+  }  
 
   calculateTotalNetPrice() {
     this.priceRanges.forEach(range => {
@@ -399,7 +404,16 @@ export class TourDiscountComponent implements OnInit {
 
   closeTourPax() {
     this.fetchTourData(this.tourId);
+    this.reInitFlowbite();
   }
+
+  private reInitFlowbite(): void {
+      if (this.ssrService.isBrowser) {
+        setTimeout(() => {
+          initFlowbite(); 
+        }, 0); 
+      }
+    }
 
   addNewHotel(event: { hotel: Service, isUpdate: boolean }) {
     const { hotel, isUpdate } = event;

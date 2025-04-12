@@ -5,11 +5,11 @@ import { TableFooterComponent } from '../../../../shared/components/table/table-
 import { TableHeaderComponent } from './table-header/table-header.component';
 import { TableRowComponent } from './table-row/table-row.component';
 import { TableActionComponent } from './table-action/table-action.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SpinnerComponent } from "../../../../shared/components/spinner/spinner.component";
-import { ServiceService } from '../../services/service.service';
 import { ApiResponse, PaginatedData } from '../../../../core/models/api-response.model';
 import { ServiceBase } from '../../../../core/models/service.model';
+import { ServiceService } from '../../../service-provider/services/service.service';
 
 @Component({
   selector: 'app-service',
@@ -32,28 +32,33 @@ export class ServiceComponent {
   pageItemCount = signal(10);
   totalPages = signal(0);
   isLoading: boolean = false;
+  providerId: number | null = null;
   serviceProviderName = signal<string | null>(null);
-
   searchQuery: string = '';
   statusFilter: string = '';
   orderFilter: string = '1';
 
   constructor(
     private router: Router,
-    private serviceService: ServiceService
+    private serviceService: ServiceService,
+    private route : ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.loadServices();
+    this.providerId = Number(this.route.snapshot.paramMap.get('id'));
+    if(this.providerId !== null) {
+      this.loadServices(this.providerId);
+    }
   }
 
-  loadServices(): void {
+  loadServices(id : number): void {
     this.isLoading = true;
     this.serviceService.getServices(
       this.page(),
       this.pageItemCount(),
       this.searchQuery,
       this.statusFilter === '2' ? true : this.statusFilter === '1' ? false : undefined,
+      id,
       'createdAt',
       this.orderFilter === '1' ? 'desc' : 'asc'
     ).subscribe({
@@ -78,8 +83,8 @@ export class ServiceComponent {
     });
   }
 
-  onAdd(): void {
-    this.router.navigate(['/service-provider/service/add']);
+   onAdd(): void {
+    this.router.navigate([`/ceo/service/add/${this.providerId}`]);
   }
 
   onSearch(filters: any): void {
@@ -87,20 +92,20 @@ export class ServiceComponent {
     this.statusFilter = filters.status || '';
     this.orderFilter = filters.order || '1';
     this.page.set(0);
-    this.loadServices();
+    this.loadServices(this.providerId!);
   }
 
   onPageChange(newPage: number): void {
     if (newPage >= 0 && newPage < this.totalPages()) {
       this.page.set(newPage);
-      this.loadServices();
+      this.loadServices(this.providerId!);
     }
   }
 
   onPageSizeChange(newSize: number): void {
     this.pageItemCount.set(newSize);
     this.page.set(0);
-    this.loadServices();
+    this.loadServices(this.providerId!);
   }
 
   toggleServices(checked: boolean): void {
@@ -118,7 +123,7 @@ export class ServiceComponent {
 
   onUpdate(service: ServiceBase): void {
     if (service.id !== undefined) {
-      this.router.navigate([`/service-provider/service/${service.id}/edit`]); // Cập nhật routing
+      this.router.navigate([`/ceo/service/${service.id}/edit`]); // Cập nhật routing
     } else {
       console.error('Service ID is undefined');
     }

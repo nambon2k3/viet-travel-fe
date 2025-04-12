@@ -4,9 +4,8 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ServiceBase } from '../../../../../core/models/service.model';
-import { ServiceService } from '../../../services/service.service';
-import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 import { FormatDatePipe } from "../../../../../shared/pipes/format-date.pipe";
+import { ServiceService } from '../../../../service-provider/services/service.service';
 
 @Component({
   selector: '[app-table-row]',
@@ -27,7 +26,7 @@ export class TableRowComponent {
 
   openDetail(service: ServiceBase): void {
     if (service.id !== undefined) {
-      this.router.navigate([`/service-provider/service/${service.id}/edit`]);
+      this.router.navigate([`/ceo/service/${service.id}/edit`]);
     } else {
       console.error('Service ID is undefined');
     }

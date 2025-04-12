@@ -1,3 +1,5 @@
+import { Locations } from "./location.model";
+
 export interface ApiResponse<T> {
     status: number;
     code: number;
@@ -35,7 +37,7 @@ export interface ApiResponse<T> {
     phone?: string;
     address?: string;
     deleted?: boolean;
-    locationName?: string; // Thêm locationName
+    location?: Locations; // Thêm locationName
     geoPosition?: GeoPosition;
     serviceCategories?: ServiceCategory[];
   }

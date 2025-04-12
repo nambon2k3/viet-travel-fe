@@ -55,7 +55,6 @@ export class UpdateTourDayComponent implements AfterViewInit{
 
   serviceOptions: Meal[] = [
     { id: 'Restaurant', name: 'Nhà Hàng' },
-    { id: 'Transport', name: 'Vận Chuyển' },
     { id: 'Hotel', name: 'Khách Sạn' },
     { id: 'Activity', name: 'Hoạt Động' },
     { id: 'Flight Ticket', name: 'Vé máy bay' },

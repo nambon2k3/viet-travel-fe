@@ -31,7 +31,7 @@ export class TourDetailsLayoutComponent {
   }
 
   backToList() {
-    this.router.navigate(['/head-business/tour-list']);
+    this.router.navigate(['/head-business/list-tour']);
   }
 
   loadTourDetails(id: string | null): void {

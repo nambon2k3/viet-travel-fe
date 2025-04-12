@@ -10,7 +10,7 @@ import { ServiceBase, ServiceResponse, TourDayService } from '../../../core/mode
     providedIn: 'root'
 })
 export class ServiceService {
-    private baseUrl = `${environment.apiUrl}service-provider/services`;
+    private baseUrl = `${environment.apiUrl}ceo/services`;
 
     constructor(private http: HttpClient) {}
 
@@ -19,12 +19,14 @@ export class ServiceService {
         size: number = 10,
         keyword?: string,
         isDeleted?: boolean,
+        providerId?: number,
         sortField: string = 'createdAt',
         sortDirection: string = 'desc'
       ): Observable<ApiResponse<PaginatedData<ServiceBase>>> {
         let params = new HttpParams()
           .set('page', page.toString())
           .set('size', size.toString())
+          .set('providerId', providerId ? providerId : '')
           .set('sortField', sortField)
           .set('sortDirection', sortDirection);
     
