@@ -2,11 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { TourService } from '../../../services/tour.service';
 import { TourDay } from '../../../../../../core/models/tour.model';
-import { UpdateTourDayComponent } from '../update-tour-day/update-tour-day.component';
-import { CreateTourDayComponent } from './create-tour-day/create-tour-day.component';
 import { SpinnerComponent } from "../../../../../../shared/components/spinner/spinner.component";
+import { TourService } from '../../../../head-of-business/services/tour.service';
 
 @Component({
   selector: 'app-tour-day',
@@ -14,17 +12,12 @@ import { SpinnerComponent } from "../../../../../../shared/components/spinner/sp
   imports: [
     CommonModule,
     FormsModule,
-    UpdateTourDayComponent,
-    CreateTourDayComponent,
     SpinnerComponent
   ],
   templateUrl: './tour-day.component.html',
   styleUrls: ['./tour-day.component.css']
 })
 export class TourDayComponent implements OnInit {
-  @ViewChild('editTourDayModal') editTourDayModal!: UpdateTourDayComponent;
-  @ViewChild('createTourDayModal') createTourDayModal!: CreateTourDayComponent;
-
   tourId: string | null = null;
   tourDays: TourDay[] = [];
   isLoading: boolean = false;
@@ -63,15 +56,6 @@ export class TourDayComponent implements OnInit {
           console.error('Lỗi: ', err);
         },
       });
-    }
-  }
-
-  onEdit(day: TourDay): void {
-    if(this.editTourDayModal) {
-      this.editTourDayModal.tourId = this.tourId;
-      this.editTourDayModal.day = day;
-      this.editTourDayModal.mapDataToForm(day);
-      this.editTourDayModal.showModal();
     }
   }
 

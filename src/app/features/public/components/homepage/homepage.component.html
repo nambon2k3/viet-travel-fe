@@ -78,7 +78,7 @@
             </div>
 
             <div class="p-4">
-                <h3 class="font-bold text-lg leading-snug h-12">{{ tour.name }}</h3>
+                <h3 class="font-bold text-lg mb-2 leading-snug">{{ tour.name | truncate : 35 }}</h3>
                 <p class="text-sm text-gray-700">
                     <i class="fas fa-map-marker-alt text-red-500 mr-1"></i> Khởi hành: <span
                         class="text-blue-600 font-medium">{{ tour.departLocation.name }}</span>

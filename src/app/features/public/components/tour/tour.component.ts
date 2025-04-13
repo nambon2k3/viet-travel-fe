@@ -12,11 +12,12 @@ import { Locations } from '../../../../core/models/location.model';
 import { HomepageService } from '../../services/homepage.service';
 import { WishlistService } from '../../../customer/components/wishlist/wishlist.service';
 import { WishlistComponent } from '../../../customer/components/wishlist/wishlist.component';
+import { TruncatePipe } from "../../../../shared/pipes/truncate.pipe";
 
 @Component({
   selector: 'app-tour',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyVndPipe, FooterComponent, NgSelectModule, WishlistComponent],
+  imports: [CommonModule, FormsModule, CurrencyVndPipe, FooterComponent, NgSelectModule, WishlistComponent, TruncatePipe],
   templateUrl: './tour.component.html',
   styleUrl: './tour.component.css'
 })

@@ -64,7 +64,9 @@ export class ConfigTourPaxComponent implements AfterViewInit {
           this.tourPaxList = Array.isArray(response.data) ? response.data : [response.data];
           this.tourPaxList = this.tourPaxList.map(pax => ({
             ...pax,
-            paxRange: pax.paxRange || `${pax.minPax}-${pax.maxPax}`
+            paxRange: pax.paxRange || `${pax.minPax}-${pax.maxPax}`,
+            validFrom: pax.validFrom || new Date().toISOString().split('T')[0],
+            validTo: pax.validTo || new Date().toISOString().split('T')[0],
           }));
         } else {
           console.error('Error fetching tour pax data:', response.message);

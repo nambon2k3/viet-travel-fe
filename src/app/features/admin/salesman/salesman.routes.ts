@@ -10,6 +10,9 @@ import { CreatePublicBookingComponent } from "./components/create-public-booking
 import { TourBookingServiceComponent } from "./components/tour-booking-service/tour-booking-service.component";
 import { CreateTourPrivateContentComponent } from "./components/create-tour-private-content/create-tour-private-content.component";
 import { TourServiceComponent } from "./components/tour-service/tour-service.component";
+import { TourDetailsLayoutComponent } from "./components/tour-details/tour-details-layout/tour-details-layout.component";
+import { TourDetailsComponent } from "./components/tour-details/tour-details.component";
+import { TourDayComponent } from "./components/tour-details/tour-day/tour-day.component";
 
 export const SALESMAN_ROUTES: Route[] = [
   {
@@ -31,7 +34,7 @@ export const SALESMAN_ROUTES: Route[] = [
       {
         path: 'list-tour-public',
         component: ListTourPublicComponent
-      }, 
+      },
       {
         path: 'tour-list-booking/:tourId',
         component: TourListBookingComponent
@@ -51,7 +54,16 @@ export const SALESMAN_ROUTES: Route[] = [
       {
         path: 'tour-private-service/:tourId',
         component: TourServiceComponent
-      }
+      },
+      {
+        path: '',
+        component: TourDetailsLayoutComponent,
+        children: [
+          { path: '', redirectTo: 'tour-details', pathMatch: 'full' },
+          { path: 'tour-details', component: TourDetailsComponent },
+          { path: 'tour-day', component: TourDayComponent },
+        ],
+      },
     ]
   },
   {

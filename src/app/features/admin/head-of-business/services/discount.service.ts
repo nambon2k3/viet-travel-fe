@@ -25,8 +25,18 @@ export class TourDiscountService {
     });
   }
 
+  getFlightServiceProviders(tourId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/ticket-providers`, {
+      params: { tourId }
+    });
+  }
+
   getServices(tourId: number, locationId: number, providerId: number, categoryName: string): Observable<any> {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/provider/${providerId}/category/${categoryName}/location/${locationId}`);
+  }
+
+  getFlightServices(tourId: number, providerId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/discount/ticket-provider/${providerId}`);
   }
 
   getServiceDetails(tourId: number, serviceId: number, dayNumber: number | null): Observable<any> {

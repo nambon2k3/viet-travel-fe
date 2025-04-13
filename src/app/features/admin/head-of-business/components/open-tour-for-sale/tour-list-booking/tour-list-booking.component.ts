@@ -5,13 +5,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import interactionPlugin from '@fullcalendar/interaction';
-import { BookingService } from '../../services/booking.service';
-import { TourService } from '../../services/tour.service';
 import { ActivatedRoute } from '@angular/router';
-import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
-import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 import { Modal } from 'flowbite';
-import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
+import { UserStorageService } from '../../../../../../core/services/user-storage/user-storage.service';
+import { SpinnerComponent } from '../../../../../../shared/components/spinner/spinner.component';
+import { CurrencyVndPipe } from '../../../../../../shared/pipes/currency-vnd.pipe';
+import { TourService } from '../../../../salesman/services/tour.service';
 @Component({
   selector: 'app-tour-list-booking',
   imports: [FullCalendarModule, CommonModule, RouterModule, DatePipe, SpinnerComponent, CurrencyVndPipe],
@@ -126,15 +125,17 @@ export class TourListBookingComponent implements AfterViewInit {
   cancelSeats: number = 0;
 
   openDetail(tourId: number): void {
-    if (this.tourDetails.tour.tourType === 'SIC') {
-      this.router.navigate(['/salesman/tour-details'], {
-        queryParams: {
-          id: this.tourDetails.tour.id,
-        },
-      });
-    } else {
-      this.router.navigate([`/salesman/tour-private-content/${this.tourDetails.tour.id}`]);
-    }
+    this.router.navigate(['/head-business/tour-details'], {
+      queryParams: {
+        id: this.tourDetails.tour.id,
+      },
+    });
+  }
+
+  goBack() {
+    this.router.navigate(['/head-business/open-sale-tour'], {
+      queryParams: { id: this.tourDetails.tour.id }
+    });
   }
 
   getTourDetails(tourId: number, scheduleId?: number) {

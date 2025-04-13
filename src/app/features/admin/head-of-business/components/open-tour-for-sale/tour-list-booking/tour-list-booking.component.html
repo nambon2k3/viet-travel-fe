@@ -36,9 +36,9 @@
     </div>
     <div class="text-right w-fit flex space-x-2">
         <button
-            [routerLink]="tourDetails?.tour?.tourType === 'SIC'? ['/salesman/list-tour-public'] : ['/salesman/list-tour-private']"
+            (click)="goBack()"
             class="flex items-center px-4 py-2 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 w-fit">
-            &lt; Quay lại danh sách
+            Quay lại
         </button>
         <button (click)="openDetail(tourDetails)" type="button"
             class="flex items-center px-4 py-2 bg-blue-200 text-blue-800 text-sm font-semibold rounded hover:bg-blue-300 w-fit">
