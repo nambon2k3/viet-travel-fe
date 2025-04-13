@@ -5,10 +5,10 @@ import { PostLocationDetailComponent } from "./components/post-location-detail/p
 import { TourDayComponent } from "./components/tour-details/tour-day/tour-day.component";
 import { TourDetailsLayoutComponent } from "./components/tour-details/tour-details-layout/tour-details-layout.component";
 import { TourDetailsComponent } from "./components/tour-details/tour-details.component";
-import { UpdateTourDayComponent } from "./components/tour-details/update-tour-day/update-tour-day.component";
 import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
 import { OpenTourForSaleComponent } from "./components/open-tour-for-sale/open-tour-for-sale.component";
 import { TourDiscountComponent } from "./components/tour-discount/tour-discount.component";
+import { TourListBookingComponent } from "./components/open-tour-for-sale/tour-list-booking/tour-list-booking.component";
 
 export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
   {
@@ -43,8 +43,11 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
           { path: '', redirectTo: 'tour-details', pathMatch: 'full' },
           { path: 'tour-details', component: TourDetailsComponent },
           { path: 'tour-day', component: TourDayComponent },
-          { path: 'update-tour-day', component: UpdateTourDayComponent },
         ],
+      },
+      {
+        path: 'tour-list-booking/:tourId',
+        component: TourListBookingComponent
       },
     ]
   },

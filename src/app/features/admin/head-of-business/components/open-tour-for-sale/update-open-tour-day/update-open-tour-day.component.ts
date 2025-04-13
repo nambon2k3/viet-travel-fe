@@ -127,7 +127,7 @@ export class UpdateOpenTourDayComponent {
     if (this.modalInstance) {
       this.modalInstance.hide();
     }
-    this.router.navigate(['/head-business/tour-list-booking']);
+    this.router.navigate([`/head-business/tour-list-booking/${this.tourId}`]);
   }
 
   // New method to show popup message

@@ -87,6 +87,10 @@ export class ServiceComponent {
     this.router.navigate([`/ceo/service/add/${this.providerId}`]);
   }
 
+  onBack(): void {
+    this.router.navigate([`/ceo/service-provider/${this.providerId}/edit`]);
+  }
+
   onSearch(filters: any): void {
     this.searchQuery = filters.keyword || '';
     this.statusFilter = filters.status || '';

@@ -106,7 +106,7 @@ export class CreateOpenTourDayComponent {
   openModal(date: string, tourName: string) {
     this.selectedDate = date;
     this.tourName = tourName;
-    this.getEndDate();
+    this.onSelectedDateChange(date);
     this.getTourPax();
     if (this.modalInstance) {
       this.modalInstance.show();
