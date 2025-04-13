@@ -88,8 +88,8 @@ export class AddFlightComponent implements AfterViewInit {
   flights = signal<any[]>([]);
 
   constructor(
-    private fb: FormBuilder,
     private ssrService: SsrService,
+    private fb: FormBuilder,
     private tourDiscountService: TourDiscountService
   ) {
     this.initializeForm();
@@ -127,7 +127,7 @@ export class AddFlightComponent implements AfterViewInit {
         this.fb.group({
           paxId: [pax.id],
           paxRange: [pax.paxRange],
-          sellingPrice: [pax.sellingPrice || 0]
+          sellingPrice: [0]
         })
       );
     });
@@ -158,7 +158,6 @@ export class AddFlightComponent implements AfterViewInit {
 
   fetchFlights() {
     const providerId = this.addFlightForm.get('selectedProvider')?.value;
-    console.log('Selected Provider ID:', providerId);
     if (providerId) {
       this.tourDiscountService.getFlightServices(this.tourId, providerId).subscribe({
         next: (response: any) => {
@@ -166,7 +165,8 @@ export class AddFlightComponent implements AfterViewInit {
             const mappedFlights = response.data.availableServices.map((service: any) => ({
               id: service.id,
               name: service.name,
-              nettPrice: service.nettPrice
+              nettPrice: service.nettPrice,
+              sellingPrice: service.sellingPrice
             }));
             this.flights.set(mappedFlights);
           }
@@ -190,7 +190,8 @@ export class AddFlightComponent implements AfterViewInit {
               selectedLocation: flight.locationId,
               selectedProvider: flight.serviceProviderId,
               selectedFlight: flight.id,
-              netPrice: flight.nettPrice
+              netPrice: flight.nettPrice,
+              sellingPrice: flight.sellingPrice
             });
 
             const paxPricesArray = this.paxPrices;
@@ -200,12 +201,11 @@ export class AddFlightComponent implements AfterViewInit {
                 this.fb.group({
                   paxId: [pax.paxId],
                   paxRange: [pax.paxRange],
-                  sellingPrice: [pax.sellingPrice || 0]
+                  sellingPrice: [pax.sellingPrice]
                 })
               );
             });
 
-            this.fetchServiceProviders();
             this.fetchFlights();
           }
         },
@@ -219,17 +219,25 @@ export class AddFlightComponent implements AfterViewInit {
   }
 
   onProviderChange() {
-    this.addFlightForm.patchValue({ selectedFlight: null });
+    this.addFlightForm.patchValue({ selectedFlight: null, netPrice: 0 });
     this.flights.set([]);
     this.fetchFlights();
   }
 
   onFlightChange() {
     const selectedFlightId = this.addFlightForm.get('selectedFlight')?.value;
-    const selectedFlight = this.flights().find(h => h.id === selectedFlightId);
+    const selectedFlight = this.flights().find(t => t.id === selectedFlightId);
+
     if (selectedFlight) {
       this.addFlightForm.patchValue({
         netPrice: selectedFlight.nettPrice
+      });
+
+      const paxPricesArray = this.paxPrices;
+      paxPricesArray.controls.forEach(control => {
+        control.patchValue({
+          sellingPrice: selectedFlight.sellingPrice || 0
+        });
       });
     }
   }
@@ -290,6 +298,12 @@ export class AddFlightComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.flightAdded.emit({ flight: flightData, isUpdate: false });
+
+          // Reset toàn bộ form
+          this.addFlightForm.reset();
+          this.initPaxPrices();
+          this.providers.set([]);
+          this.flights.set([]);
           this.modal?.hide();
         }
       },
@@ -315,6 +329,18 @@ export class AddFlightComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.flightAdded.emit({ flight: flightData, isUpdate: true });
+
+          // Reset toàn bộ form
+          this.addFlightForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedFlight: null,
+            netPrice: 0
+          });
+          this.initPaxPrices();
+          this.providers.set([]);
+          this.flights.set([]);
           this.modal?.hide();
         }
       },
@@ -325,6 +351,7 @@ export class AddFlightComponent implements AfterViewInit {
   }
 
   showModal() {
+    this.fetchFlightDetails();
     this.modal?.show();
   }
 

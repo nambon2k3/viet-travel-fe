@@ -56,14 +56,21 @@ export class UpdateServiceComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const today = new Date();
+    const nextYear = new Date(today);
+    nextYear.setFullYear(today.getFullYear() + 1);
+
+    // Format date thành chuỗi yyyy-MM-dd
+    const formatDate = (date: Date): string => date.toISOString().split('T')[0];
+
     this.serviceForm = this.fb.group({
       id: [null],
       name: [null, Validators.required],
       nettPrice: [null, [Validators.required, Validators.min(0)]],
       sellingPrice: [null, [Validators.required, Validators.min(0)]],
       imageUrl: [null],
-      startDate: [null, Validators.required],
-      endDate: [null, Validators.required],
+      startDate: [formatDate(today), Validators.required],
+      endDate: [formatDate(nextYear), Validators.required],
       deleted: [false],
       categoryId: [null, Validators.required],
       categoryName: [null],

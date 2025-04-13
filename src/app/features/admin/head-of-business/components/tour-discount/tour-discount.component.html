@@ -51,7 +51,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="5"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-1/3': transports.length === 0, 'w-full': transports.length > 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': hotels.length > 0, 'w-full': hotels.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -125,7 +125,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="4"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-1/3': transports.length === 0, 'w-full': transports.length > 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': transports.length > 0, 'w-full': transports.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -199,7 +199,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="5"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-1/3': transports.length === 0, 'w-full': transports.length > 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': restaurants.length > 0, 'w-full': restaurants.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -263,7 +263,7 @@
     <table class="w-full border border-gray-300 rounded-lg">
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
-          <th class="p-2 text-center min-w-[90px]">Ngày</th>
+          <th class="p-2 text-center">Ngày</th>
           <th class="p-2 text-left min-w-[150px]">Tên hoạt động</th>
           <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
           <th class="p-2 text-center min-w-[100px]">Giá Net</th>
@@ -272,7 +272,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="4"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-1/3': transports.length === 0, 'w-full': transports.length > 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': activities.length > 0, 'w-full': activities.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -335,8 +335,8 @@
     <table class="w-full border border-gray-300 rounded-lg">
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
-          <th class="p-2 text-center min-w-[90px]">Ngày</th>
-          <th class="p-2 text-left min-w-[150px]">Tên hoạt động</th>
+          <th class="p-2 text-center">Ngày</th>
+          <th class="p-2 text-left min-w-[180px]">Tên hoạt động</th>
           <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
           <th class="p-2 text-center min-w-[100px]">Giá Net</th>
           <th class="p-2 text-center min-w-[250px]">Giá vé</th>
@@ -344,7 +344,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="4"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-1/3': transports.length === 0, 'w-full': transports.length > 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': flights.length > 0, 'w-full': flights.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>

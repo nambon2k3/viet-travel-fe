@@ -127,7 +127,7 @@ export class AddActivityComponent implements AfterViewInit {
         this.fb.group({
           paxId: [pax.id],
           paxRange: [pax.paxRange],
-          sellingPrice: [pax.sellingPrice || 0]
+          sellingPrice: [0]
         })
       );
     });
@@ -169,7 +169,8 @@ export class AddActivityComponent implements AfterViewInit {
             const mappedActivitys = response.data.availableServices.map((service: any) => ({
               id: service.id,
               name: service.name,
-              nettPrice: service.nettPrice
+              nettPrice: service.nettPrice,
+              sellingPrice: service.sellingPrice
             }));
             this.activitys.set(mappedActivitys);
           }
@@ -193,7 +194,8 @@ export class AddActivityComponent implements AfterViewInit {
               selectedLocation: activity.locationId,
               selectedProvider: activity.serviceProviderId,
               selectedActivity: activity.id,
-              netPrice: activity.nettPrice
+              netPrice: activity.nettPrice,
+              sellingPrice: activity.sellingPrice
             });
 
             const paxPricesArray = this.paxPrices;
@@ -203,7 +205,7 @@ export class AddActivityComponent implements AfterViewInit {
                 this.fb.group({
                   paxId: [pax.paxId],
                   paxRange: [pax.paxRange],
-                  sellingPrice: [pax.sellingPrice || 0]
+                  sellingPrice: [pax.sellingPrice]
                 })
               );
             });
@@ -222,24 +224,32 @@ export class AddActivityComponent implements AfterViewInit {
   }
 
   onLocationChange() {
-    this.addActivityForm.patchValue({ selectedProvider: null, selectedActivity: null });
+    this.addActivityForm.patchValue({ selectedProvider: null, selectedActivity: null, netPrice: 0  });
     this.providers.set([]);
     this.activitys.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
-    this.addActivityForm.patchValue({ selectedActivity: null });
+    this.addActivityForm.patchValue({ selectedActivity: null, netPrice: 0  });
     this.activitys.set([]);
     this.fetchActivitys();
   }
 
   onActivityChange() {
     const selectedActivityId = this.addActivityForm.get('selectedActivity')?.value;
-    const selectedActivity = this.activitys().find(h => h.id === selectedActivityId);
+    const selectedActivity = this.activitys().find(t => t.id === selectedActivityId);
+
     if (selectedActivity) {
       this.addActivityForm.patchValue({
         netPrice: selectedActivity.nettPrice
+      });
+
+      const paxPricesArray = this.paxPrices;
+      paxPricesArray.controls.forEach(control => {
+        control.patchValue({
+          sellingPrice: selectedActivity.sellingPrice || 0
+        });
       });
     }
   }
@@ -295,11 +305,17 @@ export class AddActivityComponent implements AfterViewInit {
         return acc;
       }, {})
     };
-  
+
     this.tourDiscountService.addService(this.tourId, payload).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
           this.activityAdded.emit({ activity: activityData, isUpdate: false });
+
+          // Reset toàn bộ form
+          this.addActivityForm.reset();
+          this.initPaxPrices();
+          this.providers.set([]);
+          this.activitys.set([]);
           this.modal?.hide();
         }
       },
@@ -307,7 +323,7 @@ export class AddActivityComponent implements AfterViewInit {
         console.error('Error creating activity:', error);
       }
     });
-  }  
+  }
 
   updateActivity(activityData: Service) {
     const payload = {
@@ -325,6 +341,24 @@ export class AddActivityComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.activityAdded.emit({ activity: activityData, isUpdate: true });
+
+          // Reset toàn bộ form
+          this.addActivityForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedActivity: null,
+            netPrice: 0
+          });
+
+          // Reset paxPrices về giá trị mặc định từ this.prices
+          this.initPaxPrices();
+
+          // Reset providers và activitys
+          this.providers.set([]);
+          this.activitys.set([]);
+
+          // Ẩn modal
           this.modal?.hide();
         }
       },

@@ -41,4 +41,30 @@ export class TableRowComponent {
       }
     });
   }
+
+  getVietnameseStatus(status: string): string {
+    const statusMap: { [key: string]: string } = {
+      DRAFT: 'Bản nháp',
+      ONGOING: 'Đang diễn ra',
+      COMPLETED: 'Hoàn thành',
+      OPEN: 'Đang mở bán',
+      CANCELLED: 'Đã hủy',
+      FULLY_BOOKED: 'Đã đầy chỗ',
+      SETTLEMENT: 'Đã quyết toán',
+    };
+    return statusMap[status] || 'Chưa cập nhật';
+  }  
+
+  getStatusClass(status: string): string {
+    const statusClasses: { [key: string]: string } = {
+      DRAFT: 'text-yellow-700 bg-yellow-100',
+      ONGOING: 'text-blue-700 bg-blue-100',
+      COMPLETED: 'text-emerald-700 bg-emerald-100',
+      OPEN: 'text-green-700 bg-green-100',
+      CANCELLED: 'text-red-700 bg-red-100',
+      FULLY_BOOKED: 'text-purple-700 bg-purple-100',
+      SETTLEMENT: 'text-cyan-700 bg-cyan-100',
+    };
+    return statusClasses[status] || 'text-gray-500 bg-gray-100';
+  }  
 }

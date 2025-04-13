@@ -36,9 +36,13 @@ export class CreateTourPaxComponent {
     extraHotelCost: 0,
     nettPricePerPax: 0,
     sellingPrice: 0,
-    validFrom: new Date().toISOString().split('T')[0], // Default to current date (e.g., "2025-04-12")
-    validTo: new Date().toISOString().split('T')[0]     // Default to current date
-  };
+    validFrom: new Date().toISOString().split('T')[0],
+    validTo: (() => {
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+      return nextYear.toISOString().split('T')[0];
+    })()
+  };  
 
   showPopup: boolean = false;
   popupMessage: string = '';

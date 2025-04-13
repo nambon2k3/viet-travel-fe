@@ -88,8 +88,8 @@ export class AddRestaurantComponent implements AfterViewInit {
   restaurants = signal<any[]>([]);
 
   constructor(
-    private fb: FormBuilder,
     private ssrService: SsrService,
+    private fb: FormBuilder,
     private tourDiscountService: TourDiscountService
   ) {
     this.initializeForm();
@@ -127,7 +127,7 @@ export class AddRestaurantComponent implements AfterViewInit {
         this.fb.group({
           paxId: [pax.id],
           paxRange: [pax.paxRange],
-          sellingPrice: [pax.sellingPrice || 0]
+          sellingPrice: [0]
         })
       );
     });
@@ -169,7 +169,8 @@ export class AddRestaurantComponent implements AfterViewInit {
             const mappedRestaurants = response.data.availableServices.map((service: any) => ({
               id: service.id,
               name: service.name,
-              nettPrice: service.nettPrice
+              nettPrice: service.nettPrice,
+              sellingPrice: service.sellingPrice
             }));
             this.restaurants.set(mappedRestaurants);
           }
@@ -193,7 +194,8 @@ export class AddRestaurantComponent implements AfterViewInit {
               selectedLocation: restaurant.locationId,
               selectedProvider: restaurant.serviceProviderId,
               selectedRestaurant: restaurant.id,
-              netPrice: restaurant.nettPrice
+              netPrice: restaurant.nettPrice,
+              sellingPrice: restaurant.sellingPrice
             });
 
             const paxPricesArray = this.paxPrices;
@@ -203,7 +205,7 @@ export class AddRestaurantComponent implements AfterViewInit {
                 this.fb.group({
                   paxId: [pax.paxId],
                   paxRange: [pax.paxRange],
-                  sellingPrice: [pax.sellingPrice || 0]
+                  sellingPrice: [pax.sellingPrice]
                 })
               );
             });
@@ -222,24 +224,32 @@ export class AddRestaurantComponent implements AfterViewInit {
   }
 
   onLocationChange() {
-    this.addRestaurantForm.patchValue({ selectedProvider: null, selectedRestaurant: null });
+    this.addRestaurantForm.patchValue({ selectedProvider: null, selectedRestaurant: null, netPrice: 0  });
     this.providers.set([]);
     this.restaurants.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
-    this.addRestaurantForm.patchValue({ selectedRestaurant: null });
+    this.addRestaurantForm.patchValue({ selectedRestaurant: null, netPrice: 0  });
     this.restaurants.set([]);
     this.fetchRestaurants();
   }
 
   onRestaurantChange() {
     const selectedRestaurantId = this.addRestaurantForm.get('selectedRestaurant')?.value;
-    const selectedRestaurant = this.restaurants().find(h => h.id === selectedRestaurantId);
+    const selectedRestaurant = this.restaurants().find(t => t.id === selectedRestaurantId);
+
     if (selectedRestaurant) {
       this.addRestaurantForm.patchValue({
         netPrice: selectedRestaurant.nettPrice
+      });
+
+      const paxPricesArray = this.paxPrices;
+      paxPricesArray.controls.forEach(control => {
+        control.patchValue({
+          sellingPrice: selectedRestaurant.sellingPrice || 0
+        });
       });
     }
   }
@@ -276,8 +286,6 @@ export class AddRestaurantComponent implements AfterViewInit {
         paxPrices: paxPrices
       };
 
-      console.log('Restaurant Data:', restaurantData);
-
       if (this.serviceId) {
         this.updateRestaurant(restaurantData);
       } else {
@@ -297,11 +305,17 @@ export class AddRestaurantComponent implements AfterViewInit {
         return acc;
       }, {})
     };
-  
+
     this.tourDiscountService.addService(this.tourId, payload).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
           this.restaurantAdded.emit({ restaurant: restaurantData, isUpdate: false });
+
+          // Reset toàn bộ form
+          this.addRestaurantForm.reset();
+          this.initPaxPrices();
+          this.providers.set([]);
+          this.restaurants.set([]);
           this.modal?.hide();
         }
       },
@@ -309,7 +323,7 @@ export class AddRestaurantComponent implements AfterViewInit {
         console.error('Error creating restaurant:', error);
       }
     });
-  }  
+  }
 
   updateRestaurant(restaurantData: Service) {
     const payload = {
@@ -327,6 +341,24 @@ export class AddRestaurantComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.restaurantAdded.emit({ restaurant: restaurantData, isUpdate: true });
+
+          // Reset toàn bộ form
+          this.addRestaurantForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedRestaurant: null,
+            netPrice: 0
+          });
+
+          // Reset paxPrices về giá trị mặc định từ this.prices
+          this.initPaxPrices();
+
+          // Reset providers và restaurants
+          this.providers.set([]);
+          this.restaurants.set([]);
+
+          // Ẩn modal
           this.modal?.hide();
         }
       },
@@ -337,6 +369,7 @@ export class AddRestaurantComponent implements AfterViewInit {
   }
 
   showModal() {
+    this.fetchRestaurantDetails();
     this.modal?.show();
   }
 

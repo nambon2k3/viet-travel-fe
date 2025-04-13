@@ -26,8 +26,14 @@
   </td>
 
   <td>
-    {{ getVietnameseStatus(tour.tourStatus) }}
-  </td>  
+    <span
+      [ngClass]="getStatusClass(tour.tourStatus)"
+      class="px-2 py-1 rounded-[5px] text-xs font-medium "
+    >
+      {{ getVietnameseStatus(tour.tourStatus) }}
+    </span>
+  </td>
+   
 
   <td class="relative">
     <div>

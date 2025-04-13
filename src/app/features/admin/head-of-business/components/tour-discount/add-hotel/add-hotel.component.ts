@@ -88,8 +88,8 @@ export class AddHotelComponent implements AfterViewInit {
   hotels = signal<any[]>([]);
 
   constructor(
-    private fb: FormBuilder,
     private ssrService: SsrService,
+    private fb: FormBuilder,
     private tourDiscountService: TourDiscountService
   ) {
     this.initializeForm();
@@ -127,7 +127,7 @@ export class AddHotelComponent implements AfterViewInit {
         this.fb.group({
           paxId: [pax.id],
           paxRange: [pax.paxRange],
-          sellingPrice: [pax.sellingPrice || 0]
+          sellingPrice: [0]
         })
       );
     });
@@ -169,7 +169,8 @@ export class AddHotelComponent implements AfterViewInit {
             const mappedHotels = response.data.availableServices.map((service: any) => ({
               id: service.id,
               name: service.name,
-              nettPrice: service.nettPrice
+              nettPrice: service.nettPrice,
+              sellingPrice: service.sellingPrice
             }));
             this.hotels.set(mappedHotels);
           }
@@ -193,7 +194,8 @@ export class AddHotelComponent implements AfterViewInit {
               selectedLocation: hotel.locationId,
               selectedProvider: hotel.serviceProviderId,
               selectedHotel: hotel.id,
-              netPrice: hotel.nettPrice
+              netPrice: hotel.nettPrice,
+              sellingPrice: hotel.sellingPrice
             });
 
             const paxPricesArray = this.paxPrices;
@@ -203,7 +205,7 @@ export class AddHotelComponent implements AfterViewInit {
                 this.fb.group({
                   paxId: [pax.paxId],
                   paxRange: [pax.paxRange],
-                  sellingPrice: [pax.sellingPrice || 0]
+                  sellingPrice: [pax.sellingPrice]
                 })
               );
             });
@@ -222,24 +224,32 @@ export class AddHotelComponent implements AfterViewInit {
   }
 
   onLocationChange() {
-    this.addHotelForm.patchValue({ selectedProvider: null, selectedHotel: null });
+    this.addHotelForm.patchValue({ selectedProvider: null, selectedHotel: null, netPrice: 0  });
     this.providers.set([]);
     this.hotels.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
-    this.addHotelForm.patchValue({ selectedHotel: null });
+    this.addHotelForm.patchValue({ selectedHotel: null, netPrice: 0  });
     this.hotels.set([]);
     this.fetchHotels();
   }
 
   onHotelChange() {
     const selectedHotelId = this.addHotelForm.get('selectedHotel')?.value;
-    const selectedHotel = this.hotels().find(h => h.id === selectedHotelId);
+    const selectedHotel = this.hotels().find(t => t.id === selectedHotelId);
+
     if (selectedHotel) {
       this.addHotelForm.patchValue({
         netPrice: selectedHotel.nettPrice
+      });
+
+      const paxPricesArray = this.paxPrices;
+      paxPricesArray.controls.forEach(control => {
+        control.patchValue({
+          sellingPrice: selectedHotel.sellingPrice || 0
+        });
       });
     }
   }
@@ -295,11 +305,17 @@ export class AddHotelComponent implements AfterViewInit {
         return acc;
       }, {})
     };
-  
+
     this.tourDiscountService.addService(this.tourId, payload).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
           this.hotelAdded.emit({ hotel: hotelData, isUpdate: false });
+
+          // Reset toàn bộ form
+          this.addHotelForm.reset();
+          this.initPaxPrices();
+          this.providers.set([]);
+          this.hotels.set([]);
           this.modal?.hide();
         }
       },
@@ -307,7 +323,7 @@ export class AddHotelComponent implements AfterViewInit {
         console.error('Error creating hotel:', error);
       }
     });
-  }  
+  }
 
   updateHotel(hotelData: Service) {
     const payload = {
@@ -325,6 +341,24 @@ export class AddHotelComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.hotelAdded.emit({ hotel: hotelData, isUpdate: true });
+
+          // Reset toàn bộ form
+          this.addHotelForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedHotel: null,
+            netPrice: 0
+          });
+
+          // Reset paxPrices về giá trị mặc định từ this.prices
+          this.initPaxPrices();
+
+          // Reset providers và hotels
+          this.providers.set([]);
+          this.hotels.set([]);
+
+          // Ẩn modal
           this.modal?.hide();
         }
       },
@@ -335,6 +369,7 @@ export class AddHotelComponent implements AfterViewInit {
   }
 
   showModal() {
+    this.fetchHotelDetails();
     this.modal?.show();
   }
 
