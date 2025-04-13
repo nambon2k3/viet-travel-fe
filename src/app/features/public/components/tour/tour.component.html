@@ -136,6 +136,9 @@
                                 <span>📍</span> Địa điểm khởi hành: <strong
                                     class="text-green-700">{{tour.departLocation.name}}</strong>
                             </p>
+                            <span *ngFor="let tag of tour.tags" class="rounded-[30px] bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-800 inline-block mt-1">
+                                {{ tag.name }}
+                            </span>
                         </div>
 
                         <div class="flex items-center justify-between gap-14 ml-2">

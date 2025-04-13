@@ -140,30 +140,27 @@ export class AddFlightComponent implements AfterViewInit {
   }
 
   fetchServiceProviders() {
-    const locationId = this.addFlightForm.get('selectedLocation')?.value;
-    if (locationId) {
-      this.tourDiscountService.getServiceProviders(this.tourId, locationId, 'Flight').subscribe({
-        next: (response: any) => {
-          if (response.code === 200) {
-            const mappedProviders = response.data.serviceProviders.map((provider: any) => ({
-              id: provider.id,
-              name: provider.name
-            }));
-            this.providers.set(mappedProviders);
-          }
-        },
-        error: (error: any) => {
-          console.error('Error fetching service providers:', error);
+    this.tourDiscountService.getFlightServiceProviders(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          const mappedProviders = response.data.serviceProviders.map((provider: any) => ({
+            id: provider.id,
+            name: provider.name
+          }));
+          this.providers.set(mappedProviders);
         }
-      });
-    }
+      },
+      error: (error: any) => {
+        console.error('Error fetching service providers:', error);
+      }
+    });
   }
 
   fetchFlights() {
-    const locationId = this.addFlightForm.get('selectedLocation')?.value;
     const providerId = this.addFlightForm.get('selectedProvider')?.value;
-    if (locationId && providerId) {
-      this.tourDiscountService.getServices(this.tourId, locationId, providerId, 'Flight').subscribe({
+    console.log('Selected Provider ID:', providerId);
+    if (providerId) {
+      this.tourDiscountService.getFlightServices(this.tourId, providerId).subscribe({
         next: (response: any) => {
           if (response.code === 200) {
             const mappedFlights = response.data.availableServices.map((service: any) => ({
@@ -219,13 +216,6 @@ export class AddFlightComponent implements AfterViewInit {
     } else {
       this.initPaxPrices();
     }
-  }
-
-  onLocationChange() {
-    this.addFlightForm.patchValue({ selectedProvider: null, selectedFlight: null });
-    this.providers.set([]);
-    this.flights.set([]);
-    this.fetchServiceProviders();
   }
 
   onProviderChange() {
@@ -295,7 +285,7 @@ export class AddFlightComponent implements AfterViewInit {
         return acc;
       }, {})
     };
-  
+
     this.tourDiscountService.addService(this.tourId, payload).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
@@ -307,7 +297,7 @@ export class AddFlightComponent implements AfterViewInit {
         console.error('Error creating flight:', error);
       }
     });
-  }  
+  }
 
   updateFlight(flightData: Service) {
     const payload = {

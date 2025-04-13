@@ -93,6 +93,7 @@ export interface TourDay {
   id: number;
   title: string;
   dayNumber: number;
+  deleted: boolean;
   content: string;
   mealPlan: string;
   serviceCategories: string[];

@@ -362,7 +362,8 @@ export class TourDiscountComponent implements OnInit {
     if (this.addFlightModal) {
       this.addFlightModal.serviceId = serviceId || null;
       this.addFlightModal.day = dayNumber || null;
-      this.addFlightModal.fetchFlights();
+      this.addFlightModal.fetchServiceProviders();
+      this.addFlightModal.fetchFlightDetails();
       this.addFlightModal.showModal();
     }
   }
@@ -425,7 +426,7 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.hotels.push(hotel);
     }
-    window.location.reload();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật khách sạn thành công!', true);
   }
 
@@ -438,7 +439,7 @@ export class TourDiscountComponent implements OnInit {
           this.calculateTotalNetPrice();
           this.calculateTotalPrices();
           this.calculateFinalTourPrices();
-          window.location.reload();
+          this.reInitFlowbite();
           this.showPopupMessage('Xóa khách sạn thành công!', true);
         } else {
           this.showPopupMessage(response.message || 'Lỗi khi xóa khách sạn.', false);
@@ -460,7 +461,7 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.flights.push(flight);
     }
-    window.location.reload();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật vé máy bay thành công!', true);
   }
 
@@ -473,7 +474,7 @@ export class TourDiscountComponent implements OnInit {
           this.calculateTotalNetPrice();
           this.calculateTotalPrices();
           this.calculateFinalTourPrices();
-          window.location.reload();
+          this.reInitFlowbite();
           this.showPopupMessage('Xóa vé máy bay thành công!', true);
         } else {
           this.showPopupMessage(response.message || 'Lỗi khi xóa vé máy bay.', false);
@@ -495,7 +496,7 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.transports.push(transport);
     }
-    window.location.reload();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật phương tiện thành công!', true);
   }
 
@@ -508,7 +509,7 @@ export class TourDiscountComponent implements OnInit {
           this.calculateTotalNetPrice();
           this.calculateTotalPrices();
           this.calculateFinalTourPrices();
-          window.location.reload();
+          this.reInitFlowbite();
           this.showPopupMessage('Xóa phương tiện thành công!', true);
         } else {
           this.showPopupMessage(response.message || 'Lỗi khi xóa phương tiện.', false);
@@ -530,7 +531,7 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.restaurants.push(restaurant);
     }
-    window.location.reload();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật nhà hàng thành công!', true);
   }
 
@@ -543,7 +544,7 @@ export class TourDiscountComponent implements OnInit {
           this.calculateTotalNetPrice();
           this.calculateTotalPrices();
           this.calculateFinalTourPrices();
-          window.location.reload();
+          this.reInitFlowbite();
           this.showPopupMessage('Xóa nhà hàng thành công!', true);
         } else {
           this.showPopupMessage(response.message || 'Lỗi khi xóa nhà hàng.', false);
@@ -565,7 +566,7 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.activities.push(activity);
     }
-    window.location.reload();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật hoạt động thành công!', true);
   }
 
@@ -578,7 +579,7 @@ export class TourDiscountComponent implements OnInit {
           this.calculateTotalNetPrice();
           this.calculateTotalPrices();
           this.calculateFinalTourPrices();
-          window.location.reload();
+          this.reInitFlowbite();
           this.showPopupMessage('Xóa hoạt động thành công!', true);
         } else {
           this.showPopupMessage(response.message || 'Lỗi khi xóa hoạt động.', false);

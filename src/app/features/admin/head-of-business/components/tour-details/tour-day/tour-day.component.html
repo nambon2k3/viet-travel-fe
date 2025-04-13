@@ -30,9 +30,16 @@
               class="px-4 py-2 mr-2 bg-green-700 hover:bg-green-800 text-white rounded">
               Cập Nhật
             </button>
-            <button (click)="onDelete(day.id)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">
-              Xóa
-            </button>
+            @if(!day.deleted) {
+              <button (click)="onDelete(day.id)" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded">
+                Xóa
+              </button>
+            } 
+            @else {
+              <button (click)="onRecover(day.id)" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+                Khôi Phục
+              </button>
+            }
           </td>
         </tr>
         <tr *ngIf="tourDays.length === 0">

@@ -276,6 +276,8 @@ export class AddRestaurantComponent implements AfterViewInit {
         paxPrices: paxPrices
       };
 
+      console.log('Restaurant Data:', restaurantData);
+
       if (this.serviceId) {
         this.updateRestaurant(restaurantData);
       } else {

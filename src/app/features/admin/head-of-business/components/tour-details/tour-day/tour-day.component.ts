@@ -111,6 +111,26 @@ export class TourDayComponent implements OnInit {
     }
   }
 
+  onRecover(id: any): void {
+    this.isLoading = true;
+    if (this.tourId) {
+      this.tourService.changeTourDayStatus(this.tourId, id, false).subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          if (response.code === 200) {
+            window.location.reload();
+          } else {
+            console.error('Lỗi: ', response.message);
+          }
+        },
+        error: (err: any) => {
+          this.isLoading = false;
+          console.error('Lỗi: ', err);
+        },
+      });
+    }
+  }
+
   // Getter để lấy danh sách dịch vụ đã dịch cho một ngày cụ thể
   getTranslatedServices(dayId: number): string[] {
     return this.translatedTourDays[dayId] || [];
