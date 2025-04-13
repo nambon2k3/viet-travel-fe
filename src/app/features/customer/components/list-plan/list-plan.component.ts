@@ -4,10 +4,11 @@ import { UserStorageService } from '../../../../core/services/user-storage/user-
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TableFooterComponent } from '../../../../shared/components/table/table-footer/table-footer.component';
+import { SpinnerComponent } from '../../../../shared/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-list-plan',
-  imports: [RouterModule, CommonModule, TableFooterComponent],
+  imports: [RouterModule, CommonModule, TableFooterComponent, SpinnerComponent],
   templateUrl: './list-plan.component.html',
   styleUrl: './list-plan.component.css'
 })
@@ -79,6 +80,7 @@ export class ListPlanComponent {
       },
       error: (error) => {
         console.error(error);
+        this.isLoading = false;
       }
     });
   }

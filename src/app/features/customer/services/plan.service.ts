@@ -38,4 +38,10 @@ export class PlanService {
     return this.http.get(`${environment.apiUrl}public/plans/list`, { params });
 }
 
+
+getPlanById(planId: number): Observable<any> {
+  return this.http.get<any>(`${environment.apiUrl}public/plans/details/${planId}`);
+
+}
+
 }

@@ -1,18 +1,20 @@
 <div class="max-w-6xl mx-auto px-4 py-8 pt-28">
-    <h1 class="text-3xl font-bold mb-6">My trips</h1>
+
+    <app-spinner [isLoading]="isLoading"></app-spinner>
+    <h1 class="text-3xl font-bold mb-6">Kế hoạch của tôi</h1>
 
     <!-- Buttons -->
     <div class="flex flex-col sm:flex-row gap-4 mb-6">
         <button  [routerLink]="['/plan']" type="button"
             class="flex-1 border border-gray-300 rounded-lg py-3 px-4 text-sm font-medium flex items-center justify-center hover:bg-gray-100">
             <span class="text-purple-600 text-lg mr-2">📍</span>
-            Build a trip with AI
+            Xây dựng kế hoạch với AI
         </button>
     </div>
 
     <!-- Sort dropdown -->
     <div class="flex justify-end text-sm text-gray-500 mb-4">
-        Sort by: <span class="ml-1 font-medium text-black">Trip start date</span>
+        Thứ tự: <span class="ml-1 font-medium text-black">Ngày xuất phát</span>
         <svg class="w-4 h-4 ml-1 mt-[2px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
@@ -34,7 +36,7 @@
                     <span> <strong>Loại hình:</strong> {{plan?.content?.plan_category}}</span>
                 </div>
                 <div class="text-sm text-right text-gray-500 flex justify-end items-center gap-4 mb-2 mt-5 w-full hover:cuisor-pointer">
-                    <span class="flex justify-center gap-4 hover:text-gray-800  cursor-pointer"> Xem chi tiết → </span>
+                    <span  [routerLink]="['/customer/plan-detail', plan?.id]"    class="flex justify-center gap-4 hover:text-gray-800  cursor-pointer"> Xem chi tiết → </span>
                 </div>
             </div>
         </div>

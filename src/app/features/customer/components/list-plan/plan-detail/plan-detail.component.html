@@ -1,0 +1,134 @@
+<div class="max-w-7xl bg-white rounded-lg shadow-md m-auto pt-24">
+    <!-- Header Image with Overlay Text -->
+    <div class="relative h-80">
+        <img [src]="plan?.content?.thumbnail_image_url" alt="Hanoi" class="w-full h-full object-cover rounded-t-lg">
+        <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-between p-4">
+            <div class="flex justify-end space-x-2">
+
+            </div>
+            <div class="text-white">
+                <h1 class="text-2xl font-bold">
+                    {{plan?.content?.title}}
+                </h1>
+                <p class="text-sm mt-1 flex items-center space-x-2">
+                    <span>📅 {{startDate}} → {{endDate}}</span>
+                    <span>📍 {{plan?.content?.location}}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date Selector -->
+    <div class="flex space-x-3 px-4 mt-5">
+        @for(day of plan?.content?.days; track $index) {
+        <button 
+        type="button"
+        (click)="onSelectDay(day)"
+
+        [ngClass]="{'bg-emerald-500 text-white hover:bg-emerald-700': selectedDay?.date === day.date, 'text-gray-700': selectedDay?.date !== day.date}"
+
+        class="px-4 py-1 rounded-full border border-emerald-300 hover:bg-gray-100">
+            {{day.date}}
+        </button>
+        }
+    </div>
+
+    <!-- Trip Summary and Timeline -->
+    <div class="px-4 mt-6">
+        <div class="flex justify-between items-center">
+            <p class="text-sm text-gray-500">
+                {{plan?.content?.plan_category}}
+            </p>
+            <button class="text-sm text-black font-medium">Edit</button>
+        </div>
+
+        <p class="text-gray-600 mt-2">
+            {{plan?.content?.description}}
+          </p>
+
+          <h2 class="mt-4 text-lg font-semibold">
+            Nội dung ngày đi
+        </h2>
+
+        <p class="text-gray-600 mt-2">
+            {{selectedDay?.long_description}}
+          </p>
+
+        <h2 class="mt-4 text-lg font-semibold">
+            Nội dung chuyến đi
+        </h2>
+
+        <!-- Timeline Section -->
+        <div class="relative border-l border-gray-300 ml-4 mt-6 space-y-8">
+
+
+
+            <ol class="relative text-gray-500 border-s border-gray-200 dark:border-gray-700 dark:text-gray-400 pb-5">
+
+                <li *ngFor="let restaurant of selectedDay?.restaurants" class="mb-10 ms-6">
+                    <span
+                        class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
+
+                    </span>
+                    <div class="relative pl-6">
+                        <div class="bg-white rounded-lg shadow p-4 flex">
+                            <img [src]="restaurant?.image_url" alt="image"
+                                class="w-24 h-20 object-cover rounded-md mr-4" />
+                            <div>
+                                <h3 class="text-md font-bold">
+                                    {{restaurant?.name}}
+                                </h3>
+                                <p class="text-sm text-gray-600">🍜 Nhà Hàng · {{restaurant?.address}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="mb-10 ms-6">
+                    <span
+                        class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
+
+                    </span>
+                    <div class="relative pl-6">
+                        <div class="bg-white rounded-lg shadow p-4 flex">
+                            <img [src]="selectedDay?.hotel?.image_url" alt="image"
+                                class="w-24 h-20 object-cover rounded-md mr-4" />
+                            <div>
+                                <h3 class="text-md font-bold">
+                                    {{selectedDay?.hotel?.name}}
+                                </h3>
+                                <p class="text-sm text-gray-600">🏩 Nhà Hàng · {{selectedDay?.hotel?.address}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li *ngFor="let activity of selectedDay?.activities; let last = last" class="mb-5 ms-6" [class]="last ? '!mb-0' : ''">
+                    <span
+                        class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
+
+                    </span>
+                    <div class="relative pl-6">
+                        <div class="bg-white rounded-lg shadow p-4 flex">
+                            <img [src]="activity.imageUrl" alt="image" class="w-24 h-20 object-cover rounded-md mr-4" />
+                            <div>
+                                <h3 class="text-md font-bold">
+                                    {{activity?.title}}
+                                </h3>
+                                <p class="text-sm text-gray-600">🏖️ {{activity?.category}} · {{activity?.duration}}</p>
+                                <p class="max-w-[80%]">
+                                    <span class="text-sm text-gray-500 italic">{{activity?.content}}</span>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </li>
+            </ol>
+
+           
+
+        </div>
+    </div>
+</div>
+
+<app-footer></app-footer>
