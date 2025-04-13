@@ -31,12 +31,12 @@
       Đang xử lý
     </span>
     }
-    @if(refund?.transactionStatus === 'MISSING') {
+    @if(refund?.transactionStatus === 'CANCELLED') {
     <span class="bg-red-200 text-red-800 px-3 py-0.5 rounded text-xs">
-      Còn thiếu tiền
+      Đã hủy
     </span>
     }
-    @if(refund?.transactionStatus === 'COMPLETED') {
+    @if(refund?.transactionStatus === 'PAID') {
     <span class="bg-green-200 text-green-800 px-3 py-0.5 rounded text-xs">
       Hoàn thành
     </span>

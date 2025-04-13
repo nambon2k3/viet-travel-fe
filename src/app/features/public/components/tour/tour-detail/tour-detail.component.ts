@@ -157,7 +157,7 @@ export class TourDetailComponent implements AfterViewInit {
 
   navigateToDetails() {
     if (this.tourDetails && this.selectedSchedule) {
-      this.router.navigate(['/tour-booking']).then(() => {
+      this.router.navigate(['/tour-booking', this.tourDetails.id,this.selectedSchedule.scheduleId]).then(() => {
         this.viewportScroller.scrollToPosition([0, 0]);
       });
     }

@@ -119,12 +119,12 @@
                                     </span>
                                     }
 
-                                    @if(bookingService?.status === 'SUCCESS') {
+                                    @if(bookingService?.status === 'AVAILABLE') {
                                     <span
                                         class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
                                         <span>
-                                            Thành công
+                                            Đã xác thực
                                         </span>
                                     </span>
                                     }
@@ -174,14 +174,14 @@
                         <tr *ngFor="let key of statusKeys()" class="pb-4">
                             <td [class]="{
                                 'text-yellow-500': key === 'PENDING',
-                                'text-green-600': key === 'SUCCESS',
+                                'text-green-600': key === 'AVAILABLE',
                                 'text-red-500': key === 'REJECTED',
                                 'text-blue-500': key === 'CHECKING',
                                 'text-gray-500': key === 'NOT_ORDERED'
                               }" class="p-2 font-semibold">{{ statusLabels[key] }}</td>
                             <td [class]="{
                                 'text-yellow-600': key === 'PENDING',
-                                'text-green-600': key === 'SUCCESS',
+                                'text-green-600': key === 'AVAILABLE',
                                 'text-red-600': key === 'REJECTED',
                                 'text-blue-600': key === 'CHECKING',
                                 'text-gray-600': key === 'NOT_ORDERED'

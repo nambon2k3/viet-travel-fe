@@ -223,6 +223,8 @@ export class TourListBookingComponent implements AfterViewInit {
         console.log('Response', response);
         this.isLoading = false;
         this.triggerSuccess();
+
+        this.selectedSchedule.status = 'ONGOING'
       },
       error: (err: any) => {
         console.error('Failed to load blog:', err);

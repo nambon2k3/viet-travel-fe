@@ -37,6 +37,12 @@ export class BookingSettlementComponent implements AfterViewInit {
 
   selectedBookingCode: string | null = null;
 
+  createReceiptModal: Modal | null = null;
+  createPaymentModal: Modal | null = null;
+  createRefundModal: Modal | null = null;
+
+  paymentForm: FormGroup;
+  refundForm: FormGroup;
 
   constructor(
     private tourService: TourService,
@@ -56,6 +62,37 @@ export class BookingSettlementComponent implements AfterViewInit {
       createdAt: [{ value: '', disabled: true }],
       costAccount: this.fb.array([]) // Array chứa các dòng cost
     });
+
+    this.refundForm = this.fb.group({
+      bookingCode: ['', Validators.required],
+      receivedBy: ['', Validators.required],
+      paidBy: ['Viet Travel', Validators.required],
+      category: [{ value: 'RECEIPT', disabled: true }, Validators.required],
+      paymentMethod: ['CASH', Validators.required],
+      notes: ['Phiếu hoàn tiền cho khách'],
+      costAccounts: this.fb.array([]), // Initialize FormArray,
+    });
+
+    this.paymentForm = this.fb.group({
+      bookingCode: ['', Validators.required],
+      receivedBy: ['', Validators.required],
+      paidBy: ['Viet Travel', Validators.required],
+      category: ['PAYMENT', Validators.required],
+      paymentMethod: ['CASH', Validators.required],
+      notes: ['Phiếu chi tiền dịch vụ'],
+      costAccounts: this.fb.array([]), // Initialize FormArray,
+    });
+
+
+    this.receiptForm = this.fb.group({
+      bookingCode: ['', Validators.required],
+      receivedBy: ['Viet Travel', Validators.required],
+      paidBy: ['', Validators.required],
+      category: ['RECEIPT', Validators.required],
+      paymentMethod: ['CASH', Validators.required],
+      notes: ['Phiếu thu tiền của khách'],
+      costAccounts: this.fb.array([]), // Initialize FormArray,
+    });
   }
 
   ngAfterViewInit(): void {
@@ -63,6 +100,10 @@ export class BookingSettlementComponent implements AfterViewInit {
     if (modalElement) {
       this.transactionModal = new Modal(modalElement);
     }
+
+    this.createReceiptModal = new Modal(document.getElementById('create-receipt-modal'));
+    this.createPaymentModal = new Modal(document.getElementById('create-payment-modal'));
+    this.createRefundModal = new Modal(document.getElementById('create-refund-modal'));
   }
 
   deleteCostAccount(index: number) {
@@ -243,6 +284,20 @@ export class BookingSettlementComponent implements AfterViewInit {
         console.log('Refunds:', this.refunds);
         this.checkAllTransactionsCompleted();
         this.getTotalSeatsBookings();
+
+        this.receiptForm.patchValue({
+          bookingCode: this.tourScheduleSettlement?.bookings[0]?.bookingCode,
+          paidBy: this.tourScheduleSettlement?.bookings[0]?.customer?.fullName,
+        });
+
+        this.paymentForm.patchValue({
+          bookingCode: this.tourScheduleSettlement?.bookings[0]?.bookingCode,
+        });
+
+        this.refundForm.patchValue({
+          bookingCode: this.tourScheduleSettlement?.bookings[0]?.bookingCode,
+        });
+
         this.isLoading = false;
       },
       (error) => {
@@ -288,9 +343,9 @@ export class BookingSettlementComponent implements AfterViewInit {
 
       if (matchBooking) {
         booking.transactions.forEach((transaction: any) => {
-          if (transaction.category === 'RECEIPT') {
+          if (transaction.category === 'RECEIPT' || transaction.category === 'COLLECTION') {
             this.receipts.push(transaction);
-          } else if (transaction.category === 'PAYMENT') {
+          } else if (transaction.category === 'PAYMENT' || transaction.category === 'ADVANCED') {
             this.payments.push(transaction);
           } else if (transaction.category === 'REFUND') {
             this.refunds.push(transaction);
@@ -314,10 +369,14 @@ export class BookingSettlementComponent implements AfterViewInit {
     const allTransactionsCompleted: boolean = this.tourScheduleSettlement.bookings
       ?.every((booking: any) =>
         booking.transactions?.every(
-          (transaction: any) => transaction.transactionStatus === 'COMPLETED'
+          (transaction: any) => transaction.transactionStatus === 'PAID'
         )
       ) ?? false;
     this.allTransactionsCompleted = allTransactionsCompleted;
+  }
+
+  openPaymentModal() {
+    this.createPaymentModal?.show();
   }
 
 
@@ -349,6 +408,7 @@ export class BookingSettlementComponent implements AfterViewInit {
   }
 
 
+
   finishSettlement() {
     this.isLoading = true;
     this.tourService.finishSettlement(this.tourScheduleSettlement.id).subscribe(
@@ -356,6 +416,8 @@ export class BookingSettlementComponent implements AfterViewInit {
         console.log('Settlement finished successfully:', response);
         this.isLoading = false;
         // Handle success response
+        this.showFinishSettlement();
+
       },
       (error: any) => {
         console.error('Error finishing settlement:', error);
@@ -363,6 +425,295 @@ export class BookingSettlementComponent implements AfterViewInit {
         // Handle error response
       }
     );
+  }
+
+
+
+  success: boolean = false;
+  second: number = 2;
+
+
+  showFinishSettlement() {
+    this.success = true;
+    this.second = 2; // Set countdown to 3 seconds
+    const intervalId = setInterval(() => {
+      this.second--; // Decrease countdown
+      if (this.second === 0) {
+        clearInterval(intervalId); // Stop interval when reaching 0
+      }
+    }, 1000);
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.success = false;
+      this.router.navigate(['/accountant/list-tour']); // Navigate to the desired route
+    }, 2000);
+  }
+
+
+  goBack() {
+    this.router.navigate(['/accountant/list-tour']);
+  }
+
+
+
+  receiptForm: FormGroup;
+
+
+  //test
+  get costReceiptAccounts(): FormArray {
+    return this.receiptForm.get('costAccounts') as FormArray;
+  }
+
+
+  get costPaymentAccounts(): FormArray {
+    return this.paymentForm.get('costAccounts') as FormArray;
+  }
+
+  get costRefundAccounts(): FormArray {
+    return this.refundForm.get('costAccounts') as FormArray;
+  }
+
+
+  onPaymentBookingSelectChange(event: any) {
+    const value = (event.target as HTMLSelectElement).value;
+    const bookingCode = value || null;
+    const booking = this.getBookingByBookingCode(bookingCode!);
+    this.paymentForm.patchValue({
+      bookingCode: bookingCode,
+    });
+
+    console.log('Selected Booking Code:', booking);
+  }
+
+
+
+  openReceiptModal(): void {
+    this.createReceiptModal?.show();
+  }
+
+  getCurrentDate() {
+    return new Date();
+  }
+
+
+  addReceiptCostAccount() {
+
+    console.log('Add Receipt Cost Account');
+
+    const costAccountGroup = this.fb.group({
+      id: [null],
+      content: ['', Validators.required],
+      amount: [0, [Validators.required, Validators.min(0)]],
+      discount: [0],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      finalAmount: [0], // Initialize finalAmount with amount
+      status: ['PENDING']
+    });
+
+    // Listen for changes in 'amount' and update 'finalAmount'
+    costAccountGroup.get('amount')?.valueChanges.subscribe((newAmount) => {
+      costAccountGroup.get('finalAmount')?.setValue(newAmount, { emitEvent: false });
+    });
+
+    this.costReceiptAccounts.push(costAccountGroup);
+  }
+
+  deleteReceiptCostAccount(index: number) {
+    this.costReceiptAccounts.removeAt(index);
+  }
+
+  getReceiptTotalAmount(): number {
+    return this.costReceiptAccounts.value.reduce((sum: number, row: any) => sum + row.amount, 0);
+  }
+
+
+  getBookingByBookingCode(bookingCode: string): any {
+    const booking = this.tourScheduleSettlement.bookings.find((b: any) => b.bookingCode === bookingCode);
+    return booking || null;
+  }
+
+  onReceiptBookingSelectChange(event: any) {
+
+    const value = (event.target as HTMLSelectElement).value;
+    const bookingCode = value || null;
+    const booking = this.getBookingByBookingCode(bookingCode!);
+    this.receiptForm.patchValue({
+      bookingCode: bookingCode,
+      paidBy: booking?.customer?.fullName,
+    });
+
+    
+
+    console.log('Selected Booking Code:', booking);
+  }
+
+  showError: boolean = false;
+
+  triggerError() {
+    this.showError = true;
+
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
+  }
+
+
+  onReceiptCreate() {
+    if (this.receiptForm.valid) {
+      const formData = { ...this.receiptForm.value, totalAmount: this.getReceiptTotalAmount() };
+
+      console.log('Process Data: ', formData)
+
+      this.isLoading = true; // Start loading
+
+      this.transactionService.createTransaction(formData).subscribe({
+        next: (response: any) => {
+          const receipts = response.data;
+          console.log('RECEPITS', receipts);
+          this.getSettlementDetails(this.tourScheduleSettlement.id); // Refresh the settlement details
+          this.triggerSuccess(); // Show success message
+        },
+        error: (error) => {
+          console.log(error);
+          this.isLoading = false;
+          this.triggerError();
+          
+        }
+      })
+
+      this.createReceiptModal?.hide();
+
+
+    } else {
+      console.log('Invalid: ', this.receiptForm.value);
+      this.receiptForm.markAllAsTouched();
+    }
+  }
+
+
+  onPaymentCreate() {
+    if (this.receiptForm.valid) {
+      const formData = { ...this.receiptForm.value, totalAmount: this.getTotalAmount(), category: 'PAYMENT' };
+
+      console.log('Process Data: ', formData)
+
+      this.transactionService.createTransaction(formData).subscribe({
+        next: (response: any) => {
+          const payments = response.data;
+          console.log('PAYMENT', payments);
+          this.triggerSuccess();
+          this.getSettlementDetails(this.tourScheduleSettlement.id); // Refresh the settlement details
+        },
+        error: (error) => {
+          console.log(error);
+          this.isLoading = false;
+          this.triggerError();
+        }
+      })
+
+      this.createPaymentModal?.hide();
+
+
+    } else {
+      console.log('Invalid: ', this.receiptForm.value);
+      this.receiptForm.markAllAsTouched();
+    }
+  }
+
+
+
+  addCostPaymentAccount() {
+    const costAccountGroup = this.fb.group({
+      id: [null],
+      content: ['', Validators.required],
+      amount: [0, [Validators.required, Validators.min(0)]],
+      discount: [0],
+      quantity: [1],
+      finalAmount: [0], // Initialize finalAmount with amount
+      status: ['PENDING']
+    });
+
+    // Listen for changes in 'amount' and update 'finalAmount'
+    costAccountGroup.get('amount')?.valueChanges.subscribe((newAmount) => {
+      costAccountGroup.get('finalAmount')?.setValue(newAmount, { emitEvent: false });
+    });
+
+    this.costPaymentAccounts.push(costAccountGroup);
+  }
+
+
+  deleteCostPaymentAccount(index: number) {
+    this.costPaymentAccounts.removeAt(index);
+  }
+
+  getTotalPaymentAmount(): number {
+    return this.costPaymentAccounts.value.reduce((sum: number, row: any) => sum + row.amount * row.quantity, 0);
+  }
+
+
+  onRefundCreate() {
+
+  }
+
+  openRefundModal() {
+    this.createRefundModal?.show();
+  }
+
+
+  onRefundBookingSelectChange(event: any) {
+    const value = (event.target as HTMLSelectElement).value;
+    const bookingCode = value || null;
+    const booking = this.getBookingByBookingCode(bookingCode!);
+    this.refundForm.patchValue({
+      bookingCode: bookingCode,
+      paidBy: booking?.customer?.fullName,
+    });
+
+    console.log('Selected Booking Code:', booking);
+  }
+
+
+  getTotalRefundAmount(): number {
+    return this.costRefundAccounts.value.reduce((sum: number, row: any) => sum + (row.amount * row.quantity) * (100 - row.discount)/100.0, 0);
+  }
+
+  deleteRefundCostAccount(index: number) {
+    this.costRefundAccounts.removeAt(index);
+  }
+
+  addRefundCostAccount() {
+    const costAccountGroup = this.fb.group({
+      id: [null],
+      content: ['', Validators.required],
+      amount: [0, [Validators.required, Validators.min(0)]],
+      discount: [0, [Validators.required, Validators.min(0)]],
+      quantity: [1, [Validators.required, Validators.min(1)]],
+      finalAmount: [0,  [Validators.required, Validators.min(0)]], // Initialize finalAmount with amount
+      status: ['PENDING']
+    });
+
+    // Listen for changes in 'amount' and update 'finalAmount'
+    costAccountGroup.get('amount')?.valueChanges.subscribe((newAmount) => {
+
+      const quantity = costAccountGroup.get('quantity')?.value || 1;
+      const discount = costAccountGroup.get('discount')?.value || 0;
+
+      costAccountGroup.get('finalAmount')?.setValue((newAmount! * quantity) * (100 - discount)/100.0, { emitEvent: false });
+    });
+
+
+    costAccountGroup.get('discount')?.valueChanges.subscribe((newDiscount) => {
+
+      const quantity = costAccountGroup.get('quantity')?.value || 1;
+      const amount = costAccountGroup.get('amount')?.value || 0;
+
+      costAccountGroup.get('finalAmount')?.setValue((amount! * quantity) * (100 - newDiscount!)/100.0, { emitEvent: false });
+    });
+
+    this.costRefundAccounts.push(costAccountGroup);
   }
 
 }

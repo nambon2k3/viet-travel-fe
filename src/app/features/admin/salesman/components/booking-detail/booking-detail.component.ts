@@ -483,6 +483,7 @@ export class BookingDetailComponent implements AfterViewInit {
         next: (response) => {
           console.log('Email sent:', response);
           this.isLoading = false; // Reset loading state
+          this.successMessage = 'Gửi email thành công!';
           this.triggerSuccess();
         },
         error: (error) => {

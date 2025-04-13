@@ -6,10 +6,12 @@ import { UserStorageService } from '../../../../core/services/user-storage/user-
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
+import { TourDetailService } from '../../services/tour-detail.service';
+import { SpinnerComponent } from "../../../../shared/components/spinner/spinner.component";
 
 @Component({
   selector: 'app-tour-booking',
-  imports: [CommonModule, ReactiveFormsModule, CurrencyVndPipe],
+  imports: [CommonModule, ReactiveFormsModule, CurrencyVndPipe, SpinnerComponent],
   templateUrl: './tour-booking.component.html',
   styleUrl: './tour-booking.component.css',
   providers: [DatePipe]
@@ -38,7 +40,8 @@ export class TourBookingComponent implements OnInit{
     private bookingInforService: BookingInfoService,
     private fb: FormBuilder,
     private userStorageService: UserStorageService,
-    private router: Router
+    private router: Router,
+    private tourDetailService: TourDetailService,
   ) {
 
     this.bookingForm = this.fb.group({
@@ -155,21 +158,26 @@ export class TourBookingComponent implements OnInit{
     return this.bookingForm.get('children') as FormArray;
   }
 
+  scheduleId: number = 0;
+  tourId: number = 0;
+
   ngOnInit(): void {
 
-    this.tourDetails = this.bookingInforService.getTourDetails();
-    this.tourSchedule = this.bookingInforService.getTourSchedule();
+    const tourId = Number(this.router.url.split('/')[2]);
+    const scheduleId = Number(this.router.url.split('/')[3]);
 
-    this.childrenPrice = this.tourSchedule?.sellingPrice! * 0.75;
+    console.log(this.router.url.split('/'))
 
-    this.calculateTotal();
+    this.tourId = tourId;
+    this.scheduleId = scheduleId;
 
-    this.bookingForm.patchValue({
-      tourId: this.tourDetails?.id,
-      scheduleId: this.tourSchedule?.scheduleId,
-      sellingPrice: this.tourSchedule?.sellingPrice,
-      extraHotelCost: this.tourSchedule?.extraHotelCost
-    });
+    this.getTourDetails(tourId);
+
+    console.log(this.tourDetails)
+
+    
+
+    
 
     this.getUserData();
 
@@ -179,12 +187,38 @@ export class TourBookingComponent implements OnInit{
 
   }
 
+  getTourDetails(tourId: number) {
+    this.isLoading = true;
+    this.tourDetailService.getTourDetails(tourId).subscribe({
+      next: (response) => {
+        this.tourDetails = response.data;
+        this.tourSchedule = this.tourDetails?.tourSchedules.find(schedule => schedule.scheduleId === this.scheduleId);
+        console.log(this.tourDetails)
+        this.childrenPrice = this.tourSchedule?.sellingPrice! * 0.75;
+
+        this.calculateTotal();
+
+        this.bookingForm.patchValue({
+          tourId: this.tourDetails?.id,
+          scheduleId: this.tourSchedule?.scheduleId,
+          sellingPrice: this.tourSchedule?.sellingPrice,
+          extraHotelCost: this.tourSchedule?.extraHotelCost
+        });
+
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Failed to load tour details:', error);
+        this.isLoading = false;
+      }
+    });
+  }
+
   getUserData() {
     const cookie = this.userStorageService.getUser();
     
     this.bookingInforService.getUserInformation(cookie.userId).subscribe({
       next: (response) => {
-        this.isLoading = false
         this.userInformation = response.data;
         this.bookingForm.patchValue({
           userId: cookie.userId,

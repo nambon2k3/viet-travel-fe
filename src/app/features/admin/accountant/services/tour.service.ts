@@ -41,8 +41,8 @@ export class TourService {
   } 
 
 
-  finishSettlement(id: number): Observable<any> {
-    return this.http.post(`${environment.apiUrl}accountant/settlements/finish`, { tourScheduleId: id });
+  finishSettlement(tourScheduleId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}accountant/settlements/finish`, tourScheduleId);
   }
 
 }

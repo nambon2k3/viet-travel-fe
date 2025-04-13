@@ -12,6 +12,7 @@ import { BookingService } from '../../../services/booking.service';
 })
 export class TableRowComponent {
   @Input() tourBookingDetail: any = <any>{};
+  @Input() index: any = <any>{};
   @Output() bookingTaken = new EventEmitter<number>();
 
   ngOnInit(): void {

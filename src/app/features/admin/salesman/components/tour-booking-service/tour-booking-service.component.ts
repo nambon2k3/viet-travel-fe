@@ -165,7 +165,7 @@ export class TourBookingServiceComponent implements AfterViewInit{
     REJECTED: 0,
     NOT_ORDERED: 0,
     CANCELLED: 0,
-    SUCCESS: 0,
+    AVAILABLE: 0,
     CHECKING: 0
   };
 
@@ -175,7 +175,7 @@ export class TourBookingServiceComponent implements AfterViewInit{
     REJECTED: 'Bị từ chối',
     NOT_ORDERED: 'Chưa đặt dịch vụ',
     CANCELLED: 'Đã hủy',
-    SUCCESS: 'Thành công',
+    AVAILABLE: 'Đã xác thực',
     CHECKING: 'Chờ xác thực'
   };
 
@@ -196,7 +196,7 @@ export class TourBookingServiceComponent implements AfterViewInit{
       REJECTED: 0,
       NOT_ORDERED: 0,
       CANCELLED: 0,
-      SUCCESS: 0,
+      AVAILABLE: 0,
       CHECKING: 0
     };
     this.dayServices.forEach((dayService: any) => {
