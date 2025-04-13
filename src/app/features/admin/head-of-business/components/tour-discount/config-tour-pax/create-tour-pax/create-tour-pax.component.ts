@@ -10,8 +10,8 @@ interface TourPax {
   extraHotelCost: number;
   nettPricePerPax: number;
   sellingPrice: number;
-  validFrom: string;
-  validTo: string;
+  validFrom: string; // Date as string (e.g., "YYYY-MM-DD")
+  validTo: string;   // Date as string (e.g., "YYYY-MM-DD")
 }
 
 @Component({
@@ -36,11 +36,10 @@ export class CreateTourPaxComponent {
     extraHotelCost: 0,
     nettPricePerPax: 0,
     sellingPrice: 0,
-    validFrom: new Date().toISOString().split('T')[0], // Default to current date (date only)
-    validTo: new Date().toISOString().split('T')[0]   // Default to current date (date only)
+    validFrom: new Date().toISOString().split('T')[0], // Default to current date (e.g., "2025-04-12")
+    validTo: new Date().toISOString().split('T')[0]     // Default to current date
   };
 
-  // New properties for popup
   showPopup: boolean = false;
   popupMessage: string = '';
   isSuccess: boolean = false;
@@ -78,7 +77,6 @@ export class CreateTourPaxComponent {
     this.cancel.emit();
   }
 
-  // New method to show popup message
   showPopupMessage(message: string, isSuccess: boolean) {
     this.popupMessage = message;
     this.isSuccess = isSuccess;
@@ -86,6 +84,6 @@ export class CreateTourPaxComponent {
 
     setTimeout(() => {
       this.showPopup = false;
-    }, 2000); // Hide after 2 seconds
+    }, 2000);
   }
 }

@@ -10,6 +10,7 @@ import { WishlistService } from '../../../customer/components/wishlist/wishlist.
 import { WishlistComponent } from "../../../customer/components/wishlist/wishlist.component";
 import { debounceTime, Subject } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { TruncatePipe } from "../../../../shared/pipes/truncate.pipe";
 
 @Component({
   selector: 'app-homepage',
@@ -19,8 +20,9 @@ import { FormsModule } from '@angular/forms';
     FooterComponent,
     CurrencyVndPipe,
     WishlistComponent,
-    FormsModule
-  ],
+    FormsModule,
+    TruncatePipe
+],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })

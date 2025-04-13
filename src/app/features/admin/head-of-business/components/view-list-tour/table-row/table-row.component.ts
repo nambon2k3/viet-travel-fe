@@ -35,19 +35,6 @@ export class TableRowComponent {
     }
   }
 
-  deleteTour(): void {
-    this.tourService.deleteTour(this.tour.id).subscribe({
-      next: (response) => {
-        if (response.code === 200) {
-          this.tourUpdated.emit(); // Notify parent to reload
-        }
-      },
-      error: (err) => {
-        console.error('Failed to hide Tour:', err);
-      },
-    });
-  }
-
   openDiscount(tour: TourHOB): void {
     this.router.navigate(['/head-business/tour-discount'], {
       queryParams: { id: tour.id },
@@ -65,19 +52,6 @@ export class TableRowComponent {
   openSaleTour(tour: TourHOB): void {
     this.router.navigate(['/head-business/open-sale-tour'], {
       queryParams: { id: tour.id }
-    });
-  }
-
-  recoverTour(): void {
-    this.tourService.recoverTour(this.tour.id).subscribe({
-      next: (response) => {
-        if (response.code === 200) {
-          this.tourUpdated.emit();
-        }
-      },
-      error: (err) => {
-        console.error('Failed to show Tour:', err);
-      },
     });
   }
 

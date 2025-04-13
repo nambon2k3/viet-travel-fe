@@ -28,6 +28,15 @@
           <label class="block text-sm font-medium text-gray-900 dark:text-white">Số khách tối đa</label>
           <input type="number" [(ngModel)]="newPax.maxPax" class="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-white" />
         </div>
+        <!-- New Date Inputs -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-900 dark:text-white">Ngày bắt đầu</label>
+          <input type="date" [(ngModel)]="newPax.validFrom" class="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-white" />
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-900 dark:text-white">Ngày kết thúc</label>
+          <input type="date" [(ngModel)]="newPax.validTo" class="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-white" />
+        </div>
       </div>
       <div class="flex items-center justify-end gap-4 p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
         <button type="button" data-modal-hide="createTourPaxModal"

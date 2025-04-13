@@ -57,14 +57,6 @@ export class TourService {
     return this.http.post(`${environment.apiUrl}head-of-business/tour/create`, formData);
   }
 
-  deleteTour(id: number): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}head-of-business/tour/change-status/${id}` + '?isDeleted=true');
-  }
-
-  recoverTour(id: number): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}head-business/tour/change-status/${id}` + '?isDeleted=false');
-  }
-
   getAllTags(): Observable<any> {
     return this.http.get(`${environment.apiUrl}head-of-business/tour/list-tag`);
   }
