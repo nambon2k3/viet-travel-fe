@@ -58,13 +58,15 @@ export class ConfigPriceComponent {
   ngOnInit(): void {
     this.discountService.getPriceConfigurations(this.tourId).subscribe(response => {
       if (response?.data?.priceConfigurations) {
+        this.startDate = response.data.priceConfigurations[0].validFrom.split('T')[0];
+        this.endDate = response.data.priceConfigurations[0].validTo.split('T')[0];
         this._prices = response.data.priceConfigurations.map((p: any) => {
           const netPrice = this.totalSellingPrice[p.paxRange] / this.getMinPax(p.paxRange);
           return {
             id: p.id,
             paxRange: p.paxRange,
             fixedCostFormatted: p.fixedCost?.toLocaleString('vi-VN'),
-            sellingPriceFormatted: (netPrice + p.fixedCost)?.toLocaleString('vi-VN')
+            sellingPriceFormatted: (netPrice + p.fixedCost)?.toLocaleString('vi-VN'),
           };
         });
       }
@@ -72,7 +74,11 @@ export class ConfigPriceComponent {
   }
 
   startDate: string = new Date().toISOString().split('T')[0];
-  endDate: string = new Date().toISOString().split('T')[0];
+  endDate: string = (() => {
+    const start = new Date(this.startDate);
+    start.setFullYear(start.getFullYear() + 1);
+    return start.toISOString().split('T')[0];
+  })();
 
   formatPrice(index: number, field: 'fixedCostFormatted' | 'sellingPriceFormatted'): void {
     let value = this._prices[index][field].replace(/[^0-9]/g, '');
@@ -82,11 +88,10 @@ export class ConfigPriceComponent {
       this._prices[index][field] = '';
     }
 
-    // Nếu cập nhật fixedCost -> tự động tính lại sellingPrice
     if (field === 'fixedCostFormatted') {
       const fixedCost = parseInt(this._prices[index].fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0;
       const netPrice = this.totalSellingPrice[this._prices[index].paxRange] / this.getMinPax(this._prices[index].paxRange);
-      this._prices[index].sellingPriceFormatted = (netPrice + fixedCost).toLocaleString('vi-VN');
+      this._prices[index].sellingPriceFormatted = (netPrice + fixedCost / this.getMinPax(this._prices[index].paxRange)).toLocaleString('vi-VN');
     }
   }
 

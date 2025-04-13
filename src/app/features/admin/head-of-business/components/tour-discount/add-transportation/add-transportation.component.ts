@@ -127,7 +127,7 @@ export class AddTransportationComponent implements AfterViewInit {
         this.fb.group({
           paxId: [pax.id],
           paxRange: [pax.paxRange],
-          sellingPrice: [pax.sellingPrice || 0]
+          sellingPrice: [0]
         })
       );
     });
@@ -169,7 +169,8 @@ export class AddTransportationComponent implements AfterViewInit {
             const mappedTransportations = response.data.availableServices.map((service: any) => ({
               id: service.id,
               name: service.name,
-              nettPrice: service.nettPrice
+              nettPrice: service.nettPrice,
+              sellingPrice: service.sellingPrice
             }));
             this.transportations.set(mappedTransportations);
           }
@@ -193,7 +194,8 @@ export class AddTransportationComponent implements AfterViewInit {
               selectedLocation: transportation.locationId,
               selectedProvider: transportation.serviceProviderId,
               selectedTransportation: transportation.id,
-              netPrice: transportation.nettPrice
+              netPrice: transportation.nettPrice,
+              sellingPrice: transportation.sellingPrice
             });
 
             const paxPricesArray = this.paxPrices;
@@ -203,7 +205,7 @@ export class AddTransportationComponent implements AfterViewInit {
                 this.fb.group({
                   paxId: [pax.paxId],
                   paxRange: [pax.paxRange],
-                  sellingPrice: [pax.sellingPrice || 0]
+                  sellingPrice: [pax.sellingPrice]
                 })
               );
             });
@@ -222,24 +224,32 @@ export class AddTransportationComponent implements AfterViewInit {
   }
 
   onLocationChange() {
-    this.addTransportationForm.patchValue({ selectedProvider: null, selectedTransportation: null });
+    this.addTransportationForm.patchValue({ selectedProvider: null, selectedTransportation: null, netPrice: 0  });
     this.providers.set([]);
     this.transportations.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
-    this.addTransportationForm.patchValue({ selectedTransportation: null });
+    this.addTransportationForm.patchValue({ selectedTransportation: null, netPrice: 0  });
     this.transportations.set([]);
     this.fetchTransportations();
   }
 
   onTransportationChange() {
     const selectedTransportationId = this.addTransportationForm.get('selectedTransportation')?.value;
-    const selectedTransportation = this.transportations().find(h => h.id === selectedTransportationId);
+    const selectedTransportation = this.transportations().find(t => t.id === selectedTransportationId);
+
     if (selectedTransportation) {
       this.addTransportationForm.patchValue({
         netPrice: selectedTransportation.nettPrice
+      });
+
+      const paxPricesArray = this.paxPrices;
+      paxPricesArray.controls.forEach(control => {
+        control.patchValue({
+          sellingPrice: selectedTransportation.sellingPrice || 0
+        });
       });
     }
   }
@@ -295,11 +305,17 @@ export class AddTransportationComponent implements AfterViewInit {
         return acc;
       }, {})
     };
-  
+
     this.tourDiscountService.addService(this.tourId, payload).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
           this.transportationAdded.emit({ transport: transportationData, isUpdate: false });
+
+          // Reset toàn bộ form
+          this.addTransportationForm.reset();
+          this.initPaxPrices();
+          this.providers.set([]);
+          this.transportations.set([]);
           this.modal?.hide();
         }
       },
@@ -307,7 +323,7 @@ export class AddTransportationComponent implements AfterViewInit {
         console.error('Error creating transportation:', error);
       }
     });
-  }  
+  }
 
   updateTransportation(transportationData: Service) {
     const payload = {
@@ -325,6 +341,24 @@ export class AddTransportationComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.transportationAdded.emit({ transport: transportationData, isUpdate: true });
+
+          // Reset toàn bộ form
+          this.addTransportationForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedTransportation: null,
+            netPrice: 0
+          });
+
+          // Reset paxPrices về giá trị mặc định từ this.prices
+          this.initPaxPrices();
+
+          // Reset providers và transportations
+          this.providers.set([]);
+          this.transportations.set([]);
+
+          // Ẩn modal
           this.modal?.hide();
         }
       },

@@ -278,13 +278,12 @@ export class TourDiscountComponent implements OnInit {
 
   calculateTotalNetPrice() {
     this.priceRanges.forEach(range => {
-      const minPax = this.getMinPax(range);
       let total = 0;
-      this.hotels.forEach(h => total += (Number(h.nettPrice) / 2) * minPax);
-      this.transports.forEach(t => total += t.nettPrice * minPax);
-      this.restaurants.forEach(r => total += r.nettPrice * minPax);
-      this.activities.forEach(a => total += a.nettPrice * minPax);
-      this.flights.forEach(a => total += a.nettPrice * minPax);
+      this.hotels.forEach(h => total += (Number(h.nettPrice) / 2));
+      this.transports.forEach(t => total += t.nettPrice);
+      this.restaurants.forEach(r => total += r.nettPrice);
+      this.activities.forEach(a => total += a.nettPrice);
+      this.flights.forEach(a => total += a.nettPrice);
       this.mintotalNetPrices[range] = total;
     });
   }
@@ -303,14 +302,14 @@ export class TourDiscountComponent implements OnInit {
   
       this.hotels.forEach(hotel => {
         if (hotel.paxPrices && hotel.paxPrices[range]) {
-          total += ((hotel.paxPrices[range].sellingPrice || 0) / 2) * minPax;
+          total += ((hotel.paxPrices[range].sellingPrice || 0) / 2);
         }
       });
   
       [this.transports, this.restaurants, this.activities, this.flights].forEach(services => {
         services.forEach(service => {
           if (service.paxPrices && service.paxPrices[range]) {
-            total += (service.paxPrices[range].sellingPrice || 0) * minPax;
+            total += (service.paxPrices[range].sellingPrice || 0);
           }
         });
       });
@@ -427,6 +426,10 @@ export class TourDiscountComponent implements OnInit {
       this.hotels.push(hotel);
     }
     this.reInitFlowbite();
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculateFinalTourPrices();
     this.showPopupMessage('Thêm/Cập nhật khách sạn thành công!', true);
   }
 
@@ -462,6 +465,10 @@ export class TourDiscountComponent implements OnInit {
       this.flights.push(flight);
     }
     this.reInitFlowbite();
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculateFinalTourPrices();
     this.showPopupMessage('Thêm/Cập nhật vé máy bay thành công!', true);
   }
 
@@ -497,6 +504,10 @@ export class TourDiscountComponent implements OnInit {
       this.transports.push(transport);
     }
     this.reInitFlowbite();
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculateFinalTourPrices();
     this.showPopupMessage('Thêm/Cập nhật phương tiện thành công!', true);
   }
 
@@ -532,6 +543,10 @@ export class TourDiscountComponent implements OnInit {
       this.restaurants.push(restaurant);
     }
     this.reInitFlowbite();
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculateFinalTourPrices();
     this.showPopupMessage('Thêm/Cập nhật nhà hàng thành công!', true);
   }
 
@@ -567,6 +582,10 @@ export class TourDiscountComponent implements OnInit {
       this.activities.push(activity);
     }
     this.reInitFlowbite();
+    this.calculateTourDays();
+    this.calculateTotalNetPrice();
+    this.calculateTotalPrices();
+    this.calculateFinalTourPrices();
     this.showPopupMessage('Thêm/Cập nhật hoạt động thành công!', true);
   }
 
