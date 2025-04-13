@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 import { BookingInfoService } from '../../../services/booking-infor.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CurrencyVndPipe } from "../../../../../shared/pipes/currency-vnd.pipe";
 
@@ -25,14 +25,31 @@ export class TourBookingConfirmComponent {
 
   constructor(
     private bookingInforService: BookingInfoService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
+  paymentStatus: any;
 
   ngOnInit(): void {
-    const bookingCode = this.router.url.split('/').pop();
+    // const bookingCode = this.router.url.split('/').pop();
 
-    console.log(bookingCode)
+    // console.log(bookingCode)
+
+    const bookingCode = this.route.snapshot.paramMap.get('code')!;
+    this.route.queryParams.subscribe(params => {
+      this.paymentStatus = params['status']; // 'success' or 'fail'
+    });
+
+    if(this.paymentStatus === 'success') {
+      this.successMessage = 'Thanh toán thành công';
+      this.triggerSuccess()
+    } else if(this.paymentStatus === 'fail') {
+      this.successMessage = 'Thanh toán thất bại';
+      this.triggerError()
+    }
+
+    console.log(this.paymentStatus)
 
     if(bookingCode) {
       this.getBookingDetailByBookingCode(bookingCode);

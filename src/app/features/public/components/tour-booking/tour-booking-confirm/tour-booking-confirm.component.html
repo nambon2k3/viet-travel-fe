@@ -147,8 +147,8 @@
                             <td class="p-3">{{bookingData?.createdAt | date: 'dd/MM/yyyy HH:mm'}}</td>
                         </tr>
                         <tr class="border-b">
-                            <td class="font-semibold p-3">Booking value:</td>
-                            <td class="font-semibold p-3">{{total}} VND</td>
+                            <td class="font-semibold p-3">Giá Booking:</td>
+                            <td class="font-semibold p-3">{{total | currencyVnd}} <td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Phương thức:</td>
@@ -156,7 +156,8 @@
                                 <span class="font-semibold">
                                     {{bookingData?.paymentMethod}}
                                 </span>
-                                <span class="text-blue-600 underline ml-2 hover:cuisor-pointer hover:text-blue-800" (click)="changePaymentMethod()">Thay đổi phương thức thanh toán</span>
+                                
+                                <span *ngIf="bookingData?.status === 'PENDING'" class="text-blue-600 underline ml-2 cursor-pointer hover:text-blue-800" (click)="changePaymentMethod()">Thay đổi phương thức thanh toán</span>
                             </td>
                         </tr>
                         <tr class="border-b">
@@ -169,18 +170,32 @@
                                     <p><strong>STK:</strong> 2003883886 - Nguyen Viet Hoai Nam</p>
                                     <p class="mt-2"><strong>Ngân Hàng:</strong> MB Bank</p>
                                     <p class="mt-2"><strong>Nội dung chuyển khoản:</strong> {{bookingData?.bookingCode}}</p>
-                                    <p  class="mt-2">Thanh toán trực tiếp  <span class="text-blue-600 underline ml-2 hover:cursor-pointer hover:text-blue-800 " (click)="forwardPayment()" >tại đây</span>  </p>
+                                    <p  class="mt-2" *ngIf="bookingData?.status === 'PENDING'">Thanh toán trực tiếp  <span class="text-blue-600 underline ml-2 hover:cursor-pointer hover:text-blue-800 " (click)="forwardPayment()" >tại đây</span>  </p>
                                 </div>
                                 }
                             </td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Đã thanh toán:</td>
-                            <td class="p-3">0 VND</td>
+                            <td class="p-3">
+                                <span *ngIf="bookingData?.status === 'PENDING'">
+                                    {{0 | currencyVnd}}
+                                </span>
+                                <span *ngIf="bookingData?.status !== 'PENDING'">
+                                    {{total | currencyVnd}}
+                                </span>
+                            </td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Chưa thanh toán:</td>
-                            <td class="text-red-600 font-semibold p-3">{{total}} VND</td>
+                            <td class="text-red-600 font-semibold p-3">
+                                <span *ngIf="bookingData?.status === 'PENDING'">
+                                    {{total | currencyVnd}}
+                                </span>
+                                <span *ngIf="bookingData?.status !== 'PENDING'">
+                                    {{0 | currencyVnd}}
+                                </span>
+                            </td>
                         </tr>
                         <tr class="border-b">
                             <td class="font-semibold p-3">Tình Trạng:</td>
