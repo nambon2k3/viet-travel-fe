@@ -67,7 +67,7 @@ export class BookingSettlementComponent implements AfterViewInit {
       bookingCode: ['', Validators.required],
       receivedBy: ['', Validators.required],
       paidBy: ['Viet Travel', Validators.required],
-      category: [{ value: 'RECEIPT', disabled: true }, Validators.required],
+      category: ['REFUND', Validators.required],
       paymentMethod: ['CASH', Validators.required],
       notes: ['Phiếu hoàn tiền cho khách'],
       costAccounts: this.fb.array([]), // Initialize FormArray,
@@ -256,10 +256,14 @@ export class BookingSettlementComponent implements AfterViewInit {
     }, 4000);
   }
 
+  scheduleId: number = 0;
+
 
   ngOnInit(): void {
 
     const tourScheduleId = Number(this.router.url.split('/').pop());
+    this.scheduleId = tourScheduleId;
+    console.log('Tour Schedule ID:', tourScheduleId);
 
     // Initialization logic here\
     this.getSettlementDetails(tourScheduleId);
@@ -296,7 +300,10 @@ export class BookingSettlementComponent implements AfterViewInit {
 
         this.refundForm.patchValue({
           bookingCode: this.tourScheduleSettlement?.bookings[0]?.bookingCode,
+          receivedBy: this.tourScheduleSettlement?.bookings[0]?.customer?.fullName,
         });
+
+        this.getProviderByScheduleId();
 
         this.isLoading = false;
       },
@@ -575,6 +582,7 @@ export class BookingSettlementComponent implements AfterViewInit {
           console.log('RECEPITS', receipts);
           this.getSettlementDetails(this.tourScheduleSettlement.id); // Refresh the settlement details
           this.triggerSuccess(); // Show success message
+          this.receiptForm.reset(); // Reset form fields
         },
         error: (error) => {
           console.log(error);
@@ -595,8 +603,8 @@ export class BookingSettlementComponent implements AfterViewInit {
 
 
   onPaymentCreate() {
-    if (this.receiptForm.valid) {
-      const formData = { ...this.receiptForm.value, totalAmount: this.getTotalAmount(), category: 'PAYMENT' };
+    if (this.paymentForm.valid) {
+      const formData = { ...this.paymentForm.value, totalAmount: this.getTotalPaymentAmount()};
 
       console.log('Process Data: ', formData)
 
@@ -606,6 +614,7 @@ export class BookingSettlementComponent implements AfterViewInit {
           console.log('PAYMENT', payments);
           this.triggerSuccess();
           this.getSettlementDetails(this.tourScheduleSettlement.id); // Refresh the settlement details
+          this.paymentForm.reset(); // Reset form fields
         },
         error: (error) => {
           console.log(error);
@@ -618,8 +627,8 @@ export class BookingSettlementComponent implements AfterViewInit {
 
 
     } else {
-      console.log('Invalid: ', this.receiptForm.value);
-      this.receiptForm.markAllAsTouched();
+      console.log('Invalid: ', this.paymentForm.value);
+      this.paymentForm.markAllAsTouched();
     }
   }
 
@@ -655,13 +664,59 @@ export class BookingSettlementComponent implements AfterViewInit {
 
 
   onRefundCreate() {
+    if(this.refundForm.valid) {
+      const formData = { ...this.refundForm.value, totalAmount: this.getTotalRefundAmount(), category: 'REFUND' };
 
+      console.log('Process Data: ', formData)
+
+      this.transactionService.createTransaction(formData).subscribe({
+        next: (response: any) => {
+          const refunds = response.data;
+          console.log('REFUNDS', refunds);
+          this.triggerSuccess();
+          this.getSettlementDetails(this.tourScheduleSettlement.id); // Refresh the settlement details
+          this.refundForm.reset(); // Reset form fields
+        },
+        error: (error) => {
+          console.log(error);
+          this.isLoading = false;
+          this.triggerError();
+        }
+      })
+
+      this.createRefundModal?.hide();
+
+      
+
+    } else {
+      console.log('Invalid: ', this.refundForm.value);
+      this.refundForm.markAllAsTouched();
+    }
   }
 
   openRefundModal() {
     this.createRefundModal?.show();
   }
 
+
+  providers: any[] = [];
+
+  getProviderByScheduleId() {
+    this.providers = [];
+    this.transactionService.getProviderByScheduleId(this.scheduleId).subscribe(
+      (response: any) => {
+        console.log('Provider:', response);
+        // Handle the response data as needed
+        this.providers = response.data;
+        console.log('Providers:', this.providers);
+      },
+      (error) => {
+        console.error('Error fetching provider:', error);
+        // Handle the error as needed
+      }
+    );
+
+  }
 
   onRefundBookingSelectChange(event: any) {
     const value = (event.target as HTMLSelectElement).value;

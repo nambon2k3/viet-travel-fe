@@ -336,7 +336,7 @@
       <tbody>
         @if(refunds.length === 0) {
         <tr>
-          <td colspan="7" class="border px-2 py-1">Chưa có phiếu chi nào</td>
+          <td colspan="7" class="border px-2 py-1">Chưa có phiếu hoàn tiền nào</td>
         </tr>
         } @else {
         <tr *ngFor="let transaction of refunds; let i = index">
@@ -672,7 +672,7 @@
 
 @if(showSuccess) {
 <!-- Warning Notification (Only One at a Time) -->
-<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-9999 w-80">
   <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
     <span class="text-green-500 text-xl mr-2">✔</span>
     <p class="text-gray-800 text-sm">
@@ -684,7 +684,7 @@
 
 @if(showError) {
 <!-- Warning Notification (Only One at a Time) -->
-<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-9999 w-80">
   <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
     <span class="text-red-500 text-xl mr-2">X</span>
     <p class="text-red-800 text-sm">
@@ -941,9 +941,9 @@
                 <label class="block text-gray-600">Thanh toán cho *:</label>
                 <select class="w-full border border-gray-300 rounded px-2 py-2" formControlName="receivedBy">
                   <option value="" disabled selected>Chọn Nhà Cung Cấp</option>
-                  <!-- <option *ngFor="let provider of providers" [value]="provider.name">
+                  <option *ngFor="let provider of providers" [value]="provider.name">
                     {{ provider.name }}
-                  </option> -->
+                  </option>
                 </select>
 
                 <p *ngIf="
