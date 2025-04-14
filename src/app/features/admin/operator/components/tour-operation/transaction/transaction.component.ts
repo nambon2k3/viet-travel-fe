@@ -73,6 +73,20 @@ export class TransactionComponent {
     return paymentStatusMap[status?.toUpperCase()] || 'Không xác định';
   }
 
+  getPaymentStatusClass(status: string): string {
+    const statusClasses: { [key: string]: string } = {
+      UNPAID: 'text-red-700 bg-red-100',
+      PAID: 'text-green-700 bg-green-100',
+      PARTIALLY_PAID: 'text-yellow-700 bg-yellow-100',
+      PENDING: 'text-blue-700 bg-blue-100',
+      APPROVED: 'text-emerald-700 bg-emerald-100',
+      REJECTED: 'text-red-700 bg-red-100',
+      CANCELLED: 'text-gray-600 bg-gray-200',
+      REFUNDED: 'text-purple-700 bg-purple-100'
+    };
+    return statusClasses[status?.toUpperCase()] || 'text-gray-500 bg-gray-100';
+  }  
+
   openPostReceipt(): void {
     this.router.navigate(['/operator/tour-operation/create-receipt']);
   }

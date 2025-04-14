@@ -39,7 +39,16 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Điều hành Tour',
-          route: '/operator/view-list-tour',
+          children: [
+            {
+              label: 'Tour SIC',
+              route: '/operator/view-list-tour',
+            },
+            {
+              label: 'Tour đặt riêng',
+              route: '/operator/view-list-tour-private',
+            },
+          ],
         },
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
@@ -54,11 +63,8 @@ export class Menu {
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
-          label: 'Blog',
-          children: [
-            { label: 'List Blog', route: '/marketer/blog' }
-          ],
-        },
+          label: 'List Blog', route: '/marketer/blog'
+        }
       ],
     },
     {

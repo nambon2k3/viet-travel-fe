@@ -62,12 +62,15 @@ export class PayServiceComponent {
     }
 
     if (this.selectedService) {
+      const defaultNote = `Thanh toán cho dịch vụ ${this.selectedService.serviceName} của nhà cung cấp ${this.selectedService.providerName}`;
+
       this.paymentForm.patchValue({
         amount: (this.selectedService.amountToPayForBooking - this.selectedService.paidForBooking) || '',
         receivedBy: this.selectedService.providerName || '',
         serviceId: this.selectedService.id || '',
         quantity: this.selectedService.quantity || '',
         serviceName: this.selectedService.serviceName || '',
+        notes: defaultNote
       });
     }
     this.modal?.show();

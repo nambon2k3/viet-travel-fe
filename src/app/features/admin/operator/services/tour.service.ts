@@ -33,6 +33,28 @@ export class TourService {
     return this.http.get(`${environment.apiUrl}operator/list-tour`, { params });
   }
 
+  getTourPrivateByPage(
+    page: number = 0,
+    size: number = 10,
+    keyword?: string,
+    status?: boolean,
+    orderDate: string = 'desc'
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('orderDate', orderDate);
+
+    if (keyword) {
+      params = params.set('keyword', keyword);
+    }
+    if (status !== undefined) {
+      params = params.set('status', status);
+    }
+
+    return this.http.get(`${environment.apiUrl}operator/list-tour-private`, { params });
+  }
+
   getTourById(id: number | null): Observable<any> {
     return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}`);
   }

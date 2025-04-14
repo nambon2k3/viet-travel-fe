@@ -11,6 +11,7 @@ import { TourService } from '../../../services/tour.service';
 import { ServiceDetailComponent } from './service-detail/service-detail.component';
 import { PayServiceComponent } from './pay-service/pay-service.component';
 import { SpinnerComponent } from '../../../../../../shared/components/spinner/spinner.component'; // Import SpinnerComponent
+import { initFlowbite } from 'flowbite';
 
 interface Service {
   bookingServiceId: number;
@@ -259,6 +260,7 @@ export class ServiceComponent {
           console.log('Dịch vụ đã được xóa thành công!');
           this.fetchServices(this.scheduleId!);
           this.fetchTourGuide(this.scheduleId!);
+          this.reInitFlowbite();
         } else {
           console.error('Lỗi khi xóa dịch vụ:', response.message);
         }
@@ -292,6 +294,7 @@ export class ServiceComponent {
     }
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
+    this.reInitFlowbite();
   }
 
   openPayModal(service: Service): void {
@@ -330,11 +333,20 @@ export class ServiceComponent {
     console.log('Dịch vụ đã được thêm thành công!');
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
+    this.reInitFlowbite();
   }
 
   onPaymentSent(event: any): void {
     console.log('Thanh toán đã được gửi thành công!');
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
+  }
+  
+  private reInitFlowbite(): void {
+    if (this.ssrService.isBrowser) {
+      setTimeout(() => {
+        initFlowbite(); 
+      }, 0); 
+    }
   }
 }

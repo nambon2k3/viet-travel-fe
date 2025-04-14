@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router, RouterModule, RouterOutlet, ActivatedRoute } from '@angular/router';
 import { TourService } from '../../../services/tour.service';
 import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tour-operation-layout',
@@ -9,16 +10,20 @@ import { FormatDatePipe } from "../../../../../../shared/pipes/format-date.pipe"
     RouterOutlet,
     RouterModule,
     FormatDatePipe,
-],
+    CommonModule
+  ],
   templateUrl: './tour-operation-layout.component.html',
   styleUrl: './tour-operation-layout.component.css'
 })
 export class TourOperationLayoutComponent {
   tourId: number | null = null;
+  tour: any;
+  tags: string = '';
+  errorMessage: string = '';
 
   constructor(private route: ActivatedRoute, private router: Router,
     private tourService: TourService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -52,7 +57,13 @@ export class TourOperationLayoutComponent {
     });
   }
 
-  tour: any;
-  tags: string = '';
-  errorMessage: string = '';
+  receiveTour() {
+    this.tourService.operateTour(this.tourId!).subscribe(response => {
+      if (response.code === 200) {
+        this.router.navigate(['/operator/view-list-tour']);
+      } else {
+        this.errorMessage = response.message;
+      }
+    });
+  }
 }

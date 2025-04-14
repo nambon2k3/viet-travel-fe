@@ -97,18 +97,6 @@
   </div>
 </div>
 
-<!-- Thông tin tài chính -->
-<div class="mt-6 bg-white w-full p-4 shadow-md grid grid-cols-4 text-center font-bold">
-  <div>Tổng chi phí tour</div>
-  <div>Thu trong tour</div>
-  <div>Còn lại</div>
-  <div>Doanh thu</div>
-  <div class="font-normal">{{ tour?.totalTourCost ? tour?.totalTourCost : 0 | currencyVnd }}</div>
-  <div class="font-normal text-green-600">{{ tour?.paidTourCost | currencyVnd }}</div>
-  <div class="font-normal text-red-500">{{ tour?.remainingTourCost | currencyVnd }}</div>
-  <div class="font-normal text-blue-600">{{ tour?.revenueCost | currencyVnd }}</div>
-</div>
-
 <!-- tour-operation.component.html -->
 <app-assign-tour-guide (tourGuideAssigned)="onTourGuideAssigned()" [scheduleId]="id" [tour]="tour">
 </app-assign-tour-guide>
