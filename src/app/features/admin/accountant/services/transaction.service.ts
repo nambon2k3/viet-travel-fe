@@ -60,4 +60,10 @@ export class TransactionService {
         });
     }
 
+
+    getProviderByScheduleId(scheduleId: number) {
+        return this.http.get(`${environment.apiUrl}accountant/settlements/service-provider/${scheduleId}`);
+    }
+
+
 }
