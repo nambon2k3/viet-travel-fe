@@ -119,7 +119,6 @@ export class TourDetailsComponent implements OnInit {
       }
     });
 
-    this.getAllTags();
     this.loadLocations();
   }
 
@@ -163,22 +162,34 @@ export class TourDetailsComponent implements OnInit {
     });
   }
 
-  getAllTags(): void {
-    this.isLoading = true;
-    this.tourService.getAllTags().subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        this.tags = response.data;
-        this.dropdownTagList = this.tags;
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Lỗi: ', err);
-      },
-    });
+
+  tourData: any;
+
+  isExpanded: { [key: number]: boolean } = {};
+
+  toggleContent(dayNumber: number, event: Event): void {
+    event.preventDefault();
+    this.isExpanded[dayNumber] = !this.isExpanded[dayNumber];
   }
 
+  getTruncatedContent(content: string, maxLength: number = 100): string {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = content;
+    const text = tempDiv.innerText || tempDiv.textContent || '';
+    if (text.length <= maxLength) return content;
+
+    const truncatedText = text.slice(0, maxLength).trim() + '...';
+    return `<p>${truncatedText}</p>`;
+  }
+
+
+
   mapTourDataToForm(tour: TourDetailHOB): void {
+
+
+    this.tourData = tour; // Lưu tourData vào biến tourData
+    console.log('Tour data:', tour); // Kiểm tra dữ liệu tour
+
     this.editTourForm.patchValue({
       id: tour.id,
       name: tour.name,
@@ -195,6 +206,8 @@ export class TourDetailsComponent implements OnInit {
   
     this.imagePreviews = [...new Set(tour.tourImages.map((img: any) => img.imageUrl))]; // Loại bỏ ảnh trùng
     this.highlight = tour.highlights;
+
+    this.tags = tour.tags
   }  
 
   onCancel(): void {

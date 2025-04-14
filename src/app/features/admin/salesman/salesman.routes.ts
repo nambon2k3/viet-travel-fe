@@ -55,15 +55,7 @@ export const SALESMAN_ROUTES: Route[] = [
         path: 'tour-private-service/:tourId',
         component: TourServiceComponent
       },
-      {
-        path: '',
-        component: TourDetailsLayoutComponent,
-        children: [
-          { path: '', redirectTo: 'tour-details', pathMatch: 'full' },
-          { path: 'tour-details', component: TourDetailsComponent },
-          { path: 'tour-day', component: TourDayComponent },
-        ],
-      },
+      { path: 'tour-details', component: TourDetailsComponent }
     ]
   },
   {
