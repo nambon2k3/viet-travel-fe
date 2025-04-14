@@ -145,13 +145,13 @@
       <div class="flex justify-end space-x-3">
         <button (click)="onCancel()"
           class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200">
-          Hủy
+          Quay lại
         </button>
-        <button (click)="onReject()"
+        <button (click)="onReject()" *ngIf="tourDetail.tourStatus === 'PENDING'"
           class="px-5 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200">
           Từ chối
-        </button>
-        <button (click)="onApprove()"
+        </button> 
+        <button (click)="onApprove()" *ngIf="tourDetail.tourStatus === 'PENDING'"
           class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200">
           Phê duyệt
         </button>

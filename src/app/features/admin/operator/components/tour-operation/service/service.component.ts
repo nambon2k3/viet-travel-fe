@@ -209,21 +209,21 @@ export class ServiceComponent {
   getStatusColor(status: string): string {
     const colorMap: { [key: string]: string } = {
       'Đã phê duyệt': 'bg-green-500/20 text-green-800',
-      'Chưa đặt hàng': 'bg-yellow-500/20 text-yellow-800',
+      'Chưa đặt hàng': 'bg-yellow-400/20 text-yellow-700',
       'Bị hủy': 'bg-red-500/20 text-red-800',
-      'Bị từ chối': 'bg-red-600/20 text-red-900',
-      'Chờ phê duyệt': 'bg-blue-500/20 text-blue-800',
-      'Đang xử lý': 'bg-orange-500/20 text-orange-800',
-      'Hoàn thành': 'bg-green-700/20 text-green-900',
+      'Bị từ chối': 'bg-rose-500/20 text-rose-800',
+      'Chờ phê duyệt': 'bg-blue-400/20 text-blue-700',
+      'Đang xử lý': 'bg-orange-400/20 text-orange-700',
+      'Hoàn thành': 'bg-emerald-500/20 text-emerald-800',
       'Không có sẵn': 'bg-gray-500/20 text-gray-800',
-      'Có sẵn': 'bg-green-400/20 text-green-700',
-      'Đang kiểm tra': 'bg-blue-400/20 text-blue-700',
-      'Đã thanh toán': 'bg-green-500/20 text-green-800',
-      'Chưa thanh toán': 'bg-yellow-600/20 text-yellow-900',
-      'Thanh toán một phần': 'bg-orange-400/20 text-orange-800'
+      'Có sẵn': 'bg-lime-400/20 text-lime-700',
+      'Đang kiểm tra': 'bg-cyan-400/20 text-cyan-700',
+      'Đã thanh toán': 'bg-teal-500/20 text-teal-800',
+      'Chưa thanh toán': 'bg-amber-400/20 text-amber-700',
+      'Thanh toán một phần': 'bg-fuchsia-400/20 text-fuchsia-700'
     };
     return colorMap[status] || 'bg-gray-500/20 text-gray-800';
-  }
+  }  
 
   async initDropdowns(): Promise<void> {
     const { Dropdown } = await import('flowbite');

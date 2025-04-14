@@ -8,12 +8,7 @@ export class Menu {
       items: [
         {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
-          label: 'Dịch vụ',
-          route: '/service-provider',
-          children: [
-            { label: 'Dịch vụ', route: '/service-provider/service' },
-            { label: 'Yêu cầu Dịch vụ', route: '/service-provider/service-request' },
-          ],
+          label: 'Yêu cầu Dịch vụ', route: '/service-provider/service-request'
         },
       ],
     }, {
@@ -37,7 +32,7 @@ export class Menu {
       separator: true,
       items: [
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/travel-bag-svgrepo-com.svg',
           label: 'Điều hành Tour',
           children: [
             {
@@ -51,7 +46,7 @@ export class Menu {
           ],
         },
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/request-quote-svgrepo-com.svg',
           label: 'Xử lý yêu cầu',
           route: '/operator/view-list-request',
         }
@@ -62,7 +57,7 @@ export class Menu {
       separator: true,
       items: [
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/marketing-svgrepo-com.svg',
           label: 'List Blog', route: '/marketer/blog'
         }
       ],
@@ -72,12 +67,12 @@ export class Menu {
       separator: true,
       items: [
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/travel-bag-svgrepo-com.svg',
           label: 'Tour',
           route: '/head-business/list-tour'
         },
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/location-pin-svgrepo-com.svg',
           label: 'Địa điểm',
           route: '/head-business/locations',
         },
@@ -108,17 +103,17 @@ export class Menu {
       separator: true,
       items: [
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/chart-pie.svg',
           label: 'Thống kê',
           route: '/ceo',
         },
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/travel-bag-svgrepo-com.svg',
           label: 'Duyệt Tour',
           route: '/ceo/tour-request',
         },
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/product-svgrepo-com.svg',
           label: 'Nhà cung cấp',
           route: '/ceo/service-provider',
         }
@@ -137,7 +132,7 @@ export class Menu {
           ],
         },
         {
-          icon: 'assets/icons/heroicons/outline/users.svg',
+          icon: 'assets/icons/heroicons/outline/category-svgrepo-com.svg',
           label: 'Danh mục dịch vụ',
           route: '/admin/service-category',
         },

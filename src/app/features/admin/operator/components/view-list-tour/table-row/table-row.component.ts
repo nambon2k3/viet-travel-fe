@@ -50,7 +50,7 @@ export class TableRowComponent {
       OPEN: 'Đang mở bán',
       CANCELLED: 'Đã hủy',
       FULLY_BOOKED: 'Đã đầy chỗ',
-      SETTLEMENT: 'Đã quyết toán',
+      SETTLEMENT: 'Đang quyết toán',
     };
     return statusMap[status] || 'Chưa cập nhật';
   }  
