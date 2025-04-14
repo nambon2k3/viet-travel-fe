@@ -239,14 +239,6 @@ export class ServiceComponent {
           } else {
             console.warn(`Order dropdown elements not found for service ${service.uniqueId}`);
           }
-
-          const paymentButton = doc.getElementById(`dropdownPaymentButton-${service.uniqueId}`);
-          const paymentDropdown = doc.getElementById(`dropdownPayment-${service.uniqueId}`);
-          if (paymentButton && paymentDropdown) {
-            new Dropdown(paymentDropdown, paymentButton);
-          } else {
-            console.warn(`Payment dropdown elements not found for service ${service.uniqueId}`);
-          }
         });
       });
     }
@@ -313,7 +305,7 @@ export class ServiceComponent {
 
   approveService(service: Service): void {
     this.isLoading = true;
-    this.requestService.updateRequestStatus(service.id).subscribe({
+    this.requestService.updateRequestStatus(service.bookingServiceId).subscribe({
       next: (response: any) => {
         this.isLoading = false;
         if (response.code === 200) {
