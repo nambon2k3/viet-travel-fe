@@ -40,14 +40,14 @@ export const routes: Routes = [
   {
     path: 'customer',
     loadChildren: () => import('./features/customer/customer.routes').then(m => m.CUSTOMER_ROUTES),
-    canActivate: [AuthGuard], // Apply guard
-    data: { expectedRoles: ['CUSTOMER'] } // Example role for customers
+    canActivate: [AuthGuard],
+    data: { expectedRoles: ['CUSTOMER'] }
   },
   {
     path: 'ceo',
     loadChildren: () => import('./features/admin/ceo/ceo.routes').then(m => m.CEO_ROUTES),
     canActivate: [AuthGuard],
-    data: { expectedRoles: ['CEO'] } // Only CEOs can access
+    data: { expectedRoles: ['CEO'] }
   },
   {
     path: 'marketer',
@@ -64,7 +64,6 @@ export const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./features/public/public.routes').then(m => m.PUBLIC_ROUTES),
-    // Public routes might not need a guard or can have no roles
   },
   {
     path: 'admin',

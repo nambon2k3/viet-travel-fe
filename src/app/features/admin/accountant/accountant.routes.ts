@@ -1,6 +1,5 @@
 import { Route } from "@angular/router";
 import { LayoutComponent } from "../layout/layout.component";
-import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { ListReceiptComponent } from "./components/list-receipt/list-receipt.component";
 import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
 import { ListRefundComponent } from "./components/list-refund/list-refund.component";
@@ -15,7 +14,8 @@ export const ACCOUNTANT_ROUTES: Route[] = [
     children: [
       {
         path: '',
-        component: DashboardComponent
+        redirectTo: 'list-tour',
+        pathMatch: 'full',
       },
       {
         path: 'list-tour',

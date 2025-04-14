@@ -109,6 +109,11 @@ export class Menu {
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
+          label: 'Thống kê',
+          route: '/ceo',
+        },
+        {
+          icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Duyệt Tour',
           route: '/ceo/tour-request',
         },

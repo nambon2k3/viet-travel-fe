@@ -17,7 +17,7 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
     children: [
       {
         path: '',
-        redirectTo: 'locations',
+        redirectTo: 'list-tour',
         pathMatch: 'full',
       },
       {

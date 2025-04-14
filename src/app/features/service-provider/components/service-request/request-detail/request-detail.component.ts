@@ -85,6 +85,7 @@ export class RequestDetailComponent implements OnInit {
 
   onApprove(): void {
     if (this.requestDetail) {
+      console.log('Approving request with ID:', this.requestDetail);
       this.serviceRequestService.approveServiceRequest(this.requestDetail.tourBookingServiceId).subscribe({
         next: (response) => {
           if (response.code === 200) {
