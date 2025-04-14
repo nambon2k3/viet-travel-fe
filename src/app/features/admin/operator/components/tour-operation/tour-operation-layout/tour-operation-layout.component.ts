@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
 })
 export class TourOperationLayoutComponent {
   tourId: number | null = null;
-  tour: any;
+  tour: any | null = null;
   tags: string = '';
   errorMessage: string = '';
 
@@ -33,7 +33,11 @@ export class TourOperationLayoutComponent {
   }
 
   backToList() {
-    this.router.navigate(['/operator/view-list-tour']);
+    if(this.tour.tourType === 'PRIVATE') {
+      this.router.navigate(['/operator/view-list-tour-private']);
+    } else{
+      this.router.navigate(['/operator/view-list-tour']);
+    }
   }
 
   getTourDetails(id: number) {

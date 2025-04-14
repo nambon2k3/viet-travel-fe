@@ -54,6 +54,7 @@ export class TourDetailsComponent implements OnInit {
   previewImage: string | null = null;
   selectedFile: File | null = null;
   isLoading: boolean = false;
+  tour : any;
 
   constructor(
     private router: Router,
@@ -105,20 +106,12 @@ export class TourDetailsComponent implements OnInit {
       numberNights: [null, [Validators.required, Validators.min(0)]],
       highlights: [null, Validators.required],
       note: [null, Validators.required],
-      tourType: ["SIC", Validators.required],
-      tourStatus: ["PENDING_PRICING", Validators.required],
       privacy: [this.getPrivacy(), Validators.required],
       tourImages: [[]],
+      tourType: ["SIC", Validators.required],
+      tourStatus: ["DRAFT", Validators.required],
     },
       { validator: this.daysGreaterThanNights });
-
-    // Lấy tourId từ query params
-    this.route.queryParams.subscribe(params => {
-      this.tourId = params['id'] || null;
-      if (this.tourId) {
-        this.loadTourDetails(this.tourId);
-      }
-    });
 
     this.getAllTags();
     this.loadLocations();
@@ -139,8 +132,8 @@ export class TourDetailsComponent implements OnInit {
     this.tourService.getTourById(id).subscribe({
       next: (response: any) => {
         this.isLoading = false;
-        const tourData: TourDetailHOB = response.data;
-        this.mapTourDataToForm(tourData);
+        this.tour = response.data;
+        this.mapTourDataToForm(this.tour);
       },
       error: (err: any) => {
         this.isLoading = false;
@@ -187,7 +180,7 @@ export class TourDetailsComponent implements OnInit {
       tagIds: tour.tags,  // Lưu ID thay vì name
       locationIds: tour.locations,  // Lưu ID thay vì name
       numberDays: tour.numberDays,
-      numberNights: tour.numberNight,
+      numberNights: Number(tour.numberDays - 1),
       highlights: tour.highlights,
       note: tour.note,
       privacy: tour.privacy || this.getPrivacy(),
@@ -197,6 +190,16 @@ export class TourDetailsComponent implements OnInit {
     this.imagePreviews = [...new Set(tour.tourImages.map((img: any) => img.imageUrl))]; // Loại bỏ ảnh trùng
     this.highlight = tour.highlights;
   }  
+
+  updateNumberNights(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const numberDays = Number(input.value);
+    if (!isNaN(numberDays) && numberDays > 0) {
+      this.editTourForm.get('numberNights')?.setValue(numberDays - 1);
+    } else {
+      this.editTourForm.get('numberNights')?.setValue(null);
+    }
+  }   
 
   onCancel(): void {
     this.router.navigate(['/head-business/list-tour']);
@@ -238,16 +241,29 @@ export class TourDetailsComponent implements OnInit {
 
   onApprove(): void {
     this.isLoading = true;
-    this.tourService.approveTour(this.tourId!).subscribe({
-      next: (response: any) => {
-        this.isLoading = false;
-        this.router.navigate(['/head-business/list-tour']);
-      },
-      error: (err: any) => {
-        this.isLoading = false;
-        console.error('Lỗi: ', err);
-      },
-    });
+    if(this.tour.tourType === 'PRIVATE'){
+      this.tourService.openPrivateTour(this.tourId!).subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          this.router.navigate(['/head-business/list-tour']);
+        },
+        error: (err: any) => {
+          this.isLoading = false;
+          console.error('Lỗi: ', err);
+        },
+      });
+    } else {
+      this.tourService.approveTour(this.tourId!).subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          this.router.navigate(['/head-business/list-tour']);
+        },
+        error: (err: any) => {
+          this.isLoading = false;
+          console.error('Lỗi: ', err);
+        },
+      });
+    }
   }
 
   onFilesSelected(event: Event): void {

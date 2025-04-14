@@ -113,16 +113,19 @@
       <div class="w-1/2">
         <label class="block mb-1 font-bold">Số ngày</label>
         <input type="number" formControlName="numberDays" placeholder="Nhập số ngày" class="w-full p-2 border rounded"
-          [class.border-red-500]="editTourForm.get('numberDays')?.invalid && editTourForm.get('numberDays')?.touched">
+          [class.border-red-500]="editTourForm.get('numberDays')?.invalid && editTourForm.get('numberDays')?.touched"
+          (input)="updateNumberNights($event)" />
         <span *ngIf="editTourForm.get('numberDays')?.invalid && editTourForm.get('numberDays')?.touched"
           class="text-red-500 text-sm">
           Số ngày là bắt buộc
         </span>
       </div>
+
       <div class="w-1/2 mb-6">
         <label class="block mb-1 font-bold">Số đêm</label>
-        <input type="number" formControlName="numberNights" placeholder="Nhập số đêm" class="w-full p-2 border rounded"
-          [class.border-red-500]="editTourForm.get('numberNights')?.invalid && editTourForm.get('numberNights')?.touched">
+        <input readonly type="number" formControlName="numberNights" placeholder="Nhập số đêm"
+          class="w-full p-2 border rounded bg-gray-100"
+          [class.border-red-500]="editTourForm.get('numberNights')?.invalid && editTourForm.get('numberNights')?.touched" />
         <span *ngIf="editTourForm.get('numberNights')?.invalid && editTourForm.get('numberNights')?.touched"
           class="text-red-500 text-sm">
           Số đêm là bắt buộc
@@ -153,9 +156,9 @@
       <button type="button" (click)="onCancel()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
         Hủy bỏ
       </button>
-      <button type="submit" *ngIf="tourId" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded cursor-pointer"
-        (click)="onApprove()">
-        Gửi duyệt tour
+      <button type="submit" *ngIf="tourId"
+        class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded cursor-pointer" (click)="onApprove()">
+        {{ tour?.tourType === 'PRIVATE' ? 'Mở bán' : 'Gửi duyệt tour' }}
       </button>
       <button type="submit" class="px-4 py-2 bg-green-700 hover:bg-green-800 text-white rounded cursor-pointer"
         (click)="onSubmit()">

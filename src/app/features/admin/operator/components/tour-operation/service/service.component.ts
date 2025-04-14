@@ -12,6 +12,7 @@ import { ServiceDetailComponent } from './service-detail/service-detail.componen
 import { PayServiceComponent } from './pay-service/pay-service.component';
 import { SpinnerComponent } from '../../../../../../shared/components/spinner/spinner.component'; // Import SpinnerComponent
 import { initFlowbite } from 'flowbite';
+import { RequestService } from '../../../services/request.service';
 
 interface Service {
   bookingServiceId: number;
@@ -78,7 +79,7 @@ export class ServiceComponent {
     private ssrService: SsrService,
     private tourService: TourService,
     private route: ActivatedRoute,
-    private router: Router
+    private requestService: RequestService,
   ) {}
 
   ngOnInit(): void {
@@ -308,6 +309,24 @@ export class ServiceComponent {
     this.changeServiceModal.service = service;
     this.changeServiceModal.getServiceDetail();
     this.changeServiceModal.open();
+  }
+
+  approveService(service: Service): void {
+    this.isLoading = true;
+    this.requestService.updateRequestStatus(service.id).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        if (response.code === 200) {
+          console.log('Dịch vụ đã được phê duyệt thành công!');
+          this.fetchServices(this.scheduleId!);
+          this.fetchTourGuide(this.scheduleId!);
+        }
+      },
+      error: (error: any) => {
+        this.isLoading = false;
+        console.error('Lỗi khi phê duyệt dịch vụ:', error);
+      }
+    });
   }
 
   openOrderModal(service: Service): void {

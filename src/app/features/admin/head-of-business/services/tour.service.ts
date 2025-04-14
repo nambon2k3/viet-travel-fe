@@ -101,4 +101,8 @@ export class TourService {
   approveTour(tourId: string): Observable<any> {
     return this.http.post(`${environment.apiUrl}head-of-business/tour/send-for-approval/${tourId}`, {});
   }
+
+  openPrivateTour(tourId: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/open-tour/${tourId}`, {});
+  }
 }
