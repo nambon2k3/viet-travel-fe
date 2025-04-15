@@ -93,6 +93,15 @@ export class BookingService {
         return this.http.post(`${environment.apiUrl}salesman/bookings/services/checking-available`, tourBookingId);
     }
 
+
+    sendCheckingSICAvailable(tourBookingServiceId: number, newQuantity: number, reason: string): Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/services/checking-available`, {
+            tourBookingServiceId: tourBookingServiceId,
+            newQuantity: newQuantity,
+            reason: reason
+        });
+    }
+
     sendCheckingAllAvailable(tourBookingId: number): Observable<any> {
         return this.http.post(`${environment.apiUrl}salesman/bookings/services/checking-available/all`, tourBookingId);
     }

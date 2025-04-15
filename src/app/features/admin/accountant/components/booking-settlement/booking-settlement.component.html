@@ -136,11 +136,27 @@
               <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
               Thành công
             </span>
-            } @else if (booking.status.includes('CANCEL')) {
+            } @else if (booking.status === 'REQUEST_CANCELLED_WITH_REFUND') {
             <span
               class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
               <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
-              Đã hủy
+              Yêu cầu hủy hoàn tiền
+            </span>
+            }
+
+
+            @else if (booking.status === 'CANCELLED_WITHOUT_REFUND') {
+            <span
+              class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+              <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+              Đã hủy không hoàn tiền
+            </span>
+            }
+            @else if (booking.status === 'CANCELLED_WITH_REFUND') {
+            <span
+              class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+              <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+              Đã hủy hoàn tiền
             </span>
             }
           </td>
@@ -654,7 +670,8 @@
             <button type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
               Hủy
             </button>
-            <button  (click)="onSave()" type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+            <button (click)="onSave()" type="submit"
+              class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
               Lưu
             </button>
           </div>

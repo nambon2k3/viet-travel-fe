@@ -399,6 +399,7 @@ export class BookingDetailComponent implements AfterViewInit {
           console.log('Booking Cancelled:', response);
           this.triggerSuccess();
           this.isLoading = false; // Reset loading state
+          this.getBookingDetail(this.tourBookingId!); // Refresh booking detail
         },
         error: (error: any) => {
           console.error('Cancellation Failed:', error);

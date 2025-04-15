@@ -23,7 +23,9 @@ export class PublicLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    
     const doc = this.ssrService.getDocument();
+    
     if (doc) {
       setTimeout(() => {
         this.mainContent = doc.getElementById('main-content');
@@ -34,6 +36,7 @@ export class PublicLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     }
+    
   }
 
   ngAfterViewInit(): void {

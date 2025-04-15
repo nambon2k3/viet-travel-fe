@@ -27,8 +27,8 @@
     {{ tourShedule?.tour?.numberDays }} Ngày, {{ tourShedule?.tour?.numberNights }} Đêm
   </td>
 
-  <td>
-    {{ tourShedule?.operator?.fullName }}
+  <td [class]="tourShedule?.operator?.fullName ? '' : 'text-red-500 italic'">
+    {{ tourShedule?.operator?.fullName || 'Chưa điều hành'}}
   </td>
 
   <td>

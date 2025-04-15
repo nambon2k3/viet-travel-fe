@@ -1,8 +1,7 @@
-
 <app-spinner [isLoading]="isLoading"></app-spinner>
 <div class="mb-2 flex justify-between">
 
-  
+
 
 
   <div class="inline-block">
@@ -12,9 +11,9 @@
       <span class="text-foreground">{{ totalItems }}</span>
     </div>
   </div>
- 
 
-  <div  [class]="{ 'opacity-50': isLoading }">
+
+  <div [class]="{ 'opacity-50': isLoading }">
     <button data-modal-target="create-tour-modal" data-modal-toggle="create-tour-modal" type="button"
       class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="mr-3"
@@ -25,34 +24,89 @@
       </svg>
       Tạo mới chương trình tour →
     </button>
-    <div id="create-tour-modal" tabindex="-1" 
+    <div id="create-tour-modal" tabindex="-1"
       class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
       <div class="relative p-4 w-full max-w-6xl max-h-full">
         <!-- Modal content -->
         <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="max-w-6xl mx-auto p-6 bg-white  space-y-6">
-        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-          <!-- Modal header -->
-          <div
-            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-              Thêm tour đặt riêng
-            </h3>
-            <button type="button"
-              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              data-modal-hide="create-tour-modal">
-              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-              </svg>
-              <span class="sr-only">Close modal</span>
-            </button>
-          </div>
-          <!-- Modal body -->
-          <div class="p-4 md:p-5 space-y-4">
+          <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div
+              class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                Thêm tour đặt riêng
+              </h3>
+              <button type="button"
+                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="create-tour-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 14 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+                <span class="sr-only">Close modal</span>
+              </button>
+            </div>
+            <!-- Modal body -->
+            <div class="p-4 md:p-5 space-y-4">
               <div class="grid grid-cols-1  gap-6">
                 <!-- Left section -->
                 <div class="space-y-4">
+
+                  <label class="block mb-2 text-sm font-medium text-gray-700">Ảnh tour</label>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <!-- Hiển thị danh sách ảnh -->
+                    <div *ngFor="let img of imagePreviews; let i = index"
+                      class="relative w-20 h-20 flex items-center justify-center bg-gray-300 rounded overflow-hidden group">
+                      <!-- Ảnh -->
+                      <img *ngIf="img" [src]="img" alt="Ảnh"
+                        class="w-full h-full object-cover rounded transition duration-300 group-hover:opacity-50">
+
+                      <!-- Nút X -->
+                      <button (click)="removeImage(i)"
+                        class="absolute top-1 right-1 bg-red-500 text-white w-5 h-5 flex items-center justify-center rounded-full opacity-0 group-hover:opacity-100 transition duration-300">
+                        ✕
+                      </button>
+                    </div>
+
+
+                    <!-- Nút mở modal chọn ảnh -->
+                    <button type="button" class="bg-black text-white px-4 py-2 rounded" data-modal-target="previewModal"
+                      data-modal-toggle="previewModal">
+                      Thêm ảnh
+                    </button>
+                  </div>
+
+                  <!-- Modal Xem trước ảnh -->
+                  <div id="previewModal" tabindex="-1" aria-hidden="true"
+                    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                    <div class="bg-gray-200 p-4 rounded-lg w-2/3 max-w-lg">
+                      <h2 class="text-lg font-bold text-center">Xem trước hình ảnh</h2>
+                      <div class="relative inline-block mx-auto">
+                        <!-- Input file ẩn -->
+                        <input #fileInput type="file" multiple (change)="onFilesSelected($event)" accept="image/*"
+                          class="hidden">
+
+                        <!-- Nút chọn ảnh -->
+                        <button type="button" (click)="fileInput.click()"
+                          class="bg-green-700 mx-auto text-white px-4 py-2 rounded-lg shadow hover:bg-green-800 transition">
+                          Chọn ảnh
+                        </button>
+                      </div>
+                      <div class="flex justify-center p-4">
+                        <img *ngIf="previewImage" [src]="previewImage" class="max-w-full h-64 object-contain">
+                      </div>
+                      <div class="flex justify-center gap-4">
+                        <button class="border border-black px-4 py-2 rounded" data-modal-hide="previewModal">
+                          Đóng
+                        </button>
+                        <button class="bg-black text-white px-4 py-2 rounded" (click)="confirmImage()"
+                          data-modal-hide="previewModal">
+                          Xác nhận
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
                   <div>
                     <label class="block text-sm font-medium mb-1">Tên tour *</label>
@@ -74,19 +128,19 @@
                       <input type="number" formControlName="numberDays" min="2"
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
-                        <p *ngIf="
+                      <p *ngIf="
                       tourForm.get('numberDays')?.invalid &&
                       tourForm.get('numberDays')?.touched
                     " class="text-red-500 w-full text-left text-sm">
-                      Thông tin bắt buộc
-                    </p>
+                        Thông tin bắt buộc
+                      </p>
                     </div>
                     <div class="flex-1">
                       <label class="block text-sm font-medium mb-1">Số đêm *</label>
                       <input type="number" formControlName="numberNights" min="1"
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         readonly />
-                        <p *ngIf="
+                      <p *ngIf="
                         tourForm.get('numberNights')?.invalid &&
                         tourForm.get('numberNights')?.touched
                       " class="text-red-500 w-full text-left text-sm">
@@ -101,12 +155,12 @@
                       <input type="number" formControlName="pax" min="1"
                         class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
-                        <p *ngIf="
+                      <p *ngIf="
                       tourForm.get('pax')?.invalid &&
                       tourForm.get('pax')?.touched
                     " class="text-red-500 w-full text-left text-sm">
-                      Thông tin bắt buộc
-                    </p>
+                        Thông tin bắt buộc
+                      </p>
                     </div>
                   </div>
 
@@ -144,13 +198,13 @@
                   <div>
                     <label class="block text-sm font-medium mb-1">Điểm nhấn chương trình *</label>
 
-                      <app-blog-content [content]="''" formControlName="highlights"></app-blog-content>
-                      <p *ngIf="
+                    <app-blog-content [content]="''" formControlName="highlights"></app-blog-content>
+                    <p *ngIf="
                         tourForm.get('highlights')?.invalid &&
                         tourForm.get('highlights')?.touched
                       " class="text-red-500 w-full text-left text-sm">
-                        Thông tin bắt buộc
-                      </p>
+                      Thông tin bắt buộc
+                    </p>
                   </div>
 
                   <div>
@@ -161,25 +215,26 @@
                   </div>
                 </div>
               </div>
-            
 
-          </div>
-          <!-- Modal footer -->
-          <div class="flex justify-between items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-            <p class="text-red-500">{{errorMessages}}</p>
-            <div>
-              <button  type="submit"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
-              Lưu
-            </button>
-            <button data-modal-hide="create-tour-modal" type="button"
-              class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
-              Hủy
-            </button>
+
+            </div>
+            <!-- Modal footer -->
+            <div
+              class="flex justify-between items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+              <p class="text-red-500">{{errorMessages}}</p>
+              <div>
+                <button type="submit"
+                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center ">
+                  Lưu
+                </button>
+                <button data-modal-hide="create-tour-modal" type="button"
+                  class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100">
+                  Hủy
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
       </div>
     </div>
   </div>
@@ -197,7 +252,7 @@
       <tbody>
         @for (tourData of tourDatas; track $index) {
 
-        <tr class="hover:bg-card/50" app-table-row [tourData]="tourData"  [index]="$index"></tr>
+        <tr class="hover:bg-card/50" app-table-row [tourData]="tourData" [index]="$index"></tr>
 
         } @empty {
         <tr>
@@ -213,13 +268,13 @@
 
 
 @if(showSuccess) {
-  <!-- Warning Notification (Only One at a Time) -->
-  <div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
-      <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
-          <span class="text-green-500 text-xl mr-2">✔</span>
-          <p class="text-gray-800 text-sm">
-            Tạo chương trình tour thành công
-          </p>
-      </div>
+<!-- Warning Notification (Only One at a Time) -->
+<div class="fixed top-[5rem] left-1/2 transform -translate-x-1/2 z-50 w-80">
+  <div class="flex items-center bg-white shadow-md border border-gray-200 rounded-md p-3 animate-slide-in">
+    <span class="text-green-500 text-xl mr-2">✔</span>
+    <p class="text-gray-800 text-sm">
+      Tạo chương trình tour thành công
+    </p>
   </div>
-  }
+</div>
+}

@@ -72,6 +72,7 @@ export class TourBookingServiceComponent implements AfterViewInit{
   openServiceNotOrderModal(service: any): void {
     this.serviceNotOrderModal?.show();
     this.selectedTourBookingService = service;
+
     this.updateInfoBookingServiceNotOrderForm();
   }
 
@@ -82,6 +83,7 @@ export class TourBookingServiceComponent implements AfterViewInit{
   openServiceModal(service: any): void {
     this.serviceModal?.show();
     this.selectedTourBookingService = service;
+
     this.updateInfoBookingServiceForm();
   }
 
@@ -94,6 +96,9 @@ export class TourBookingServiceComponent implements AfterViewInit{
       tourBookingServiceId: this.selectedTourBookingService.id,
       currentQuantity: this.selectedTourBookingService.currentQuantity,
     });
+
+
+
   }
 
   ngOnInit():void {
@@ -123,6 +128,10 @@ export class TourBookingServiceComponent implements AfterViewInit{
       tourBookingServiceId: this.selectedTourBookingService.id,
       currentQuantity: this.selectedTourBookingService.currentQuantity
     });
+
+
+    console.log('updateInfoBookingServiceNotOrderForm', this.bookingServiceNotOrderForm.value);
+
   }
 
   hasNotOrdered:boolean = true;
@@ -231,6 +240,9 @@ export class TourBookingServiceComponent implements AfterViewInit{
         this.cancelService();
         break;
     }
+
+    this.closeServiceModal();
+    this.closeServiceNotOrderModal();
   }
 
   chekingService() {
@@ -239,7 +251,35 @@ export class TourBookingServiceComponent implements AfterViewInit{
 
     this.isLoading = true;
 
-    this.bookingService.sendCheckingAvailable(this.bookingServiceNotOrderForm.value.tourBookingServiceId).subscribe({
+    this.bookingService.sendCheckingSICAvailable(this.bookingServiceNotOrderForm.value.tourBookingServiceId, 0 , '').subscribe({
+      next: (response) => {
+        this.isLoading = true;
+        console.log('Updated service:', response);
+        this.getBookingService(this.tourBookingId!);
+        
+      },
+      error: (error) => {
+        console.error('Booking Failed:', error);
+        this.isLoading = false;
+      }
+
+    });
+    this.closeServiceNotOrderModal();
+    this.closeServiceModal();
+
+    this.bookingServiceForm.reset();
+    this.bookingServiceNotOrderForm.reset();
+
+  }
+
+
+  chekingSICService() {
+    // Logic đặt dịch vụ
+    console.log('Đặt dịch vụ:', this.bookingServiceNotOrderForm.value);
+
+    this.isLoading = true;
+
+    this.bookingService.sendCheckingSICAvailable(this.bookingServiceForm.value.tourBookingServiceId, this.bookingServiceForm.value.requestedQuantity, this.bookingServiceForm.value.reason).subscribe({
       next: (response) => {
         this.isLoading = true;
         console.log('Updated service:', response);
@@ -252,6 +292,12 @@ export class TourBookingServiceComponent implements AfterViewInit{
       }
 
     });
+
+    this.closeServiceModal();
+    this.closeServiceNotOrderModal();
+
+    this.bookingServiceForm.reset();
+    this.bookingServiceNotOrderForm.reset();
 
   }
   
@@ -279,14 +325,15 @@ export class TourBookingServiceComponent implements AfterViewInit{
   
   cancelService() {
     // Logic hủy dịch vụ
-    console.log('Hủy dịch vụ:', this.bookingServiceNotOrderForm.value);
     this.isLoading = true;
+
+    console.log('Hủy dịch vụ:', this.bookingServiceNotOrderForm.value.tourBookingServiceId);
+    console.log('Hủy dịch vụ:', this.bookingServiceNotOrderForm.value);
 
     this.bookingService.cancelService(this.bookingServiceNotOrderForm.value.tourBookingServiceId).subscribe({
       next: (response) => {
         console.log('Canceled service:', response);
         this.getBookingService(this.tourBookingId!);
-        this.closeServiceNotOrderModal();
         this.isLoading = false;
       },
       error: (error) => {
@@ -294,6 +341,33 @@ export class TourBookingServiceComponent implements AfterViewInit{
         this.isLoading = false;
       }
     });
+
+
+    this.closeServiceModal();
+    this.closeServiceNotOrderModal();
+
+  }
+
+
+  cancelSICService() {
+    // Logic hủy dịch vụ
+    this.isLoading = true;
+
+    this.bookingService.cancelService(this.bookingServiceForm.value.tourBookingServiceId).subscribe({
+      next: (response) => {
+        console.log('Canceled service:', response);
+        this.getBookingService(this.tourBookingId!);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Booking Failed:', error);
+        this.isLoading = false;
+      }
+    });
+
+
+    this.closeServiceModal();
+    this.closeServiceNotOrderModal();
   }
 
 
@@ -305,13 +379,16 @@ export class TourBookingServiceComponent implements AfterViewInit{
       next: (response) => {
         console.log('Updated service:', response);
         this.getBookingService(this.tourBookingId!);
-        this.closeServiceNotOrderModal();
       },
       error: (error) => {
         console.error('Booking Failed:', error);
         this.isLoading = false;
       }
     });
+
+
+    this.closeServiceModal();
+    this.closeServiceNotOrderModal();
 
 
   }
