@@ -80,7 +80,7 @@ export class ServiceComponent {
     private tourService: TourService,
     private route: ActivatedRoute,
     private requestService: RequestService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -117,7 +117,6 @@ export class ServiceComponent {
     this.isLoading = true;
     this.tourService.getServices(id).subscribe({
       next: (response: any) => {
-        this.isLoading = false;
         if (response.code === 200) {
           this.services = response.data.services.map((service: any) => ({
             bookingServiceId: service.bookingServiceId,
@@ -156,6 +155,7 @@ export class ServiceComponent {
         console.error('Lỗi khi tải danh sách dịch vụ:', error);
       }
     });
+    this.isLoading = false;
   }
 
   groupServices(): void {
@@ -223,7 +223,7 @@ export class ServiceComponent {
       'Thanh toán một phần': 'bg-fuchsia-400/20 text-fuchsia-700'
     };
     return colorMap[status] || 'bg-gray-500/20 text-gray-800';
-  }  
+  }
 
   async initDropdowns(): Promise<void> {
     const { Dropdown } = await import('flowbite');
@@ -248,12 +248,8 @@ export class ServiceComponent {
     this.isLoading = true;
     this.tourService.deleteService(serviceId).subscribe({
       next: (response: any) => {
-        this.isLoading = false;
         if (response.code === 200) {
           console.log('Dịch vụ đã được xóa thành công!');
-          this.fetchServices(this.scheduleId!);
-          this.fetchTourGuide(this.scheduleId!);
-          this.reInitFlowbite();
         } else {
           console.error('Lỗi khi xóa dịch vụ:', response.message);
         }
@@ -263,6 +259,10 @@ export class ServiceComponent {
         console.error('Lỗi khi xóa dịch vụ:', error);
       }
     });
+    this.fetchTourGuide(this.scheduleId!);
+    this.reInitFlowbite();
+    this.fetchServices(this.scheduleId!);
+    this.isLoading = false;
   }
 
   openDeleteModal(index: number): void {
@@ -352,12 +352,12 @@ export class ServiceComponent {
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
   }
-  
+
   private reInitFlowbite(): void {
     if (this.ssrService.isBrowser) {
       setTimeout(() => {
-        initFlowbite(); 
-      }, 0); 
+        initFlowbite();
+      }, 0);
     }
   }
 }
