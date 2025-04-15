@@ -105,7 +105,7 @@ export class LoginComponent implements OnInit {
       .login(username, password)
       .pipe(
         catchError((error) => {
-          const apiError = error?.message || 'An error occurred during sign in.';
+          const apiError = error || 'An error occurred during sign in.';
           this.errorMessage = apiError;
           return of(null);
         })
@@ -140,11 +140,8 @@ export class LoginComponent implements OnInit {
             const targetRole = userRoles.find(role => role !== 'CUSTOMER') || userRoles[0];
             redirectTo = `/${roleRouteMap[targetRole] || 'customer'}`;
           }
-
           this.router.navigate([redirectTo]);
-        } else {
-          this.errorMessage = response?.message || 'An error occurred during sign in.';
-        }
+        } 
       });
   }
 }
