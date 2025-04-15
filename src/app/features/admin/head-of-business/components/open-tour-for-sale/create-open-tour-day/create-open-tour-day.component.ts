@@ -32,7 +32,7 @@ export class CreateOpenTourDayComponent {
   calculatedEndDates: string[] = [];
   startDates: string[] = [];
   operatorId: string = '';
-  paxId: string = ''; 
+  paxId: string = '';
   addByMonth: boolean = false;
 
   // New properties for popup
@@ -135,11 +135,11 @@ export class CreateOpenTourDayComponent {
     let dateList: string[] = [];
 
     for (let i = startDay; i <= 31; i++) {
-      let tempDate = new Date(year, month, i);
+      const tempDate = new Date(year, month, i);
       if (tempDate.getMonth() !== month) break;
 
       if (tempDate.getDay() === dayOfWeek) {
-        dateList.push(tempDate.toISOString().split('T')[0]);
+        dateList.push(this.toLocalISOString(tempDate));
       }
     }
 
@@ -158,6 +158,15 @@ export class CreateOpenTourDayComponent {
       this.showPopupMessage(error.message || 'Đã xảy ra lỗi không xác định.', false);
     }
   }
+
+  toLocalISOString(date: Date, hour: number = 0): string {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(hour).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
 
   onCheckboxChange() {
     if (this.addByMonth) {
@@ -196,12 +205,12 @@ export class CreateOpenTourDayComponent {
 
         const requestBody = {
           tourId: this.tourId,
-          startDate: new Date(startDate).toISOString(),
-          endDate: new Date(endDate).toISOString(),
+          startDate: new Date(`${startDate}`).toISOString(),
+          endDate: new Date(`${endDate}`).toISOString(),
           operatorId: this.operatorId,
           tourPaxId: this.paxId
         };
-
+        
         this.tourService.createTourSchedule(requestBody).subscribe({
           next: (response) => {
             this.daySetted.emit(response.data);
@@ -215,8 +224,8 @@ export class CreateOpenTourDayComponent {
     } else {
       const requestBody = {
         tourId: this.tourId,
-        startDate: new Date(this.selectedDate).toISOString(),
-        endDate: this.calculatedEndDate ? new Date(this.calculatedEndDate).toISOString() : null,
+        startDate: `${this.selectedDate}T00:00:00Z`,
+        endDate: this.calculatedEndDate ? `${this.calculatedEndDate}` : null,
         operatorId: this.operatorId,
         tourPaxId: this.paxId
       };

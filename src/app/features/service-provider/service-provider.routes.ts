@@ -10,6 +10,11 @@ export const SERVICE_PROVIDER_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'service-request',
+        pathMatch: 'full'
+      },
+      {
         path: 'service-request',
         component: ServiceRequestComponent,
       },

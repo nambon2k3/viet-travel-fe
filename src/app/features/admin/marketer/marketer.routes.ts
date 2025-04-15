@@ -10,6 +10,11 @@ export const MARKETER_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'blog',
+        pathMatch: 'full'
+      },
+      {
         path: 'blog',
         component: ListBlogComponent
       },

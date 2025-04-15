@@ -11,6 +11,11 @@ export const SYSTEM_ADMIN_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'user',
+        pathMatch: 'full',
+      },
+      {
         path: 'user',
         component: ListStaffComponent,
       },

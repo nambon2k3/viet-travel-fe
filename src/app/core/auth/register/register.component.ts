@@ -174,20 +174,16 @@ export class RegisterComponent implements OnInit {
         this.authService
             .register(this.signupForm.value)
             .pipe(
-                catchError((err) => {
-                    const apiError = err?.error?.message || "An error occurred during registration.";
-                    const encodedError = encodeURIComponent(apiError);
-                    this.router.navigate(['/regis-confirm'], { queryParams: { error: encodedError } });
+                catchError((error) => {
+                    const apiError = error || 'An error occurred during sign in.';
+                    this.errorMessage = apiError;
+                    this.router.navigate(['/regis-confirm'], { queryParams: { error: this.errorMessage } });
                     return of(null); // Ensure the stream continues
                 })
             )
             .subscribe((response: any) => {
                 if (response?.code === 201) {
                     this.router.navigate(['/regis-confirm']);
-                } else if (response) {
-                    const errorMessage = response?.message || "An unexpected error occurred.";
-                    const encodedError = encodeURIComponent(errorMessage);
-                    this.router.navigate(['/regis-confirm'], { queryParams: { error: encodedError } });
                 }
             });
     }

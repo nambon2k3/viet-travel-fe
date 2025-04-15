@@ -20,6 +20,11 @@ export const SALESMAN_ROUTES: Route[] = [
     component: LayoutComponent,
     children: [
       {
+        path: '',
+        redirectTo: 'list-tour-private',
+        pathMatch: 'full',
+      },
+      {
         path: 'list-booking',
         component: ListBookingComponent
       },

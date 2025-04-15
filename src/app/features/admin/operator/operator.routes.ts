@@ -1,5 +1,4 @@
 import { Route } from "@angular/router";
-import { DashBoardComponent } from "./components/dash-board/dash-board.component";
 import { ViewListRequestComponent } from "./components/view-list-request/view-list-request.component";
 import { ViewRequestDetailComponent } from "./components/view-request-detail/view-request-detail.component";
 import { ViewListTourComponent } from "./components/view-list-tour/view-list-tour.component";
@@ -13,7 +12,8 @@ export const OPERATOR_ROUTES: Route[] = [
     children: [
       {
         path: '',
-        component: DashBoardComponent
+        redirectTo: 'view-list-tour',
+        pathMatch: 'full',
       },
       {
         path: 'view-list-request',
