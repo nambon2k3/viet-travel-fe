@@ -91,7 +91,7 @@
 
             <!-- Buttons Group -->
             <div class="flex space-x-2">
-                <button  type="button"
+                <button  type="button" *ngIf="bookingDetail?.tour?.tourType !== 'SIC'"
                 (click)="openPriceModal()"
                 class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
