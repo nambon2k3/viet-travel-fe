@@ -177,7 +177,7 @@
                         <div class="flex mt-2">
                             <img class="w-32 h-24 rounded-lg" [src]="booking?.tourImage" alt="Tour Image">
                             <div class="ml-4 mt-2">
-                                <h3 class="font-bold text-lg">{{ booking.tourName }}</h3>
+                                <h3 class="font-bold text-lg max-w-3xl">{{ booking.tourName }}</h3>
                                 <p class="text-gray-600">Mã booking: <span class="font-bold">{{ booking.bookingCode
                                         }}</span></p>
                                 <p [class]="getStatusClass(booking.bookingStatus)">

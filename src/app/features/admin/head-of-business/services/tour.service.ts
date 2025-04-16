@@ -135,10 +135,10 @@ export class TourService {
   }
 
   approveRequest(tourId: number): Observable<any> {
-    return this.http.post(`${environment.apiUrl}head-of-business/refund-request/approve/${tourId}`, {});
+    return this.http.put(`${environment.apiUrl}head-of-business/refund-request/approve/${tourId}`, {});
   }
 
   rejectRequest(tourId: number): Observable<any> {
-    return this.http.post(`${environment.apiUrl}head-of-business/refund-request/cancel/${tourId}`, {});
+    return this.http.put(`${environment.apiUrl}head-of-business/refund-request/reject/${tourId}`, {});
   }
 }

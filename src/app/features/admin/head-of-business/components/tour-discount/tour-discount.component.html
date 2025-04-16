@@ -51,7 +51,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="5"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-2/5': hotels.length > 0, 'w-full': hotels.length === 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': hotels.length > 0, 'w-1/3': hotels.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -125,7 +125,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="4"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-2/5': transports.length > 0, 'w-full': transports.length === 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': transports.length > 0, 'w-1/3': transports.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -199,7 +199,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="5"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-2/5': restaurants.length > 0, 'w-full': restaurants.length === 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': restaurants.length > 0, 'w-1/3': restaurants.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -272,7 +272,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="4"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-2/5': activities.length > 0, 'w-full': activities.length === 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': activities.length > 0, 'w-1/3': activities.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -344,7 +344,7 @@
         </tr>
         <tr class="bg-gray-200 border-b border-gray-300">
           <th colspan="4"></th>
-          <th class="p-2 text-right" [ngClass]="{'w-2/5': flights.length > 0, 'w-full': flights.length === 0}">
+          <th class="p-2 text-right" [ngClass]="{'w-2/5': flights.length > 0, 'w-1/3': flights.length === 0}">
             <table class="border-collapse inline-table w-full">
               <tbody>
                 <tr>
@@ -399,8 +399,8 @@
       <h2 class="text-lg font-semibold">Tổng cộng</h2>
       <div class="">
         <button data-modal-target="configMarkupModal"></button>
-        <button *ngIf="tourType === 'SIC'" class="bg-green-700 mr-4 text-white px-4 py-2 rounded hover:bg-green-800"
-          (click)="openConfigMarkup()">Cấu hình lợi nhuận</button>
+        <!-- <button *ngIf="tourType === 'SIC'" class="bg-green-700 mr-4 text-white px-4 py-2 rounded hover:bg-green-800"
+          (click)="openConfigMarkup()">Cấu hình lợi nhuận</button> -->
         <button class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800" data-modal-target="addPriceModal"
           data-modal-toggle="addPriceModal">Cấu hình giá</button>
       </div>
@@ -423,7 +423,7 @@
           </tr>
           <!-- Giá bán cuối -->
           <tr class="odd:bg-white even:bg-gray-50">
-            <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán cơ bản (1 khách)</td>
+            <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán (1 khách)</td>
             <td *ngFor="let range of priceRanges" class="py-2 text-center">
               {{ minsalePrices[range] / getMinPax(range) | currencyVnd }}
             </td>
@@ -442,10 +442,10 @@
 
 <!-- Include the new popup components -->
 <app-config-tour-pax (close)="closeTourPax()" [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
-<app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalSellingPrice]="minsalePrices"
+<app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalSellingPrice]="minsalePrices" 
   [extraHotelCost]="extraHotelCost" [nettPricePerPax]="mintotalNetPrices"
   (confirm)="handlePriceConfirm($event)"></app-config-price>
-<app-config-markup #configMarkupModal [tourId]="tourId" (confirm)="handleMarkupConfirm($event)"></app-config-markup>
+<!-- <app-config-markup #configMarkupModal [tourId]="tourId" (confirm)="handleMarkupConfirm($event)"></app-config-markup> -->
 <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (hotelAdded)="addNewHotel($event)"></app-add-hotel>
 <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"

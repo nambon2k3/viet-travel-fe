@@ -150,4 +150,8 @@ export class TourService {
   sendTour(id: number): Observable<any> {
     return this.http.put(`${environment.apiUrl}operator/tours/send-accountant/${id}`, {});
   }
+
+  getTourDays(id: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-detail/${id}/list-tour-day`);
+  }
 }

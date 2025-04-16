@@ -291,7 +291,7 @@ export class TourDiscountComponent implements OnInit {
   calculateFinalTourPrices() {
     this.priceRanges.forEach(range => {
       const sellingPrice = this.getPriceByRange(range)?.sellingPrice || 0;
-      this.finalTourPrices[range] = sellingPrice * (1 + this.markupPercentage / 100);
+      this.finalTourPrices[range] = sellingPrice;
     });
   }
 
@@ -425,11 +425,11 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.hotels.push(hotel);
     }
-    this.reInitFlowbite();
     this.calculateTourDays();
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
     this.calculateFinalTourPrices();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật khách sạn thành công!', true);
   }
 
@@ -464,11 +464,11 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.flights.push(flight);
     }
-    this.reInitFlowbite();
     this.calculateTourDays();
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
     this.calculateFinalTourPrices();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật vé máy bay thành công!', true);
   }
 
@@ -503,11 +503,11 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.transports.push(transport);
     }
-    this.reInitFlowbite();
     this.calculateTourDays();
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
     this.calculateFinalTourPrices();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật phương tiện thành công!', true);
   }
 
@@ -542,11 +542,11 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.restaurants.push(restaurant);
     }
-    this.reInitFlowbite();
     this.calculateTourDays();
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
     this.calculateFinalTourPrices();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật nhà hàng thành công!', true);
   }
 
@@ -581,11 +581,11 @@ export class TourDiscountComponent implements OnInit {
     } else {
       this.activities.push(activity);
     }
-    this.reInitFlowbite();
     this.calculateTourDays();
     this.calculateTotalNetPrice();
     this.calculateTotalPrices();
     this.calculateFinalTourPrices();
+    this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật hoạt động thành công!', true);
   }
 

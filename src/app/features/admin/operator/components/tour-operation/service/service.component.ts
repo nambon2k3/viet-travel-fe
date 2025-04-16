@@ -82,7 +82,7 @@ export class ServiceComponent {
     private ssrService: SsrService,
     private tourService: TourService,
     private route: ActivatedRoute,
-    private requestService: RequestService
+    private requestService: RequestService,
   ) { }
 
   ngOnInit(): void {
@@ -166,6 +166,24 @@ export class ServiceComponent {
       error: (error: any) => {
         this.isLoading = false;
         this.showNotification('Lỗi khi tải danh sách dịch vụ: ' + error.message, false);
+      }
+    });
+  }
+
+  fetchTourDays(id: number): void {
+    this.isLoading = true;
+    this.tourService.getTourDays(id).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        if (response.code === 200) {
+          // Handle tour days data if needed
+        } else {
+          this.showNotification('Lỗi khi tải danh sách ngày tour: ' + response.message, false);
+        }
+      },
+      error: (error: any) => {
+        this.isLoading = false;
+        this.showNotification('Lỗi khi tải danh sách ngày tour: ' + error.message, false);
       }
     });
   }

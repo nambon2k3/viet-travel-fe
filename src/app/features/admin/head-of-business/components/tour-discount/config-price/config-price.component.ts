@@ -26,6 +26,7 @@ interface PriceRange {
   templateUrl: './config-price.component.html'
 })
 export class ConfigPriceComponent {
+  // @Input() markupPercentage: number = 0;
   @Input() tourId!: number;
   @Input() set prices(value: PaxOption[]) {
     this._prices = value.map(p => {
@@ -33,7 +34,7 @@ export class ConfigPriceComponent {
       return {
         ...p,
         fixedCostFormatted: p.fixedCost?.toLocaleString('vi-VN'),
-        sellingPriceFormatted: (netPrice + p.fixedCost)?.toLocaleString('vi-VN')
+        sellingPriceFormatted: (netPrice + (p.fixedCost / this.getMinPax(p.paxRange)))?.toLocaleString('vi-VN')
       };
     });
   }
@@ -66,7 +67,7 @@ export class ConfigPriceComponent {
             id: p.id,
             paxRange: p.paxRange,
             fixedCostFormatted: p.fixedCost?.toLocaleString('vi-VN'),
-            sellingPriceFormatted: (netPrice + p.fixedCost)?.toLocaleString('vi-VN'),
+            sellingPriceFormatted: (netPrice + (p.fixedCost / this.getMinPax(p.paxRange)))?.toLocaleString('vi-VN'),
           };
         });
       }
@@ -110,7 +111,7 @@ export class ConfigPriceComponent {
       maxPax: this.getMaxPax(p.paxRange),
       paxRange: p.paxRange,
       extraHotelCost: this.extraHotelCost[p.paxRange] || 0,
-      nettPricePerPax: this.nettPricePerPax[p.paxRange] || 0,
+      nettPricePerPax: this.nettPricePerPax[p.paxRange] / this.getMinPax(p.paxRange) || 0,
       fixedCost: parseInt(p.fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0,
       sellingPrice: parseInt(p.sellingPriceFormatted.replace(/[^0-9]/g, ''), 10) || 0,
       validFrom: new Date(this.startDate).toISOString(),
