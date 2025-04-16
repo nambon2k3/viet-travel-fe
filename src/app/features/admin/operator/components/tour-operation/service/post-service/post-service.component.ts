@@ -7,6 +7,13 @@ import { CommonModule } from '@angular/common';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourService } from '../../../../services/tour.service';
 
+interface TourDay {
+  id: number;
+  title: string;
+  dayNumber: number;
+  content: string;
+}
+
 @Component({
   selector: 'app-post-service',
   standalone: true,
@@ -17,6 +24,7 @@ import { TourService } from '../../../../services/tour.service';
 export class PostServiceComponent {
   @Output() serviceAdded = new EventEmitter<any[]>();
   @Input() scheduleId: number | null = null;
+  @Input() tourDays: TourDay[] = [];
   modal: Modal | null = null;
   errorMessage: string | null = null;
 
@@ -30,6 +38,7 @@ export class PostServiceComponent {
   selectedCategoryId: number | null = null;
   selectedProviderId: number | null = null;
   selectedBookingId: number | null = null;
+  selectedTourDayId: number | null = null;
 
   servicePrices: any[] = [];
   finalServiceList: any[] = [];
@@ -58,7 +67,6 @@ export class PostServiceComponent {
     this.tourService.getListBooking(this.scheduleId).subscribe({
       next: (response: any) => {
         if (response.code === 200) {
-          // Transform the data to match ng-select requirements
           const formattedBookings = response.data.map((booking: any) => ({
             id: booking.bookingId,
             name: `${booking.customerName} (${booking.bookingCode || 'No Code'})`
@@ -191,7 +199,7 @@ export class PostServiceComponent {
 
     return Object.entries(categories).map(([id, name]) => ({
       id: Number(id),
-      name: translations[name] || name // fallback nếu không có bản dịch
+      name: translations[name] || name
     }));
   }
 
@@ -225,12 +233,10 @@ export class PostServiceComponent {
     const input = event.target as HTMLInputElement;
     let newQuantity = Number(input.value);
 
-    // Ensure the quantity is at least 1
     if (isNaN(newQuantity) || newQuantity < 1) {
       newQuantity = 1;
     }
 
-    // Update the quantity in the servicePrices array
     this.servicePrices[index].quantity = newQuantity;
   }
 
@@ -240,49 +246,50 @@ export class PostServiceComponent {
 
   addServicesToFinalList() {
     if (!this.selectedBookingId) {
-      console.error('Vui lòng chọn một đặt chỗ trước');
       this.errorMessage = 'Vui lòng chọn một đặt chỗ trước';
+      return;
+    }
+    if (!this.selectedTourDayId) {
+      this.errorMessage = 'Vui lòng chọn ngày tour trước';
+      return;
+    }
 
-    } else {
-      const payloads = this.servicePrices.map(service => {
-        if (!service.serviceId) {
-          console.error('Thiếu ID dịch vụ cho dịch vụ:', service);
-          throw new Error('ID dịch vụ không thể null');
-        }
-        return {
-          bookingId: this.selectedBookingId,
-          serviceId: service.serviceId,
-          addQuantity: service.quantity,
-          requestDate: new Date(service.requestDate).toISOString(),
-          reason: ''
-        };
-      });
-
-      for (const payload of payloads) {
-        this.tourService.addServices(payload).subscribe({
-          next: (response: any) => {
-            if (response.code === 200) {
-              this.serviceAdded.emit(this.servicePrices);
-              this.close();
-              console.log('Thêm dịch vụ thành công:', response);
-            } else {
-              this.errorMessage = response.message;
-              console.error('Lỗi khi thêm dịch vụ:', response.message);
-            }
-          },
-          error: (error) => {
-            console.error('Lỗi khi thêm dịch vụ:', error);
-            this.errorMessage = error;
-          },
-          complete: () => {
-            if (payload === payloads[payloads.length - 1]) {
-              this.serviceAdded.emit(this.servicePrices);
-              this.servicePrices = [];
-              this.selectedBookingId = null;
-            }
-          }
-        });
+    const payloads = this.servicePrices.map(service => {
+      if (!service.serviceId) {
+        throw new Error('ID dịch vụ không thể null');
       }
+      return {
+        bookingId: this.selectedBookingId,
+        serviceId: service.serviceId,
+        addQuantity: service.quantity,
+        requestDate: new Date(service.requestDate).toISOString(),
+        tourDayId: this.selectedTourDayId,
+        reason: ''
+      };
+    });
+
+    for (const payload of payloads) {
+      this.tourService.addServices(payload).subscribe({
+        next: (response: any) => {
+          if (response.code === 200) {
+            this.serviceAdded.emit(this.servicePrices);
+            this.close();
+          } else {
+            this.errorMessage = response.message;
+          }
+        },
+        error: (error) => {
+          this.errorMessage = error || 'Lỗi khi thêm dịch vụ';
+        },
+        complete: () => {
+          if (payload === payloads[payloads.length - 1]) {
+            this.serviceAdded.emit(this.servicePrices);
+            this.servicePrices = [];
+            this.selectedBookingId = null;
+            this.selectedTourDayId = null;
+          }
+        }
+      });
     }
   }
 

@@ -1,49 +1,64 @@
 <div id="chooseServiceModal" tabindex="-1" aria-hidden="true"
     class="hidden fixed inset-0 z-50 flex justify-center items-center w-full h-full bg-gray-900 bg-opacity-50">
-    <div class="max-w-7xl w-11/12 mx-auto bg-white p-6 rounded-lg shadow">
-        <div class="flex justify-between items-center">
-            <h2 class="text-lg font-bold mb-3">Chọn dịch vụ</h2>
-            <button data-modal-hide="chooseServiceModal" class="text-gray-500 hover:text-gray-700">
-                ✖
+    <div class="max-w-7xl w-11/12 mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">Chọn dịch vụ</h2>
+            <button data-modal-hide="chooseServiceModal" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
             </button>
         </div>
 
-        <!-- Location and Category Selection -->
-        <div class="grid grid-cols-2 gap-4 mb-4">
+        <!-- Selection Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <!-- Location -->
             <div>
-                <label class="block text-sm font-semibold">Chọn địa điểm</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Chọn địa điểm</label>
                 <ng-select [(ngModel)]="selectedLocationId" (change)="fetchServiceProviders()" [items]="locations()"
                     bindLabel="name" bindValue="id" placeholder="Chọn địa điểm" [searchable]="true"
-                    class="mt-2 custom bg-white border border-gray-300 rounded-md">
+                    class="custom bg-white border border-gray-300 rounded-md">
                 </ng-select>
             </div>
+            <!-- Category -->
             <div>
-                <label class="block text-sm font-semibold">Chọn loại dịch vụ</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Chọn loại dịch vụ</label>
                 <ng-select [(ngModel)]="selectedCategoryId" (change)="fetchServiceProviders()" [items]="categories()"
                     bindLabel="name" bindValue="id" placeholder="Chọn loại dịch vụ" [searchable]="true"
-                    class="mt-2 custom bg-white border border-gray-300 rounded-md">
+                    class="custom bg-white border border-gray-300 rounded-md">
+                </ng-select>
+            </div>
+            <!-- Tour Day -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Chọn ngày tour</label>
+                <ng-select [(ngModel)]="selectedTourDayId" [items]="tourDays"
+                    bindLabel="dayNumber" bindValue="id" placeholder="Chọn ngày tour" [searchable]="true"
+                    class="custom bg-white border border-gray-300 rounded-md">
                 </ng-select>
             </div>
         </div>
 
-        <!-- Service Provider and Customer Selection -->
-        <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <!-- Service Provider -->
             <div>
-                <label class="block text-sm font-semibold">Chọn nhà cung cấp dịch vụ</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Chọn nhà cung cấp dịch vụ</label>
                 <ng-select [(ngModel)]="selectedProviderId" (change)="fetchServices()" [items]="providers()"
                     bindLabel="name" bindValue="id" placeholder="Chọn nhà cung cấp" [searchable]="true"
-                    class="mt-2 custom bg-white border border-gray-300 rounded-md">
+                    class="custom bg-white border border-gray-300 rounded-md">
                 </ng-select>
             </div>
+            <!-- Customer -->
             <div>
-                <label class="block text-sm font-semibold">Chọn khách hàng</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Chọn khách hàng</label>
                 <ng-select [(ngModel)]="selectedBookingId" (change)="fetchListBookings()" [items]="bookings()"
                     bindLabel="name" bindValue="id" placeholder="Chọn khách hàng" [searchable]="true"
-                    class="mt-2 custom bg-white border border-gray-300 rounded-md">
+                    class="custom bg-white border border-gray-300 rounded-md">
                 </ng-select>
             </div>
         </div>
 
+        <!-- Service List -->
         <!-- Service List -->
         <div class="border rounded-md  p-3">
             <table class="w-full text-left service-list-table">
@@ -166,14 +181,20 @@
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="flex justify-end space-x-2 mt-4">
-            <button class="border px-4 py-2 rounded bg-gray-300" data-modal-hide="chooseServiceModal">Hủy</button>
-            <button class="border px-4 py-2 rounded bg-black text-white"
-                (click)="addServicesToFinalList()">Thêm dịch vụ</button>
-        </div>
-        
-        <div *ngIf="errorMessage" class="global-error text-red-500 ml-4 pb-2">
+        <!-- Error Message -->
+        <div *ngIf="errorMessage" class="text-red-500 mb-4">
             {{ errorMessage }}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-end space-x-3">
+            <button class="border px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300" data-modal-hide="chooseServiceModal">
+                Hủy
+            </button>
+            <button class="border px-4 py-2 rounded bg-black text-white hover:bg-gray-800"
+                (click)="addServicesToFinalList()">
+                Thêm dịch vụ
+            </button>
+        </div>
     </div>
 </div>

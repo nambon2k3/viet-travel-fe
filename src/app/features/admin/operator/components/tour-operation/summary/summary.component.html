@@ -62,15 +62,15 @@
             <thead>
                 <tr class="font-semibold mb-2">
                     <th class="bg-gray-200 border border-gray-300 p-2 text-left">Nội dung</th>
+                    <th class="bg-gray-200 border border-gray-300 p-2 text-center">Thực tế</th>
                     <th class="bg-gray-200 border border-gray-300 p-2 text-center">Ước tính</th>
-                    <th class="bg-gray-200 border border-gray-300 p-2 text-center">Tổng cộng</th>
                 </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let item of summary" class="mb-2">
                     <td class="bg-white border border-gray-300 p-2">{{ item.content }}</td>
-                    <td class="bg-white border border-gray-300 p-2 text-center">{{ item.estimate | currencyVnd }}</td>
                     <td class="bg-white border border-gray-300 p-2 text-center">{{ item.summary | currencyVnd }}</td>
+                    <td class="bg-white border border-gray-300 p-2 text-center">{{ item.estimate | currencyVnd }}</td>
                 </tr>
             </tbody>
         </table>

@@ -34,10 +34,26 @@ interface Service {
   order: string;
   payment: string;
   status: string;
+  tourDayId: number;
+}
+
+interface TourDay {
+  id: number;
+  title: string;
+  dayNumber: number;
+  content: string;
+  mealPlan: string;
 }
 
 interface ServiceGroup {
   bookingCode: string;
+  days: DayGroup[];
+}
+
+interface DayGroup {
+  dayNumber: number;
+  tourDayId: number;
+  title: string;
   services: Service[];
 }
 
@@ -60,6 +76,7 @@ interface ServiceGroup {
 export class ServiceComponent {
   selectedService: Service | null = null;
   services: Service[] = [];
+  tourDays: TourDay[] = [];
   groupedServices: ServiceGroup[] = [];
   totalService: number = 0;
   paid: number = 0;
@@ -90,6 +107,7 @@ export class ServiceComponent {
       const id = params['id'];
       if (id) {
         this.scheduleId = +id;
+        this.fetchTourDays(this.scheduleId);
         this.fetchServices(this.scheduleId);
         this.fetchTourGuide(this.scheduleId);
       } else {
@@ -150,7 +168,8 @@ export class ServiceComponent {
             serviceName: service.serviceName,
             order: this.mapOrderStatus(service.bookingStatus),
             payment: this.mapPaymentStatus(service.paymentStatus),
-            status: this.mapOrderStatus(service.bookingStatus)
+            status: this.mapOrderStatus(service.bookingStatus),
+            tourDayId: service.tourDayId
           }));
           this.totalService = response.data.totalNumOfService;
           this.paid = response.data.paidAmount;
@@ -176,7 +195,8 @@ export class ServiceComponent {
       next: (response: any) => {
         this.isLoading = false;
         if (response.code === 200) {
-          // Handle tour days data if needed
+          this.tourDays = response.data;
+          this.groupServices();
         } else {
           this.showNotification('Lỗi khi tải danh sách ngày tour: ' + response.message, false);
         }
@@ -189,19 +209,47 @@ export class ServiceComponent {
   }
 
   groupServices(): void {
-    const grouped = this.services.reduce((acc: { [key: string]: Service[] }, service: Service) => {
+    if (!this.tourDays.length || !this.services.length) {
+      this.groupedServices = [];
+      return;
+    }
+
+    // First group by booking code
+    const groupedByBooking = this.services.reduce((acc: { [key: string]: Service[] }, service: Service) => {
       (acc[service.bookingCode] = acc[service.bookingCode] || []).push(service);
       return acc;
     }, {});
 
-    this.groupedServices = Object.keys(grouped).map(bookingCode => ({
-      bookingCode,
-      services: grouped[bookingCode]
-    }));
+    // Then for each booking, group services by tour day
+    this.groupedServices = Object.keys(groupedByBooking).map(bookingCode => {
+      const services = groupedByBooking[bookingCode];
+      
+      // Group services by tourDayId
+      const servicesByDay = services.reduce((acc: { [key: number]: Service[] }, service: Service) => {
+        (acc[service.tourDayId] = acc[service.tourDayId] || []).push(service);
+        return acc;
+      }, {});
+
+      // Map to DayGroup structure
+      const days = Object.keys(servicesByDay).map(tourDayId => {
+        const tourDay = this.tourDays.find(day => day.id === +tourDayId);
+        return {
+          tourDayId: +tourDayId,
+          dayNumber: tourDay ? tourDay.dayNumber : 0,
+          title: tourDay ? tourDay.title : 'Unknown Day',
+          services: servicesByDay[+tourDayId]
+        };
+      }).sort((a, b) => a.dayNumber - b.dayNumber); // Sort by dayNumber
+
+      return {
+        bookingCode,
+        days
+      };
+    });
   }
 
   get hasAnyService(): boolean {
-    return this.groupedServices?.some(group => group.services?.length > 0);
+    return this.groupedServices?.some(group => group.days?.length > 0 && group.days.some(day => day.services?.length > 0));
   }
 
   mapOrderStatus(status: string): string {
@@ -265,14 +313,16 @@ export class ServiceComponent {
 
     if (doc) {
       this.groupedServices.forEach(group => {
-        group.services.forEach(service => {
-          const orderButton = doc.getElementById(`dropdownOrderButton-${service.uniqueId}`);
-          const orderDropdown = doc.getElementById(`dropdownOrder-${service.uniqueId}`);
-          if (orderButton && orderDropdown) {
-            new Dropdown(orderDropdown, orderButton);
-          } else {
-            console.warn(`Order dropdown elements not found for service ${service.uniqueId}`);
-          }
+        group.days.forEach(day => {
+          day.services.forEach(service => {
+            const orderButton = doc.getElementById(`dropdownOrderButton-${service.uniqueId}`);
+            const orderDropdown = doc.getElementById(`dropdownOrder-${service.uniqueId}`);
+            if (orderButton && orderDropdown) {
+              new Dropdown(orderDropdown, orderButton);
+            } else {
+              console.warn(`Order dropdown elements not found for service ${service.uniqueId}`);
+            }
+          });
         });
       });
     }
