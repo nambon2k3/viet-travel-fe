@@ -17,7 +17,7 @@ import { SpinnerComponent } from "../../../../../../shared/components/spinner/sp
   styleUrl: './list-customer.component.css'
 })
 export class ListCustomerComponent implements OnInit {
-  listCustomers: any[] = [];
+  listCustomers: any | null = null;
   isLoading: boolean = false;
 
   constructor(private route: ActivatedRoute, private tourService: TourService) { }

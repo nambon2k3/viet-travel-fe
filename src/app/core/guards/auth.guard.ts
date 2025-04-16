@@ -32,7 +32,9 @@ export class AuthGuard implements CanActivate {
       }
       const userRoles = this.userStorageService.getUserRoles();
 
-      const hasRequiredRole = Array.isArray(userRoles) && expectedRoles.some(role => userRoles.includes(role));
+      const hasRequiredRole = Array.isArray(userRoles) && (
+        userRoles.includes('CEO') || expectedRoles.some(role => userRoles.includes(role))
+      );      
 
       if (!hasRequiredRole) {
         return this.router.createUrlTree(['/error/403-unauthorized']);

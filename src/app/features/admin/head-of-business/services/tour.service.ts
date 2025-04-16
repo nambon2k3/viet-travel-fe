@@ -71,15 +71,15 @@ export class TourService {
 
   changeTourDayStatus(tourId: string, tourDayId: string, isDeleted: boolean): Observable<any> {
     const params = new HttpParams().set('isDeleted', isDeleted.toString());
-    return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/${tourDayId}/status`, params );
+    return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/${tourDayId}/status`, params);
   }
 
   calculateEndDates(tourId: string, startDate: string): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}head-of-business/tour/schedule/calculate-end-dates/${tourId}`, { params: { startDate }});
+    return this.http.get<any>(`${environment.apiUrl}head-of-business/tour/schedule/calculate-end-dates/${tourId}`, { params: { startDate } });
   }
 
   getAvailableOperators(tourId: string, startDate: string, endDate: string): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}head-of-business/tour/schedule/available-operators`, { params: { tourId, startDate, endDate }});
+    return this.http.get<any>(`${environment.apiUrl}head-of-business/tour/schedule/available-operators`, { params: { tourId, startDate, endDate } });
   }
 
   getTourPax(tourId: string): Observable<any> {
@@ -104,5 +104,29 @@ export class TourService {
 
   openPrivateTour(tourId: string): Observable<any> {
     return this.http.post(`${environment.apiUrl}head-of-business/tour/open-tour/${tourId}`, {});
+  }
+
+  getTourBookingByPage(
+    page: number = 0,
+    size: number = 10,
+    keyword?: string,
+    isDeleted?: boolean,
+    sortField: string = 'createdAt',
+    sortDirection: string = 'desc'
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('sortField', sortField)
+      .set('sortDirection', sortDirection);
+
+    if (keyword) {
+      params = params.set('keyword', keyword);
+    }
+    if (isDeleted !== undefined) {
+      params = params.set('isDeleted', isDeleted);
+    }
+
+    return this.http.get(`${environment.apiUrl}salesman/bookings/list`, { params });
   }
 }

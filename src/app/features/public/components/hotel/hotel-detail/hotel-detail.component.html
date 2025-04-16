@@ -149,9 +149,9 @@
                     <h2 class="text-3xl font-bold text-center mb-6 mt-20">Danh sách phòng</h2>
                     <div *ngFor="let room of rooms" class="bg-gray-200 p-6 rounded-lg shadow-md mb-6">
                         <h3 class="text-xl font-bold">{{ room.name }}</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                            <img [src]="room.imageUrl" alt="Room Image" class="w-full h-32 object-cover rounded-md">
-                            <div class="space-y-2">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+                            <img [src]="room.imageUrl" alt="Room Image" class="w-full h-full object-cover rounded-md">
+                            <div class="space-y-2 col-span-2 ml-7">
                                 <p><strong>Số khách/phòng:</strong> {{ room.capacity }}</p>
                                 <p class="text-red-600 text-lg font-bold">{{ room.sellingPrice | currencyVnd }} / đêm
                                 </p>

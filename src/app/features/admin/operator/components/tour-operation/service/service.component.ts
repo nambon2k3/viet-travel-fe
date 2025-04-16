@@ -10,7 +10,7 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe'
 import { TourService } from '../../../services/tour.service';
 import { ServiceDetailComponent } from './service-detail/service-detail.component';
 import { PayServiceComponent } from './pay-service/pay-service.component';
-import { SpinnerComponent } from '../../../../../../shared/components/spinner/spinner.component'; // Import SpinnerComponent
+import { SpinnerComponent } from '../../../../../../shared/components/spinner/spinner.component';
 import { initFlowbite } from 'flowbite';
 import { RequestService } from '../../../services/request.service';
 
@@ -54,7 +54,7 @@ interface ServiceGroup {
     CurrencyVndPipe,
     FormatDatePipe,
     PayServiceComponent,
-    SpinnerComponent // Add SpinnerComponent to imports
+    SpinnerComponent
   ]
 })
 export class ServiceComponent {
@@ -68,6 +68,9 @@ export class ServiceComponent {
   tourGuide: string | null = null;
   scheduleId: number | null = null;
   isLoading: boolean = false;
+  showPopup: boolean = false;
+  isSuccess: boolean = true;
+  popupMessage: string = '';
 
   @ViewChild('chooseServiceModal') chooseServiceModal!: PostServiceComponent;
   @ViewChild('changeServiceModal') changeServiceModal!: ServiceDetailComponent;
@@ -79,7 +82,7 @@ export class ServiceComponent {
     private ssrService: SsrService,
     private tourService: TourService,
     private route: ActivatedRoute,
-    private requestService: RequestService,
+    private requestService: RequestService
   ) { }
 
   ngOnInit(): void {
@@ -90,9 +93,18 @@ export class ServiceComponent {
         this.fetchServices(this.scheduleId);
         this.fetchTourGuide(this.scheduleId);
       } else {
-        console.error('ID không hợp lệ.');
+        this.showNotification('ID không hợp lệ.', false);
       }
     });
+  }
+
+  showNotification(message: string, success: boolean = true): void {
+    this.popupMessage = message;
+    this.isSuccess = success;
+    this.showPopup = true;
+    setTimeout(() => {
+      this.showPopup = false;
+    }, 3000);
   }
 
   fetchTourGuide(id: number): void {
@@ -103,12 +115,12 @@ export class ServiceComponent {
         if (response.code === 200) {
           this.tourGuide = response.data.tourGuideName;
         } else {
-          console.error('Lỗi khi tải thông tin hướng dẫn viên:', response.message);
+          this.showNotification('Lỗi khi tải thông tin hướng dẫn viên: ' + response.message, false);
         }
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.error('Lỗi khi tải chi tiết tour:', error);
+        this.showNotification('Lỗi khi tải chi tiết tour: ' + error.message, false);
       }
     });
   }
@@ -117,6 +129,7 @@ export class ServiceComponent {
     this.isLoading = true;
     this.tourService.getServices(id).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200) {
           this.services = response.data.services.map((service: any) => ({
             bookingServiceId: service.bookingServiceId,
@@ -147,15 +160,14 @@ export class ServiceComponent {
           this.groupServices();
           this.initDropdowns();
         } else {
-          console.error('Lỗi khi tải danh sách dịch vụ:', response.message);
+          this.showNotification('Lỗi khi tải danh sách dịch vụ: ' + response.message, false);
         }
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.error('Lỗi khi tải danh sách dịch vụ:', error);
+        this.showNotification('Lỗi khi tải danh sách dịch vụ: ' + error.message, false);
       }
     });
-    this.isLoading = false;
   }
 
   groupServices(): void {
@@ -168,6 +180,10 @@ export class ServiceComponent {
       bookingCode,
       services: grouped[bookingCode]
     }));
+  }
+
+  get hasAnyService(): boolean {
+    return this.groupedServices?.some(group => group.services?.length > 0);
   }
 
   mapOrderStatus(status: string): string {
@@ -248,21 +264,21 @@ export class ServiceComponent {
     this.isLoading = true;
     this.tourService.deleteService(serviceId).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200) {
-          console.log('Dịch vụ đã được xóa thành công!');
+          this.showNotification('Dịch vụ đã được xóa thành công!', true);
+          this.fetchServices(this.scheduleId!);
+          this.fetchTourGuide(this.scheduleId!);
+          this.reInitFlowbite();
         } else {
-          console.error('Lỗi khi xóa dịch vụ:', response.message);
+          this.showNotification('Lỗi khi xóa dịch vụ: ' + response.message, false);
         }
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.error('Lỗi khi xóa dịch vụ:', error);
+        this.showNotification('Lỗi khi xóa dịch vụ: ' + error.message, false);
       }
     });
-    this.fetchTourGuide(this.scheduleId!);
-    this.reInitFlowbite();
-    this.fetchServices(this.scheduleId!);
-    this.isLoading = false;
   }
 
   openDeleteModal(index: number): void {
@@ -309,14 +325,16 @@ export class ServiceComponent {
       next: (response: any) => {
         this.isLoading = false;
         if (response.code === 200) {
-          console.log('Dịch vụ đã được phê duyệt thành công!');
-          this.fetchServices(this.scheduleId!);
+          this.showNotification('Dịch vụ đã được phê duyệt thành công!', true);
           this.fetchTourGuide(this.scheduleId!);
+          this.fetchServices(this.scheduleId!);
+        } else {
+          this.showNotification('Lỗi khi phê duyệt dịch vụ: ' + response.message, false);
         }
       },
       error: (error: any) => {
         this.isLoading = false;
-        console.error('Lỗi khi phê duyệt dịch vụ:', error);
+        this.showNotification('Lỗi khi phê duyệt dịch vụ: ' + error.message, false);
       }
     });
   }
@@ -335,22 +353,29 @@ export class ServiceComponent {
   }
 
   onEmailSent(event: any): void {
-    console.log('Email đã được gửi thành công!');
+    this.showNotification('Email đã được gửi thành công!', true);
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
   }
 
   onServiceAdded(event: any): void {
-    console.log('Dịch vụ đã được thêm thành công!');
-    this.fetchServices(this.scheduleId!);
+    this.showNotification('Dịch vụ đã được thêm thành công!', true);
     this.fetchTourGuide(this.scheduleId!);
     this.reInitFlowbite();
+    this.fetchServices(this.scheduleId!);
+  }
+
+  onServiceChange(event: any): void {
+    this.showNotification('Dịch vụ đã được thay đổi thành công!', true);
+    this.fetchTourGuide(this.scheduleId!);
+    this.reInitFlowbite();
+    this.fetchServices(this.scheduleId!);
   }
 
   onPaymentSent(event: any): void {
-    console.log('Thanh toán đã được gửi thành công!');
-    this.fetchServices(this.scheduleId!);
+    this.showNotification('Thanh toán đã được gửi thành công!', true);
     this.fetchTourGuide(this.scheduleId!);
+    this.fetchServices(this.scheduleId!);
   }
 
   private reInitFlowbite(): void {

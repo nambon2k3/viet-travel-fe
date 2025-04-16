@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyVndPipe } from '../../../../../../../shared/pipes/currency-vnd.pipe';
 import { SsrService } from '../../../../../../../core/services/ssr.service';
@@ -16,7 +16,7 @@ import { error } from 'console';
 })
 export class ServiceDetailComponent {
   @Input() service: any | null = null;
-  @Output() serviceChange: any | null = null;
+  @Output() serviceChange = new EventEmitter<any[]>();
   modal: Modal | null = null;
   serviceDetail: any | null = null;
   quantity: number = 1;
