@@ -31,6 +31,7 @@
             <tr>
               <th class="border border-gray-300 text-white p-2">STT</th>
               <th class="border border-gray-300 text-white p-2">Tên dịch vụ</th>
+              <th class="border border-gray-300 text-white p-2">Tên nhà cung cấp</th>
               <th class="border border-gray-300 text-white p-2">Loại dịch vụ</th>
               <th class="border border-gray-300 text-white p-2">Mã booking</th>
               <th class="border border-gray-300 text-white p-2">Ngày</th>
@@ -50,6 +51,7 @@
               <tr *ngFor="let service of group.services; let i = index" class="border border-gray-300">
                 <td class="border border-gray-300 p-2 text-center">{{ groupIndex * group.services.length + i + 1 }}</td>
                 <td class="border border-gray-300 p-2">{{ service.name }}</td>
+                <td class="border border-gray-300 p-2">{{ service.providerName }}</td>
                 <td class="border border-gray-300 p-2">{{ service.type }}</td>
                 <td class="border border-gray-300 p-2">{{ service.bookingCode }}</td>
                 <td class="border border-gray-300 p-2">{{ service.date !== 'Chưa đặt' ? (service.date | formatDate) :

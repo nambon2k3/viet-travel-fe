@@ -9,6 +9,8 @@ import { ViewListTourComponent } from "./components/view-list-tour/view-list-tou
 import { OpenTourForSaleComponent } from "./components/open-tour-for-sale/open-tour-for-sale.component";
 import { TourDiscountComponent } from "./components/tour-discount/tour-discount.component";
 import { TourListBookingComponent } from "./components/open-tour-for-sale/tour-list-booking/tour-list-booking.component";
+import { TourRequestComponent } from "./components/tour-request/tour-request.component";
+import { RequestDetailComponent } from "./components/tour-request/request-detail/request-detail.component";
 
 export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
   {
@@ -19,6 +21,14 @@ export const HEAD_OF_BUSINESS_ROUTES: Route[] = [
         path: '',
         redirectTo: 'list-tour',
         pathMatch: 'full',
+      },
+      {
+        path: 'tour-request',
+        component: TourRequestComponent,
+      },
+      {
+        path: 'tour-request-detail',
+        component: RequestDetailComponent,
       },
       {
         path: 'locations',

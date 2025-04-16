@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableActionComponent } from './table-action/table-action.component';
 import { TableHeaderComponent } from './table-header/table-header.component';
@@ -6,7 +6,7 @@ import { TableRowComponent } from './table-row/table-row.component';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 import { TableFooterComponent } from '../../../../../shared/components/table/table-footer/table-footer.component';
 import { TourService } from '../../services/tour.service';
-import { Router } from 'express';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tour-request',
@@ -40,7 +40,6 @@ export class TourRequestComponent {
   sortDirection = 'desc';
 
   constructor(
-    private router: Router,
     private bookingService: TourService
   ) {
 
@@ -83,7 +82,7 @@ export class TourRequestComponent {
   showSuccess: boolean = false;
 
 
-  successMessage: string = 'Nhận booking thành công!';
+  successMessage: string = 'Duyệt hoàn tiền booking thành công!';
 
   triggerSuccess() {
     this.showSuccess = true;

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { delay, Observable, of } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -127,6 +127,18 @@ export class TourService {
       params = params.set('isDeleted', isDeleted);
     }
 
-    return this.http.get(`${environment.apiUrl}salesman/bookings/list`, { params });
+    return this.http.get(`${environment.apiUrl}head-of-business/refund-request/list`, { params });
+  }
+
+  getTourBookingDetail(tourId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/refund-request/detail/${tourId}`);
+  }
+
+  approveRequest(tourId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/refund-request/approve/${tourId}`, {});
+  }
+
+  rejectRequest(tourId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/refund-request/cancel/${tourId}`, {});
   }
 }

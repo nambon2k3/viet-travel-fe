@@ -123,8 +123,8 @@ export class TourService {
     return this.http.get(`${environment.apiUrl}operator/tour-service/${selectedLocationId}/list-service-provider/${selectedCategoryId}`);
   }
 
-  getServicesByProvider(providerId: number): Observable<any> {
-    return this.http.get(`${environment.apiUrl}operator/tour-service/${providerId}/list-service`);
+  getServicesByProvider(providerId: number, selectedCategoryId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}operator/tour-service/${providerId}/list-service/${selectedCategoryId}`);
   }
 
   getServiceDetails(serviceId: number): Observable<any> {

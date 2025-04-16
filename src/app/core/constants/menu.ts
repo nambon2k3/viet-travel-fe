@@ -76,6 +76,11 @@ export class Menu {
           label: 'Địa điểm',
           route: '/head-business/locations',
         },
+        {
+          icon: 'assets/icons/heroicons/outline/refund-2-svgrepo-com.svg',
+          label: 'Yêu cầu hoàn tiền',
+          route: '/head-business/tour-request',
+        },
       ],
     },
     {

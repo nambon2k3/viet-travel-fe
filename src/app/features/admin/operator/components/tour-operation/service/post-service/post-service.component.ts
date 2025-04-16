@@ -123,24 +123,9 @@ export class PostServiceComponent {
     }
   }
 
-  mapCategoriesToVietnamese(categories: { [key: string]: string }): { id: number, name: string }[] {
-    const translations: { [key: string]: string } = {
-      'Hotel': 'Khách sạn',
-      'Restaurant': 'Nhà hàng',
-      'Transport': 'Phương tiện di chuyển',
-      'Activity': 'Hoạt động',
-      'Flight Ticket': 'Vé máy bay'
-    };
-
-    return Object.entries(categories).map(([id, name]) => ({
-      id: Number(id),
-      name: translations[name] || name // fallback nếu không có bản dịch
-    }));
-  }
-
   fetchServices() {
-    if (this.selectedProviderId) {
-      this.tourService.getServicesByProvider(this.selectedProviderId).subscribe({
+    if (this.selectedProviderId && this.selectedCategoryId) {
+      this.tourService.getServicesByProvider(this.selectedProviderId, this.selectedCategoryId).subscribe({
         next: (response: any) => {
           if (response.code === 200) {
             const servicesArray = Array.isArray(response.data)
@@ -193,6 +178,21 @@ export class PostServiceComponent {
         console.error('Lỗi khi lấy chi tiết dịch vụ:', error);
       }
     });
+  }
+
+  mapCategoriesToVietnamese(categories: { [key: string]: string }): { id: number, name: string }[] {
+    const translations: { [key: string]: string } = {
+      'Hotel': 'Khách sạn',
+      'Restaurant': 'Nhà hàng',
+      'Transport': 'Phương tiện di chuyển',
+      'Activity': 'Hoạt động',
+      'Flight Ticket': 'Vé máy bay'
+    };
+
+    return Object.entries(categories).map(([id, name]) => ({
+      id: Number(id),
+      name: translations[name] || name // fallback nếu không có bản dịch
+    }));
   }
 
   getTotalPrice(): number {
@@ -257,7 +257,7 @@ export class PostServiceComponent {
           reason: ''
         };
       });
-  
+
       for (const payload of payloads) {
         this.tourService.addServices(payload).subscribe({
           next: (response: any) => {
