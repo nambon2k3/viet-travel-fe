@@ -10,7 +10,7 @@
     <table class="table-auto w-full  text-sm">
       <tbody>
         <tr>
-          <td class="font-semibold px-3 py-2 ">Dịch vụ:</td>
+          <td class="font-semibold px-3 py-2 ">Tên Tour:</td>
           <td class="px-3 py-2 ">{{ tourScheduleSettlement?.tour?.name }}</td>
         </tr>
         <tr>
@@ -136,11 +136,27 @@
               <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
               Thành công
             </span>
-            } @else if (booking.status.includes('CANCEL')) {
+            } @else if (booking.status === 'REQUEST_CANCELLED_WITH_REFUND') {
             <span
               class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
               <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
-              Đã hủy
+              Yêu cầu hủy hoàn tiền
+            </span>
+            }
+
+
+            @else if (booking.status === 'CANCELLED_WITHOUT_REFUND') {
+            <span
+              class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+              <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+              Đã hủy không hoàn tiền
+            </span>
+            }
+            @else if (booking.status === 'CANCELLED_WITH_REFUND') {
+            <span
+              class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+              <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+              Đã hủy hoàn tiền
             </span>
             }
           </td>
@@ -586,15 +602,15 @@
                   <th class="p-2 border">Hành động</th>
                 </tr>
               </thead>
-              <tbody formArrayName="costAccount">
-                <tr class="border" *ngFor="let row of costAccount.controls; let i = index" [formGroupName]="i">
+              <tbody formArrayName="costAccounts">
+                <tr class="border" *ngFor="let row of costAccounts.controls; let i = index" [formGroupName]="i">
                   <td class="p-2 text-center">{{ i + 1 }}</td>
                   <td class="p-2">
                     <input type="text" formControlName="content" placeholder="Nhập nội dung"
                       class="w-full px-2 py-1 border rounded">
                     <p *ngIf="
-                                    costAccount.at(i).get('content')?.invalid &&
-                                    costAccount.at(i).get('content')?.touched
+                                    costAccounts.at(i).get('content')?.invalid &&
+                                    costAccounts.at(i).get('content')?.touched
                                   " class="text-red-500 w-full text-left text-sm">
                       Thông tin bắt buộc
                     </p>
@@ -624,7 +640,7 @@
                       class="w-full px-2 py-1 border rounded text-right bg-gray-100" readonly>
                   </td>
                   <td class="p-2 text-center">
-                    @if(row.get('status')?.value !== 'PAID' || costAccount.at(i).get('id')?.value === null) {
+                    @if(row.get('status')?.value !== 'PAID' || costAccounts.at(i).get('id')?.value === null) {
                     <button type="button" (click)="deleteCostAccount(i)"
                       class="text-red-600 hover:text-red-800">❌</button>
 
@@ -654,7 +670,8 @@
             <button type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
               Hủy
             </button>
-            <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+            <button (click)="onSave()" type="submit"
+              class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
               Lưu
             </button>
           </div>

@@ -16,6 +16,7 @@ import { BlogContentComponent } from '../../../marketer/components/blog-detail/b
 import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 import { Modal } from 'flowbite';
 import { AddTransportationComponent } from "../../../head-of-business/components/tour-discount/add-transportation/add-transportation.component";
+import { AdminService } from '../../../admin.service';
 @Component({
   selector: 'app-list-tour-private',
   imports: [TableActionComponent,
@@ -46,6 +47,8 @@ export class ListTourPrivateComponent implements AfterViewInit {
   dropdownSettings: IDropdownSettings = {};
   selectedItems: any = [];
 
+  imagePreviews: string[] = [];
+
   createTourModal: Modal | null = null;
 
   ngAfterViewInit(): void {
@@ -60,6 +63,16 @@ export class ListTourPrivateComponent implements AfterViewInit {
     }
   }
 
+  selectedFiles: File[] = [];
+
+  
+  removeImage(index: number): void {
+    this.imagePreviews.splice(index, 1);
+    this.selectedFiles.splice(index, 1);
+    this.tourForm.get('tourImages')?.setValue(this.imagePreviews);
+  }
+
+
   // Store filters to persist data across pages
   keyword = '';
   isDeleted?: boolean;
@@ -71,7 +84,8 @@ export class ListTourPrivateComponent implements AfterViewInit {
     private tourService: TourService,
     private fb: FormBuilder,
     private bookingService: BookingService,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private adminService: AdminService
   ) {
 
     this.dropdownSettings = {
@@ -95,6 +109,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
       note: [''],
       createdBy: [this.userStorageService.getUserId(), Validators.required],
       pax: [1, Validators.required],
+      tourImages: [[]],
     });
 
     this.tourForm.get('numberDays')?.valueChanges.subscribe((value: number) => {
@@ -104,6 +119,51 @@ export class ListTourPrivateComponent implements AfterViewInit {
       }, { emitEvent: false }); // Prevent recursive loop
     });
 
+  }
+
+  confirmImage(): void {
+    if (this.selectedFile && this.previewImage) {
+      this.selectedFiles.push(this.selectedFile);
+      this.imagePreviews.push(this.previewImage);
+    }
+    this.saveChanges();
+  }
+
+  saveChanges(): void {
+    this.isLoading = true;
+    const formData = new FormData();
+    this.selectedFiles.forEach(file => {
+      formData.append('file', file);
+    });
+
+    this.adminService.uploadImage(formData).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        const uploadedImages = response.data;
+        const currentImages = this.tourForm.get('tourImages')?.value || null;
+        this.tourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Lỗi tải ảnh:', err);
+      }
+    });
+  }
+
+  selectedFile: File | null = null;
+  previewImage: string | null = null;
+
+  onFilesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewImage = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
   }
 
   onItemSelect(item: any) {

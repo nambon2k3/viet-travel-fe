@@ -52,7 +52,7 @@ export class BookingSettlementComponent implements AfterViewInit {
 
   ) {
     this.transactionForm = this.fb.group({
-      id: [{ value: '', disabled: true }],
+      id: ['', Validators.required],
       amount: ['', Validators.required],
       category: ['', Validators.required],
       paidBy: ['', Validators.required],
@@ -60,7 +60,7 @@ export class BookingSettlementComponent implements AfterViewInit {
       paymentMethod: ['', Validators.required],
       notes: [''],
       createdAt: [{ value: '', disabled: true }],
-      costAccount: this.fb.array([]) // Array chứa các dòng cost
+      costAccounts: this.fb.array([]) // Array chứa các dòng cost
     });
 
     this.refundForm = this.fb.group({
@@ -107,7 +107,7 @@ export class BookingSettlementComponent implements AfterViewInit {
   }
 
   deleteCostAccount(index: number) {
-    this.costAccount.removeAt(index);
+    this.costAccounts.removeAt(index);
   }
 
   addCostAccount() {
@@ -144,7 +144,7 @@ export class BookingSettlementComponent implements AfterViewInit {
       costAccountGroup.get('finalAmount')?.setValue((amount! * quantity) * (100 - newDiscount!) / 100.0, { emitEvent: true });
     });
 
-    this.costAccount.push(costAccountGroup);
+    this.costAccounts.push(costAccountGroup);
   }
 
   openTransactionModal(transaction: any) {
@@ -165,7 +165,7 @@ export class BookingSettlementComponent implements AfterViewInit {
       createdAt: transaction.createdAt
     });
 
-    const costAccountsArray = this.transactionForm.get('costAccount') as FormArray;
+    const costAccountsArray = this.transactionForm.get('costAccounts') as FormArray;
     costAccountsArray.clear(); // Clear existing entries if any
 
     transaction.costAccount.forEach((account: any) => {
@@ -209,7 +209,7 @@ export class BookingSettlementComponent implements AfterViewInit {
   }
 
   getTotalAmount(): number {
-    return this.costAccount.value.reduce((sum: number, row: any) => sum + row.amount * row.quantity * (100 - row.discount) / 100.0, 0);
+    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount * row.quantity * (100 - row.discount) / 100.0, 0);
   }
 
   closeTransactionModal() {
@@ -218,8 +218,8 @@ export class BookingSettlementComponent implements AfterViewInit {
     }
   }
 
-  get costAccount(): FormArray {
-    return this.transactionForm.get('costAccount') as FormArray;
+  get costAccounts(): FormArray {
+    return this.transactionForm.get('costAccounts') as FormArray;
   }
 
 
@@ -233,12 +233,17 @@ export class BookingSettlementComponent implements AfterViewInit {
           this.isLoading = false; // Stop loading
           console.log('Transaction updated successfully:', response);
           this.triggerSuccess(); // Show success message
+          this.getSettlementDetails(this.tourScheduleSettlement.id); // Refresh the settlement details
         },
         error: (error) => {
           this.isLoading = false; // Stop loading
           console.error('Error updating transaction:', error);
+          this.triggerError(); // Show error message
         }
       });
+
+      this.transactionForm.reset(); // Reset form fields
+      this.closeTransactionModal(); // Close the modal
     } else {
       this.transactionForm.markAllAsTouched(); // Mark all fields as touched to show validation errors
     }

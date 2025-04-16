@@ -91,7 +91,7 @@
 
             <!-- Buttons Group -->
             <div class="flex space-x-2">
-                <button  type="button"
+                <button  type="button" *ngIf="bookingDetail?.tour?.tourType !== 'SIC'"
                 (click)="openPriceModal()"
                 class="flex items-center px-3 py-1.5 bg-blue-800 text-white text-sm rounded hover:bg-blue-900">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
@@ -138,8 +138,8 @@
                                 hủy</label>
                             <select id="message" formControlName="status"
                                 class="block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="CANCELLED_WITH_REFUND">Hoàn tiền</option>
-                                <option value="REQUEST_CANCELLED_WITH_REFUND">Không hoàn tiền</option>
+                                <option value="REQUEST_CANCELLED_WITH_REFUND">Hoàn tiền</option>
+                                <option value="CANCELLED_WITHOUT_REFUND">Không hoàn tiền</option>
                             </select>
 
                             <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lý

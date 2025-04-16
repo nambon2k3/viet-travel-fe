@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { CurrencyVndPipe } from "../../../../shared/pipes/currency-vnd.pipe";
 import { WishlistService } from '../../../customer/components/wishlist/wishlist.service';
 import { WishlistComponent } from "../../../customer/components/wishlist/wishlist.component";
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, take } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { TruncatePipe } from "../../../../shared/pipes/truncate.pipe";
 
@@ -31,7 +31,7 @@ export class HomepageComponent {
   @ViewChild('searchDropdown') searchDropdownRef!: ElementRef;
 
   selectedCategory: string = 'Tìm kiếm tất cả';
-  searchPlaceholder: string = 'Địa điểm, hoạt động, khách sạn...';
+  searchPlaceholder: string = 'TÌm kiếm tour thịnh hành...';
   searchTitle: string = 'Hiện thực hóa chuyến du lịch trong mơ';
   userProfile: any;
   searchQuery: string = '';
@@ -42,7 +42,6 @@ export class HomepageComponent {
     { name: 'Tìm kiếm tất cả', title: "Hiện thực hóa chuyến du lịch trong mơ", placeholder: 'Địa điểm, hoạt động, khách sạn...' },
     { name: 'Khách sạn', title: "Nghỉ ngơi ở nơi tuyệt vời", placeholder: 'Tên khách sạn hoặc điểm đến' },
     { name: 'Nhà hàng', title: "Tìm địa điểm ăn uống", placeholder: 'Nhà hàng hoặc điểm đến' },
-    { name: 'Chuyến bay', title: "Tìm chuyến bay tốt nhất", placeholder: 'Tìm kiếm chuyến bay...' },
     { name: 'Hoạt động', title: "Trải nghiệm điều mới mẻ", placeholder: 'Điểm tham quan, hoạt động hoặc điểm đến' },
     { name: 'Tour', title: "Khám phá những tour du lịch tuyệt vời", placeholder: 'Tour hoặc điểm đến' }
   ];
@@ -140,11 +139,13 @@ export class HomepageComponent {
   }
 
   ngOnInit() {
+    console.log("ngOnInit called");
     this.fetchHomepageData();
   }
 
   fetchHomepageData() {
-    this.homepageService.getHomepageData(6, 4, 3, 7).subscribe({
+    console.log("fetchHomepageData called");
+    this.homepageService.getHomepageData(6, 4, 3, 7).pipe(take(1)).subscribe({
       next: (res) => {
         if (res.code !== 200) {
           console.error('Fetching homepage data:', res.message);

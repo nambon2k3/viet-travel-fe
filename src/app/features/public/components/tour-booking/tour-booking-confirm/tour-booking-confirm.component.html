@@ -79,7 +79,7 @@
                 </div>
                 <div>
                     <label class="block font-semibold">Giới Tính *</label>
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.adults.at($index).gender}}</p>
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.adults.at($index).gender === 'MALE' ? 'Nam' : 'Nữ'}}</p>
                 </div>
                 <div>
                     <label class="block font-semibold">Ngày Sinh *</label>
@@ -90,7 +90,7 @@
 
                     <label class="block font-semibold">🛏️ Phòng Đơn</label>
 
-                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.adults.at($index).singleRoom ? 'Yes' : 'No'}}</p>
+                    <p class="w-full p-2 rounded mt-1"> {{bookingData?.adults.at($index).singleRoom ? 'Có' : 'Không'}}</p>
 
                 </div>
             </div>
