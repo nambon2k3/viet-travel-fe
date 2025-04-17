@@ -140,7 +140,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
       next: (response) => {
         this.isLoading = false;
         const uploadedImages = response.data;
-        const currentImages = this.tourForm.get('tourImages')?.value || null;
+        const currentImages = this.tourForm.get('tourImages')?.value || [];
         this.tourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
       },
       error: (err) => {

@@ -7,7 +7,7 @@ import { AddTransportationComponent } from "../../../../admin/head-of-business/c
 
 @Component({
   selector: 'app-plan-detail',
-  imports: [SpinnerComponent],
+  imports: [SpinnerComponent, RouterModule],
   templateUrl: './plan-detail.component.html',
   styleUrl: './plan-detail.component.css'
 })
@@ -77,9 +77,8 @@ export class PlanDetailComponent {
           this.hotels = Array.from(
             new Map(
               this.planContent.plan.days
-                .map((dayObj: any) => dayObj.hotel) // truy cập trực tiếp
-                .filter((hotel: any) => hotel) // loại undefined/null
-                .map((hotel: any) => [hotel.name, hotel]) // dùng name làm key để loại trùng
+                .flatMap((dayObj: any) => dayObj.hotels || [])
+                .map((rest: any) => [rest.name, rest]) // dùng name làm key
             ).values()
           );
           
@@ -104,6 +103,20 @@ export class PlanDetailComponent {
         console.error('Error fetching plan', error);
       }
     });
+  }
+
+
+  onSave() {
+    this.planService.updateStatusPlan(this.plan.id).subscribe({
+      next: (response) => {
+        console.log('Plan generated successfully', response);
+        this.router.navigate(['/customer/plan-detail', this.plan.id]);
+      },
+      error: (error) => {
+        console.error('Error generating plan', error);
+      }
+    });
+
   }
 
 }
