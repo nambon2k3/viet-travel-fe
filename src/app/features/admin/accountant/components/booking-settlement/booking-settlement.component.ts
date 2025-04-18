@@ -381,7 +381,7 @@ export class BookingSettlementComponent implements AfterViewInit {
     const allTransactionsCompleted: boolean = this.tourScheduleSettlement.bookings
       ?.every((booking: any) =>
         booking.transactions?.every(
-          (transaction: any) => transaction.transactionStatus === 'PAID'
+          (transaction: any) => transaction.transactionStatus === 'PAID' || transaction.transactionStatus === 'CANCELLED'
         )
       ) ?? false;
     this.allTransactionsCompleted = allTransactionsCompleted;
