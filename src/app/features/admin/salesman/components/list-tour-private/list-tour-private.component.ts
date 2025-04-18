@@ -57,10 +57,6 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   closeModal() {
     this.createTourModal?.hide();
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-      backdrop.remove();
-    }
   }
 
   selectedFiles: File[] = [];
@@ -129,8 +125,10 @@ export class ListTourPrivateComponent implements AfterViewInit {
     this.saveChanges();
   }
 
+  isImageLoading: boolean = false;
+
   saveChanges(): void {
-    this.isLoading = true;
+    this.isImageLoading = true;
     const formData = new FormData();
     this.selectedFiles.forEach(file => {
       formData.append('file', file);
@@ -138,13 +136,13 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
     this.adminService.uploadImage(formData).subscribe({
       next: (response) => {
-        this.isLoading = false;
+        this.isImageLoading = false;
         const uploadedImages = response.data;
         const currentImages = this.tourForm.get('tourImages')?.value || [];
         this.tourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
       },
       error: (err) => {
-        this.isLoading = false;
+        this.isImageLoading = false;
         console.error('Lỗi tải ảnh:', err);
       }
     });
@@ -274,15 +272,13 @@ export class ListTourPrivateComponent implements AfterViewInit {
           console.log('Create tour failed: ', this.errorMessages);
         }
       });
+      this.closeModal();
     } else {
       this.tourForm.markAllAsTouched();
       console.log('Invalid form: ', this.tourForm.value);
     }
     this.resetItems();
 
-    if(this.showSuccess) {
-      this.closeModal();
-    } 
   }
 
   resetItems(): void {

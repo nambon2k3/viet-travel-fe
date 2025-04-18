@@ -150,4 +150,11 @@ export class BookingService {
         return this.http.post(`${environment.apiUrl}salesman/bookings/send-email/submit`, formData);
     }
 
+    forwardBooking(bookingId: number, scheduleId: number) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/tours/forward`, {
+            bookingId: bookingId,
+            scheduleId: scheduleId
+        });
+    }
+
 }
