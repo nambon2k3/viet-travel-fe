@@ -144,22 +144,6 @@ export class TourDiscountComponent implements OnInit {
       if (this.tourId) {
         this.fetchTourData(this.tourId);
         this.fetchLocations();
-        this.getMarkup();
-      }
-    });
-  }
-
-  getMarkup() {
-    this.tourDiscountService.getMarkup(this.tourId).subscribe({
-      next: (response) => {
-        if (response?.data?.markUpPercent) {
-          this.markupPercentage = response.data.markUpPercent;
-        } else {
-          this.markupPercentage = 0;
-        }
-      },
-      error: (error) => {
-        this.showPopupMessage(error.message || 'Đã xảy ra lỗi khi lấy thông tin lợi nhuận.', false);
       }
     });
   }
@@ -431,6 +415,22 @@ export class TourDiscountComponent implements OnInit {
     this.calculateFinalTourPrices();
     this.reInitFlowbite();
     this.showPopupMessage('Thêm/Cập nhật khách sạn thành công!', true);
+  }
+
+  handleError(error: any) {
+    this.showPopupMessage(error, false);
+  }
+
+  handleRestaurantError(error: any) {
+    this.showPopupMessage(error, false);
+  }
+
+  handleFlightError(error: any) {
+    this.showPopupMessage(error, false);
+  }
+
+  handleActivityError(error: any) {
+    this.showPopupMessage(error, false);
   }
 
   deleteHotel(index: number, serviceId: number, dayNumber: number) {

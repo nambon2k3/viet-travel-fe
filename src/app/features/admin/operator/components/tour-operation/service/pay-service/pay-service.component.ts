@@ -30,13 +30,15 @@ export class PayServiceComponent {
       notes: [''],
       serviceId: ['', Validators.required],
       serviceName: [''],
-      quantity: ['', Validators.required]
+      quantity: ['', Validators.required],
+      tourDayId: ['', Validators.required],
     });
   }
 
   sendPayment() {  
     const { serviceName, ...payload } = {
       bookingId: this.selectedService?.bookingId,
+      tourDayId: this.selectedService?.tourDayId,
       ...this.paymentForm.value
     };
   
@@ -70,6 +72,7 @@ export class PayServiceComponent {
         serviceId: this.selectedService.id || '',
         quantity: this.selectedService.quantity || '',
         serviceName: this.selectedService.serviceName || '',
+        tourDayId: this.selectedService.tourDayId || '',
         notes: defaultNote
       });
     }

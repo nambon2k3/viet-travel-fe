@@ -50,6 +50,7 @@ export class TourDayComponent implements OnInit {
           this.isLoading = false;
           if (response.code === 200) {
             this.tourDays = response.data;
+            console.log('Danh sách ngày tour: ', this.tourDays);
             // Dịch serviceCategories cho mỗi ngày
             this.tourDays.forEach(day => {
               this.translatedTourDays[day.id] = this.translateServiceCategories(day.serviceCategories);

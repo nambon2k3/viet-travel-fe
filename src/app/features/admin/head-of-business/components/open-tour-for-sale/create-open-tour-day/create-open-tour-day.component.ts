@@ -52,6 +52,7 @@ export class CreateOpenTourDayComponent {
 
       if (modalEl) {
         this.modalInstance = new Modal(modalEl);
+        this.getTourPax();
       }
     }
   }

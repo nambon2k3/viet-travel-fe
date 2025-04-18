@@ -14,8 +14,13 @@ export const CEO_ROUTES: Route[] = [
     path: '',
     component: LayoutComponent,
     children: [
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
       { 
-        path: '', 
+        path: 'dashboard', 
         component: DashboardComponent 
       },
       {

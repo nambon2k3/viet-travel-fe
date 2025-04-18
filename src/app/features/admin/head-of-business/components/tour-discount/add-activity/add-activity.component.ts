@@ -43,6 +43,11 @@ interface PaxOption {
   validTo: string;
 }
 
+interface TourDay {
+  dayNumber: number;
+  serviceCategories: string[];
+}
+
 interface ServiceDetailResponse {
   code: number;
   message: string;
@@ -81,11 +86,13 @@ export class AddActivityComponent implements AfterViewInit {
   @Input() prices: PaxOption[] = [];
   @Input() locations = signal<any[]>([]);
   @Output() activityAdded = new EventEmitter<{ activity: Service, isUpdate: boolean }>();
+  @Output() error = new EventEmitter<any>();
 
   modal: Modal | null = null;
   addActivityForm!: FormGroup;
   providers = signal<any[]>([]);
   activitys = signal<any[]>([]);
+  tourDays: TourDay[] = [];
 
   constructor(
     private ssrService: SsrService,
@@ -254,9 +261,34 @@ export class AddActivityComponent implements AfterViewInit {
     }
   }
 
+  getTourDays() {
+    this.tourDiscountService.getTourDayById(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.tourDays = response.data;
+          console.log('Danh sách ngày tour: ', this.tourDays);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching tour days:', error);
+      }
+    });
+  }
+
   onSubmit() {
     if (this.addActivityForm.valid) {
-      const formValue = this.addActivityForm.getRawValue(); // Use getRawValue to include disabled fields
+      const formValue = this.addActivityForm.getRawValue();
+      
+      const selectedDay = formValue.selectedDay;
+      const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
+
+      console.log('Tour Day:', tourDay?.serviceCategories);
+      
+      if (!tourDay || !tourDay.serviceCategories.includes('Activity')) {
+        this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ hoạt động`);
+        this.onCancel();
+        return;
+      }
       const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
         acc[pax.paxRange] = {
           paxId: pax.paxId,
@@ -310,8 +342,6 @@ export class AddActivityComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.activityAdded.emit({ activity: activityData, isUpdate: false });
-
-          // Reset toàn bộ form
           this.addActivityForm.reset();
           this.initPaxPrices();
           this.providers.set([]);
@@ -370,6 +400,7 @@ export class AddActivityComponent implements AfterViewInit {
 
   showModal() {
     this.fetchActivityDetails();
+    this.getTourDays();
     this.modal?.show();
   }
 

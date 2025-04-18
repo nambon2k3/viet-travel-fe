@@ -43,6 +43,11 @@ interface PaxOption {
   validTo: string;
 }
 
+interface TourDay {
+  dayNumber: number;
+  serviceCategories: string[];
+}
+
 interface ServiceDetailResponse {
   code: number;
   message: string;
@@ -81,11 +86,13 @@ export class AddRestaurantComponent implements AfterViewInit {
   @Input() prices: PaxOption[] = [];
   @Input() locations = signal<any[]>([]);
   @Output() restaurantAdded = new EventEmitter<{ restaurant: Service, isUpdate: boolean }>();
+  @Output() error = new EventEmitter<any>();
 
   modal: Modal | null = null;
   addRestaurantForm!: FormGroup;
   providers = signal<any[]>([]);
   restaurants = signal<any[]>([]);
+  tourDays: TourDay[] = [];
 
   constructor(
     private ssrService: SsrService,
@@ -224,14 +231,14 @@ export class AddRestaurantComponent implements AfterViewInit {
   }
 
   onLocationChange() {
-    this.addRestaurantForm.patchValue({ selectedProvider: null, selectedRestaurant: null, netPrice: 0  });
+    this.addRestaurantForm.patchValue({ selectedProvider: null, selectedRestaurant: null, netPrice: 0 });
     this.providers.set([]);
     this.restaurants.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
-    this.addRestaurantForm.patchValue({ selectedRestaurant: null, netPrice: 0  });
+    this.addRestaurantForm.patchValue({ selectedRestaurant: null, netPrice: 0 });
     this.restaurants.set([]);
     this.fetchRestaurants();
   }
@@ -254,9 +261,32 @@ export class AddRestaurantComponent implements AfterViewInit {
     }
   }
 
+  getTourDays() {
+    this.tourDiscountService.getTourDayById(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.tourDays = response.data;
+          console.log('Danh sách ngày tour: ', this.tourDays);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching tour days:', error);
+      }
+    });
+  }
+
   onSubmit() {
     if (this.addRestaurantForm.valid) {
-      const formValue = this.addRestaurantForm.getRawValue(); // Use getRawValue to include disabled fields
+      const formValue = this.addRestaurantForm.getRawValue();
+
+      const selectedDay = formValue.selectedDay;
+      const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
+
+      if (!tourDay || !tourDay.serviceCategories.includes('Restaurant')) {
+        this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ nhà hàng`);
+        this.onCancel();
+        return;
+      }
       const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
         acc[pax.paxRange] = {
           paxId: pax.paxId,
@@ -370,6 +400,7 @@ export class AddRestaurantComponent implements AfterViewInit {
 
   showModal() {
     this.fetchRestaurantDetails();
+    this.getTourDays();
     this.modal?.show();
   }
 

@@ -5,7 +5,7 @@
     <table class="w-full border-collapse border border-gray-300">
       <thead class="bg-green-700">
         <tr>
-          <th class="border border-gray-300 text-white p-2">STT</th>
+          <th class="border border-gray-300 text-white p-2">Mã booking</th>
           <th class="border border-gray-300 text-white p-2">Khách hàng</th>
           <th class="border border-gray-300 text-white p-2">Số chỗ</th>
           <th class="border border-gray-300 text-white p-2">Tạo bởi</th>
@@ -17,7 +17,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let booking of listBookings; let i = index" class="border border-gray-300">
-          <td class="border border-gray-300 p-2 text-center">{{ i + 1 }}</td>
+          <td class="border border-gray-300 p-2">{{ booking.bookingCode }}</td>
           <td class="border border-gray-300 p-2">{{ booking.bookedBy }}</td>
           <td class="border border-gray-300 p-2">
             Tổng: {{ booking.customerCount }} chỗ<br>
