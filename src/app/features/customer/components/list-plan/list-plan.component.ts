@@ -52,12 +52,41 @@ export class ListPlanComponent implements AfterViewInit{
         this.getListPlanByUserId();
         this.closeConfirmModal();
         this.isLoading = false;
+        this.triggerSuccess();
+        
       },
       error: (error) => {
         console.error(error);
         this.isLoading = false;
+        this.triggerError();
       }
     });
+  }
+
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+
+  successMessage: string = 'Chỉnh sửa thành công';
+  errorMessage: string = 'Chỉnh sửa  thất bại';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
   }
 
   userId: any;

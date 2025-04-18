@@ -66,4 +66,28 @@ export class PlanService {
      });
   }
 
+  fetchActivities(locationName: string, preferences: string, startIndex: number): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}public/plans/activity/list`, {
+      params: {
+        locationName: locationName,
+        preferences: preferences,
+        startIndex: startIndex
+      }
+    });
+  }
+
+
+  senRequestPlan(planId: number): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}public/plans/request-tour-create`,planId);
+  }
+
+
+
+
+
+  updatePlanStatus(planId: number, planStatus: string) : Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}salesman/plans/update-status/${planId}`, planStatus);
+  }
+
+
 }

@@ -65,7 +65,7 @@
                 </button>
                 }
 
-                @if(bookingDetail?.status === 'PENDING' || bookingDetail?.status === 'SUCCESS') {
+                @if((bookingDetail?.status === 'PENDING' || bookingDetail?.status === 'SUCCESS') && bookingDetail?.tour?.tourType === 'SIC') {
                 <button (click)="openForwardBookingModal()" type="button"
                 class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
                     Chuyển booking

@@ -37,7 +37,7 @@ export class ListRefundComponent implements AfterViewInit {
   isLoading: boolean = false;
 
   keyword = '';
-  isDeleted?: boolean;
+  transactionStatus?: string;
   sortField = 'createdAt';
   sortDirection = 'desc';
 
@@ -113,7 +113,8 @@ export class ListRefundComponent implements AfterViewInit {
       this.keyword,
       this.sortField,
       this.sortDirection,
-      ['REFUND']
+      ['REFUND'],
+      this.transactionStatus
     ).subscribe({
       next: (response) => {
         this.refunds = response.data.items;
@@ -133,7 +134,7 @@ export class ListRefundComponent implements AfterViewInit {
 
   onSearch(filters: any): void {
     this.keyword = filters.keyword || '';
-    this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
+    this.transactionStatus = filters.status;
     this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
     this.page = 0;
     this.loadRefunds();

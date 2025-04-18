@@ -15,6 +15,7 @@ import { FormatDatePipe } from '../../../../../../shared/pipes/format-date.pipe'
 export class TableRowComponent {
 
   @Input() payment: any;
+  @Input() index: any;
 
   constructor(
     private router: Router

@@ -17,11 +17,13 @@ export class TransactionService {
         sortField: string = 'createdAt',
         sortDirection: string = 'desc',
         transactionTypes?: string[],
+        transactionStatus?: string
     ): Observable<any> {
         let params = new HttpParams()
             .set('page', page)
             .set('size', size)
             .set('sortField', sortField)
+            .set('transactionStatus', transactionStatus || '')
             .set('sortDirection', sortDirection);
 
         (transactionTypes || ['RECEIPT']).forEach((type: any) => {

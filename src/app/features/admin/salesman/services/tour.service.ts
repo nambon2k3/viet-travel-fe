@@ -15,7 +15,7 @@ export class TourService {
         page: number = 0,
         size: number = 10,
         keyword?: string,
-        isDeleted?: boolean,
+        tourStatus?: string,
         sortField: string = 'createdAt',
         sortDirection: string = 'desc',
         tourType: string = 'SIC'
@@ -24,14 +24,12 @@ export class TourService {
             .set('page', page)
             .set('size', size)
             .set('tourType', tourType)
+            .set('tourStatus', tourStatus || '')
             .set('sortField', sortField)
             .set('sortDirection', sortDirection);
 
         if (keyword) {
             params = params.set('keyword', keyword);
-        }
-        if (isDeleted !== undefined) {
-            params = params.set('isDeleted', isDeleted);
         }
 
         return this.http.get(`${environment.apiUrl}salesman/tours/list`, { params });

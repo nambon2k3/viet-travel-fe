@@ -58,7 +58,7 @@
       <!-- Repeat Card Format with Different Content -->
       @for (restaurant of restaurants; track $index) {
         <div class="relative bg-white shadow rounded overflow-hidden">
-          <img [src]="restaurant?.image_url" alt="Petit Palais" class="w-full h-48 object-cover" />
+          <img [src]="restaurant?.imageUrl" alt="Petit Palais" class="w-full h-48 object-cover" />
           <div class="absolute top-2 right-2 bg-white rounded-full p-1">
             <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0..." clip-rule="evenodd"/>
@@ -89,7 +89,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
       @for (hotel of hotels; track $index) {
         <div class="relative bg-white shadow rounded overflow-hidden">
-          <img [src]="hotel?.image_url" alt="Petit Palais" class="w-full h-48 object-cover" />
+          <img [src]="hotel?.imageUrl" alt="Petit Palais" class="w-full h-48 object-cover" />
           <div class="absolute top-2 right-2 bg-white rounded-full p-1">
             <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M16.707 5.293a1 1 0..." clip-rule="evenodd"/>

@@ -33,7 +33,7 @@
             </thead>
             <tbody>
                 @for (refund of refunds; track $index) {
-                <tr class="hover:bg-card/50" app-table-row [refund]="refund"></tr>
+                <tr class="hover:bg-card/50" app-table-row [refund]="refund" [index]="$index"></tr>
                 } @empty {
                 <tr>
                     <td class="py-4 text-center text-sm" colspan="9">Không tìm thấy phiếu hoàn tiền</td>

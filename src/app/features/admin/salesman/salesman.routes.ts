@@ -13,6 +13,8 @@ import { TourServiceComponent } from "./components/tour-service/tour-service.com
 import { TourDetailsLayoutComponent } from "./components/tour-details/tour-details-layout/tour-details-layout.component";
 import { TourDetailsComponent } from "./components/tour-details/tour-details.component";
 import { TourDayComponent } from "./components/tour-details/tour-day/tour-day.component";
+import { ListPlanComponent } from "./components/list-plan/list-plan.component";
+import { PlanDetailComponent } from "./components/plan-detail/plan-detail.component";
 
 export const SALESMAN_ROUTES: Route[] = [
   {
@@ -60,7 +62,15 @@ export const SALESMAN_ROUTES: Route[] = [
         path: 'tour-private-service/:tourId',
         component: TourServiceComponent
       },
-      { path: 'tour-details', component: TourDetailsComponent }
+      { path: 'tour-details', component: TourDetailsComponent },
+      {
+        path: 'list-plan',
+        component: ListPlanComponent
+      },
+      {
+        path: 'plan-detail/:id',
+        component: PlanDetailComponent
+      }
     ]
   },
   {

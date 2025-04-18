@@ -25,6 +25,14 @@ export class Menu {
             { label: 'Tour đặt riêng', route: '/salesman/list-tour-private' },
           ],
         },
+        {
+          icon: 'assets/icons/heroicons/outline/cart.svg',
+          label: 'Yêu Cầu Tạo Tour',
+          route: '/salesman',
+          children: [
+            { label: 'Danh sách', route: '/salesman/list-plan' }
+          ],
+        }
       ],
     },
     {

@@ -37,9 +37,10 @@ export class ListPaymentComponent implements AfterViewInit {
   isLoading: boolean = false;
 
   keyword = '';
-  isDeleted?: boolean;
+  transactionStatus?: string;
   sortField = 'createdAt';
   sortDirection = 'desc';
+  type: string[] = ["PAYMENT", "ADVANCED"];
 
   receiptForm: FormGroup;
 
@@ -118,7 +119,8 @@ export class ListPaymentComponent implements AfterViewInit {
       this.keyword,
       this.sortField,
       this.sortDirection,
-      ["PAYMENT", "ADVANCED"]
+      this.type,
+      this.transactionStatus
     ).subscribe({
       next: (response) => {
         this.payments = response.data.items;
@@ -144,8 +146,9 @@ export class ListPaymentComponent implements AfterViewInit {
 
   onSearch(filters: any): void {
     this.keyword = filters.keyword || '';
-    this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
+    this.transactionStatus = filters.status;
     this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
+    this.type = filters.type === ''? ['RECEIPT', 'COLLECTION'] : [filters.type];
     this.page = 0;
     this.loadPayments();
   }

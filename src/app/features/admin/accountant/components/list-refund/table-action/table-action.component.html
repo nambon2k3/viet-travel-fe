@@ -19,8 +19,9 @@
     <div class="flex flex-wrap gap-2.5">
       <select name="status" class="text-muted-foreground w-28! p-2" [(ngModel)]="status">
         <option value="">Tất cả</option>
-        <option value="1">Hoạt động</option>
-        <option value="2">Vô hiệu hóa</option>
+        <option value="PENDING">Đang xử lí</option>
+        <option value="CANCELLED">Đã hủy</option>
+        <option value="PAID">Hoàn thành</option>
       </select>
       <select name="order" class="text-muted-foreground w-28! p-2" [(ngModel)]="order">
         <option value="1">Mới nhất</option>

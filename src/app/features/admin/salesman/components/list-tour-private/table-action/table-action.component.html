@@ -11,7 +11,7 @@
         <input
           name="keyword"
           class="py-2 pl-8 pr-2"
-          placeholder="Tìm kiếm người dùng"
+          placeholder="Tìm kiếm tour"
           type="text"
           [(ngModel)]="keyword" />
       </label>
@@ -19,8 +19,9 @@
     <div class="flex flex-wrap gap-2.5">
       <select name="status" class="text-muted-foreground w-28! p-2" [(ngModel)]="status">
         <option value="">Tất cả</option>
-        <option value="1">Đang hoạt động</option>
-        <option value="2">Đã vô hiệu hóa</option>
+        <option value="DRAFT">Bản Nháp</option>
+        <option value="PENDING_PRICING">Chờ chiết tính</option>
+        <option value="OPENED">Mở bán</option>
       </select>
       <select name="order" class="text-muted-foreground w-28! p-2" [(ngModel)]="order">
         <option value="1">Mới nhất</option>

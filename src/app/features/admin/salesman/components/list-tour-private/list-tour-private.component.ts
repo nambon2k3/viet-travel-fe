@@ -75,7 +75,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   // Store filters to persist data across pages
   keyword = '';
-  isDeleted?: boolean;
+  tourStatus?: string;
   sortField = 'createdAt';
   sortDirection = 'desc';
 
@@ -183,7 +183,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   loadTours() {
     this.isLoading = true;
-    this.tourService.getTourByPage(this.page, this.size, this.keyword, undefined, undefined, this.keyword, "PRIVATE").subscribe({
+    this.tourService.getTourByPage(this.page, this.size, this.keyword, this.tourStatus, undefined, this.keyword, "PRIVATE").subscribe({
       next: (response) => {
         this.tourDatas = response.data.items;
         this.isLoading = false;
@@ -238,7 +238,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   onSearch(filters: any): void {
     this.keyword = filters.keyword || '';
-    this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
+    this.tourStatus = filters.status;
     this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
     this.page = 0; // Reset to first page on new search
     this.loadTours();

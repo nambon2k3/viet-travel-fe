@@ -30,7 +30,7 @@ export class ListBookingComponent {
 
   // Store filters to persist data across pages
   keyword = '';
-  isDeleted?: boolean;
+  status?: string;
   sortField = 'createdAt';
   sortDirection = 'desc';
 
@@ -51,7 +51,7 @@ export class ListBookingComponent {
       this.page,
       this.size,
       this.keyword,
-      this.isDeleted,
+      this.status,
       this.sortField,
       this.sortDirection
     ).subscribe({
@@ -112,7 +112,7 @@ export class ListBookingComponent {
 
   onSearch(filters: any): void {
     this.keyword = filters.keyword || '';
-    this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
+    this.status = filters.status;
     this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
     this.page = 0; // Reset to first page on new search
     this.loadBookings();

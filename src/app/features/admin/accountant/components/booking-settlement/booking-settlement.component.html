@@ -659,7 +659,7 @@
             </table>
           </div>
 
-          <div class="mt-4 flex items-center text-blue-600 ">
+          <div class="mt-4 flex items-center text-blue-600 " *ngIf="tourScheduleSettlement?.status !== 'COMPLETED'">
             <div (click)="addCostAccount()" class="cursor-pointer">
               <span class="text-xl">➕</span>
               <span class="ml-2">Thêm dòng</span>
@@ -670,7 +670,7 @@
             <button type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
               Hủy
             </button>
-            <button (click)="onSave()" type="submit"
+            <button (click)="onSave()" type="submit" *ngIf="tourScheduleSettlement?.status !== 'COMPLETED'"
               class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
               Lưu
             </button>
