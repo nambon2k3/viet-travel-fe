@@ -192,8 +192,9 @@ export class ListReceiptComponent implements AfterViewInit {
   }
 
   getTotalAmount(): number {
-    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount, 0);
+    return this.costAccounts.value.reduce((sum: number, row: any) => sum + Number(row.amount || 0), 0);
   }
+  
 
   get costAccounts(): FormArray {
     return this.receiptForm.get('costAccounts') as FormArray;
