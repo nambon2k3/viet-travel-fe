@@ -500,7 +500,35 @@ export class BookingDetailComponent implements AfterViewInit {
   }
 
   cancelBookingForm: FormGroup;
+
+  forwardBookingId = null;
+
+  onChangeForwardSchedule(event: any) {
+    const selectedSchedule = event.target.value;
+    console.log(selectedSchedule);
+    this.forwardBookingId = selectedSchedule;
+  }
   
+
+  forwardBooking() {
+    if (this.forwardBookingId) {
+      this.bookingService.forwardBooking(this.tourBookingId!, this.forwardBookingId).subscribe({
+        next: (response) => {
+          console.log('Forward Booking Success:', response);
+          this.triggerSuccess();
+          this.getBookingDetail(this.tourBookingId!); // Refresh booking detail
+        },
+        error: (error) => {
+          console.error('Forward Booking Failed:', error);
+          this.triggerError();
+        }
+      });
+    } else {
+      console.log('Forward Booking Form is invalid:', this.forwardBookingId);
+    }
+
+    this.closeForwardBookingModal();
+  }
 
 
   onSubmit(): void {

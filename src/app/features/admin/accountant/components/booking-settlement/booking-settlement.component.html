@@ -378,11 +378,11 @@
               <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
               Thành công
             </span>
-            } @else if (transaction?.transactionStatus === 'MISSING') {
+            } @else if (transaction?.transactionStatus === 'CANCELLED') {
             <span
               class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
               <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
-              Còn thiếu tiền
+              Đã hủy
             </span>
             }
           </td>
@@ -633,6 +633,7 @@
                     <select formControlName="status" class="w-full border px-2 py-1 rounded">
                       <option value="PENDING">Chưa thanh toán</option>
                       <option value="PAID">Đã thanh toán</option>
+                      <option value="CANCELLED">Đã hủy</option>
                     </select>
                   </td>
                   <td class="p-2 text-right">
@@ -659,7 +660,7 @@
             </table>
           </div>
 
-          <div class="mt-4 flex items-center text-blue-600 ">
+          <div class="mt-4 flex items-center text-blue-600 " *ngIf="tourScheduleSettlement?.status !== 'COMPLETED'">
             <div (click)="addCostAccount()" class="cursor-pointer">
               <span class="text-xl">➕</span>
               <span class="ml-2">Thêm dòng</span>
@@ -670,7 +671,7 @@
             <button type="button" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">
               Hủy
             </button>
-            <button (click)="onSave()" type="submit"
+            <button (click)="onSave()" type="submit" *ngIf="tourScheduleSettlement?.status !== 'COMPLETED'"
               class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">
               Lưu
             </button>
@@ -854,6 +855,7 @@
                       <select formControlName="status" class="w-full border px-2 py-1 rounded">
                         <option value="PENDING">Chưa thanh toán</option>
                         <option value="PAID">Đã thanh toán</option>
+                        <option value="CANCELLED">Đã hủy</option>
                       </select>
                     </td>
                     <td class="p-2 text-center">
@@ -1056,6 +1058,7 @@
                       <select formControlName="status" class="w-full border px-2 py-1 rounded">
                         <option value="PENDING">Chưa thanh toán</option>
                         <option value="PAID">Đã thanh toán</option>
+                        <option value="CANCELLED">Đã hủy</option>
                       </select>
                     </td>
                     <td class="p-2 text-center">
@@ -1262,6 +1265,7 @@
                         <select formControlName="status" class="w-full border px-2 py-1 rounded">
                           <option value="PENDING">Chưa thanh toán</option>
                           <option value="PAID">Đã thanh toán</option>
+                          <option value="CANCELLED">Đã hủy</option>
                         </select>
                       </td>
                       <td class="p-2 text-center">

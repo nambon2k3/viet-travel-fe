@@ -15,6 +15,7 @@ import { initFlowbite } from 'flowbite';
 import { HomepageService } from '../../../services/homepage.service';
 import { WishlistService } from '../../../../customer/components/wishlist/wishlist.service';
 import { WishlistComponent } from '../../../../customer/components/wishlist/wishlist.component';
+import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 
 @Component({
   selector: 'app-tour-detail',
@@ -48,6 +49,8 @@ export class TourDetailComponent implements AfterViewInit {
     dateClick: (arg) => this.handleDateClick(arg),
   };
 
+  userId: number | null;
+
   constructor(
     private tourDetailService: TourDetailService,
     private router: Router,
@@ -56,7 +59,12 @@ export class TourDetailComponent implements AfterViewInit {
     private viewportScroller: ViewportScroller,
     private homepageService: HomepageService,
     private wishlistService: WishlistService,
-  ) { }
+    private userStorageService: UserStorageService,
+  ) {
+
+    this.userId = this.userStorageService.getUserId();
+
+   }
 
   ngOnInit(): void {
     const tourId = Number(this.router.url.split('/').pop());
@@ -155,11 +163,13 @@ export class TourDetailComponent implements AfterViewInit {
     calendarApi.gotoDate(`${year}-${month.padStart(2, '0')}-01`);
   }
 
-  navigateToDetails() {
-    if (this.tourDetails && this.selectedSchedule) {
+  navigateToDetails() { 
+    if (this.tourDetails && this.selectedSchedule && this.userId) {
       this.router.navigate(['/tour-booking', this.tourDetails.id,this.selectedSchedule.scheduleId]).then(() => {
         this.viewportScroller.scrollToPosition([0, 0]);
       });
+    } else {
+      this.router.navigate(['/login'])
     }
   }
 

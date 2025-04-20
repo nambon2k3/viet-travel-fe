@@ -57,10 +57,6 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   closeModal() {
     this.createTourModal?.hide();
-    const backdrop = document.querySelector('.modal-backdrop');
-    if (backdrop) {
-      backdrop.remove();
-    }
   }
 
   selectedFiles: File[] = [];
@@ -75,7 +71,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   // Store filters to persist data across pages
   keyword = '';
-  isDeleted?: boolean;
+  tourStatus?: string;
   sortField = 'createdAt';
   sortDirection = 'desc';
 
@@ -129,8 +125,10 @@ export class ListTourPrivateComponent implements AfterViewInit {
     this.saveChanges();
   }
 
+  isImageLoading: boolean = false;
+
   saveChanges(): void {
-    this.isLoading = true;
+    this.isImageLoading = true;
     const formData = new FormData();
     this.selectedFiles.forEach(file => {
       formData.append('file', file);
@@ -138,13 +136,13 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
     this.adminService.uploadImage(formData).subscribe({
       next: (response) => {
-        this.isLoading = false;
+        this.isImageLoading = false;
         const uploadedImages = response.data;
-        const currentImages = this.tourForm.get('tourImages')?.value || null;
+        const currentImages = this.tourForm.get('tourImages')?.value || [];
         this.tourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
       },
       error: (err) => {
-        this.isLoading = false;
+        this.isImageLoading = false;
         console.error('Lỗi tải ảnh:', err);
       }
     });
@@ -183,7 +181,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   loadTours() {
     this.isLoading = true;
-    this.tourService.getTourByPage(this.page, this.size, this.keyword, undefined, undefined, this.keyword, "PRIVATE").subscribe({
+    this.tourService.getTourByPage(this.page, this.size, this.keyword, this.tourStatus, undefined, this.keyword, "PRIVATE").subscribe({
       next: (response) => {
         this.tourDatas = response.data.items;
         this.isLoading = false;
@@ -238,7 +236,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   onSearch(filters: any): void {
     this.keyword = filters.keyword || '';
-    this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
+    this.tourStatus = filters.status;
     this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
     this.page = 0; // Reset to first page on new search
     this.loadTours();
@@ -274,15 +272,13 @@ export class ListTourPrivateComponent implements AfterViewInit {
           console.log('Create tour failed: ', this.errorMessages);
         }
       });
+      this.closeModal();
     } else {
       this.tourForm.markAllAsTouched();
       console.log('Invalid form: ', this.tourForm.value);
     }
     this.resetItems();
 
-    if(this.showSuccess) {
-      this.closeModal();
-    } 
   }
 
   resetItems(): void {

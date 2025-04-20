@@ -54,8 +54,8 @@ export class BlogService {
         return this.http.put(`${environment.apiUrl}marketing/blog/update/${id}`, formData);
     }
 
-    addBlog(): Observable<any> {
-        return this.http.post(`${environment.apiUrl}marketing/blog/create`, {});
+    addBlog(formData: any): Observable<any> {
+        return this.http.post(`${environment.apiUrl}marketing/blog/create`, formData);
     }
 
     getAllTags(): Observable<any> {

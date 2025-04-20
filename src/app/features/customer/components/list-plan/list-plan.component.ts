@@ -1,10 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { AfterViewInit, Component, signal } from '@angular/core';
 import { PlanService } from '../../services/plan.service';
 import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TableFooterComponent } from '../../../../shared/components/table/table-footer/table-footer.component';
 import { SpinnerComponent } from '../../../../shared/components/spinner/spinner.component';
+import { Modal } from 'flowbite';
+Modal
 
 @Component({
   selector: 'app-list-plan',
@@ -12,12 +14,80 @@ import { SpinnerComponent } from '../../../../shared/components/spinner/spinner.
   templateUrl: './list-plan.component.html',
   styleUrl: './list-plan.component.css'
 })
-export class ListPlanComponent {
+export class ListPlanComponent implements AfterViewInit{
 
   constructor(
     private planService: PlanService,
     private userStorageService: UserStorageService,
   ) {}
+
+
+  confirmModal: Modal | null = null;
+
+  ngAfterViewInit(): void {
+    this.confirmModal = new Modal(document.getElementById('popup-modal'));
+  }
+
+
+  selectedPlanId: any;
+
+  openConfirmModal(planId: any) {
+    if (this.confirmModal) {
+      this.confirmModal.show();
+    }
+    this.selectedPlanId = planId;
+  }
+
+  closeConfirmModal() {
+    if (this.confirmModal) {
+      this.confirmModal.hide();
+    }
+  }
+
+  deletePlan() {
+    this.isLoading = true;
+    this.planService.deletePlan(this.selectedPlanId).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.getListPlanByUserId();
+        this.closeConfirmModal();
+        this.isLoading = false;
+        this.triggerSuccess();
+        
+      },
+      error: (error) => {
+        console.error(error);
+        this.isLoading = false;
+        this.triggerError();
+      }
+    });
+  }
+
+
+  showSuccess: boolean = false;
+  showError: boolean = false;
+
+
+  successMessage: string = 'Chỉnh sửa thành công';
+  errorMessage: string = 'Chỉnh sửa  thất bại';
+
+  triggerSuccess() {
+    this.showSuccess = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showSuccess = false;
+    }, 4000);
+  }
+
+  triggerError() {
+    this.showError = true;
+
+    // Hide warning after 3 seconds
+    setTimeout(() => {
+      this.showError = false;
+    }, 4000);
+  }
 
   userId: any;
 

@@ -348,6 +348,8 @@ export class TourServiceComponent implements AfterViewInit {
           // Handle success response here (e.g., show a success message)
           this.successMessage = "Cập nhật dịch vụ thành công!";
           this.triggerSuccess()
+          this.buildForm();
+          // this.tourDayServiceForm.reset(); // Reset the form after successful submission
           this.getServiceCategoriesWithTourDays(this.tourId!); // Refresh the data
         },
         (error: any) => {
@@ -359,6 +361,12 @@ export class TourServiceComponent implements AfterViewInit {
     } else {
       console.log('INVALID :', this.tourDayServiceForm.value)
     }
+  }
+
+  buildForm(){
+    this.tourDayServiceForm = this.fb.group({
+      categories: new FormArray([]),
+    });
   }
 
   removeService(categoryIndex: number, tourDayIndex: number, removeIndex: number) {

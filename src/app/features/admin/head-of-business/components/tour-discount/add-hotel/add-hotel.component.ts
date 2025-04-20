@@ -61,6 +61,11 @@ interface ServiceDetailResponse {
   };
 }
 
+interface TourDay {
+  dayNumber: number;
+  serviceCategories: string[];
+}
+
 @Component({
   selector: 'app-add-hotel',
   standalone: true,
@@ -81,11 +86,13 @@ export class AddHotelComponent implements AfterViewInit {
   @Input() prices: PaxOption[] = [];
   @Input() locations = signal<any[]>([]);
   @Output() hotelAdded = new EventEmitter<{ hotel: Service, isUpdate: boolean }>();
+  @Output() error = new EventEmitter<any>();
 
   modal: Modal | null = null;
   addHotelForm!: FormGroup;
   providers = signal<any[]>([]);
   hotels = signal<any[]>([]);
+  tourDays: TourDay[] = [];
 
   constructor(
     private ssrService: SsrService,
@@ -224,14 +231,14 @@ export class AddHotelComponent implements AfterViewInit {
   }
 
   onLocationChange() {
-    this.addHotelForm.patchValue({ selectedProvider: null, selectedHotel: null, netPrice: 0  });
+    this.addHotelForm.patchValue({ selectedProvider: null, selectedHotel: null, netPrice: 0 });
     this.providers.set([]);
     this.hotels.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
-    this.addHotelForm.patchValue({ selectedHotel: null, netPrice: 0  });
+    this.addHotelForm.patchValue({ selectedHotel: null, netPrice: 0 });
     this.hotels.set([]);
     this.fetchHotels();
   }
@@ -254,20 +261,44 @@ export class AddHotelComponent implements AfterViewInit {
     }
   }
 
+  getTourDays() {
+    this.tourDiscountService.getTourDayById(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.tourDays = response.data;
+          console.log('Danh sách ngày tour: ', this.tourDays);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching tour days:', error);
+      }
+    });
+  }
+
   onSubmit() {
     if (this.addHotelForm.valid) {
-      const formValue = this.addHotelForm.getRawValue(); // Use getRawValue to include disabled fields
+      const formValue = this.addHotelForm.getRawValue();
+      
+      const selectedDay = formValue.selectedDay;
+      const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
+      
+      if (!tourDay || !tourDay.serviceCategories.includes('Hotel')) {
+        this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ khách sạn`);
+        this.onCancel();
+        return;
+      }
+
       const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
         acc[pax.paxRange] = {
           paxId: pax.paxId,
           minPax: this.prices.find(p => p.paxRange === pax.paxRange)?.minPax || 0,
           maxPax: this.prices.find(p => p.paxRange === pax.paxRange)?.maxPax || 0,
           paxRange: pax.paxRange,
-          price: 0, // Assuming price is not used here
+          price: 0,
           serviceNettPrice: formValue.netPrice,
           sellingPrice: pax.sellingPrice,
-          fixedCost: 0, // Adjust if needed from data
-          extraHotelCost: 0 // Adjust if needed from data
+          fixedCost: 0,
+          extraHotelCost: 0
         };
         return acc;
       }, {});
@@ -278,7 +309,7 @@ export class AddHotelComponent implements AfterViewInit {
         dayNumber: formValue.selectedDay,
         status: 'ACTIVE',
         nettPrice: formValue.netPrice,
-        sellingPrice: 0, // Will be calculated based on paxPrices
+        sellingPrice: 0,
         locationName: this.locations().find(l => l.id === formValue.selectedLocation)?.name || '',
         locationId: formValue.selectedLocation,
         serviceProviderName: this.providers().find(p => p.id === formValue.selectedProvider)?.name || '',
@@ -310,8 +341,6 @@ export class AddHotelComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.hotelAdded.emit({ hotel: hotelData, isUpdate: false });
-
-          // Reset toàn bộ form
           this.addHotelForm.reset();
           this.initPaxPrices();
           this.providers.set([]);
@@ -341,8 +370,6 @@ export class AddHotelComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.hotelAdded.emit({ hotel: hotelData, isUpdate: true });
-
-          // Reset toàn bộ form
           this.addHotelForm.reset({
             selectedDay: this.days.length > 0 ? this.days[0] : 1,
             selectedLocation: null,
@@ -350,15 +377,9 @@ export class AddHotelComponent implements AfterViewInit {
             selectedHotel: null,
             netPrice: 0
           });
-
-          // Reset paxPrices về giá trị mặc định từ this.prices
           this.initPaxPrices();
-
-          // Reset providers và hotels
           this.providers.set([]);
           this.hotels.set([]);
-
-          // Ẩn modal
           this.modal?.hide();
         }
       },
@@ -370,6 +391,7 @@ export class AddHotelComponent implements AfterViewInit {
 
   showModal() {
     this.fetchHotelDetails();
+    this.getTourDays();
     this.modal?.show();
   }
 

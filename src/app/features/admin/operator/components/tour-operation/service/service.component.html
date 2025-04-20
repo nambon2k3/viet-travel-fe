@@ -78,17 +78,11 @@
                         <li *ngIf="service.status === 'Đang kiểm tra' || service.requestQuantity > 0">
                           <button (click)="approveService(service)"
                             class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/20 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-1">
-                            Duyệt Dịch vụ
+                            Đặt Dịch vụ
                           </button>
                         </li>
-                        <li *ngIf="service.status === 'Có sẵn'">
-                          <button (click)="openOrderModal(service)"
-                            class="mx-auto w-fit cursor-pointer rounded-[30px] bg-yellow-500/20 px-2 py-0.5 text-xs font-medium text-yellow-800 flex mt-3">
-                            Đặt hàng
-                          </button>
-                        </li>
-                        <li *ngIf="service.status === 'Đã phê duyệt'">
-                          <button (click)="openPayModal(service)"
+                        <li >
+                          <button *ngIf="service.status === 'Có sẵn'" (click)="openPayModal(service)"
                             class="mx-auto w-fit cursor-pointer rounded-[30px] bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-800 flex mt-3">
                             Thanh toán
                           </button>

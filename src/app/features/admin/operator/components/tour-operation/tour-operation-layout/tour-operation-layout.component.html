@@ -1,3 +1,4 @@
+<button data-modal-target="operator-popup-modal"></button>
 <div class="flex justify-between items-center py-4 px-7 bg-white shadow-md">
     <div class="text-lg font-semibold">Điều hành Tour</div>
     <div class="space-x-2 text-sm font-semibold">
@@ -11,7 +12,7 @@
         <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" type="button"
             class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded">Chuyển quyết toán</button>
         <button *ngIf="tour?.operatorName === 'null'" data-modal-target="operator-popup-modal" data-modal-toggle="operator-popup-modal" type="button"
-            class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Nhận điều hành</button>
+        (click)="receiveTour()"  class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Nhận điều hành</button>
     </div>
 </div>
 <div class="bg-yellow-100 shadow-md w-full mt-4 pt-4">

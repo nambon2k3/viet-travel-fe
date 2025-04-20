@@ -38,9 +38,10 @@ export class ListReceiptComponent implements AfterViewInit {
   isLoading: boolean = false;
 
   keyword = '';
-  isDeleted?: boolean;
+  transactionStatus?: string;
   sortField = 'createdAt';
   sortDirection = 'desc';
+  type = ['RECEIPT', 'COLLECTION'];
 
   isBookingLoading: boolean = false;
 
@@ -113,7 +114,8 @@ export class ListReceiptComponent implements AfterViewInit {
       this.keyword,
       this.sortField,
       this.sortDirection,
-      ["RECEIPT", "COLLECTION"]
+      this.type,
+      this.transactionStatus
     ).subscribe({
       next: (response) => {
         this.receipts = response.data.items;
@@ -134,8 +136,9 @@ export class ListReceiptComponent implements AfterViewInit {
 
   onSearch(filters: any): void {
     this.keyword = filters.keyword || '';
-    this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
+    this.transactionStatus = filters.status;
     this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
+    this.type = filters.type === ''? ['RECEIPT', 'COLLECTION'] : [filters.type];
     this.page = 0;
     this.loadReceipts();
   }
@@ -189,8 +192,9 @@ export class ListReceiptComponent implements AfterViewInit {
   }
 
   getTotalAmount(): number {
-    return this.costAccounts.value.reduce((sum: number, row: any) => sum + row.amount, 0);
+    return this.costAccounts.value.reduce((sum: number, row: any) => sum + Number(row.amount || 0), 0);
   }
+  
 
   get costAccounts(): FormArray {
     return this.receiptForm.get('costAccounts') as FormArray;

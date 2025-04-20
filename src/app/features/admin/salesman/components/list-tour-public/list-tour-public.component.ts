@@ -30,7 +30,7 @@ export class ListTourPublicComponent {
   
     // Store filters to persist data across pages
     keyword = '';
-    isDeleted?: boolean;
+    tourStatus?: string;
     sortField = 'createdAt';
     sortDirection = 'desc';
   
@@ -53,7 +53,7 @@ export class ListTourPublicComponent {
         this.page,
         this.size,
         this.keyword,
-        this.isDeleted,
+        this.tourStatus,
         this.sortField,
         this.sortDirection
       ).subscribe({
@@ -90,7 +90,8 @@ export class ListTourPublicComponent {
   
     onSearch(filters: any): void {
       this.keyword = filters.keyword || '';
-      this.isDeleted = filters.status === '2' ? true : filters.status === '1' ? false : undefined;
+      this.tourStatus = filters.status;
+      console.log(filters.status)
       this.sortDirection = filters.order === '1' ? 'desc' : 'asc';
       this.page = 0; // Reset to first page on new search
       this.loadTours();

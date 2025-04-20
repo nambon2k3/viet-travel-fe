@@ -29,7 +29,7 @@
       <div class="relative p-4 w-full max-w-6xl max-h-full">
         <!-- Modal content -->
         <form [formGroup]="tourForm" (ngSubmit)="onSubmit()" class="max-w-6xl mx-auto p-6 bg-white  space-y-6">
-          <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+          <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700" [class]="{ 'opacity-50': isImageLoading }">
             <!-- Modal header -->
             <div
               class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
@@ -97,10 +97,10 @@
                         <img *ngIf="previewImage" [src]="previewImage" class="max-w-full h-64 object-contain">
                       </div>
                       <div class="flex justify-center gap-4">
-                        <button class="border border-black px-4 py-2 rounded" data-modal-hide="previewModal">
+                        <button type="button" class="border border-black px-4 py-2 rounded" data-modal-hide="previewModal">
                           Đóng
                         </button>
-                        <button class="bg-black text-white px-4 py-2 rounded" (click)="confirmImage()"
+                        <button type="button" class="bg-black text-white px-4 py-2 rounded" (click)="confirmImage()"
                           data-modal-hide="previewModal">
                           Xác nhận
                         </button>

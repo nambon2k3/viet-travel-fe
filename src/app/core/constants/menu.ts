@@ -25,6 +25,13 @@ export class Menu {
             { label: 'Tour đặt riêng', route: '/salesman/list-tour-private' },
           ],
         },
+        {
+          icon: 'assets/icons/heroicons/outline/cart.svg',
+          label: 'Yêu Cầu Tạo Tour',
+          children: [
+            { label: 'Danh sách', route: '/salesman/list-plan' }
+          ],
+        }
       ],
     },
     {
@@ -110,7 +117,7 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
           label: 'Thống kê',
-          route: '/ceo',
+          route: '/ceo/dashboard',
         },
         {
           icon: 'assets/icons/heroicons/outline/travel-bag-svgrepo-com.svg',
@@ -132,8 +139,8 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Người dùng',
           children: [
-            { label: 'Staff', route: '/admin/user' },
-            { label: 'Customer', route: '/admin/customer' },
+            { label: 'Nhân viên', route: '/admin/user' },
+            { label: 'Khách hàng', route: '/admin/customer' },
           ],
         },
         {

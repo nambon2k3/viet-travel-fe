@@ -29,4 +29,8 @@ export class PlanService {
   getPlanById(planId: number): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}public/plans/details/${planId}`);
   }
+
+  updateStatusPlan(planId: number): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}public/plans/update-status/${planId}`, {});
+  }
 }

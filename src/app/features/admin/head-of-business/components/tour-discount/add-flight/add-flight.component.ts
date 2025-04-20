@@ -61,6 +61,11 @@ interface ServiceDetailResponse {
   };
 }
 
+interface TourDay {
+  dayNumber: number;
+  serviceCategories: string[];
+}
+
 @Component({
   selector: 'app-add-flight',
   standalone: true,
@@ -81,11 +86,13 @@ export class AddFlightComponent implements AfterViewInit {
   @Input() prices: PaxOption[] = [];
   @Input() locations = signal<any[]>([]);
   @Output() flightAdded = new EventEmitter<{ flight: Service, isUpdate: boolean }>();
+  @Output() error = new EventEmitter<any>();
 
   modal: Modal | null = null;
   addFlightForm!: FormGroup;
   providers = signal<any[]>([]);
   flights = signal<any[]>([]);
+  tourDays: TourDay[] = [];
 
   constructor(
     private ssrService: SsrService,
@@ -242,9 +249,33 @@ export class AddFlightComponent implements AfterViewInit {
     }
   }
 
+  getTourDays() {
+    this.tourDiscountService.getTourDayById(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.tourDays = response.data;
+          console.log('Danh sách ngày tour: ', this.tourDays);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching tour days:', error);
+      }
+    });
+  }
+
   onSubmit() {
     if (this.addFlightForm.valid) {
-      const formValue = this.addFlightForm.getRawValue(); // Use getRawValue to include disabled fields
+      const formValue = this.addFlightForm.getRawValue();
+
+      const selectedDay = formValue.selectedDay;
+      const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
+
+      if (!tourDay || !tourDay.serviceCategories.includes('Flight Ticket')) {
+        this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ vé máy bay`);
+        this.onCancel();
+        return;
+      }
+
       const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
         acc[pax.paxRange] = {
           paxId: pax.paxId,
@@ -352,6 +383,7 @@ export class AddFlightComponent implements AfterViewInit {
 
   showModal() {
     this.fetchFlightDetails();
+    this.getTourDays();
     this.modal?.show();
   }
 

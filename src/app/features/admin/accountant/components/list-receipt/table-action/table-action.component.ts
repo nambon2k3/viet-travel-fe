@@ -15,6 +15,7 @@ export class TableActionComponent {
   keyword = '';
   status = '';
   order = '1';
+  type = '';
 
   @Output() searchFilters = new EventEmitter<any>();
 
@@ -22,7 +23,8 @@ export class TableActionComponent {
     const filters = {
       keyword: this.keyword,
       status: this.status,
-      order: this.order
+      order: this.order,
+      type: this.type
     };
     this.searchFilters.emit(filters);
   }

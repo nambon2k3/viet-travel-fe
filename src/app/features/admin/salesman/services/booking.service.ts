@@ -15,21 +15,19 @@ export class BookingService {
         page: number = 0,
         size: number = 10,
         keyword?: string,
-        isDeleted?: boolean,
+        status?: string,
         sortField: string = 'createdAt',
         sortDirection: string = 'desc'
     ): Observable<any> {
         let params = new HttpParams()
             .set('page', page)
             .set('size', size)
+            .set('status', status || '')
             .set('sortField', sortField)
             .set('sortDirection', sortDirection);
 
         if (keyword) {
             params = params.set('keyword', keyword);
-        }
-        if (isDeleted !== undefined) {
-            params = params.set('isDeleted', isDeleted);
         }
 
         return this.http.get(`${environment.apiUrl}salesman/bookings/list`, { params });
@@ -150,6 +148,13 @@ export class BookingService {
 
     sendEmail(formData: any) : Observable<any> {
         return this.http.post(`${environment.apiUrl}salesman/bookings/send-email/submit`, formData);
+    }
+
+    forwardBooking(bookingId: number, scheduleId: number) : Observable<any> {
+        return this.http.post(`${environment.apiUrl}salesman/tours/forward`, {
+            bookingId: bookingId,
+            scheduleId: scheduleId
+        });
     }
 
 }

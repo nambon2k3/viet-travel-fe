@@ -31,7 +31,7 @@
       </thead>
       <tbody>
         @for (payment of payments; track $index) {
-        <tr class="hover:bg-card/50" app-table-row [payment]="payment"></tr>
+        <tr class="hover:bg-card/50" app-table-row [payment]="payment" [index]="$index"></tr>
         } @empty {
         <tr>
           <td class="py-4 text-center text-sm" colspan="9">Không tìm thấy phiếu chi nào</td>

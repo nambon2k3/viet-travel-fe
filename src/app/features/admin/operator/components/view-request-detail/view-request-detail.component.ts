@@ -128,6 +128,6 @@ export class ViewRequestDetailComponent implements OnInit {
     setTimeout(() => {
       this.showPopup = false;
       this.router.navigate(['/operator/view-list-request']);
-    }, 2000); // Hide after 2 seconds
+    }, 3000);
   }
 }

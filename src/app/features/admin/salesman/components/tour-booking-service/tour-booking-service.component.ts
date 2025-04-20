@@ -170,22 +170,20 @@ export class TourBookingServiceComponent implements AfterViewInit{
   totalDays = 0;
   statusCounter = {
     PENDING: 0,
-    APPROVED: 0,
-    REJECTED: 0,
     NOT_ORDERED: 0,
     CANCELLED: 0,
     AVAILABLE: 0,
-    CHECKING: 0
+    CHECKING: 0,
+    CANCEL_REQUEST: 0
   };
 
   statusLabels: { [key: string]: string } = {
     PENDING: 'Đang chờ xử lý',
-    APPROVED: 'Đã phê duyệt',
-    REJECTED: 'Bị từ chối',
     NOT_ORDERED: 'Chưa đặt dịch vụ',
     CANCELLED: 'Đã hủy',
     AVAILABLE: 'Đã xác thực',
-    CHECKING: 'Chờ xác thực'
+    CHECKING: 'Chờ xác thực',
+    CANCEL_REQUEST: 'Yêu cầu hủy',
   };
 
   statusKeys(): string[] {
@@ -201,12 +199,11 @@ export class TourBookingServiceComponent implements AfterViewInit{
     this.totalServices = 0;
     this.statusCounter = {
       PENDING: 0,
-      APPROVED: 0,
-      REJECTED: 0,
       NOT_ORDERED: 0,
       CANCELLED: 0,
       AVAILABLE: 0,
-      CHECKING: 0
+      CHECKING: 0,
+      CANCEL_REQUEST: 0
     };
     this.dayServices.forEach((dayService: any) => {
       this.totalServices += dayService.bookingServices.length;

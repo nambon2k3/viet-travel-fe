@@ -159,8 +159,8 @@
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" 
-            (click)="openAddTransportationModal(transport.id, transport.dayNumber)">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddTransportationModal(transport.id, transport.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -234,7 +234,8 @@
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddRestaurantModal(restaurant.id, restaurant.dayNumber)">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddRestaurantModal(restaurant.id, restaurant.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -306,7 +307,8 @@
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddActivityModal(activity.id, activity.dayNumber)">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddActivityModal(activity.id, activity.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -378,7 +380,8 @@
             </table>
           </td>
           <td class="p-2 text-center">
-            <button class="text-green-700 hover:text-green-800 mr-2" (click)="openAddFlightModal(flight.id, flight.dayNumber)">
+            <button class="text-green-700 hover:text-green-800 mr-2"
+              (click)="openAddFlightModal(flight.id, flight.dayNumber)">
               <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -442,17 +445,17 @@
 
 <!-- Include the new popup components -->
 <app-config-tour-pax (close)="closeTourPax()" [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
-<app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalSellingPrice]="minsalePrices" 
+<app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalSellingPrice]="minsalePrices"
   [extraHotelCost]="extraHotelCost" [nettPricePerPax]="mintotalNetPrices"
   (confirm)="handlePriceConfirm($event)"></app-config-price>
 <!-- <app-config-markup #configMarkupModal [tourId]="tourId" (confirm)="handleMarkupConfirm($event)"></app-config-markup> -->
 <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
-  (hotelAdded)="addNewHotel($event)"></app-add-hotel>
+  (error)="handleError($event)" (hotelAdded)="addNewHotel($event)"></app-add-hotel>
 <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
   [locations]="locations" (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
 <app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
-  (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
+  (error)="handleRestaurantError($event)" (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
 <app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
-  (activityAdded)="addNewActivity($event)"></app-add-activity>
+  (error)="handleActivityError($event)" (activityAdded)="addNewActivity($event)"></app-add-activity>
 <app-add-flight #addFlightModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
-  (flightAdded)="addNewFlight($event)"></app-add-flight>
+  (error)="handleFlightError($event)" (flightAdded)="addNewFlight($event)"></app-add-flight>

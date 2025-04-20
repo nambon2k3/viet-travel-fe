@@ -31,7 +31,7 @@
       </thead>
       <tbody>
         @for (receipt of receipts; track $index) {
-        <tr class="hover:bg-card/50" app-table-row [receipt]="receipt"></tr>
+        <tr class="hover:bg-card/50" app-table-row [receipt]="receipt" [index]="$index"></tr>
         } @empty {
         <tr>
           <td class="py-4 text-center text-sm" colspan="9">Không tìm thấy phiếu thu nào</td>

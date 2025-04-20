@@ -92,4 +92,8 @@ export class TourDiscountService {
   updateMarkup(tourId: number, markupData: any): Observable<any> {
     return this.http.put(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-pax/update-markup`, markupData);
   }
+
+  getTourDayById(tourId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}head-of-business/tour/${tourId}/tour-days/list`);
+  }
 }

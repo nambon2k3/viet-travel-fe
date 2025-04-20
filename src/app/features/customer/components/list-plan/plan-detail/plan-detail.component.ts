@@ -1,25 +1,68 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { PlanService } from '../../../services/plan.service';
 import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FooterComponent } from '../../../../../shared/components/footer/footer.component';
 import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
-
+import { Modal } from 'flowbite';
 @Component({
   selector: 'app-plan-detail',
   imports: [CommonModule, FooterComponent, SpinnerComponent],
   templateUrl: './plan-detail.component.html',
   styleUrl: './plan-detail.component.css'
 })
-export class PlanDetailComponent {
+export class PlanDetailComponent implements AfterViewInit {
 
   constructor(
     private planService: PlanService,
     private userStorageService: UserStorageService,
     private router: Router,
-    
+
   ) { }
+
+  serviceModal: Modal | null = null;
+
+  activityModal: Modal | null = null;
+
+
+  ngAfterViewInit(): void {
+    this.serviceModal = new Modal(document.getElementById('service-modal'));
+    this.activityModal = new Modal(document.getElementById('activity-modal'));
+  }
+
+  openActivityModal() {
+    if (this.activityModal) {
+      this.activityModal.show();
+    }
+    this.fetchActivities();
+  }
+
+  closeActivityModal() {
+    if (this.activityModal) {
+      this.activityModal.hide();
+    }
+  }
+
+  selectedCategoryName: string = 'Hotel';
+
+  openServiceModal(categoryName: string) {
+    if (this.serviceModal) {
+      this.serviceModal.show();
+    }
+    this.selectedCategoryName = categoryName;
+    console.log(this.selectedCategoryName)
+
+
+    this.fetchProviderByCategoryAndLocationId(this.plan.content.locationId, this.selectedCategoryName);
+
+  }
+
+  closeServiceModal() {
+    if (this.serviceModal) {
+      this.serviceModal.hide();
+    }
+  }
 
   plan: any;
 
@@ -32,6 +75,8 @@ export class PlanDetailComponent {
   selectedDay: any = null;
 
   isEdited: boolean = false;
+
+  ids: any[] = [];
 
   onEditPlan() {
     this.isEdited = !this.isEdited;
@@ -49,7 +94,7 @@ export class PlanDetailComponent {
     this.triggerSuccess();
 
     this.updateSelectedDay(this.selectedDay);
-    
+
   }
 
   deleteActivity(activity: any) {
@@ -62,8 +107,13 @@ export class PlanDetailComponent {
   }
 
 
-  deleteHotel() {
-    this.selectedDay.hotels = [];
+  deleteHotel(hotel: any) {
+    console.log(hotel)
+
+    console.log(this.selectedDay.hotels)
+
+    this.selectedDay.hotels = this.selectedDay.hotels.filter((r: any) => r.id !== hotel.id);
+
     this.triggerSuccess();
 
     this.updateSelectedDay(this.selectedDay);
@@ -81,16 +131,19 @@ export class PlanDetailComponent {
   onSave() {
     console.log(this.plan)
     this.isEdited = false;
-    // this.planService.updatePlan(this.plan.id, this.plan).subscribe(
-    //   (response) => {
-    //     console.log('Plan updated successfully:', response);
-    //     this.triggerSuccess();
-    //   },
-    //   (error) => {
-    //     console.error('Error updating plan:', error);
-    //     this.triggerError();
-    //   }
-    // );
+
+    const content = '{"plan":' + JSON.stringify(this.plan.content) + '}';
+
+    this.planService.updatePlan(this.plan.id, content).subscribe(
+      (response) => {
+        console.log('Plan updated successfully:', response);
+        this.triggerSuccess();
+      },
+      (error) => {
+        console.error('Error updating plan:', error);
+        this.triggerError();
+      }
+    );
   }
 
   showSuccess: boolean = false;
@@ -119,6 +172,8 @@ export class PlanDetailComponent {
   }
 
 
+  activities: any[] = [];
+
 
   ngOnInit() {
 
@@ -141,17 +196,21 @@ export class PlanDetailComponent {
         this.plan = response.data;
 
         this.plan.content = JSON.parse(this.plan.content.replace(/^```json\n/, '').replace(/\n```$/, '')).plan
-
         this.startDate = this.plan.content.days[0].date;
-
-        console.log(this.startDate)
         this.endDate = this.plan.content.days[this.plan.content.days.length - 1].date;
-        console.log(this.endDate)
-
         this.selectedDay = this.plan.content.days[0];
-        
 
 
+        console.log(this.selectedDay)
+
+        const ids: number[] = Array.from(new Set(
+          this.plan.content.days.flatMap((day: any) => [
+            ...day.hotels.map((hotel: any) => hotel.id),
+            ...day.restaurants.map((restaurant: any) => restaurant.id)
+          ])
+        ));
+
+        this.ids = ids;
         console.log(this.plan)
         this.isLoading = false;
       },
@@ -171,6 +230,80 @@ export class PlanDetailComponent {
     }
   }
 
+
+  providers: any[] = [];
+
+
+  fetchProviderByCategoryAndLocationId(locationId: number, categoryName: string) {
+    this.providers = [];
+    this.planService.fetchProviderByCategoryAndLocationId(locationId, categoryName, this.ids).subscribe(
+      (response) => {
+        console.log('Providers fetched successfully:', response);
+        this.providers = response.data;
+      },
+      (error) => {
+        console.error('Error fetching providers:', error);
+      }
+    );
+
+  }
+
+  fetchActivities() {
+    const maxId = Math.max(...this.selectedDay.activities.map((activity: any) => activity.id));
+    this.planService.fetchActivities(this.plan.content.location, this.plan.content.preferences, maxId + 1).subscribe(
+      (response) => {
+        console.log('Activities fetched successfully:', response);
+        this.activities = JSON.parse(response.data.replace(/^```json\n/, '').replace(/\n```$/, '')).activities;
+        console.log(this.activities)
+      },
+      (error) => {
+        console.error('Error fetching activities:', error);
+      }
+    );
+  }
+
+  onSelectActivity(activity: any) {
+    console.log(activity)
+    this.selectedDay.activities.push(activity);
+    this.triggerSuccess();
+    this.updateSelectedDay(this.selectedDay);
+    this.closeActivityModal();
+  }
+
+
+  onSelectProvider(provider: any) {
+    console.log(provider)
+    if (this.selectedCategoryName === 'Hotel') {
+      this.selectedDay.hotels.push(provider);
+      this.triggerSuccess();
+    } else if (this.selectedCategoryName === 'Restaurant') {
+      this.selectedDay.restaurants.push(provider);
+      this.triggerSuccess();
+    } else if (this.selectedCategoryName === 'Activity') {
+      this.selectedDay.activities.push(provider);
+      this.triggerSuccess();
+    }
+    this.updateSelectedDay(this.selectedDay);
+    this.closeServiceModal();
+  }
+
+
+  onSendRequest() {
+
+    this.planService.senRequestPlan(this.plan.id).subscribe(
+      (response) => {
+        console.log('Plan updated successfully:', response);
+        this.successMessage = 'Gửi yêu cầu thành công';
+        this.triggerSuccess();
+        this.successMessage = 'Thay đổi thành công';
+        this.getPlanDetailById(this.plan.id);
+      },
+      (error) => {
+        console.error('Error updating plan:', error);
+        this.triggerError();
+      }
+    );
+  }
 
 
 
