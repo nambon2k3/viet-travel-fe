@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { BlogLoadingComponent } from '../../../../../shared/components/blog-loading/blog-loading.component';
 import { BlogContentComponent } from '../blog-detail/blog-content/blog-content.component';
 import { catchError, of } from 'rxjs';
+import { UserStorageService } from '../../../../../core/services/user-storage/user-storage.service';
+import { CustomerService } from '../../../../customer/services/customer.service';
 
 @Component({
   selector: 'app-add-blog',
@@ -39,9 +41,13 @@ export class AddBlogComponent {
   
     constructor(private blogService: BlogService,
       private fb: FormBuilder,
-      private router: Router) { }
+      private router: Router,
+      private customerService: CustomerService,
+    ) { }
   
     ngOnInit(): void {
+
+      this.getAuthor();
   
       this.dropdownSettings = {
         singleSelection: false,
@@ -60,39 +66,71 @@ export class AddBlogComponent {
         description: [null, Validators.required],
         content: ['', Validators.required],
         tags: [null, Validators.required],
-        thumbnailImageUrl: [null]
+        thumbnailImageUrl: [null],
+        author: [null, Validators.required],
       });
       
 
       this.getAllTags();
       
     }
+
+    getAuthor(): void {
+      this.customerService.getUserProfile().subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          console.log(response.data);
+          // Set the author field in the form with the user profile data
+          this.editBlogForm.patchValue({
+            author: {
+              id: response.data.id,
+              fullName: response.data.fullName,
+              email: response.data.email,
+              avatarImage: response.data.avatarImg,
+            }
+          });
+        },
+        error: (error) => {
+          this.isLoading = false;
+          this.errorMessage = 'Failed to load author information.';
+          console.error('Error fetching author:', error);
+        }
+      });
+    }
   
     onItemSelect(item: any) {
-      console.log(item);
-      console.log(this.selectedItems);
+      // this.selectedItems.push({
+      //   id: item.item_id,
+      //   name: item.item_text
+      // });
+      console.log('Item selected:', item);
+      console.log('Selected tags:', this.selectedItems);
     }
-    onSelectAll(items: any) {
-      console.log(items);
+    
+    onSelectAll(items: any[]) {
+      // this.selectedItems = items.map((item) => ({
+      //   id: item.item_id,
+      //   name: item.item_text
+      // }));
+      console.log('All items selected:', items);
+      console.log('Selected tags:', this.selectedItems);
     }
-  
+    
     onDeSelect(item: any) {
-      console.log(item);
-      console.log(this.selectedItems);
-    }
+      // this.selectedItems = this.selectedItems.filter((tag : any) => tag.id !== item.item_id);
+      console.log('Item deselected:', item);
+      console.log('Selected tags:', this.selectedItems);
+    }   
     
   
     getAllTags(): void {
       this.blogService.getAllTags().subscribe({
         next: (response) => {
           this.isLoading = false;
-          this.dropdownList = response.data.map((tag: { id: string, name: string }) => {
-            return {
-              item_id: tag.id,
-              item_text: tag.name
-            };
-          });
-  
+          this.dropdownList = response.data.map((tag: { id: number, name: string }) => ({
+            item_id: tag.id,
+            item_text: tag.name
+          }));
         }
       });
     }
@@ -126,27 +164,36 @@ export class AddBlogComponent {
   
     saveChanges(): void {
 
+      const formData = new FormData();
+      formData.append('file', this.selectedFile!);
 
       if (this.selectedItems.length <= 0) {
         this.errorMessage = 'Please select at least one tag.';
       } else if (!this.selectedFile) {
         this.errorMessage = 'Please select Image File';
       } else {
-        this.blogService.uploadImage(this.selectedFile).subscribe({
+        this.blogService.uploadImage(formData).subscribe({
           next: (response) => {
             this.editBlogForm.get('thumbnailImageUrl')?.setValue(response.data);
-            this.editBlogForm.get('tags')?.setValue(this.selectedItems.map((tag: any) => ({ id: tag.item_id, name: tag.item_text })));
+            const tagsToSend = this.selectedItems.map((tag: any) => {
+              return {
+                id: tag.item_id ?? tag.id, // phòng khi là item_id hoặc id
+                name: tag.item_text ?? tag.name
+              };
+            });
+            console.log(tagsToSend);
+            this.editBlogForm.get('tags')?.setValue(tagsToSend);
             this.addBlog(this.editBlogForm.value);
           }
         });
       } 
   
-      this.resetItems();
+      // this.resetItems();
   
     }
 
     addBlog(formData: any): void {
-        this.blogService.update(formData, formData.id)
+        this.blogService.addBlog(formData)
           .pipe(
             catchError((error) => {
               const apiError = error?.error?.message || 'An error occurred while updating blog.';
@@ -155,7 +202,7 @@ export class AddBlogComponent {
             })
           )
           .subscribe((response: any) => {
-            if (response?.code === 200) {
+            if (response?.code === 201) {
               this.successMessage = response?.message;
               this.errorMessage = null;
     
