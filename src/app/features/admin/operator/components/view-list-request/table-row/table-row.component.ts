@@ -33,6 +33,7 @@ export class TableRowComponent {
       'CHECKING': 'Đang kiểm tra',
       'REJECTED': 'Bị từ chối',
       'CANCELLED': 'Đã hủy',
+      'CANCEL_REQUEST': 'Yêu cầu hủy',
       'APPROVED': 'Đã phê duyệt'
     };
     return statusMap[status] || status;
@@ -46,6 +47,7 @@ export class TableRowComponent {
       'CHECKING': 'bg-blue-500/10 text-blue-800',
       'REJECTED': 'bg-red-500/10 text-red-800',
       'CANCELLED': 'bg-gray-500/10 text-gray-800',
+      'CANCEL_REQUEST': 'bg-red-700/10 text-red-800',
       'APPROVED': 'bg-green-500/10 text-green-800'
     };
     return `${baseClass} ${statusColors[status] || 'bg-gray-500/10 text-gray-800'}`;
