@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://croakorder.store/api/v1/'
+    apiUrl: 'https://traveltoday.cloud/api/v1/'
 };
