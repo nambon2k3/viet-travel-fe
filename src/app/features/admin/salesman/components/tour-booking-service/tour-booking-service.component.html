@@ -17,12 +17,13 @@
 
 
                 @if(tourType !== 'SIC' && hasNotOrdered) {
-                    <button class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700" (click)="checkingService()">
-                        Kiểm tra dịch vụ
-                    </button>
+                <button class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
+                    (click)="checkingService()">
+                    Kiểm tra dịch vụ
+                </button>
                 }
 
-                
+
             </div>
         </div>
     </div>
@@ -77,29 +78,29 @@
                                 </td>
                                 <td class="p-2">
                                     {{bookingService?.currentQuantity}}
-                                    
+
                                     @if(bookingService?.requestedQuantity > 0) {
-                                        <span class="text-sm text-gray-500"> -> {{bookingService?.requestedQuantity}}</span>
-                                        <span
+                                    <span class="text-sm text-gray-500"> -> {{bookingService?.requestedQuantity}}</span>
+                                    <span
                                         class="inline-flex items-center text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span>
                                             Yêu cầu thay đổi
                                         </span>
-                                    </span>    
+                                    </span>
                                     }
-                                    
+
                                 </td>
 
                                 <td class="p-2 text-center">
                                     @if(bookingService?.status === 'PENDING') {
-                                        <span
-                                            class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                                            <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
-                                            <span>
-                                                Chờ xử lí
-                                            </span>
+                                    <span
+                                        class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
+                                        <span>
+                                            Chờ xử lí
                                         </span>
-                                        }
+                                    </span>
+                                    }
                                     @if(bookingService?.status === 'NOT_ORDERED') {
                                     <span
                                         class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
@@ -121,14 +122,24 @@
                                     }
 
                                     @if(bookingService?.status === 'CANCEL_REQUEST') {
-                                        <span
-                                            class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                                            <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
-                                            <span>
-                                                Yêu cầu hủy
-                                            </span>
+                                    <span
+                                        class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                        <span>
+                                            Yêu cầu hủy
                                         </span>
-                                        }
+                                    </span>
+                                    }
+
+                                    @if(bookingService?.status === 'REJECTED_BY_OPERATOR') {
+                                    <span
+                                        class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                        <span>
+                                            Điều hành từ chối
+                                        </span>
+                                    </span>
+                                    }
 
                                     @if(bookingService?.status === 'CHECKING') {
                                     <span
@@ -199,6 +210,7 @@
                                 'text-red-500': key === 'CANCELLED',
                                 'text-blue-500': key === 'CHECKING',
                                 'text-gray-500': key === 'NOT_ORDERED',
+                                'text-red-800': key === 'REJECTED_BY_OPERATOR',
                                 'text-red-600': key === 'CANCEL_REQUEST'
                               }" class="p-2 font-semibold">{{ statusLabels[key] }}</td>
                             <td [class]="{
@@ -207,6 +219,7 @@
                                 'text-blue-600': key === 'CHECKING',
                                 'text-red-600': key === 'CANCELLED',
                                 'text-gray-600': key === 'NOT_ORDERED',
+                                'text-red-800': key === 'REJECTED_BY_OPERATOR',
                                 'text-red-700': key === 'CANCEL_REQUEST'
                               }" class="p-2 font-semibold">
                                 {{ getStatusCount(key) }}
@@ -307,7 +320,7 @@
 
                 }
                 @if(selectedTourBookingService?.status === 'AVAILABLE') {
-                <button data-modal-hide="service-modal" type="button"  (click)="chekingSICService()"
+                <button data-modal-hide="service-modal" type="button" (click)="chekingSICService()"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Yêu cầu thay đổi
                 </button>
@@ -393,22 +406,22 @@
                 class="flex justify-end items-center p-4 gap-4 border-t border-gray-200 rounded-b dark:border-gray-600">
 
                 @if(selectedTourBookingService?.status !== 'CANCELLED') {
-                    <button type="button" (click)="cancelService()"
-                        class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4  focus:outline-none focus:ring-red-300 font-medium rounded text-sm px-5 py-2.5 text-center">
-                        Hủy dịch vụ
-                    </button>
-                    @if(selectedTourBookingService?.status !== 'CHECKING') {
-                        <button (click)="submitBooking('SAVE')" type="button"
-                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                            Lưu
-                        </button>
-                        @if(selectedTourBookingService?.status !== 'AVAILABLE') {
-                            <button (click)="submitBooking('CHECKING')" type="button"
-                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                                Xác thực dịch vụ
-                            </button>
-                        }
-                    }
+                <button type="button" (click)="cancelService()"
+                    class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4  focus:outline-none focus:ring-red-300 font-medium rounded text-sm px-5 py-2.5 text-center">
+                    Hủy dịch vụ
+                </button>
+                @if(selectedTourBookingService?.status !== 'CHECKING') {
+                <button (click)="submitBooking('SAVE')" type="button"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Lưu
+                </button>
+                @if(selectedTourBookingService?.status !== 'AVAILABLE') {
+                <button (click)="submitBooking('CHECKING')" type="button"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Xác thực dịch vụ
+                </button>
+                }
+                }
                 }
 
                 <button data-modal-hide="service-not-order-modal" type="button" (click)="closeServiceNotOrderModal()"
