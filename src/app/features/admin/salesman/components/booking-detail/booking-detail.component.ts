@@ -417,7 +417,7 @@ export class BookingDetailComponent implements AfterViewInit {
       next: (response) => {
         console.log('Booking Success:', response);
         this.triggerSuccess();
-        this.bookingDetail = response.data;
+        this.getBookingDetail(this.bookingDetail?.id)
       },
       error: (error) => {
         console.error('Booking Failed:', error);
