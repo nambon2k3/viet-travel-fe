@@ -5,7 +5,13 @@ import { CommonModule } from '@angular/common';
 import { Modal } from 'flowbite';
 import { SsrService } from '../../../../../../../core/services/ssr.service';
 import { BlogContentComponent } from "../../../../../marketer/components/blog-detail/blog-content/blog-content.component";
-import { response } from 'express';
+import { SpinnerComponent } from "../../../../../../../shared/components/spinner/spinner.component";
+import { RequestService } from '../../../../services/request.service';
+
+interface EmailSentEvent {
+  success: boolean;
+  error?: string;
+}
 
 @Component({
   selector: 'app-order-service',
@@ -14,15 +20,17 @@ import { response } from 'express';
   imports: [
     FormsModule,
     CommonModule,
-    BlogContentComponent
+    BlogContentComponent,
+    SpinnerComponent
   ]
 })
 export class OrderServiceComponent {
   @Input() selectedService: any;
-  @Output() emailSent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() emailSent: EventEmitter<EmailSentEvent> = new EventEmitter<EmailSentEvent>();
   requestDate: string = new Date().toISOString().split('T')[0];
   private modal: Modal | null = null;
   errorMessage: string | null = null;
+  isLoading: boolean = false;
 
   emailData = {
     bookingServiceId: 0,
@@ -38,10 +46,12 @@ export class OrderServiceComponent {
   constructor(
     private tourService: TourService,
     private ssrService: SsrService,
-    private cdr: ChangeDetectorRef 
+    private requestService: RequestService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   async open() {
+    this.errorMessage = null; // Clear previous error
     const document = this.ssrService.getDocument();
     if (document && !this.modal) {
       const modalElement = document.getElementById('orderModal');
@@ -50,12 +60,14 @@ export class OrderServiceComponent {
       }
     }
     await this.previewEmail();
-    this.generateEmailContent(); 
-    this.cdr.detectChanges(); 
+    this.generateEmailContent();
+    this.cdr.detectChanges();
     this.modal?.show();
   }
 
   async previewEmail() {
+    this.isLoading = true;
+    this.errorMessage = null; // Clear previous error
     const payload = {
       bookingServiceId: this.selectedService.bookingServiceId,
       serviceId: this.selectedService.id,
@@ -66,19 +78,24 @@ export class OrderServiceComponent {
     };
 
     try {
-      const response = await this.tourService.previewEmail(payload).toPromise() as { data: any, code: number,  message: string };
+      const response = await this.tourService.previewEmail(payload).toPromise() as { data: any, code: number, message: string };
+      this.isLoading = false;
       if (response.code === 200) {
         this.emailData = { ...response.data };
       } else {
         this.errorMessage = response.message || 'Có lỗi xảy ra khi lấy thông tin email.';
       }
-    } catch (error : any) {
-      this.errorMessage = error?.message || 'Có lỗi xảy ra khi lấy thông tin email.';
+    } catch (error: any) {
+      this.isLoading = false;
+      this.errorMessage = error;
       console.error('Có lỗi xảy ra khi lấy thông tin email:', error);
     }
+    this.cdr.detectChanges();
   }
 
   close() {
+    this.errorMessage = null; // Clear error on close
+    this.isLoading = false;
     this.modal?.hide();
   }
 
@@ -105,19 +122,48 @@ export class OrderServiceComponent {
     `;
   }
 
+  approveService(): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+    this.requestService.updateRequestStatus(this.selectedService.bookingServiceId).subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        if (response.code !== 200) {
+          this.errorMessage = response.message || 'Có lỗi khi phê duyệt dịch vụ.';
+          this.emailSent.emit({ success: false, error: this.errorMessage! });
+        }
+        this.cdr.detectChanges();
+      },
+      error: (error: any) => {
+        this.isLoading = false;
+        this.errorMessage = error;
+        this.emailSent.emit({ success: false, error: this.errorMessage! });
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   onConfirm() {
+    this.isLoading = true;
+    this.errorMessage = null; // Clear previous error
     this.tourService.sendOrder(this.emailData).subscribe({
       next: (response: any) => {
+        this.isLoading = false;
         if (response.code === 200) {
-          this.emailSent.emit(); 
-          console.log('Email sent successfully:', response.message);
+          this.approveService();
+          this.emailSent.emit();
+          this.close();
         } else {
-          console.error('Error sending email:', response.message);
+          this.errorMessage = response;
+          this.emailSent.emit({ success: false, error: this.errorMessage! });
         }
-        this.close();
+        this.cdr.detectChanges();
       },
-      error: (error) => {
-        console.error('Error sending email:', error);
+      error: (error: any) => {
+        this.isLoading = false;
+        this.errorMessage = error;
+        this.emailSent.emit({ success: false, error: this.errorMessage! });
+        this.cdr.detectChanges();
       }
     });
   }
