@@ -157,4 +157,9 @@ export class BookingService {
         });
     }
 
+
+
+    updateStatus(tourBookingServiceId: number) {
+        return this.http.post(`${environment.apiUrl}salesman/bookings/services/success-service`, tourBookingServiceId);
+    }
 }

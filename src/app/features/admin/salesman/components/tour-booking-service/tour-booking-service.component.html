@@ -110,6 +110,15 @@
                                         </span>
                                     </span>
                                     }
+                                    @if(bookingService?.status === 'NOT_AVAILABLE') {
+                                        <span
+                                            class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                            <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
+                                            <span>
+                                                Không khả dụng
+                                            </span>
+                                        </span>
+                                        }
 
                                     @if(bookingService?.status === 'CANCELLED') {
                                     <span
@@ -319,12 +328,19 @@
                 </button>
 
                 }
-                @if(selectedTourBookingService?.status === 'AVAILABLE') {
+                @if(selectedTourBookingService?.status === 'AVAILABLE' || selectedTourBookingService?.status === 'REJECTED_BY_OPERATOR') {
                 <button data-modal-hide="service-modal" type="button" (click)="chekingSICService()"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Yêu cầu thay đổi
                 </button>
                 }
+
+                @if(selectedTourBookingService?.status === 'REJECTED_BY_OPERATOR') {
+                    <button data-modal-hide="service-modal" type="button" (click)="updateStatus()"
+                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                        Hủy yêu cầu
+                    </button>
+                    }
 
                 <button type="button" (click)="cancelSICService()"
                     class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4  focus:outline-none focus:ring-red-300 font-medium rounded text-sm px-5 py-2.5 text-center">

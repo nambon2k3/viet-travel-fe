@@ -95,10 +95,32 @@ export class TourBookingServiceComponent implements AfterViewInit{
     this.bookingServiceForm.patchValue({
       tourBookingServiceId: this.selectedTourBookingService.id,
       currentQuantity: this.selectedTourBookingService.currentQuantity,
+      requestedQuantity: this.selectedTourBookingService.requestedQuantity,
     });
 
 
 
+  }
+
+
+
+  updateStatus() {
+    this.bookingService.updateStatus(this.selectedTourBookingService.id).subscribe(
+      (response) => {
+        console.log('Updated booking status:', response);
+        this.getBookingService(this.tourBookingId!);
+      },
+      (error) => {
+        console.error('Error updating booking status:', error);
+      }
+    );
+
+
+    this.closeServiceNotOrderModal();
+    this.closeServiceModal();
+
+    this.bookingServiceForm.reset();
+    this.bookingServiceNotOrderForm.reset();
   }
 
   ngOnInit():void {
@@ -126,7 +148,8 @@ export class TourBookingServiceComponent implements AfterViewInit{
   updateInfoBookingServiceNotOrderForm() {
     this.bookingServiceNotOrderForm.patchValue({
       tourBookingServiceId: this.selectedTourBookingService.id,
-      currentQuantity: this.selectedTourBookingService.currentQuantity
+      currentQuantity: this.selectedTourBookingService.currentQuantity,
+      
     });
 
 
@@ -175,7 +198,8 @@ export class TourBookingServiceComponent implements AfterViewInit{
     AVAILABLE: 0,
     CHECKING: 0,
     REJECTED_BY_OPERATOR: 0,
-    CANCEL_REQUEST: 0
+    CANCEL_REQUEST: 0,
+    NOT_AVAILABLE: 0
   };
 
   statusLabels: { [key: string]: string } = {
@@ -186,6 +210,7 @@ export class TourBookingServiceComponent implements AfterViewInit{
     CHECKING: 'Chờ xác thực',
     REJECTED_BY_OPERATOR: 'Điều hành từ chối',
     CANCEL_REQUEST: 'Yêu cầu hủy',
+    NOT_AVAILABLE: 'Không khả dụng'
   };
 
   statusKeys(): string[] {
@@ -206,7 +231,8 @@ export class TourBookingServiceComponent implements AfterViewInit{
       AVAILABLE: 0,
       CHECKING: 0,
       REJECTED_BY_OPERATOR: 0,
-      CANCEL_REQUEST: 0
+      CANCEL_REQUEST: 0,
+      NOT_AVAILABLE: 0
     };
     this.dayServices.forEach((dayService: any) => {
       this.totalServices += dayService.bookingServices.length;
