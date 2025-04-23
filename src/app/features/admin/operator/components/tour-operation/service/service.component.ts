@@ -122,6 +122,7 @@ export class ServiceComponent {
     this.showPopup = true;
     setTimeout(() => {
       this.showPopup = false;
+      this.popupMessage = '';
     }, 3000);
   }
 
@@ -387,26 +388,6 @@ export class ServiceComponent {
     this.changeServiceModal.open();
   }
 
-  approveService(service: Service): void {
-    this.isLoading = true;
-    this.requestService.updateRequestStatus(service.bookingServiceId).subscribe({
-      next: (response: any) => {
-        this.isLoading = false;
-        if (response.code === 200) {
-          this.showNotification('Dịch vụ đã được phê duyệt thành công!', true);
-          this.fetchTourGuide(this.scheduleId!);
-          this.fetchServices(this.scheduleId!);
-        } else {
-          this.showNotification('Lỗi khi phê duyệt dịch vụ: ' + response.message, false);
-        }
-      },
-      error: (error: any) => {
-        this.isLoading = false;
-        this.showNotification('Lỗi khi phê duyệt dịch vụ: ' + error.message, false);
-      }
-    });
-  }
-
   openOrderModal(service: Service): void {
     this.selectedService = service;
     this.orderModal.selectedService = service;
@@ -420,10 +401,14 @@ export class ServiceComponent {
     this.tourGuidePayModal.open();
   }
 
-  onEmailSent(event: any): void {
-    this.showNotification('Email đã được gửi thành công!', true);
-    this.fetchServices(this.scheduleId!);
-    this.fetchTourGuide(this.scheduleId!);
+  onEmailSent(event: { success: boolean, error?: string }): void {
+    if (event.success) {
+      this.showNotification('Email đã được gửi thành công!', true);
+      this.fetchServices(this.scheduleId!);
+      this.fetchTourGuide(this.scheduleId!);
+    } else {
+      this.showNotification(event.error || 'Lỗi khi gửi email.', false);
+    }
   }
 
   onServiceAdded(event: any): void {
@@ -440,10 +425,14 @@ export class ServiceComponent {
     this.fetchServices(this.scheduleId!);
   }
 
-  onPaymentSent(event: any): void {
-    this.showNotification('Thanh toán đã được gửi thành công!', true);
-    this.fetchTourGuide(this.scheduleId!);
-    this.fetchServices(this.scheduleId!);
+  onPaymentSent(event: { success: boolean, error?: string }): void {
+    if (event.success) {
+      this.showNotification('Thanh toán đã được gửi thành công!', true);
+      this.fetchServices(this.scheduleId!);
+      this.fetchTourGuide(this.scheduleId!);
+    } else {
+      this.showNotification(event.error || 'Lỗi khi gửi thanh toán.', false);
+    }
   }
 
   private reInitFlowbite(): void {
