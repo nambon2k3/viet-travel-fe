@@ -43,6 +43,11 @@ interface PaxOption {
   validTo: string;
 }
 
+interface TourDay {
+  dayNumber: number;
+  serviceCategories: string[];
+}
+
 interface ServiceDetailResponse {
   code: number;
   message: string;
@@ -86,6 +91,7 @@ export class AddTransportationComponent implements AfterViewInit {
   addTransportationForm!: FormGroup;
   providers = signal<any[]>([]);
   transportations = signal<any[]>([]);
+  tourDays: TourDay[] = [];
 
   constructor(
     private ssrService: SsrService,
@@ -137,6 +143,20 @@ export class AddTransportationComponent implements AfterViewInit {
     if (changes['prices'] && changes['prices'].currentValue) {
       this.initPaxPrices();
     }
+  }
+
+  getTourDays() {
+    this.tourDiscountService.getTourDayById(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.tourDays = response.data;
+          console.log('Danh sách ngày tour: ', this.tourDays);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching tour days:', error);
+      }
+    });
   }
 
   fetchServiceProviders() {
@@ -370,6 +390,7 @@ export class AddTransportationComponent implements AfterViewInit {
 
   showModal() {
     this.fetchTransportationDetails();
+    this.getTourDays();
     this.modal?.show();
   }
 
