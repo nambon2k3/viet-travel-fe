@@ -112,6 +112,7 @@ export class CreateTourDayComponent {
     this.tourService.createTourDay(this.tourId!, payload).subscribe({
       next: (response) => {
         this.tourChange.emit(response.data);
+        this.editTourForm.reset();
       },
       error: (error) => {
         console.error('Error creating tour day', error);

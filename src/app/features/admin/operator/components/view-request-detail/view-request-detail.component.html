@@ -36,7 +36,8 @@
           <th class="p-2 border">Thứ tự</th>
           <th class="p-2 border">Nội dung yêu cầu</th>
           <th class="p-2 border">Đơn giá</th>
-          <th class="p-2 border">Số lượng</th>
+          <th class="p-2 border">Số lượng hiện tại</th>
+          <th class="p-2 border">Số lượng yêu cầu</th>
           <th class="p-2 border">Tổng cộng</th>
         </tr>
       </thead>
@@ -45,6 +46,7 @@
           <td class="p-2 border">1</td>
           <td class="p-2 border">{{ requestDetail.serviceName }}</td>
           <td class="p-2 border">{{ requestDetail.nettPrice | currencyVnd }}</td>
+          <td class="p-2 border">{{ requestDetail.currentQuantity }}</td>
           <td class="p-2 border">{{ requestDetail.requestQuantity }}</td>
           <td class="p-2 border">{{ requestDetail.totalPrice | currencyVnd }}</td>
         </tr>

@@ -19,7 +19,7 @@
       <tbody>
         <tr class="border" *ngFor="let day of tourDays; let i = index">
           <td class="p-2 text-center">{{ i + 1 }}</td>
-          <td class="p-2">{{ day.title }}</td>
+          <td class="p-2">{{ day.title | truncate : 30}}</td>
           <td class="p-2">
             <span *ngFor="let service of getTranslatedServices(day.id)" class="text-gray-700 mr-3">
               {{ service }}

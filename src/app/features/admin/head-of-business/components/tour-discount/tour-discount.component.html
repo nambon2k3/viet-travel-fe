@@ -35,7 +35,7 @@
         <div class="px-4 py-2 bg-black text-white rounded-md font-semibold">1</div>
         <h2 class="text-lg font-semibold ml-4">Khách sạn</h2>
       </div>
-      <button data-modal-target="addHotelModal" data-modal-toggle="addHotelModal"
+      <button data-modal-target="addHotelModal" data-modal-toggle="addHotelModal" (click)="openAddHotelModal()"
         class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Thêm mới</button>
     </div>
     <table class="w-full border border-gray-300 rounded-lg">
@@ -452,7 +452,8 @@
 <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (error)="handleError($event)" (hotelAdded)="addNewHotel($event)"></app-add-hotel>
 <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
-  [locations]="locations" (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
+  [locations]="locations" (error)="handleError($event)"
+  (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
 <app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (error)="handleRestaurantError($event)" (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>
 <app-add-activity #addActivityModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"

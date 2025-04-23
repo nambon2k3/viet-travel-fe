@@ -281,6 +281,8 @@ export class AddHotelComponent implements AfterViewInit {
       
       const selectedDay = formValue.selectedDay;
       const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
+
+      console.log('Selected day:', selectedDay);
       
       if (!tourDay || !tourDay.serviceCategories.includes('Hotel')) {
         this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ khách sạn`);

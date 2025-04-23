@@ -33,7 +33,7 @@ interface Tag {
     BlogContentComponent,
     NgSelectModule,
     SpinnerComponent
-],
+  ],
   templateUrl: './tour-details.component.html',
   styleUrls: ['./tour-details.component.css'],
 })
@@ -54,7 +54,7 @@ export class TourDetailsComponent implements OnInit {
   previewImage: string | null = null;
   selectedFile: File | null = null;
   isLoading: boolean = false;
-  tour : any;
+  tour: any;
 
   constructor(
     private router: Router,
@@ -186,10 +186,10 @@ export class TourDetailsComponent implements OnInit {
       privacy: tour.privacy || this.getPrivacy(),
       tourImages: tour.tourImages.map((img: any) => img.imageUrl),
     });
-  
+
     this.imagePreviews = [...new Set(tour.tourImages.map((img: any) => img.imageUrl))]; // Loại bỏ ảnh trùng
     this.highlight = tour.highlights;
-  }  
+  }
 
   updateNumberNights(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -199,7 +199,7 @@ export class TourDetailsComponent implements OnInit {
     } else {
       this.editTourForm.get('numberNights')?.setValue(null);
     }
-  }   
+  }
 
   onCancel(): void {
     this.router.navigate(['/head-business/list-tour']);
@@ -213,7 +213,7 @@ export class TourDetailsComponent implements OnInit {
       locationIds: this.editTourForm.value.locationIds.map((location: any) => location.id), // Đảm bảo gửi ID
       tourImages: this.imagePreviews.map((img: string) => ({ imageUrl: img })) // Tránh lặp ảnh
     };
-  
+
     if (this.tourId) {
       this.tourService.updateTour(requestBody).subscribe({
         next: (response: any) => {
@@ -237,11 +237,11 @@ export class TourDetailsComponent implements OnInit {
         },
       });
     }
-  }  
+  }
 
   onApprove(): void {
     this.isLoading = true;
-    if(this.tour.tourType === 'PRIVATE'){
+    if (this.tour.tourType === 'PRIVATE') {
       this.tourService.openPrivateTour(this.tourId!).subscribe({
         next: (response: any) => {
           this.isLoading = false;
@@ -276,6 +276,7 @@ export class TourDetailsComponent implements OnInit {
         this.previewImage = reader.result as string;
       };
       reader.readAsDataURL(this.selectedFile);
+      input.value = '';
     }
   }
 
@@ -283,8 +284,10 @@ export class TourDetailsComponent implements OnInit {
     if (this.selectedFile && this.previewImage) {
       this.selectedFiles.push(this.selectedFile);
       this.imagePreviews.push(this.previewImage);
+      this.saveChanges(); // Gửi ảnh mới lên server
+      this.selectedFile = null; // Đặt lại selectedFile
+      this.previewImage = null; // Đặt lại previewImage
     }
-    this.saveChanges();
   }
 
   removeImage(index: number): void {
@@ -296,16 +299,20 @@ export class TourDetailsComponent implements OnInit {
   saveChanges(): void {
     this.isLoading = true;
     const formData = new FormData();
-    this.selectedFiles.forEach(file => {
-      formData.append('file', file);
-    });
+    // Chỉ gửi ảnh mới nhất (ảnh cuối cùng trong selectedFiles)
+    const latestFile = this.selectedFiles[this.selectedFiles.length - 1];
+    if (latestFile) {
+      formData.append('file', latestFile);
+    }
 
     this.adminService.uploadImage(formData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        const uploadedImages = response.data;
-        const currentImages = this.editTourForm.get('tourImages')?.value || null;
-        this.editTourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
+        const uploadedImage = response.data; // Giả sử API trả về URL của ảnh vừa upload
+        const currentImages = this.editTourForm.get('tourImages')?.value || [];
+        this.editTourForm.get('tourImages')?.setValue([...currentImages, uploadedImage]);
+        // Xóa file đã gửi khỏi selectedFiles để tránh gửi lại
+        this.selectedFiles.pop();
       },
       error: (err) => {
         this.isLoading = false;

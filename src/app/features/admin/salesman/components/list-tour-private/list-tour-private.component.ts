@@ -119,11 +119,13 @@ export class ListTourPrivateComponent implements AfterViewInit {
 
   confirmImage(): void {
     if (this.selectedFile && this.previewImage) {
-      this.selectedFiles.push(this.selectedFile);
-      this.imagePreviews.push(this.previewImage);
+        this.selectedFiles.push(this.selectedFile);
+        this.imagePreviews.push(this.previewImage);
+        this.saveChanges(); 
+        this.selectedFile = null; 
+        this.previewImage = null; 
     }
-    this.saveChanges();
-  }
+}
 
   isImageLoading: boolean = false;
 
@@ -140,6 +142,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
         const uploadedImages = response.data;
         const currentImages = this.tourForm.get('tourImages')?.value || [];
         this.tourForm.get('tourImages')?.setValue([...currentImages, uploadedImages]);
+        this.selectedFiles.pop();
       },
       error: (err) => {
         this.isImageLoading = false;
@@ -161,6 +164,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
         this.previewImage = reader.result as string;
       };
       reader.readAsDataURL(this.selectedFile);
+      input.value = '';
     }
   }
 
@@ -272,11 +276,12 @@ export class ListTourPrivateComponent implements AfterViewInit {
           console.log('Create tour failed: ', this.errorMessages);
         }
       });
-      this.closeModal();
     } else {
       this.tourForm.markAllAsTouched();
       console.log('Invalid form: ', this.tourForm.value);
     }
+    
+    this.closeModal();
     this.resetItems();
 
   }

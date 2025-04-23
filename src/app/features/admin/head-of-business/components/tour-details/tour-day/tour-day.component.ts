@@ -7,6 +7,7 @@ import { TourDay } from '../../../../../../core/models/tour.model';
 import { UpdateTourDayComponent } from '../update-tour-day/update-tour-day.component';
 import { CreateTourDayComponent } from './create-tour-day/create-tour-day.component';
 import { SpinnerComponent } from "../../../../../../shared/components/spinner/spinner.component";
+import { TruncatePipe } from "../../../../../../shared/pipes/truncate.pipe";
 
 @Component({
   selector: 'app-tour-day',
@@ -16,8 +17,9 @@ import { SpinnerComponent } from "../../../../../../shared/components/spinner/sp
     FormsModule,
     UpdateTourDayComponent,
     CreateTourDayComponent,
-    SpinnerComponent
-  ],
+    SpinnerComponent,
+    TruncatePipe
+],
   templateUrl: './tour-day.component.html',
   styleUrls: ['./tour-day.component.css']
 })
