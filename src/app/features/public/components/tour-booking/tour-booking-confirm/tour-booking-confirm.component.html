@@ -222,7 +222,7 @@
             <!-- Note Section -->
             <h2 class="text-lg font-semibold mb-2 mt-12">Ghi chú</h2>
             <textarea class="w-full border p-3 rounded-md mb-6" rows="4"
-                placeholder="Please enter message here...">{{bookingData?.note}}</textarea>
+                placeholder="Please enter message here..." readonly>{{bookingData?.note}}</textarea>
 
         </div>
 
@@ -244,17 +244,23 @@
                 </p>
             </div>
             <p class="font-semibold flex justify-between text-xl mb-4"><span>👥 Khách hàng</span> <span
-                    class="text-red-600">{{total |currencyVnd}} VND</span></p>
+                    class="text-red-600">{{total |currencyVnd}}</span></p>
             <p class="flex justify-between mb-2"><span>🧑 Người lớn: </span> <span>{{numberAdults}} x
                     {{bookingData?.sellingPrice |currencyVnd}} </span></p>
-            <p class="flex justify-between mb-2"><span>👶 Trẻ em:</span> <span>{{numberChildren}} x
-                    {{childrenPrice |currencyVnd}}</span></p>
+            <p class="flex justify-between mb-2"><span>👶 Trẻ em:</span> 
+                @if(numberSingleRooms > 0) {
+                    <span>{{numberChildren}} x
+                        {{childrenPrice |currencyVnd}}</span>
+                }@else {
+                 <span>0 đ</span>
+                }
+                </p>
             <p class="flex justify-between mb-2">
                 @if(numberSingleRooms > 0) {
                 <span>📍 Phòng đơn:</span> <span>{{numberSingleRooms}} x
                     {{bookingData?.extraHotelCost |currencyVnd}} </span>
                 } @else {
-                <span>📍 Phòng đơn:</span> <span>0 VND</span>
+                <span>📍 Phòng đơn:</span> <span>0 đ</span>
                 }
             </p>
             <hr class="my-4">
