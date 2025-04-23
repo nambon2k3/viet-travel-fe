@@ -280,9 +280,7 @@ export class AddActivityComponent implements AfterViewInit {
       const formValue = this.addActivityForm.getRawValue();
       
       const selectedDay = formValue.selectedDay;
-      const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
-
-      console.log('Tour Day:', tourDay?.serviceCategories);
+      const tourDay = this.tourDays.find(day => day.dayNumber === Number(selectedDay));
       
       if (!tourDay || !tourDay.serviceCategories.includes('Activity')) {
         this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ hoạt động`);
@@ -342,7 +340,13 @@ export class AddActivityComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.activityAdded.emit({ activity: activityData, isUpdate: false });
-          this.addActivityForm.reset();
+          this.addActivityForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedActivity: null,
+            netPrice: 0
+          });
           this.initPaxPrices();
           this.providers.set([]);
           this.activitys.set([]);
@@ -406,7 +410,13 @@ export class AddActivityComponent implements AfterViewInit {
 
   onCancel() {
     this.modal?.hide();
-    this.addActivityForm.reset();
+    this.addActivityForm.reset({
+      selectedDay: this.days.length > 0 ? this.days[0] : 1,
+      selectedLocation: null,
+      selectedProvider: null,
+      selectedActivity: null,
+      netPrice: 0
+    });
     this.initPaxPrices();
   }
 }

@@ -83,7 +83,7 @@ export class TourDayComponent implements OnInit {
       "Restaurant": "Nhà hàng",
       "Hotel": "Khách sạn",
       "Activity": "Hoạt động",
-      "Transport": "Giao thông",
+      "Transport": "Vận chuyển",
       "Flight Ticket": "Vé máy bay"
     };
 

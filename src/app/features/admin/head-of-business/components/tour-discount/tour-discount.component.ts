@@ -425,6 +425,10 @@ export class TourDiscountComponent implements OnInit {
     this.showPopupMessage(error, false);
   }
 
+  handleTransportationError(error: any) {
+    this.showPopupMessage(error, false);
+  }
+
   handleFlightError(error: any) {
     this.showPopupMessage(error, false);
   }

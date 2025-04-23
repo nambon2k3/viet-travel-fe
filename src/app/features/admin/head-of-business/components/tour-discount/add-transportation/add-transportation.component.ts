@@ -86,6 +86,7 @@ export class AddTransportationComponent implements AfterViewInit {
   @Input() prices: PaxOption[] = [];
   @Input() locations = signal<any[]>([]);
   @Output() transportationAdded = new EventEmitter<{ transport: Service, isUpdate: boolean }>();
+  @Output() error = new EventEmitter<any>();
 
   modal: Modal | null = null;
   addTransportationForm!: FormGroup;
@@ -143,20 +144,6 @@ export class AddTransportationComponent implements AfterViewInit {
     if (changes['prices'] && changes['prices'].currentValue) {
       this.initPaxPrices();
     }
-  }
-
-  getTourDays() {
-    this.tourDiscountService.getTourDayById(this.tourId).subscribe({
-      next: (response: any) => {
-        if (response.code === 200) {
-          this.tourDays = response.data;
-          console.log('Danh sách ngày tour: ', this.tourDays);
-        }
-      },
-      error: (error: any) => {
-        console.error('Error fetching tour days:', error);
-      }
-    });
   }
 
   fetchServiceProviders() {
@@ -244,14 +231,14 @@ export class AddTransportationComponent implements AfterViewInit {
   }
 
   onLocationChange() {
-    this.addTransportationForm.patchValue({ selectedProvider: null, selectedTransportation: null, netPrice: 0  });
+    this.addTransportationForm.patchValue({ selectedProvider: null, selectedTransportation: null, netPrice: 0 });
     this.providers.set([]);
     this.transportations.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
-    this.addTransportationForm.patchValue({ selectedTransportation: null, netPrice: 0  });
+    this.addTransportationForm.patchValue({ selectedTransportation: null, netPrice: 0 });
     this.transportations.set([]);
     this.fetchTransportations();
   }
@@ -274,9 +261,32 @@ export class AddTransportationComponent implements AfterViewInit {
     }
   }
 
+  getTourDays() {
+    this.tourDiscountService.getTourDayById(this.tourId).subscribe({
+      next: (response: any) => {
+        if (response.code === 200) {
+          this.tourDays = response.data;
+          console.log('Danh sách ngày tour: ', this.tourDays);
+        }
+      },
+      error: (error: any) => {
+        console.error('Error fetching tour days:', error);
+      }
+    });
+  }
+
   onSubmit() {
     if (this.addTransportationForm.valid) {
-      const formValue = this.addTransportationForm.getRawValue(); // Use getRawValue to include disabled fields
+      const formValue = this.addTransportationForm.getRawValue();
+
+      const selectedDay = formValue.selectedDay;
+      const tourDay = this.tourDays.find(day => day.dayNumber === Number(selectedDay));
+
+      if (!tourDay || !tourDay.serviceCategories.includes('Transport')) {
+        this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ vận chuyển`);
+        this.onCancel();
+        return;
+      }
       const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
         acc[pax.paxRange] = {
           paxId: pax.paxId,
@@ -332,7 +342,13 @@ export class AddTransportationComponent implements AfterViewInit {
           this.transportationAdded.emit({ transport: transportationData, isUpdate: false });
 
           // Reset toàn bộ form
-          this.addTransportationForm.reset();
+          this.addTransportationForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedTransportation: null,
+            netPrice: 0
+          });
           this.initPaxPrices();
           this.providers.set([]);
           this.transportations.set([]);
@@ -396,7 +412,13 @@ export class AddTransportationComponent implements AfterViewInit {
 
   onCancel() {
     this.modal?.hide();
-    this.addTransportationForm.reset();
+    this.addTransportationForm.reset({
+      selectedDay: this.days.length > 0 ? this.days[0] : 1,
+      selectedLocation: null,
+      selectedProvider: null,
+      selectedTransportation: null,
+      netPrice: 0
+    });
     this.initPaxPrices();
   }
 }

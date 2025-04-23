@@ -452,7 +452,7 @@
 <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (error)="handleError($event)" (hotelAdded)="addNewHotel($event)"></app-add-hotel>
 <app-add-transportation #addTransportationModal [tourId]="tourId" [days]="tourDays" [prices]="prices"
-  [locations]="locations" (error)="handleError($event)"
+  [locations]="locations" (error)="handleTransportationError($event)"
   (transportationAdded)="addNewTransportation($event)"></app-add-transportation>
 <app-add-restaurant #addRestaurantModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"
   (error)="handleRestaurantError($event)" (restaurantAdded)="addNewRestaurant($event)"></app-add-restaurant>

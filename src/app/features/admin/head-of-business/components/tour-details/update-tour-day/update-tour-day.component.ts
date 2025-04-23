@@ -58,6 +58,7 @@ export class UpdateTourDayComponent implements AfterViewInit{
     { id: 'Hotel', name: 'Khách Sạn' },
     { id: 'Activity', name: 'Hoạt Động' },
     { id: 'Flight Ticket', name: 'Vé máy bay' },
+    { id: 'Transport', name: 'Vận chuyển' },
   ];
 
   constructor(
@@ -101,17 +102,20 @@ export class UpdateTourDayComponent implements AfterViewInit{
   }
 
   mapDataToForm(day: any) {
-    if (this.day) {
+    if (day) {
       this.editTourForm.patchValue({
-        title: this.day.title,
-        content: this.day.content,
-        mealPlan: this.parseMealPlan(this.day.mealPlan),
-        locationId: this.day.location.id,
-        serviceCategories: this.day.serviceCategories, 
+        title: day.title,
+        content: day.content,
+        mealPlan: this.parseMealPlan(day.mealPlan),
+        locationId: day.location.id,
+        serviceCategories: this.mapServiceCategories(day.serviceCategories) // <- map tiếng Việt ở đây
       });
     }
-  }
+  }  
   
+  mapServiceCategories(serviceIds: string[]): Meal[] {
+    return this.serviceOptions.filter(option => serviceIds.includes(option.id));
+  }
 
   ngAfterViewInit() {
     const doc = this.ssrService.getDocument();
@@ -132,10 +136,13 @@ export class UpdateTourDayComponent implements AfterViewInit{
     const payload = {
       title: formValue.title,
       content: formValue.content,
+      dayNumber: this.day.dayNumber,
       mealPlan: mealPlanFormatted, // Định dạng lại chuỗi mealPlan
       locationId: formValue.locationId,
       serviceCategories: serviceCategoriesFormatted
     };
+
+    console.log(payload, this.tourId, this.day.id);
 
     this.tourService.updateTourDay(this.tourId!, this.day.id, payload).subscribe({
       next: (response) => {

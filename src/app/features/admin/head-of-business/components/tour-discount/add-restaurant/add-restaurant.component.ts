@@ -280,7 +280,7 @@ export class AddRestaurantComponent implements AfterViewInit {
       const formValue = this.addRestaurantForm.getRawValue();
 
       const selectedDay = formValue.selectedDay;
-      const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
+      const tourDay = this.tourDays.find(day => day.dayNumber === Number(selectedDay));
 
       if (!tourDay || !tourDay.serviceCategories.includes('Restaurant')) {
         this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ nhà hàng`);
@@ -342,7 +342,13 @@ export class AddRestaurantComponent implements AfterViewInit {
           this.restaurantAdded.emit({ restaurant: restaurantData, isUpdate: false });
 
           // Reset toàn bộ form
-          this.addRestaurantForm.reset();
+          this.addRestaurantForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedRestaurant: null,
+            netPrice: 0
+          });
           this.initPaxPrices();
           this.providers.set([]);
           this.restaurants.set([]);
@@ -406,7 +412,13 @@ export class AddRestaurantComponent implements AfterViewInit {
 
   onCancel() {
     this.modal?.hide();
-    this.addRestaurantForm.reset();
+    this.addRestaurantForm.reset({
+      selectedDay: this.days.length > 0 ? this.days[0] : 1,
+      selectedLocation: null,
+      selectedProvider: null,
+      selectedRestaurant: null,
+      netPrice: 0
+    });
     this.initPaxPrices();
   }
 }
