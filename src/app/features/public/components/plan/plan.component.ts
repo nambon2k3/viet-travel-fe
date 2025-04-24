@@ -218,7 +218,7 @@ export class PlanComponent implements AfterViewInit {
                     next: (res) => {
                       console.log(res)
                       console.log('Plan saved successfully:', res);
-                      //this.route.navigate(['/plan-detail', res.data]);
+                      this.route.navigate(['/plan-detail', res.data]);
                     },
                     error: (err) => {
                       console.error('Gemini API error:', err);
@@ -282,18 +282,18 @@ export class PlanComponent implements AfterViewInit {
 
 
   interests: string[] = [
-    'Các điểm tham quan nổi bật',
-    'Ẩm thực tuyệt vời',
-    'Viên ngọc ẩn',
-    'Tour & Trải nghiệm',
-    'Khám phá Rome về đêm',
-    'Hầm mộ bí mật của Rome',
-    'Nghệ thuật & nhạc kịch vượt thời gian',
-    'Ẩm thực La Mã',
-    'Di tích lịch sử',
-    'Bảo tàng & phòng trưng bày nghệ thuật',
-    'Mua sắm',
-    'Quán rượu vang'
+    'Danh lam thắng cảnh nổi tiếng',
+    'Di tích lịch sử - văn hóa',
+    'Làng cổ & phố cổ',
+    'Ẩm thực đường phố Việt Nam',
+    'Đặc sản vùng miền',
+    'Nghệ thuật truyền thống (hát chèo, cải lương, múa rối nước)',
+    'Lễ hội văn hóa đặc sắc',
+    'Tour sinh thái & cộng đồng',
+    'Trải nghiệm làm nông dân/ngư dân',
+    'Khám phá vẻ đẹp thiên nhiên hoang sơ',
+    'Chợ truyền thống & mua sắm đặc sản',
+    'Thưởng thức cà phê Việt'
   ];
 
   selectedInterests: string[] = [];
