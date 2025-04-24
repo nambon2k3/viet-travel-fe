@@ -7,6 +7,7 @@ import { FooterComponent } from '../../../../../shared/components/footer/footer.
 import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 import { Modal } from 'flowbite';
 import { GeminiService } from '../../../../public/components/plan/gemini.service';
+import { ImageSearchService } from '../../../../public/components/plan/plan-detail/imge.service';
 @Component({
   selector: 'app-plan-detail',
   imports: [CommonModule, FooterComponent, SpinnerComponent],
@@ -19,7 +20,8 @@ export class PlanDetailComponent implements AfterViewInit {
     private planService: PlanService,
     private userStorageService: UserStorageService,
     private router: Router,
-    private geminiService: GeminiService
+    private geminiService: GeminiService,
+    private imageSearchService: ImageSearchService
 
   ) { }
 
@@ -290,6 +292,22 @@ export class PlanDetailComponent implements AfterViewInit {
 
               console.log(this.response)
               this.activities = JSON.parse(this.response).activities;
+
+              this.activities.forEach((activity: any) => {
+                this.imageSearchService.getImageUrl(activity.title).subscribe({
+                  next: (response: any) => {
+                    // Assuming the response contains the image result array
+                    activity.imageUrl = response.images_results?.[0]?.thumbnail || 'https://via.placeholder.com/300';
+                  },
+                  error: (error) => {
+                    console.error('Error fetching image:', error);
+                    activity.imageUrl = 'https://via.placeholder.com/300'; // Default image if error occurs
+                  }
+                });
+              });
+
+
+
               this.filteredActivities = this.activities;
             },
             error: (err) => {
