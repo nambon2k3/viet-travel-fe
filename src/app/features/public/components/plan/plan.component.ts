@@ -259,11 +259,11 @@ export class PlanComponent implements AfterViewInit {
         const task = this.imageSearchService.getImageUrl(activity.title)
           .toPromise()
           .then((res) => {
-            activity.imageUrl = res.images_results?.[0]?.thumbnail || 'https://via.placeholder.com/300';
+            activity.imageUrl = res.images_results?.[0]?.thumbnail || 'https://statics.vinpearl.com/pho-co-ha-noi-10_1687918089.jpg';
           })
           .catch((err) => {
             console.error(`Error fetching image for ${activity.title}:`, err);
-            activity.imageUrl = 'https://via.placeholder.com/300';
+            activity.imageUrl = 'https://statics.vinpearl.com/pho-co-ha-noi-10_1687918089.jpg';
           });
   
         imageFetchTasks.push(task);
