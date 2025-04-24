@@ -536,7 +536,7 @@ export class BookingSettlementComponent implements AfterViewInit {
   }
 
   getReceiptTotalAmount(): number {
-    return this.costReceiptAccounts.value.reduce((sum: number, row: any) => sum + row.amount, 0);
+    return this.costReceiptAccounts.value.reduce((sum: number, row: any) => sum + Number(row.amount || 0), 0);
   }
 
 
