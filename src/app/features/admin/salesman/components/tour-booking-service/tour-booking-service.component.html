@@ -43,7 +43,6 @@
                             {{dayService?.tourDay?.title}}
                         </div>
                     </div>
-                    <div class="text-sm text-gray-500">Tour ID: #T-1024</div>
 
 
                 </div>
@@ -98,6 +97,15 @@
                                         <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
                                         <span>
                                             Chờ xử lí
+                                        </span>
+                                    </span>
+                                    }
+                                    @if(bookingService?.status === 'PAID') {
+                                    <span
+                                        class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+                                        <span>
+                                            Đã thanh toán
                                         </span>
                                     </span>
                                     }
@@ -172,7 +180,7 @@
 
                                 </td>
                                 <Td class="p-2 text-center">
-                                    <button type="button" data-modal-target="service-modal"
+                                    <button type="button" data-modal-target="service-modal" *ngIf="bookingService?.status !== 'PAID'"
                                         data-modal-toggle="service-modal" (click)="openModal(bookingService)">
                                         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -220,7 +228,8 @@
                                 'text-blue-500': key === 'CHECKING',
                                 'text-gray-500': key === 'NOT_ORDERED',
                                 'text-red-800': key === 'REJECTED_BY_OPERATOR',
-                                'text-red-600': key === 'CANCEL_REQUEST'
+                                'text-red-600': key === 'CANCEL_REQUEST',
+                                'text-red-700': key === 'NOT_AVAILABLE'
                               }" class="p-2 font-semibold">{{ statusLabels[key] }}</td>
                             <td [class]="{
                                 'text-yellow-600': key === 'PENDING',
@@ -229,7 +238,8 @@
                                 'text-red-600': key === 'CANCELLED',
                                 'text-gray-600': key === 'NOT_ORDERED',
                                 'text-red-800': key === 'REJECTED_BY_OPERATOR',
-                                'text-red-700': key === 'CANCEL_REQUEST'
+                                'text-red-700': key === 'CANCEL_REQUEST',
+                                'text-red-900': key === 'NOT_AVAILABLE'
                               }" class="p-2 font-semibold">
                                 {{ getStatusCount(key) }}
                             </td>

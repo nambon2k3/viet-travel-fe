@@ -49,7 +49,7 @@
                     &lt; Quay lại danh sách
                 </a>
 
-                @if(!bookingDetail?.status.includes('CANCEL')) {
+                @if(!bookingDetail?.status.includes('CANCEL') && bookingDetail?.status !== 'COMPLETED') {
                 <button type="button" data-modal-target="cancel-booking-modal" data-modal-toggle="cancel-booking-modal"
                     class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4  focus:outline-none focus:ring-red-300 font-medium rounded text-sm px-5 py-2.5 text-center">
                     Hủy Đơn hàng
@@ -198,7 +198,7 @@
         <div class="bg-white p-4  mt-4">
             <div class="flex justify-between items-center py-5">
                 <h2 class="text-sm font-semibold">Danh sách khách hàng</h2>
-                @if(!bookingDetail?.status.includes('CANCEL')) {
+                @if(!bookingDetail?.status.includes('CANCEL') && bookingDetail?.status !== 'COMPLETED') {
                 <button data-modal-target="customers-modal" data-modal-toggle="customers-modal"
                     class="px-4 py-2 text-sm bg-blue-700 text-white rounded-md hover:bg-blue-800 flex items-center gap-2">
                     <svg class="w-5 h-5 text-white-800 dark:text-white" aria-hidden="true"
