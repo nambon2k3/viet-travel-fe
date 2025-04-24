@@ -310,13 +310,13 @@
                                     stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                             </svg>
                         </div>
-                        <input type="search" id="default-search"
+                        <input type="text" id="default-search" (input)="filterProvider($event)"
                             class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search Mockups, Logos..." required />
+                            placeholder="Tìm kiếm..." required />
                     </div>
 
-                    <div class="flex flex-col space-y-4 max-h-[40vh] overflow-y-auto">
-                        @if(providers?.length === 0) {
+                    <div class="flex flex-col space-y-4 h-[40vh] overflow-y-auto">
+                        @if(filteredProviders?.length === 0) {
                         <div class="flex items-center justify-center h-48">
                             <div role="status" class="mr-3">
                                 <svg aria-hidden="true"
@@ -335,7 +335,7 @@
                         </div>
 
                         } @else {
-                        <div class="flex hover:bg-gray-100 cursor-pointer" *ngFor="let provider of providers"
+                        <div class="flex hover:bg-gray-100 cursor-pointer" *ngFor="let provider of filteredProviders"
                             (click)="onSelectProvider(provider)">
                             <img [src]="provider?.imageUrl" alt="image"
                                 class="w-24 h-20 object-cover rounded-md mr-4" />
@@ -392,13 +392,13 @@
                                     stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                             </svg>
                         </div>
-                        <input type="search" id="default-search"
+                        <input type="text"  id="default-search" (input)="filterActivities($event)"
                             class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search Mockups, Logos..." required />
+                            placeholder="Tìm kiếm..." required />
                     </div>
 
-                    <div class="flex flex-col space-y-4 max-h-[40vh] overflow-y-auto">
-                        @if(activities?.length === 0) {
+                    <div class="flex flex-col space-y-4 h-[40vh] overflow-y-auto">
+                        @if(filteredActivities?.length === 0) {
                         <div class="flex items-center justify-center h-48">
                             <div role="status" class="mr-3">
                                 <svg aria-hidden="true"
@@ -417,7 +417,7 @@
                         </div>
 
                         } @else {
-                        <div class="flex hover:bg-gray-100 cursor-pointer" *ngFor="let activity of activities"
+                        <div class="flex hover:bg-gray-100 cursor-pointer" *ngFor="let activity of filteredActivities"
                             (click)="onSelectActivity(activity)">
                             <img [src]="activity?.imageUrl" alt="image"
                                 class="w-24 h-20 object-cover rounded-md mr-4" />
