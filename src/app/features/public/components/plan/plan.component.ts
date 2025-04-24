@@ -137,7 +137,10 @@ export class PlanComponent implements AfterViewInit{
     console.log('Selected location:', location);
     this.selectedLocation = location;
     this.locations = []; // Clear the suggestions after selection
-    this.generatePlanForm.patchValue({ locationId: location.id });
+    this.generatePlanForm.patchValue({ 
+      locationId: location.id,
+      locationName: location.name, 
+    });
     this.nextStep();
   }
 
@@ -183,7 +186,7 @@ export class PlanComponent implements AfterViewInit{
       this.isGenerating = true;
 
       // Handle form submission logic here
-      this.planService.generatePlan(formData).subscribe(
+      this.planService.generatePlanV2('Tell me about google').subscribe(
         (response) => {
           // const cleanJsonString = response.data
           //   .replace(/^```json\n/, '')  // Remove the opening triple backticks

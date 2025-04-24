@@ -26,6 +26,10 @@ export class PlanService {
   }
 
 
+  generatePlanV2(prompt: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}public/test/groq`, prompt);
+  }
+
   getPlanById(planId: number): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}public/plans/details/${planId}`);
   }
