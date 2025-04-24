@@ -9,7 +9,22 @@
                 <table class="w-full border-collapse border border-gray-300 mt-4">
                     <thead>
                         <tr class="bg-green-600 text-white">
-                            <th colspan="6" class="p-2 text-left">{{ i + 1 }}. {{ category.get('categoryName')?.value }}
+                            <th colspan="6" class="p-2 text-left">{{ i + 1 }}. 
+                                @if(category.get('categoryName')?.value === 'Hotel') {
+                                    Khách sạn
+                                }
+                                @if(category.get('categoryName')?.value === 'Restaurant') {
+                                    Nhà hàng
+                                }
+                                @if(category.get('categoryName')?.value === 'Transport') {
+                                    Vận chuyển
+                                }
+                                @if(category.get('categoryName')?.value === 'Flight Ticket') {
+                                   Vé máy bay
+                                }
+                                @if(category.get('categoryName')?.value === 'Activity') {
+                                    Hoạt động
+                                }
                             </th>
                         </tr>
                         <tr class="bg-gray-200 text-gray-700">

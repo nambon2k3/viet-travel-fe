@@ -250,6 +250,10 @@
                                 <input type="checkbox" formControlName="ticket" />
                                 Vé Máy Bay
                             </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" formControlName="transport" />
+                                Phương tiện
+                            </label>
                         </div>
                         <p *ngIf="editTourDayForm.get('serviceCategory')?.hasError('atLeastOneRequired') && editTourDayForm.get('serviceCategory')?.touched"
                             class="text-red-500 w-full text-left text-sm">

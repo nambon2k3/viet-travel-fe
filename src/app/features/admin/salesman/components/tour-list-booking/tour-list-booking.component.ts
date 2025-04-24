@@ -178,7 +178,7 @@ export class TourListBookingComponent implements AfterViewInit {
 
         this.events = this.tourDetails?.tour.tourSchedules.map((schedule: any) => ({
           scheduleId: schedule.id,
-          title: `Vận Hành`, // Show price in title
+          title: schedule.status === 'ONGOING' ? `Vận Hành` : schedule.status === 'OPEN' ? 'Mở Bán' : 'Hoàn thành', // Show price in title
           start: schedule.startDate.split("T")[0] // Extract only YYYY-MM-DD
         }));
 

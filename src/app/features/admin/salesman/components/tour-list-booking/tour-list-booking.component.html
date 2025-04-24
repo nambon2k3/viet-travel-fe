@@ -122,7 +122,7 @@
             </div>
 
             <div>
-                @if(selectedSchedule?.tourPax?.maxPax - bookedSeats > 0 && tourDetails?.tour?.tourStatus === 'OPENED') {
+                @if(selectedSchedule?.tourPax?.maxPax - bookedSeats > 0 && tourDetails?.tour?.tourStatus === 'OPENED' && selectedSchedule?.status === 'OPEN') {
                 <button type="button" [routerLink]="['/salesman/create-public-booking', tourId, selectedSchedule?.id]"
                     class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                     Tạo đặt chỗ
@@ -258,7 +258,13 @@
                                         <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                                         Đã hủy hoàn tiền
                                     </span>
-                                    }
+                                    } @else if (booking.status === "COMPLETED") {
+                                        <span
+                                        class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+                                        Đã hoàn thành
+                                    </span>
+                                        }
 
                                 </td>
                                 <td class="p-2">
