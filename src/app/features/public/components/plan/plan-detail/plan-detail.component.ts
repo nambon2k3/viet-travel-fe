@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { SpinnerComponent } from '../../../../../shared/components/spinner/spinner.component';
 import { AddTransportationComponent } from "../../../../admin/head-of-business/components/tour-discount/add-transportation/add-transportation.component";
+import { ImageSearchService } from './imge.service';
 
 @Component({
   selector: 'app-plan-detail',
@@ -19,7 +20,8 @@ export class PlanDetailComponent {
   constructor(
     private planService: PlanService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private imageSearchService: ImageSearchService
   ) {
 
 
@@ -90,7 +92,6 @@ export class PlanDetailComponent {
             .flatMap((dayObj: any) => dayObj.activities || []);
 
           console.log('All activities:', this.activities);;
-
 
         } catch (error) {
           console.error('Error parsing JSON:', error);

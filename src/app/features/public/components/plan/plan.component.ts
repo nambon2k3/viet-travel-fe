@@ -8,6 +8,7 @@ import { Modal } from 'flowbite';
 import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
 import { SpinnerComponent } from '../../../../shared/components/spinner/spinner.component';
 import { GeminiService } from './gemini.service';
+import { ImageSearchService } from './plan-detail/imge.service';
 
 @Component({
   selector: 'app-plan',
@@ -34,7 +35,8 @@ export class PlanComponent implements AfterViewInit {
     private fb: FormBuilder,
     private userStorageService: UserStorageService,
     private route: Router,
-    private geminiService: GeminiService
+    private geminiService: GeminiService,
+    private imageSearchService: ImageSearchService,
   ) {
 
     this.generatePlanForm = this.fb.group({
@@ -196,7 +198,7 @@ export class PlanComponent implements AfterViewInit {
           console.log(response)
           this.geminiService.generateContent(response.data)
             .subscribe({
-              next: (res) => {
+              next: async (res) => {
                 this.isGenerating = false;
                 this.response = res?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
 
@@ -205,11 +207,18 @@ export class PlanComponent implements AfterViewInit {
                   .replace(/json/g, '')
                   .trim();
 
-                this.planService.savePlan(this.userStorageService.getUserId(), this.response)
+                this.response = JSON.parse(this.response);
+                console.log('Parsed response:', this.response);
+                await this.loadImagesForActivities(); 
+
+                console.log('Updated response:',this.response);
+
+                this.planService.savePlan(this.userStorageService.getUserId(), JSON.stringify(this.response))
                   .subscribe({
                     next: (res) => {
                       console.log(res)
-                      this.route.navigate(['/plan-detail', res.data]);
+                      console.log('Plan saved successfully:', res);
+                      //this.route.navigate(['/plan-detail', res.data]);
                     },
                     error: (err) => {
                       console.error('Gemini API error:', err);
@@ -239,6 +248,30 @@ export class PlanComponent implements AfterViewInit {
     } else {
       console.log('Form is invalid:', this.generatePlanForm.value);
     }
+  }
+
+  async loadImagesForActivities(): Promise<void> {
+    this.isLoading = true;
+    const imageFetchTasks: Promise<void>[] = [];
+  
+    this.response.plan.days.forEach((day: any) => {
+      day.activities.forEach((activity: any) => {
+        const task = this.imageSearchService.getImageUrl(activity.title)
+          .toPromise()
+          .then((res) => {
+            activity.imageUrl = res.images_results?.[0]?.thumbnail || 'https://via.placeholder.com/300';
+          })
+          .catch((err) => {
+            console.error(`Error fetching image for ${activity.title}:`, err);
+            activity.imageUrl = 'https://via.placeholder.com/300';
+          });
+  
+        imageFetchTasks.push(task);
+      });
+    });
+  
+    await Promise.all(imageFetchTasks);
+    this.isLoading = false;
   }
 
   selectTrip(trip: any) {
