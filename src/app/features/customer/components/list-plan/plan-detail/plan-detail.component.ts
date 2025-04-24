@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FooterComponent } from '../../../../../shared/components/footer/footer.component';
 import { SpinnerComponent } from "../../../../../shared/components/spinner/spinner.component";
 import { Modal } from 'flowbite';
+import { GeminiService } from '../../../../public/components/plan/gemini.service';
 @Component({
   selector: 'app-plan-detail',
   imports: [CommonModule, FooterComponent, SpinnerComponent],
@@ -18,6 +19,7 @@ export class PlanDetailComponent implements AfterViewInit {
     private planService: PlanService,
     private userStorageService: UserStorageService,
     private router: Router,
+    private geminiService: GeminiService
 
   ) { }
 
@@ -173,6 +175,7 @@ export class PlanDetailComponent implements AfterViewInit {
 
 
   activities: any[] = [];
+  filteredActivities: any[] = [];
 
 
   ngOnInit() {
@@ -187,6 +190,14 @@ export class PlanDetailComponent implements AfterViewInit {
 
 
     console.log(this.selectedDay)
+  }
+
+
+  filterActivities(event: Event) {
+    const input = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredActivities = this.activities.filter(activity =>
+      activity.title.toLowerCase().includes(input)
+    );
   }
 
   getPlanDetailById(planId: number) {
@@ -232,6 +243,17 @@ export class PlanDetailComponent implements AfterViewInit {
 
 
   providers: any[] = [];
+  filteredProviders: any[] = [];
+
+  filterProvider(event: Event) {
+    const input = (event.target as HTMLInputElement).value.toLowerCase();
+
+    console.log(input)
+
+    this.filteredProviders = this.providers.filter(provider =>
+      provider.name.toLowerCase().includes(input)
+    );
+  }
 
 
   fetchProviderByCategoryAndLocationId(locationId: number, categoryName: string) {
@@ -240,6 +262,7 @@ export class PlanDetailComponent implements AfterViewInit {
       (response) => {
         console.log('Providers fetched successfully:', response);
         this.providers = response.data;
+        this.filteredProviders = response.data;
       },
       (error) => {
         console.error('Error fetching providers:', error);
@@ -248,13 +271,32 @@ export class PlanDetailComponent implements AfterViewInit {
 
   }
 
+  response: any;
+
   fetchActivities() {
     const maxId = Math.max(...this.selectedDay.activities.map((activity: any) => activity.id));
     this.planService.fetchActivities(this.plan.content.location, this.plan.content.preferences, maxId + 1).subscribe(
       (response) => {
-        console.log('Activities fetched successfully:', response);
-        this.activities = JSON.parse(response.data.replace(/^```json\n/, '').replace(/\n```$/, '')).activities;
-        console.log(this.activities)
+        this.geminiService.generateContent(response.data)
+          .subscribe({
+            next: (res) => {
+              this.response = res?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+
+
+              this.response = this.response
+                .replace(/```/g, '')
+                .replace(/json/g, '')
+                .trim();
+
+              console.log(this.response)
+              this.activities = JSON.parse(this.response).activities;
+              this.filteredActivities = this.activities;
+            },
+            error: (err) => {
+              console.error('Gemini API error:', err);
+              // Handle error case
+            },
+          });
       },
       (error) => {
         console.error('Error fetching activities:', error);
