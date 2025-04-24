@@ -280,9 +280,7 @@ export class AddHotelComponent implements AfterViewInit {
       const formValue = this.addHotelForm.getRawValue();
       
       const selectedDay = formValue.selectedDay;
-      const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
-
-      console.log('Selected day:', selectedDay);
+      const tourDay = this.tourDays.find(day => day.dayNumber === Number(selectedDay));
       
       if (!tourDay || !tourDay.serviceCategories.includes('Hotel')) {
         this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ khách sạn`);
@@ -343,7 +341,14 @@ export class AddHotelComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.hotelAdded.emit({ hotel: hotelData, isUpdate: false });
-          this.addHotelForm.reset();
+          this.addHotelForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedHotel: null,
+            netPrice: 0
+          });
+          
           this.initPaxPrices();
           this.providers.set([]);
           this.hotels.set([]);
@@ -399,7 +404,13 @@ export class AddHotelComponent implements AfterViewInit {
 
   onCancel() {
     this.modal?.hide();
-    this.addHotelForm.reset();
+    this.addHotelForm.reset({
+      selectedDay: this.days.length > 0 ? this.days[0] : 1,
+      selectedLocation: null,
+      selectedProvider: null,
+      selectedHotel: null,
+      netPrice: 0
+    });
     this.initPaxPrices();
   }
 }

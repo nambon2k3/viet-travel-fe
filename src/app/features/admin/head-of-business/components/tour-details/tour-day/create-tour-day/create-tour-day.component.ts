@@ -58,6 +58,7 @@ export class CreateTourDayComponent {
     { id: 'Hotel', name: 'Khách Sạn' },
     { id: 'Activity', name: 'Hoạt Động' },
     { id: 'Flight Ticket', name: 'Vé máy bay' },
+    { id: 'Transport', name: 'Vận chuyển' },
   ];
 
   constructor(

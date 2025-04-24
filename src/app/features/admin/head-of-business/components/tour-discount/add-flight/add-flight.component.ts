@@ -268,7 +268,7 @@ export class AddFlightComponent implements AfterViewInit {
       const formValue = this.addFlightForm.getRawValue();
 
       const selectedDay = formValue.selectedDay;
-      const tourDay = this.tourDays.find(day => day.dayNumber === selectedDay);
+      const tourDay = this.tourDays.find(day => day.dayNumber === Number(selectedDay));
 
       if (!tourDay || !tourDay.serviceCategories.includes('Flight Ticket')) {
         this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ vé máy bay`);
@@ -331,7 +331,13 @@ export class AddFlightComponent implements AfterViewInit {
           this.flightAdded.emit({ flight: flightData, isUpdate: false });
 
           // Reset toàn bộ form
-          this.addFlightForm.reset();
+          this.addFlightForm.reset({
+            selectedDay: this.days.length > 0 ? this.days[0] : 1,
+            selectedLocation: null,
+            selectedProvider: null,
+            selectedFlight: null,
+            netPrice: 0
+          });
           this.initPaxPrices();
           this.providers.set([]);
           this.flights.set([]);
@@ -389,7 +395,13 @@ export class AddFlightComponent implements AfterViewInit {
 
   onCancel() {
     this.modal?.hide();
-    this.addFlightForm.reset();
+    this.addFlightForm.reset({
+      selectedDay: this.days.length > 0 ? this.days[0] : 1,
+      selectedLocation: null,
+      selectedProvider: null,
+      selectedFlight: null,
+      netPrice: 0
+    });
     this.initPaxPrices();
   }
 }
