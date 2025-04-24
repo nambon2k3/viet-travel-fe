@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Modal } from 'flowbite';
 import { UserStorageService } from '../../../../core/services/user-storage/user-storage.service';
 import { SpinnerComponent } from '../../../../shared/components/spinner/spinner.component';
+import { GeminiService } from './gemini.service';
 
 @Component({
   selector: 'app-plan',
@@ -14,7 +15,7 @@ import { SpinnerComponent } from '../../../../shared/components/spinner/spinner.
   templateUrl: './plan.component.html',
   styleUrl: './plan.component.css'
 })
-export class PlanComponent implements AfterViewInit{
+export class PlanComponent implements AfterViewInit {
 
   suggesLocations: any;
 
@@ -31,8 +32,9 @@ export class PlanComponent implements AfterViewInit{
     private planService: PlanService,
     private router: RouterModule,
     private fb: FormBuilder,
-    private userStorageService : UserStorageService,
-    private route: Router
+    private userStorageService: UserStorageService,
+    private route: Router,
+    private geminiService: GeminiService
   ) {
 
     this.generatePlanForm = this.fb.group({
@@ -42,7 +44,7 @@ export class PlanComponent implements AfterViewInit{
       startDate: [''],
       endDate: [''],
       preferences: ['Đồ ăn ngon, Nghệ thuật và văn hóa', [Validators.required]],
-      planType: ['', [Validators.required]],
+      planType: ['Du lịch Cá Nhân', [Validators.required]],
       travelingWithChildren: [false],
     });
 
@@ -57,7 +59,7 @@ export class PlanComponent implements AfterViewInit{
         distinctUntilChanged()
       )
       .subscribe(value => {
-        if (value && value.length >= 2) {
+        if (value && value.length >= 2 && !this.selectedLocation) {
           this.isLoading = true;
           this.planService.getAllLocationData(value).subscribe(res => {
             this.locations = res.data;
@@ -73,19 +75,19 @@ export class PlanComponent implements AfterViewInit{
 
   addInterest() {
     this.otherInterest = this.addInterestForm.value.interest;
-    
+
   }
 
   interestModal: Modal | null = null;
 
   ngAfterViewInit(): void {
-    
+
     this.interestModal = new Modal(document.getElementById('interest-modal'));
 
   }
 
   openModal() {
-    if(this.interestModal) {
+    if (this.interestModal) {
       this.interestModal.show();
     } else {
       console.log('Open modal Failed')
@@ -93,7 +95,7 @@ export class PlanComponent implements AfterViewInit{
   }
 
   closeModal() {
-    if(this.interestModal) {
+    if (this.interestModal) {
       this.interestModal.hide();
     } else {
       console.log('Hide modal Failed')
@@ -119,27 +121,27 @@ export class PlanComponent implements AfterViewInit{
       this.maxEndDate = endDateFormatted;
 
 
-      
+
 
 
 
     } // Set maxEndDate to 7 days after start date} 
-     else {
+    else {
       this.minEndDate = new Date().toISOString().split('T')[0];
-     }
+    }
   }
 
   addInterestForm: FormGroup;
 
-  otherInterest: string= '';
+  otherInterest: string = '';
 
   selectLocation(location: any) {
     console.log('Selected location:', location);
     this.selectedLocation = location;
     this.locations = []; // Clear the suggestions after selection
-    this.generatePlanForm.patchValue({ 
+    this.generatePlanForm.patchValue({
       locationId: location.id,
-      locationName: location.name, 
+      locationName: location.name,
     });
     this.nextStep();
   }
@@ -171,6 +173,8 @@ export class PlanComponent implements AfterViewInit{
   }
 
 
+  response: any;
+
   onSubmit() {
     if (this.generatePlanForm.valid) {
       const formData = this.generatePlanForm.value;
@@ -185,29 +189,53 @@ export class PlanComponent implements AfterViewInit{
 
       this.isGenerating = true;
 
-      // Handle form submission logic here
+      //Handle form submission logic here
       this.planService.generatePlan(formData).subscribe(
         (response) => {
-          // const cleanJsonString = response.data
-          //   .replace(/^```json\n/, '')  // Remove the opening triple backticks
-          //   .replace(/\n```$/, '');
-          // let parsedData: any;
-          // try {
-          //   parsedData = JSON.parse(cleanJsonString);
-          //   console.log('Parsed JSON:', parsedData);
-          // } catch (error) {
-          //   console.error('Error parsing JSON:', error);
-          // }
 
-          this.isGenerating = false;
           console.log(response)
-          this.route.navigate(['/plan-detail/' + response.data]);
+          this.geminiService.generateContent(response.data)
+            .subscribe({
+              next: (res) => {
+                this.isGenerating = false;
+                this.response = res?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+
+                this.response = this.response
+                  .replace(/```/g, '')
+                  .replace(/json/g, '')
+                  .trim();
+
+                this.planService.savePlan(this.userStorageService.getUserId(), this.response)
+                  .subscribe({
+                    next: (res) => {
+                      console.log(res)
+                      this.route.navigate(['/plan-detail', res.data]);
+                    },
+                    error: (err) => {
+                      console.error('Gemini API error:', err);
+                      this.isGenerating = false;
+                      // Handle error case
+                    },
+                  });
+
+              },
+              error: (err) => {
+                console.error('Gemini API error:', err);
+                this.isGenerating = false;
+                // Handle error case
+              },
+            });
         },
         (error) => {
           console.error('Error generating plan:', error);
           // Handle error case
         }
       );
+
+
+
+
+
     } else {
       console.log('Form is invalid:', this.generatePlanForm.value);
     }

@@ -25,6 +25,14 @@ export class PlanService {
     return this.http.post<any>(`${environment.apiUrl}public/plans/generate`, data);
   }
 
+  savePlan(userId: any, plan: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}public/plans/save`, {
+      userId: userId,
+      plan: plan
+    });
+  }
+
+
 
   getPlanById(planId: number): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}public/plans/details/${planId}`);

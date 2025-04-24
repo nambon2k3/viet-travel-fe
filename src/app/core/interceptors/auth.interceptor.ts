@@ -7,7 +7,7 @@ import { UserStorageService } from '../services/user-storage/user-storage.servic
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
-  if (req.url.includes('/confirm-email')) {
+  if (req.url.includes('/confirm-email') || req.url.includes('generativelanguage')) {
     return next(req);
   }
 
