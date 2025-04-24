@@ -186,7 +186,7 @@ export class PlanComponent implements AfterViewInit{
       this.isGenerating = true;
 
       // Handle form submission logic here
-      this.planService.generatePlanV2('Tell me about google').subscribe(
+      this.planService.generatePlan(formData).subscribe(
         (response) => {
           // const cleanJsonString = response.data
           //   .replace(/^```json\n/, '')  // Remove the opening triple backticks
