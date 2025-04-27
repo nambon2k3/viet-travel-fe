@@ -251,7 +251,7 @@ export class PlanComponent implements AfterViewInit {
   }
 
   async loadImagesForActivities(): Promise<void> {
-    this.isLoading = true;
+    this.isGenerating = true;
     const imageFetchTasks: Promise<void>[] = [];
   
     this.response.plan.days.forEach((day: any) => {
@@ -271,7 +271,7 @@ export class PlanComponent implements AfterViewInit {
     });
   
     await Promise.all(imageFetchTasks);
-    this.isLoading = false;
+    this.isGenerating = false;
   }
 
   selectTrip(trip: any) {
