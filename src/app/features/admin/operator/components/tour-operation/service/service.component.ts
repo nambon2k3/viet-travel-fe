@@ -266,6 +266,8 @@ export class ServiceComponent {
       'CHECKING': 'Đang kiểm tra',
       'PAID': 'Đã thanh toán',
       'UNPAID': 'Chưa thanh toán',
+      'REJECTED_BY_OPERATOR': 'Điều hành từ chối',
+      'CANCEL_REQUEST': 'Yêu cầu hủy',
       'PARTIALLY_PAID': 'Thanh toán một phần'
     };
     return statusMap[status] || 'Không xác định';
@@ -294,6 +296,7 @@ export class ServiceComponent {
       'Đã phê duyệt': 'bg-green-500/20 text-green-800',
       'Chưa đặt hàng': 'bg-yellow-400/20 text-yellow-700',
       'Bị hủy': 'bg-red-500/20 text-red-800',
+      'Điều hành từ chối': 'bg-red-700/20 text-red-900',
       'Bị từ chối': 'bg-rose-500/20 text-rose-800',
       'Chờ phê duyệt': 'bg-blue-400/20 text-blue-700',
       'Đang xử lý': 'bg-orange-400/20 text-orange-700',
@@ -301,6 +304,7 @@ export class ServiceComponent {
       'Không có sẵn': 'bg-gray-500/20 text-gray-800',
       'Có sẵn': 'bg-lime-400/20 text-lime-700',
       'Đang kiểm tra': 'bg-cyan-400/20 text-cyan-700',
+      'Yêu cầu hủy': 'bg-red-400/20 text-red-900',
       'Đã thanh toán': 'bg-teal-500/20 text-teal-800',
       'Chưa thanh toán': 'bg-amber-400/20 text-amber-700',
       'Thanh toán một phần': 'bg-fuchsia-400/20 text-fuchsia-700'
