@@ -407,33 +407,34 @@ export class ServiceComponent {
 
   onEmailSent(event: { success: boolean, error?: string }): void {
     if (event.success) {
-      this.showNotification('Email đã được gửi thành công!', true);
-      this.fetchServices(this.scheduleId!);
       this.fetchTourGuide(this.scheduleId!);
+      this.reInitFlowbite();
+      this.fetchServices(this.scheduleId!);
+      this.showNotification('Email đã được gửi thành công!', true);
     } else {
       this.showNotification(event.error || 'Lỗi khi gửi email.', false);
     }
   }
 
   onServiceAdded(event: any): void {
-    this.showNotification('Dịch vụ đã được thêm thành công!', true);
     this.fetchTourGuide(this.scheduleId!);
     this.reInitFlowbite();
     this.fetchServices(this.scheduleId!);
+    this.showNotification('Dịch vụ đã được thêm thành công!', true);
   }
 
   onServiceChange(event: any): void {
-    this.showNotification('Dịch vụ đã được thay đổi thành công!', true);
     this.fetchTourGuide(this.scheduleId!);
     this.reInitFlowbite();
     this.fetchServices(this.scheduleId!);
+    this.showNotification('Dịch vụ đã được thay đổi thành công!', true);
   }
 
   onPaymentSent(event: { success: boolean, error?: string }): void {
     if (event.success) {
-      this.showNotification('Thanh toán đã được gửi thành công!', true);
-      this.fetchServices(this.scheduleId!);
       this.fetchTourGuide(this.scheduleId!);
+      this.fetchServices(this.scheduleId!);
+      this.showNotification('Thanh toán đã được gửi thành công!', true);
     } else {
       this.showNotification(event.error || 'Lỗi khi gửi thanh toán.', false);
     }

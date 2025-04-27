@@ -151,7 +151,7 @@ export class OrderServiceComponent {
         this.isLoading = false;
         if (response.code === 200) {
           this.approveService();
-          this.emailSent.emit();
+          this.emailSent.emit({ success: true, error: this.errorMessage! });
           this.close();
         } else {
           this.errorMessage = response;
