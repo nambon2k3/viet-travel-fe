@@ -248,7 +248,7 @@
             <p class="flex justify-between mb-2"><span>🧑 Người lớn: </span> <span>{{numberAdults}} x
                     {{bookingData?.sellingPrice |currencyVnd}} </span></p>
             <p class="flex justify-between mb-2"><span>👶 Trẻ em:</span> 
-                @if(numberSingleRooms > 0) {
+                @if(numberChildren > 0) {
                     <span>{{numberChildren}} x
                         {{childrenPrice |currencyVnd}}</span>
                 }@else {
