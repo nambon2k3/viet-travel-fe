@@ -9,7 +9,7 @@
                     d="m15 19-7-7 7-7" />
             </svg>
             Quay lại danh sách</button>
-        <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" type="button"
+        <button *ngIf="tour.scheduleStatus === 'ONGOING'" data-modal-target="popup-modal" data-modal-toggle="popup-modal" type="button"
             class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded">Chuyển quyết toán</button>
         <button *ngIf="tour?.operatorName === 'null'" data-modal-target="operator-popup-modal" data-modal-toggle="operator-popup-modal" type="button"
         (click)="receiveTour()"  class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Nhận điều hành</button>

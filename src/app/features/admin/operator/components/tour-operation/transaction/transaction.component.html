@@ -20,7 +20,7 @@
           <td class="p-2">{{ i + 1 }}</td>
           <td class="p-2">{{ transaction.paidBy }}</td>
           <td class="p-2">{{ transaction.receivedBy }}</td>
-          <td class="p-2">{{ transaction.category === 'RECEIPT' ? 'Phiếu thu' : 'Phiếu chi' }}</td>
+          <td class="p-2">{{ transaction.category === 'RECEIPT' ? 'Phiếu thu' : transaction.category === 'COLLECTION' ? 'HDV Thu hộ' : transaction.category === 'ADVANCED' ? 'Tạm ứng' : 'Phiếu chi' }}</td>
           <td class="p-2">{{ transaction.createdAt | formatDate }}</td>
           <td class="p-2">{{ transaction.amount | currencyVnd }}</td><td class="p-2">
             <span 
