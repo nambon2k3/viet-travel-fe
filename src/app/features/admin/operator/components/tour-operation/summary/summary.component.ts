@@ -77,8 +77,8 @@ export class SummaryComponent implements OnInit {
   
           const profit = parseFloat(tourData.actualProfitAmount);
           this.summary = [
-            { content: 'Đã thu', estimate: parseFloat(tourData.estimateReceiptAmount), summary: parseFloat(tourData.receiptedAmount) },
-            { content: 'Đã chi', estimate: parseFloat(tourData.estimatedPaymentAmount), summary: parseFloat(tourData.paymentAmount) },
+            { content: 'Đã thu', estimate: parseFloat(tourData.estimateReceiptAmount), summary: parseFloat(tourData.totalReceiptAmount) },
+            { content: 'Đã chi', estimate: parseFloat(tourData.estimatedPaymentAmount), summary: parseFloat(tourData.totalPaymentAmount) },
             { content: 'Lợi nhuận', estimate: parseFloat(tourData.estimateProfitAmount), summary: profit }
           ];
         }
