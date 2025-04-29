@@ -171,21 +171,22 @@ export class RegisterComponent implements OnInit {
     }
 
     onSubmit(): void {
+        this.isLoading = true;
         this.authService
             .register(this.signupForm.value)
-            .pipe(
-                catchError((error) => {
+            .subscribe({
+                next: (response: any) => {
+                    if (response?.code === 201) {
+                        this.router.navigate(['/regis-confirm']);
+                    }
+                    this.isLoading = false;
+                },
+                error: (error) => {
+                    this.isLoading = false;
                     const apiError = error || 'An error occurred during sign in.';
                     this.errorMessage = apiError;
-                    this.router.navigate(['/regis-confirm'], { queryParams: { error: this.errorMessage } });
-                    return of(null); // Ensure the stream continues
-                })
-            )
-            .subscribe((response: any) => {
-                if (response?.code === 201) {
-                    this.router.navigate(['/regis-confirm']);
                 }
             });
     }
-
 }
+
