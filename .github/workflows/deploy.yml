@@ -18,18 +18,18 @@ concurrency:
 
 jobs:
   cleanup:
-    runs-on: az-agent
+    runs-on: self-hosted
     steps:
       - name: Clean up temporary files
         run: |
           echo "Started cleaning up temporary files..."
-          rm -rf /home/g79/runner-fe/az-runner/viet-travel-fe/viet-travel-fe/dist/*
+          rm -rf /home/g79/runner-fe/_work/viet-travel-fe/viet-travel-fe/dist/*
 
   build-n-deploy:
-    runs-on: az-agent
+    runs-on: self-hosted
     needs: cleanup
     env:
-      BUILD_FOLDER: /home/g79/runner-fe/az-runner/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
+      BUILD_FOLDER: /home/g79/runner-fe/_work/viet-travel-fe/viet-travel-fe/dist/viet-travel-fe
       DEPLOY_PATH: /var/www/viet-travel-fe
       DEPLOY_FILE_NAME: ViettravelFE
     steps:
