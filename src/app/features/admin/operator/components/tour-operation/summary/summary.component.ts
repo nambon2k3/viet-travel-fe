@@ -14,7 +14,7 @@ import { SpinnerComponent } from "../../../../../../shared/components/spinner/sp
     CommonModule,
     CurrencyVndPipe,
     SpinnerComponent
-]
+  ]
 })
 export class SummaryComponent implements OnInit {
   id: number | null = null;
@@ -41,8 +41,8 @@ export class SummaryComponent implements OnInit {
 
   constructor(
     private tourService: TourService,
-    private route : ActivatedRoute
-  ) {}
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -60,26 +60,40 @@ export class SummaryComponent implements OnInit {
         this.isLoading = false;
         if (response.code === 200 && response.data) {
           const tourData = response.data;
-  
+
           this.totalCollect = {
             total: parseFloat(tourData.totalReceiptAmount),
             companyCollect: parseFloat(tourData.receiptedAmount),
             travelGuideCollect: parseFloat(tourData.collectionAmount),
             remain: parseFloat(tourData.remainingReceiptAmount)
           };
-  
+
           this.totalPaid = {
             total: parseFloat(tourData.totalPaymentAmount),
             companyPaid: parseFloat(tourData.paymentAmount),
             travelGuidePaid: parseFloat(tourData.advanceAmount),
             remain: parseFloat(tourData.remainingPaymentAmount)
           };
-  
+
           const profit = parseFloat(tourData.actualProfitAmount);
           this.summary = [
-            { content: 'Thu', estimate: parseFloat(tourData.estimateReceiptAmount), summary: parseFloat(tourData.receiptedAmount + tourData.collectionAmount) },
-            { content: 'Chi', estimate: parseFloat(tourData.estimatedPaymentAmount), summary: parseFloat(tourData.paymentAmount + tourData.advanceAmount) },
-            { content: 'Lợi nhuận', estimate: parseFloat(tourData.estimateProfitAmount), summary: profit }
+            {
+              content: 'Thu',
+              estimate: parseFloat(tourData.estimateReceiptAmount),
+              summary:
+                parseFloat(tourData.receiptedAmount) + parseFloat(tourData.collectionAmount),
+            },
+            {
+              content: 'Chi',
+              estimate: parseFloat(tourData.estimatedPaymentAmount),
+              summary:
+                parseFloat(tourData.paymentAmount) + parseFloat(tourData.advanceAmount),
+            },
+            {
+              content: 'Lợi nhuận',
+              estimate: parseFloat(tourData.estimateProfitAmount),
+              summary: profit,
+            }
           ];
         }
       },
@@ -88,5 +102,5 @@ export class SummaryComponent implements OnInit {
         console.error('Error fetching tour summary:', error);
       }
     });
-  }  
+  }
 }
