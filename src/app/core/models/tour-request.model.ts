@@ -15,6 +15,7 @@ export interface TourDayProcessDTO {
   id: number;
   title: string;
   description: string;
+  dayNumber: number;
 }
 
 export interface TourImageDTO {

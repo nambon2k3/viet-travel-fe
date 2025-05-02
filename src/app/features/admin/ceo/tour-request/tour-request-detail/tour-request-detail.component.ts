@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TourRequestService } from '../../services/tour-request.service';
 import { TourDetail, TourStatusDisplay, TourDayDetail } from '../../../../../core/models/tour-request.model';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-tour-request-detail',
@@ -19,7 +20,8 @@ export class TourRequestDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private tourRequestService: TourRequestService
+    private tourRequestService: TourRequestService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +62,17 @@ export class TourRequestDetailComponent implements OnInit {
       .slice(0, 2);
   }
 
+  unescapeHtml(html: string): string {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = html;
+    return textarea.value;
+  }
+
+  getSanitizedHighlights(): SafeHtml {
+    const unescaped = this.unescapeHtml(this.tourDetail?.highlights || '');
+    return this.sanitizer.bypassSecurityTrustHtml(unescaped);
+  }
+
   getStatusDisplay(status: string): string {
     return TourStatusDisplay[status as keyof typeof TourStatusDisplay] || status;
   }
@@ -70,6 +83,7 @@ export class TourRequestDetailComponent implements OnInit {
         next: (response) => {
           if (response.code === 200) {
             this.selectedTourDay = response.data;
+            console.log('Tour Day Detail:', this.selectedTourDay);
             this.showPopup = true; // Hiển thị pop-up
           } else {
             console.error('Failed to load tour day detail:', response.message);

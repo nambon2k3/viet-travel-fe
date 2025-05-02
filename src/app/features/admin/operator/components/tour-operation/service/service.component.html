@@ -56,8 +56,8 @@
                 </tr>
                 <tr *ngFor="let service of day.services; let i = index" class="border border-gray-300">
                   <td class="border border-gray-300 p-2 text-center">
-                    {{ groupIndex * group.days.length + dayIndex * day.services.length + i + 1 }}
-                  </td>
+                    {{ i + 1 }}
+                  </td>                  
                   <td class="border border-gray-300 p-2">{{ service.name }}</td>
                   <td class="border border-gray-300 p-2">{{ service.providerName }}</td>
                   <td class="border border-gray-300 p-2">{{ service.type }}</td>

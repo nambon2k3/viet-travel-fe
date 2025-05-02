@@ -172,6 +172,7 @@ export class ServiceComponent {
             status: this.mapOrderStatus(service.bookingStatus),
             tourDayId: service.tourDayId
           }));
+          console.log(this.services);
           this.totalService = response.data.totalNumOfService;
           this.paid = response.data.paidAmount;
           this.remain = response.data.remainingAmount;
