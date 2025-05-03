@@ -30,7 +30,7 @@ export class ConfigPriceComponent {
   @Input() tourId!: number;
   @Input() set prices(value: PaxOption[]) {
     this._prices = value.map(p => {
-      const netPrice = this.totalSellingPrice[p.paxRange] / this.getMinPax(p.paxRange);
+      const netPrice = this.totalSellingPrice[p.paxRange];
       return {
         ...p,
         fixedCostFormatted: p.fixedCost?.toLocaleString('vi-VN'),
@@ -62,7 +62,7 @@ export class ConfigPriceComponent {
         this.startDate = response.data.priceConfigurations[0].validFrom.split('T')[0];
         this.endDate = response.data.priceConfigurations[0].validTo.split('T')[0];
         this._prices = response.data.priceConfigurations.map((p: any) => {
-          const netPrice = this.totalSellingPrice[p.paxRange] / this.getMinPax(p.paxRange);
+          const netPrice = this.totalSellingPrice[p.paxRange] ;
           return {
             id: p.id,
             paxRange: p.paxRange,
@@ -91,7 +91,7 @@ export class ConfigPriceComponent {
 
     if (field === 'fixedCostFormatted') {
       const fixedCost = parseInt(this._prices[index].fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0;
-      const netPrice = this.totalSellingPrice[this._prices[index].paxRange] / this.getMinPax(this._prices[index].paxRange);
+      const netPrice = this.totalSellingPrice[this._prices[index].paxRange];
       this._prices[index].sellingPriceFormatted = (netPrice + fixedCost / this.getMinPax(this._prices[index].paxRange)).toLocaleString('vi-VN');
     }
   }
@@ -111,7 +111,7 @@ export class ConfigPriceComponent {
       maxPax: this.getMaxPax(p.paxRange),
       paxRange: p.paxRange,
       extraHotelCost: this.extraHotelCost[p.paxRange] || 0,
-      nettPricePerPax: this.nettPricePerPax[p.paxRange] / this.getMinPax(p.paxRange) || 0,
+      nettPricePerPax: this.nettPricePerPax[p.paxRange] || 0,
       fixedCost: parseInt(p.fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0,
       sellingPrice: parseInt(p.sellingPriceFormatted.replace(/[^0-9]/g, ''), 10) || 0,
       validFrom: new Date(this.startDate).toISOString(),

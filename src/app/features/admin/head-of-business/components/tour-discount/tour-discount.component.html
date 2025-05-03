@@ -421,14 +421,14 @@
           <tr class="border-b border-gray-300 odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá Net (1 khách)</td>
             <td *ngFor="let range of priceRanges" class="py-2 text-center">
-              {{ (mintotalNetPrices[range] / getMinPax(range)) | currencyVnd }}
+              {{ (mintotalNetPrices[range]) | currencyVnd }}
             </td>
           </tr>
           <!-- Giá bán cuối -->
           <tr class="odd:bg-white even:bg-gray-50">
             <td class="w-1/4 py-2 font-semibold text-left pl-4">Giá bán (1 khách)</td>
             <td *ngFor="let range of priceRanges" class="py-2 text-center">
-              {{ minsalePrices[range] / getMinPax(range) | currencyVnd }}
+              {{ minsalePrices[range] | currencyVnd }}
             </td>
           </tr>
           <tr class="odd:bg-white even:bg-gray-50">

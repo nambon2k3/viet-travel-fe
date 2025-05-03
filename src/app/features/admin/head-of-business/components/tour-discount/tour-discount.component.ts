@@ -89,7 +89,6 @@ interface ApiResponse {
     ConfigTourPaxComponent,
     ConfigPriceComponent,
     FormsModule,
-    ConfigMarkupComponent,
     SpinnerComponent
   ],
   templateUrl: './tour-discount.component.html',
@@ -263,8 +262,8 @@ export class TourDiscountComponent implements OnInit {
   calculateTotalNetPrice() {
     this.priceRanges.forEach(range => {
       let total = 0;
-      this.hotels.forEach(h => total += (Number(h.nettPrice) / 2));
-      this.transports.forEach(t => total += t.nettPrice);
+      this.hotels.forEach(h => total += (Number(h.nettPrice) / 2 ));
+      this.transports.forEach(t => total += (Number(t.nettPrice) / this.getMinPax(range)));
       this.restaurants.forEach(r => total += r.nettPrice);
       this.activities.forEach(a => total += a.nettPrice);
       this.flights.forEach(a => total += a.nettPrice);
@@ -281,7 +280,6 @@ export class TourDiscountComponent implements OnInit {
 
   calculateTotalPrices() {
     this.priceRanges.forEach(range => {
-      const minPax = this.getMinPax(range);
       let total = 0;
   
       this.hotels.forEach(hotel => {
@@ -289,8 +287,14 @@ export class TourDiscountComponent implements OnInit {
           total += ((hotel.paxPrices[range].sellingPrice || 0) / 2);
         }
       });
+
+      this.transports.forEach(transport => {
+        if (transport.paxPrices && transport.paxPrices[range]) {
+          total += ((transport.paxPrices[range].sellingPrice || 0) / this.getMinPax(range));
+        }
+      });
   
-      [this.transports, this.restaurants, this.activities, this.flights].forEach(services => {
+      [this.restaurants, this.activities, this.flights].forEach(services => {
         services.forEach(service => {
           if (service.paxPrices && service.paxPrices[range]) {
             total += (service.paxPrices[range].sellingPrice || 0);
