@@ -37,7 +37,7 @@
             <tbody>
               <tr *ngFor="let price of _prices; let i = index" class="border-b border-gray-300">
                 <td class="p-3">{{ price.paxRange }} khách</td>
-                <td class="p-3">{{ (totalSellingPrice[price.paxRange] / getMinPax(price.paxRange)) | currencyVnd }} VND</td>
+                <td class="p-3">{{ (totalSellingPrice[price.paxRange]) | currencyVnd }} VND</td>
                 <td class="p-3 flex items-center gap-2">
                   <input type="text" [(ngModel)]="price.fixedCostFormatted"
                     class="p-2 border border-gray-300 rounded-md w-32" placeholder="Nhập chi phí tổ chức"

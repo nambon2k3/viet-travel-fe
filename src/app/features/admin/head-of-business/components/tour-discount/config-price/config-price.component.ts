@@ -57,6 +57,7 @@ export class ConfigPriceComponent {
   }[] = [];
 
   ngOnInit(): void {
+    console.log('totalSellingPrice', this.totalSellingPrice);
     this.discountService.getPriceConfigurations(this.tourId).subscribe(response => {
       if (response?.data?.priceConfigurations) {
         this.startDate = response.data.priceConfigurations[0].validFrom.split('T')[0];
