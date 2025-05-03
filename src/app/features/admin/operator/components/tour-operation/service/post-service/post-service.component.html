@@ -59,7 +59,6 @@
         </div>
 
         <!-- Service List -->
-        <!-- Service List -->
         <div class="border rounded-md  p-3">
             <table class="w-full text-left service-list-table">
                 <thead class="sticky top-0 bg-gray-100">
@@ -78,7 +77,11 @@
                         <tr *ngFor="let service of services(); let i = index" class="border-t cursor-pointer">
                             <td>{{ service.name }}</td>
                             <td>{{ service.type }}</td>
-                            <td>{{ service.unitPrice | currency:'VND' }}</td>
+                            @if (service.type === 'Transport' && minPax) {
+                                <td>{{ service.unitPrice / minPax | currency:'VND' }}</td>
+                            } @else {
+                                <td>{{ service.unitPrice | currencyVnd }}</td>
+                            }
                             <td>
                                 <span *ngIf="service.room">
                                     {{ service.room.capacity === 1 ? 'Phòng đơn' : (service.room.capacity === 2 ? 'Phòng đôi' : 'Phòng nhiều người') }}
@@ -125,11 +128,13 @@
                     <tbody>
                         <tr *ngFor="let price of servicePrices; let i = index">
                             <td>
-                                <p>{{ price.type }}</p>
+                                <p>{{ price.name }}</p>
                             </td>
-                            <td class="text-center">
-                                <p>{{ price.unitPrice | currencyVnd }}</p>
-                            </td>
+                            @if (price.type === 'Transport' && minPax) {
+                                <td>{{ price.unitPrice / minPax | currency:'VND' }}</td>
+                            } @else {
+                                <td>{{ price.unitPrice | currencyVnd }}</td>
+                            }
                             <td class="text-center max-w-5">
                                 <input type="date" [(ngModel)]="price.requestDate" class="border p-1 rounded">
                             </td>
@@ -159,9 +164,16 @@
                                     </button>
                                 </div>
                             </td>
-                            <td class="text-center">
-                                <p>{{ price.unitPrice * price.quantity | currencyVnd }}</p>
-                            </td>
+                                @if (price.type == 'Transport' && minPax) {
+                                
+                                <td class="text-center">
+                                    <p>{{ price.unitPrice / minPax * price.quantity | currency:'VND' }}</p>
+                                </td>
+                                } @else {
+                                <td class="text-center">
+                                    <p>{{ price.unitPrice * price.quantity | currencyVnd }}</p>
+                                </td>
+                                }
                             <td class="text-center">
                                 <button (click)="removeService(i)">
                                     <svg class="w-6 h-6 text-red-700 hover:text-red-800 dark:text-white"
