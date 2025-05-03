@@ -233,24 +233,11 @@
     <div class="relative p-4 w-full max-w-2xl max-h-full">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-            <!-- Modal header -->
-            <div class="flex items-center justify-between p-4 md:p-5 rounded-t">
-                <button type="button"
-                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                    data-modal-hide="interest-modal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-            </div>
             <!-- Modal body -->
             <div class="p-4 md:p-5 space-y-4">
                 <!-- Tiêu đề -->
                 <label for="interests" class="block text-base font-semibold text-black">
-                    Add other interests
+                    Thêm sở thích của bạn
                 </label>
 
                 <!-- Ô nhập -->
@@ -264,8 +251,10 @@
 
                 <!-- Phần mô tả -->
                 <div class="flex justify-between text-sm text-gray-500">
-                    <span>Separate each entry with a comma</span>
-                    <span>{{addInterestForm.value.interest.length}}/50 max characters</span>
+                    <span>
+                        Sở thích nên phân cách bởi dấu phẩy (,) và không nên chứa các ký tự đặc biệt
+                    </span>
+                    <span>{{addInterestForm.value.interest.length}}/50 kí tự tối đa </span>
                 </div>
             </div>
             <!-- Modal footer -->
