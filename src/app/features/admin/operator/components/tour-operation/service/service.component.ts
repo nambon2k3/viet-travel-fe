@@ -355,21 +355,21 @@ export class ServiceComponent {
     });
   }
 
-  openDeleteModal(index: number): void {
+  openDeleteModal(bookingServiceId: number): void {
     const doc = this.ssrService.getDocument();
     if (doc) {
-      const modalElement = doc.getElementById(`deleteTourPaxModal-${index}`) as HTMLElement;
+      const modalElement = doc.getElementById(`deleteTourPaxModal-${bookingServiceId}`) as HTMLElement;
       if (modalElement) {
         modalElement.classList.remove('hidden');
         modalElement.setAttribute('aria-hidden', 'false');
       }
     }
   }
-
-  closeDeleteModal(index: number): void {
+  
+  closeDeleteModal(bookingServiceId: number): void {
     const doc = this.ssrService.getDocument();
     if (doc) {
-      const modalElement = doc.getElementById(`deleteTourPaxModal-${index}`) as HTMLElement;
+      const modalElement = doc.getElementById(`deleteTourPaxModal-${bookingServiceId}`) as HTMLElement;
       if (modalElement) {
         modalElement.classList.add('hidden');
         modalElement.setAttribute('aria-hidden', 'true');
@@ -378,7 +378,7 @@ export class ServiceComponent {
     this.fetchServices(this.scheduleId!);
     this.fetchTourGuide(this.scheduleId!);
     this.reInitFlowbite();
-  }
+  }  
 
   openPayModal(service: Service): void {
     this.selectedService = service;
