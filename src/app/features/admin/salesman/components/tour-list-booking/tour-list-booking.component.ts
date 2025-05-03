@@ -95,7 +95,8 @@ export class TourListBookingComponent implements AfterViewInit {
     private route: ActivatedRoute,
     private tourService: TourService,
     private datePipe: DatePipe,
-    private userStorageService: UserStorageService
+    private userStorageService: UserStorageService,
+    private bookingService: BookingService,
   ) {
   }
 
@@ -202,6 +203,26 @@ export class TourListBookingComponent implements AfterViewInit {
   }
 
 
+  takeBooking(bookingId: number) {
+
+
+
+    this.bookingService.takeBooking(bookingId, this.userId).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.getTourDetails(this.tourId!, this.selectedSchedule.id); // Refresh the tour details after taking the booking
+        this.successMessage = 'Nhận booking thành công!';
+        this.triggerSuccess(); // Show success message
+
+      },
+      error: (error: any) => {
+        console.error(error);
+        this.triggerError(); // Show error message
+      },
+    });
+  }
+
+
   loadCalendar: boolean = false;
 
   isLoadCalendar() {
@@ -222,6 +243,7 @@ export class TourListBookingComponent implements AfterViewInit {
       next: (response: any) => {
         console.log('Response', response);
         this.isLoading = false;
+        this.successMessage = 'Chuyển điều hành thành công!';
         this.triggerSuccess();
 
         this.selectedSchedule.status = 'ONGOING'

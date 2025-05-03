@@ -202,6 +202,7 @@
                                 <th class="p-2">Code</th>
                                 <th class="p-2">Tên khách hàng</th>
                                 <th class="p-2">Số lượng người</th>
+                                <th class="p-2 ">Sale</th>
                                 <th class="p-2">Tổng tiền</th>
                                 <th class="p-2">Còn lại</th>
                                 <th class="p-2">Trạng thái</th>
@@ -216,6 +217,21 @@
                                 <td class="p-2">{{booking.bookingCode}}</td>
                                 <td class="p-2">{{customer.fullName}}</td>
                                 <td class="p-2">{{booking.seats}}</td>
+                                <th class="p-2 text-left">
+                                    @if(booking.sale) {
+                                    <span
+                                        class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-blue-500 rounded-full"></span>
+                                        {{booking.sale?.fullName}}
+                                    </span>
+                                    } @else {
+                                    <span
+                                        class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                        Chưa có sale
+                                    </span>
+                                    }
+                                </th>
                                 <td class="p-2">{{booking.total | currencyVnd}}</td>
                                 <td class="p-2">
                                     {{booking.total - booking.paid | currencyVnd}}
@@ -267,7 +283,7 @@
                                         }
 
                                 </td>
-                                <td class="p-2">
+                                <td class="p-2 text-center">
                                     @if(userId === booking?.sale?.id) {
                                     <a [routerLink]=" ['/salesman/booking-detail/', booking?.id]">
                                         <svg class="w-6 h-6 text-gray-800 dark:text-white m-auto hover:cursor-pointer"
@@ -279,6 +295,15 @@
                                                 d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                         </svg>
                                     </a>
+                                    }
+
+                                    @if(!booking?.sale) {
+                                        <button type="button" (click)="takeBooking(booking?.id)" class=" m-auto hover:cursor-pointer">
+                                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 3v4a1 1 0 0 1-1 1H5m4 6 2 2 4-4m4-8v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1Z"/>
+                                            </svg>
+                                            
+                                            </button>
                                     }
 
 
