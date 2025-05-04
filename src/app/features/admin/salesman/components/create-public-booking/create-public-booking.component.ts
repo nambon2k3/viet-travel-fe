@@ -260,7 +260,6 @@ export class CreatePublicBookingComponent implements AfterViewInit{
   getMinDate(index: number): string | null {
     const ageType = this.customersFormArray.at(index).get('ageType')?.value;
 
-    console.log('Age Type', ageType)
   
     if (ageType === 'CHILDREN') {
       return this.maxDateOfBirth;
@@ -273,6 +272,10 @@ export class CreatePublicBookingComponent implements AfterViewInit{
   
     if (ageType === 'ADULT') {
       return this.maxDateOfBirth;
+    }
+    else if (ageType === 'CHILDREN') {
+      const today = new Date();
+      return today.toISOString().split('T')[0];
     }
     return null; // no min for ADULT
   }

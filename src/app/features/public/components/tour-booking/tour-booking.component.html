@@ -195,7 +195,7 @@
                         </div>
                         <div>
                             <label class="block font-semibold">Ngày sinh *</label>
-                            <input type="date" formControlName="dateOfBirth" class="w-full border p-2 rounded mt-1" [attr.min]="maxDateOfBirth">
+                            <input type="date" formControlName="dateOfBirth" class="w-full border p-2 rounded mt-1" [attr.min]="maxDateOfBirth" [attr.max]="today">
                             <p *ngIf="
                                   childrenFormArray.at($index).get('dateOfBirth')?.invalid &&
                                   childrenFormArray.at($index).get('dateOfBirth')?.touched
