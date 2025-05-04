@@ -88,6 +88,7 @@ export class ServiceComponent {
   showPopup: boolean = false;
   isSuccess: boolean = true;
   popupMessage: string = '';
+  minPax: number | null = null;
 
   @ViewChild('chooseServiceModal') chooseServiceModal!: PostServiceComponent;
   @ViewChild('changeServiceModal') changeServiceModal!: ServiceDetailComponent;
@@ -99,7 +100,6 @@ export class ServiceComponent {
     private ssrService: SsrService,
     private tourService: TourService,
     private route: ActivatedRoute,
-    private requestService: RequestService,
   ) { }
 
   ngOnInit(): void {
@@ -107,9 +107,9 @@ export class ServiceComponent {
       const id = params['id'];
       if (id) {
         this.scheduleId = +id;
+        this.fetchTourGuide(this.scheduleId);
         this.fetchTourDays(this.scheduleId);
         this.fetchServices(this.scheduleId);
-        this.fetchTourGuide(this.scheduleId);
       } else {
         this.showNotification('ID không hợp lệ.', false);
       }
@@ -132,7 +132,9 @@ export class ServiceComponent {
       next: (response: any) => {
         this.isLoading = false;
         if (response.code === 200) {
+          this.minPax = response.data.minPax;
           this.tourGuide = response.data.tourGuideName;
+          console.log('minPax:', this.minPax);
         } else {
           this.showNotification('Lỗi khi tải thông tin hướng dẫn viên: ' + response.message, false);
         }
@@ -388,6 +390,7 @@ export class ServiceComponent {
 
   openServiceDetail(service: Service): void {
     this.selectedService = service;
+    this.changeServiceModal.minPax = this.minPax;
     this.changeServiceModal.service = service;
     this.changeServiceModal.getServiceDetail();
     this.changeServiceModal.open();

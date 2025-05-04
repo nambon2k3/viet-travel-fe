@@ -170,7 +170,7 @@
   </div>
 </div>
 
-<app-post-service [scheduleId]="scheduleId" (serviceAdded)="onServiceAdded($event)" [tourDays]="tourDays"
+<app-post-service [scheduleId]="scheduleId" (serviceAdded)="onServiceAdded($event)" [tourDays]="tourDays" [minPax]="minPax"
   #chooseServiceModal></app-post-service>
 <app-tour-guide-pay [selectedService]="selectedService" [tourGuide]="tourGuide" (sendRequest)="onPaymentSent($event)"
   #tourGuidePayModal></app-tour-guide-pay>

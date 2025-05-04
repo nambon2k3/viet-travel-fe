@@ -16,11 +16,13 @@ import { error } from 'console';
 })
 export class ServiceDetailComponent {
   @Input() service: any | null = null;
+  @Input() minPax: number | null = null;
   @Output() serviceChange = new EventEmitter<any[]>();
   modal: Modal | null = null;
   serviceDetail: any | null = null;
   quantity: number = 1;
   totalPrice: number = 0;
+  tempQuantity: number = 1;
 
   constructor(
     private tourService: TourService,
@@ -51,21 +53,22 @@ export class ServiceDetailComponent {
   }
 
   calculateTotal() {
-    this.totalPrice = (this.serviceDetail?.sellingPrice || 0) * this.service.quantity;
-  }
+    if (!this.serviceDetail || !this.minPax) return;
+    this.totalPrice = (this.serviceDetail?.sellingPrice / this.minPax || 0) * this.tempQuantity;
+  }  
 
   updateQuantity(change: number) {
-    this.service.quantity = Math.max(1, this.service.quantity + change);
+    this.tempQuantity = Math.max(1, this.tempQuantity + change);
     this.calculateTotal();
-  }
+  }  
 
   updateService() {
     if (!this.service?.id) return;
   
     const requestData = {
-      tourBookingServiceId: this.service.bookingServiceId, // Đảm bảo ID này đúng
-      newQuantity: this.service.quantity // Lấy số lượng từ input
-    };
+      tourBookingServiceId: this.service.bookingServiceId,
+      newQuantity: this.tempQuantity
+    };    
   
     this.tourService.updateServiceQuantity(requestData).subscribe({
       next: (response) => {
@@ -92,6 +95,7 @@ export class ServiceDetailComponent {
       const modalElement = document.getElementById('changeServiceModal');
       if (modalElement) {
         this.modal = new Modal(modalElement);
+        this.tempQuantity = this.service?.quantity || 1; // lưu lại quantity gốc
         this.modal.show();
       }
     }
@@ -99,5 +103,5 @@ export class ServiceDetailComponent {
 
   close() {
     this.modal?.hide();
-  }
+  }  
 }

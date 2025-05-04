@@ -25,6 +25,7 @@ export class PostServiceComponent {
   @Output() serviceAdded = new EventEmitter<any[]>();
   @Input() scheduleId: number | null = null;
   @Input() tourDays: TourDay[] = [];
+  @Input() minPax: number | null = null;
   modal: Modal | null = null;
   errorMessage: string | null = null;
 
@@ -136,6 +137,7 @@ export class PostServiceComponent {
       this.tourService.getServicesByProvider(this.selectedProviderId, this.selectedCategoryId).subscribe({
         next: (response: any) => {
           if (response.code === 200) {
+            console.log('min pax:', this.minPax);
             const servicesArray = Array.isArray(response.data)
               ? response.data.map((service: any) => ({ id: service.id, name: service.name }))
               : Object.values(response.data).map((service: any) => ({ id: service.id, name: service.name }));
@@ -204,18 +206,26 @@ export class PostServiceComponent {
   }
 
   getTotalPrice(): number {
-    return this.servicePrices.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
-  }
+    return this.servicePrices.reduce((sum, item) => {
+      const pricePerUnit = item.type === 'Transport' && this.minPax
+        ? item.unitPrice / this.minPax
+        : item.unitPrice;
+      return sum + pricePerUnit * item.quantity;
+    }, 0);
+  }  
 
   addData(service: any) {
     if (!service) return;
+    console.log('min pax:', this.minPax);
     this.servicePrices.push({
       serviceId: service.id,
-      type: service.name,
+      name: service.name,
+      type: service.type,
       unitPrice: service.unitPrice || 0,
       quantity: 1,
       requestDate: new Date().toISOString().split('T')[0]
     });
+    console.log('servicePrices:', this.servicePrices);
   }
 
   increaseQuantity(index: number) {

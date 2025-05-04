@@ -152,7 +152,7 @@
               <tbody>
                 <tr>
                   <td *ngFor="let range of priceRanges" class="text-center pr-2">
-                    {{ (transport.paxPrices[range].sellingPrice || 0) | currencyVnd }}
+                    {{ (transport.paxPrices[range].sellingPrice / getMinPax(range) || 0) | currencyVnd }}
                   </td>
                 </tr>
               </tbody>
