@@ -26,8 +26,8 @@ export class ServiceDetailComponent {
 
   constructor(
     private tourService: TourService,
-    private ssrService: SsrService  
-  ) {}
+    private ssrService: SsrService
+  ) { }
 
   ngOnInit() {
   }
@@ -35,11 +35,11 @@ export class ServiceDetailComponent {
   ngAfterViewInit() {
     const document = this.ssrService.getDocument();
     if (!document) return;
-    const modalElement = document.getElementById('changeServiceModal'); 
+    const modalElement = document.getElementById('changeServiceModal');
     if (modalElement) {
       this.modal = new Modal(modalElement);
     }
-  }  
+  }
 
   getServiceDetail() {
     if (!this.service?.id) return;
@@ -54,40 +54,44 @@ export class ServiceDetailComponent {
 
   calculateTotal() {
     if (!this.serviceDetail || !this.minPax) return;
-    this.totalPrice = (this.serviceDetail?.sellingPrice / this.minPax || 0) * this.tempQuantity;
-  }  
+    if (this.serviceDetail.serviceCategory === 'Transport') {
+      this.totalPrice = (this.serviceDetail?.sellingPrice / this.minPax || 0) * this.tempQuantity;
+    } else {
+      this.totalPrice = (this.serviceDetail?.sellingPrice || 0) * this.tempQuantity;
+    }
+  }
 
   updateQuantity(change: number) {
     this.tempQuantity = Math.max(1, this.tempQuantity + change);
     this.calculateTotal();
-  }  
+  }
 
   updateService() {
     if (!this.service?.id) return;
-  
+
     const requestData = {
       tourBookingServiceId: this.service.bookingServiceId,
       newQuantity: this.tempQuantity
-    };    
-  
+    };
+
     this.tourService.updateServiceQuantity(requestData).subscribe({
       next: (response) => {
         if (response.code === 200) {
           this.serviceDetail = response.data;
           this.calculateTotal();
-          this.serviceChange.emit(this.serviceDetail); 
+          this.serviceChange.emit(this.serviceDetail);
           this.close();
 
         } else {
           console.error('Cập nhật thất bại:', response.message);
         }
-      }, 
+      },
       error: (error: any) => {
         console.error('Lỗi khi gọi API:', error);
       }
     });
   }
-  
+
 
   open() {
     const doc = this.ssrService.getDocument();
@@ -103,5 +107,5 @@ export class ServiceDetailComponent {
 
   close() {
     this.modal?.hide();
-  }  
+  }
 }
