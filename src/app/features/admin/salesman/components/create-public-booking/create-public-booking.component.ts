@@ -225,6 +225,8 @@ export class CreatePublicBookingComponent implements AfterViewInit{
     }, 4000);
   }
 
+  maxDateOfBirth: string = '';
+
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -243,7 +245,39 @@ export class CreatePublicBookingComponent implements AfterViewInit{
         });
       }
     });
+
+    const today = new Date();
+    const twelveYearsAgo = new Date(
+      today.getFullYear() - 12,
+      today.getMonth(),
+      today.getDate()
+    );
+
+    this.maxDateOfBirth = twelveYearsAgo.toISOString().split('T')[0];
   }
+
+
+  getMinDate(index: number): string | null {
+    const ageType = this.customersFormArray.at(index).get('ageType')?.value;
+
+    console.log('Age Type', ageType)
+  
+    if (ageType === 'CHILDREN') {
+      return this.maxDateOfBirth;
+    }
+    return null; // no min for ADULT
+  }
+  
+  getMaxDate(index: number): string | null {
+    const ageType = this.customersFormArray.at(index).get('ageType')?.value;
+  
+    if (ageType === 'ADULT') {
+      return this.maxDateOfBirth;
+    }
+    return null; // no min for ADULT
+  }
+
+
 
   get customersFormArray(): FormArray {
     return this.createBookingForm.get('customers') as FormArray;

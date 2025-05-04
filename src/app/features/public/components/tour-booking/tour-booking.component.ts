@@ -160,6 +160,7 @@ export class TourBookingComponent implements OnInit{
 
   scheduleId: number = 0;
   tourId: number = 0;
+  maxDateOfBirth: string = '';
 
   ngOnInit(): void {
 
@@ -183,6 +184,15 @@ export class TourBookingComponent implements OnInit{
 
 
     console.log(this.tourSchedule?.extraHotelCost)
+
+    const today = new Date();
+    const twelveYearsAgo = new Date(
+      today.getFullYear() - 12,
+      today.getMonth(),
+      today.getDate()
+    );
+
+    this.maxDateOfBirth = twelveYearsAgo.toISOString().split('T')[0];
 
 
   }
