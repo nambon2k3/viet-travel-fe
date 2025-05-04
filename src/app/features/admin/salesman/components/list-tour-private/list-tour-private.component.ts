@@ -55,6 +55,10 @@ export class ListTourPrivateComponent implements AfterViewInit {
     this.createTourModal = new Modal(document.getElementById('create-tour-modal'));
   }
 
+  openModal() {
+    this.createTourModal?.show();
+  }
+
   closeModal() {
     this.createTourModal?.hide();
   }
@@ -265,7 +269,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
         next: (response) => {
           console.log('Create tour successfully: ', response);
           this.loadTours();
-          this.tourForm.reset();
+          
           console.log('Create tour successfully: ', response);
           this.triggerSuccess();
           this.errorMessages = '';
@@ -297,7 +301,7 @@ export class ListTourPrivateComponent implements AfterViewInit {
   triggerSuccess() {
     this.showSuccess = true;
 
-    
+    this.tourForm.reset();
     // Hide warning after 3 seconds
     setTimeout(() => {
       this.showSuccess = false;

@@ -280,7 +280,9 @@ export class ServiceComponent {
     const statusMap: { [key: string]: string } = {
       'Hotel': 'Khách sạn',
       'Restaurant': 'Nhà hàng',
-      'Transport': 'Phương tiện'
+      'Transport': 'Phương tiện',
+      'Activity': 'Hoạt động',
+      'Flight Ticket': 'Vé máy bay',
     };
     return statusMap[status] || 'Nhà hàng';
   }

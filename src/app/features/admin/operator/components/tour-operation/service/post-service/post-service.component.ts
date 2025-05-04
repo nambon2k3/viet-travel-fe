@@ -288,7 +288,7 @@ export class PostServiceComponent {
         next: (response: any) => {
           if (response.code === 200) {
             this.serviceAdded.emit(this.servicePrices);
-
+            this.errorMessage = null;
             this.close();
           } else {
             this.errorMessage = response.message;
@@ -300,9 +300,7 @@ export class PostServiceComponent {
         complete: () => {
           if (payload === payloads[payloads.length - 1]) {
             this.serviceAdded.emit(this.servicePrices);
-            this.servicePrices = [];
-            this.selectedBookingId = null;
-            this.selectedTourDayId = null;
+            this.resetForm();
           }
         }
       });
@@ -317,6 +315,7 @@ export class PostServiceComponent {
     this.selectedTourDayId = null;
     this.servicePrices = [];
     this.errorMessage = null;
+    this.services.set([]);
   }
 
   open() {
