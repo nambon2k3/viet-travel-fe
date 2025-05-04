@@ -41,8 +41,14 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold">Đơn giá</label>
-                <input type="text" [value]="serviceDetail?.sellingPrice / (minPax ?? 1) | currencyVnd"
+                @if(serviceDetail?.serviceCategory === 'Transport'){
+                    <input type="text" [value]="serviceDetail?.sellingPrice / (minPax ?? 1) | currencyVnd"
                     class="mt-2 w-full bg-gray-100 border p-2" readonly>
+                } 
+                @else {
+                    <input type="text" [value]="serviceDetail?.sellingPrice | currencyVnd"
+                    class="mt-2 w-full bg-gray-100 border p-2" readonly>
+                }
             </div>
         </div>
 
