@@ -52,6 +52,8 @@ export class PostServiceComponent {
   ngOnInit() {
     this.fetchLocationsAndCategories();
     this.fetchListBookings();
+
+    console.log('tourDays:', this.tourDays);
   }
 
   ngAfterViewInit() {
@@ -259,6 +261,9 @@ export class PostServiceComponent {
       this.errorMessage = 'Vui lòng chọn một đặt chỗ trước';
       return;
     }
+
+    console.log('selectedTourDayId:', this.selectedTourDayId);
+
     if (!this.selectedTourDayId) {
       this.errorMessage = 'Vui lòng chọn ngày tour trước';
       return;
@@ -283,6 +288,7 @@ export class PostServiceComponent {
         next: (response: any) => {
           if (response.code === 200) {
             this.serviceAdded.emit(this.servicePrices);
+            this.errorMessage = null;
             this.close();
           } else {
             this.errorMessage = response.message;
@@ -294,13 +300,22 @@ export class PostServiceComponent {
         complete: () => {
           if (payload === payloads[payloads.length - 1]) {
             this.serviceAdded.emit(this.servicePrices);
-            this.servicePrices = [];
-            this.selectedBookingId = null;
-            this.selectedTourDayId = null;
+            this.resetForm();
           }
         }
       });
     }
+  }
+
+  resetForm() {
+    this.selectedLocationId = null;
+    this.selectedCategoryId = null;
+    this.selectedProviderId = null;
+    this.selectedBookingId = null;
+    this.selectedTourDayId = null;
+    this.servicePrices = [];
+    this.errorMessage = null;
+    this.services.set([]);
   }
 
   open() {
