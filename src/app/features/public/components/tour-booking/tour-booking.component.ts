@@ -188,7 +188,7 @@ export class TourBookingComponent implements OnInit{
 
     const today = new Date();
     const twelveYearsAgo = new Date(
-      today.getFullYear() - 12,
+      today.getFullYear() - 13,
       today.getMonth(),
       today.getDate()
     );
