@@ -323,6 +323,7 @@ export class PostServiceComponent {
   }
 
   close() {
+    this.errorMessage = null;
     this.modal?.hide();
   }
 }
