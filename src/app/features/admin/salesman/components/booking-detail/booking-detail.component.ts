@@ -355,9 +355,11 @@ export class BookingDetailComponent implements AfterViewInit {
             }
             return customer;
           });
+          this.triggerSuccess();
         },
         error: (error) => {
           console.log(error);
+          this.triggerError();
         }
       });
     } else {
@@ -439,7 +441,6 @@ export class BookingDetailComponent implements AfterViewInit {
     // Hide warning after 3 seconds
     setTimeout(() => {
       this.showSuccess = false;
-      this.successMessage = 'Thêm dịch vụ thành công!';
     }, 4000);
   }
 
@@ -543,10 +544,14 @@ export class BookingDetailComponent implements AfterViewInit {
           console.log('Booking Success:', response);
           this.tourCustomers = response.data
           this.setTourCustomersForm(this.tourCustomers);
+          this.successMessage = 'Cập nhật thông tin thành công!';
+          this.triggerSuccess();
 
         },
         error: (error) => {
           console.error('Booking Failed:', error);
+          this.errorMessage = 'Cập nhật thông tin thất bại!';
+          this.triggerError();
         }
       });
 
