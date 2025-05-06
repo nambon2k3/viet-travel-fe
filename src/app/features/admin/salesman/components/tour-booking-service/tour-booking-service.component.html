@@ -119,14 +119,14 @@
                                     </span>
                                     }
                                     @if(bookingService?.status === 'NOT_AVAILABLE') {
-                                        <span
-                                            class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                                            <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
-                                            <span>
-                                                Không khả dụng
-                                            </span>
+                                    <span
+                                        class="inline-flex items-center bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                        <span class="w-2 h-2 me-1 bg-gray-500 rounded-full"></span>
+                                        <span>
+                                            Không khả dụng
                                         </span>
-                                        }
+                                    </span>
+                                    }
 
                                     @if(bookingService?.status === 'CANCELLED') {
                                     <span
@@ -180,7 +180,8 @@
 
                                 </td>
                                 <Td class="p-2 text-center">
-                                    <button type="button" data-modal-target="service-modal" *ngIf="bookingService?.status !== 'PAID'"
+                                    <button type="button" data-modal-target="service-modal"
+                                        *ngIf="bookingService?.status !== 'PAID' && bookingService?.status !== 'CHECKING' && bookingService?.status !== 'PENDING'"
                                         data-modal-toggle="service-modal" (click)="openModal(bookingService)">
                                         <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
@@ -312,12 +313,26 @@
                         <label class="block mb-1 font-semibold">Số lượng mới</label>
                         <input type="number" min="1" formControlName="requestedQuantity"
                             class="w-full border px-3 py-2 rounded" />
+
+                        <p *ngIf="
+                                    bookingServiceForm.get('requestedQuantity')?.invalid &&
+                                    bookingServiceForm.get('requestedQuantity')?.touched
+                                  " class="text-red-500 w-full text-left text-sm">
+                            Không hợp lệ
+                        </p>
                     </div>
 
                     <div>
                         <label class="block mb-1 font-semibold">Lý do</label>
                         <textarea class="w-full mt-2 border rounded p-2 text-sm" rows="4"
                             placeholder="Nhập lí do thay đổi" formControlName="reason"></textarea>
+
+                        <p *ngIf="
+                            bookingServiceForm.get('reason')?.invalid &&
+                            bookingServiceForm.get('reason')?.touched
+                          " class="text-red-500 w-full text-left text-sm">
+                            Thông tin bắt buộc
+                        </p>
                     </div>
 
                 </form>
@@ -338,7 +353,8 @@
                 </button>
 
                 }
-                @if(selectedTourBookingService?.status === 'AVAILABLE' || selectedTourBookingService?.status === 'REJECTED_BY_OPERATOR') {
+                @if(selectedTourBookingService?.status === 'AVAILABLE' || selectedTourBookingService?.status ===
+                'REJECTED_BY_OPERATOR') {
                 <button data-modal-hide="service-modal" type="button" (click)="chekingSICService()"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                     Yêu cầu thay đổi
@@ -346,11 +362,11 @@
                 }
 
                 @if(selectedTourBookingService?.status === 'REJECTED_BY_OPERATOR') {
-                    <button data-modal-hide="service-modal" type="button" (click)="updateStatus()"
-                        class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        Hủy yêu cầu
-                    </button>
-                    }
+                <button data-modal-hide="service-modal" type="button" (click)="updateStatus()"
+                    class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Hủy yêu cầu
+                </button>
+                }
 
                 <button type="button" (click)="cancelSICService()"
                     class="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4  focus:outline-none focus:ring-red-300 font-medium rounded text-sm px-5 py-2.5 text-center">
@@ -423,6 +439,14 @@
                             type="number" formControlName="currentQuantity"
                             [readonly]="selectedTourBookingService?.status === 'CANCELLED'"
                             class="w-full border px-3 py-2 rounded" />
+
+
+                        <p *ngIf="
+                            bookingServiceNotOrderForm.get('currentQuantity')?.invalid &&
+                            bookingServiceNotOrderForm.get('currentQuantity')?.touched
+                          " class="text-red-500 w-full text-left text-sm">
+                            Không hợp lệ
+                        </p>
                     </div>
 
                 </form>
