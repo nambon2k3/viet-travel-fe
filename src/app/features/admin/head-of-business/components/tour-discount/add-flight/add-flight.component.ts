@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, AfterViewInit, signal, SimpleCh
 import { Modal } from 'flowbite';
 import { SsrService } from '../../../../../../core/services/ssr.service';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourDiscountService } from '../../../services/discount.service';
 
@@ -93,6 +93,7 @@ export class AddFlightComponent implements AfterViewInit {
   providers = signal<any[]>([]);
   flights = signal<any[]>([]);
   tourDays: TourDay[] = [];
+  errorMessage: string | null = null;
 
   constructor(
     private ssrService: SsrService,
@@ -111,14 +112,39 @@ export class AddFlightComponent implements AfterViewInit {
     }
   }
 
+  validateSellingPriceVsNetPrice(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const sellingPrice = control.get('sellingPrice')?.value;
+      const netPrice = this.addFlightForm.get('netPrice')?.value;
+      if (sellingPrice !== null && netPrice !== null && sellingPrice < netPrice) {
+        return { sellingPriceTooLow: true };
+      }
+      return null;
+    };
+  }
+
   initializeForm() {
     this.addFlightForm = this.fb.group({
-      selectedDay: [this.days.length > 0 ? this.days[0] : 1],
-      selectedLocation: [null],
-      selectedProvider: [null],
-      selectedFlight: [null],
-      netPrice: [{ value: 0, disabled: true }],
-      paxPrices: this.fb.array([])
+      selectedDay: [null, Validators.required],
+      selectedFlight: [null, Validators.required],
+      selectedLocation: [null, Validators.required],
+      selectedProvider: [null, Validators.required],
+      netPrice: [null, Validators.required],
+      paxPrices: this.fb.array(this.prices.map(price =>
+        this.fb.group({
+          paxRange: [price.paxRange],
+          paxId: [price.id],
+          sellingPrice: [null, [Validators.required, Validators.min(0)]]
+        }, {
+          validators: this.validateSellingPriceVsNetPrice()
+        })))
+    });
+
+    // Listen to netPrice changes to revalidate paxPrices
+    this.addFlightForm.get('netPrice')?.valueChanges.subscribe(() => {
+      this.paxPrices.controls.forEach(control => {
+        control.get('sellingPrice')?.updateValueAndValidity();
+      });
     });
   }
 
@@ -134,7 +160,9 @@ export class AddFlightComponent implements AfterViewInit {
         this.fb.group({
           paxId: [pax.id],
           paxRange: [pax.paxRange],
-          sellingPrice: [0]
+          sellingPrice: [0, [Validators.required, Validators.min(0)]]
+        }, {
+          validators: this.validateSellingPriceVsNetPrice()
         })
       );
     });
@@ -208,11 +236,14 @@ export class AddFlightComponent implements AfterViewInit {
                 this.fb.group({
                   paxId: [pax.paxId],
                   paxRange: [pax.paxRange],
-                  sellingPrice: [pax.sellingPrice]
+                  sellingPrice: [pax.sellingPrice, [Validators.required, Validators.min(0)]]
+                }, {
+                  validators: this.validateSellingPriceVsNetPrice()
                 })
               );
             });
 
+            this.fetchServiceProviders();
             this.fetchFlights();
           }
         },
@@ -245,6 +276,7 @@ export class AddFlightComponent implements AfterViewInit {
         control.patchValue({
           sellingPrice: selectedFlight.sellingPrice || 0
         });
+        control.get('sellingPrice')?.updateValueAndValidity();
       });
     }
   }
@@ -264,6 +296,11 @@ export class AddFlightComponent implements AfterViewInit {
   }
 
   onSubmit() {
+    if (this.addFlightForm.invalid) {
+      this.errorMessage = 'Vui lòng điền đầy đủ thông tin trước khi thêm vé máy bay';
+      return;
+    }
+
     if (this.addFlightForm.valid) {
       const formValue = this.addFlightForm.getRawValue();
 
@@ -282,11 +319,11 @@ export class AddFlightComponent implements AfterViewInit {
           minPax: this.prices.find(p => p.paxRange === pax.paxRange)?.minPax || 0,
           maxPax: this.prices.find(p => p.paxRange === pax.paxRange)?.maxPax || 0,
           paxRange: pax.paxRange,
-          price: 0, // Assuming price is not used here
+          price: 0,
           serviceNettPrice: formValue.netPrice,
           sellingPrice: pax.sellingPrice,
-          fixedCost: 0, // Adjust if needed from data
-          extraHotelCost: 0 // Adjust if needed from data
+          fixedCost: 0,
+          extraHotelCost: 0
         };
         return acc;
       }, {});
@@ -297,7 +334,7 @@ export class AddFlightComponent implements AfterViewInit {
         dayNumber: formValue.selectedDay,
         status: 'ACTIVE',
         nettPrice: formValue.netPrice,
-        sellingPrice: 0, // Will be calculated based on paxPrices
+        sellingPrice: 0,
         locationName: this.locations().find(l => l.id === formValue.selectedLocation)?.name || '',
         locationId: formValue.selectedLocation,
         serviceProviderName: this.providers().find(p => p.id === formValue.selectedProvider)?.name || '',
@@ -329,8 +366,6 @@ export class AddFlightComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.flightAdded.emit({ flight: flightData, isUpdate: false });
-
-          // Reset toàn bộ form
           this.addFlightForm.reset({
             selectedDay: this.days.length > 0 ? this.days[0] : 1,
             selectedLocation: null,
@@ -345,6 +380,8 @@ export class AddFlightComponent implements AfterViewInit {
         }
       },
       error: (error: any) => {
+        this.error.emit(error);
+        this.onCancel();
         console.error('Error creating flight:', error);
       }
     });
@@ -366,8 +403,6 @@ export class AddFlightComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.flightAdded.emit({ flight: flightData, isUpdate: true });
-
-          // Reset toàn bộ form
           this.addFlightForm.reset({
             selectedDay: this.days.length > 0 ? this.days[0] : 1,
             selectedLocation: null,
@@ -382,6 +417,8 @@ export class AddFlightComponent implements AfterViewInit {
         }
       },
       error: (error: any) => {
+        this.error.emit(error);
+        this.onCancel();
         console.error('Error updating flight:', error);
       }
     });
@@ -402,6 +439,7 @@ export class AddFlightComponent implements AfterViewInit {
       selectedFlight: null,
       netPrice: 0
     });
+    this.errorMessage = null;
     this.initPaxPrices();
   }
 }

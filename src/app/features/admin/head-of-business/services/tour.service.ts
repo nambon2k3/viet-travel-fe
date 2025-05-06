@@ -102,6 +102,10 @@ export class TourService {
     return this.http.post(`${environment.apiUrl}head-of-business/tour/send-for-approval/${tourId}`, {});
   }
 
+  closeTour(tourId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}head-of-business/tour/change-to-pending-pricing/${tourId}`, {});
+  }
+
   openPrivateTour(tourId: string): Observable<any> {
     return this.http.post(`${environment.apiUrl}head-of-business/tour/open-tour/${tourId}`, {});
   }

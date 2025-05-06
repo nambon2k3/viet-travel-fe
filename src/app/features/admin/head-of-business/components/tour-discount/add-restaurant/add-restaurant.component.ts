@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, AfterViewInit, signal, SimpleCh
 import { Modal } from 'flowbite';
 import { SsrService } from '../../../../../../core/services/ssr.service';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourDiscountService } from '../../../services/discount.service';
 
@@ -43,11 +43,6 @@ interface PaxOption {
   validTo: string;
 }
 
-interface TourDay {
-  dayNumber: number;
-  serviceCategories: string[];
-}
-
 interface ServiceDetailResponse {
   code: number;
   message: string;
@@ -64,6 +59,11 @@ interface ServiceDetailResponse {
     serviceProviderName: string;
     paxPrices: { [key: string]: PaxPrice };
   };
+}
+
+interface TourDay {
+  dayNumber: number;
+  serviceCategories: string[];
 }
 
 @Component({
@@ -93,6 +93,7 @@ export class AddRestaurantComponent implements AfterViewInit {
   providers = signal<any[]>([]);
   restaurants = signal<any[]>([]);
   tourDays: TourDay[] = [];
+  errorMessage: string | null = null;
 
   constructor(
     private ssrService: SsrService,
@@ -111,14 +112,39 @@ export class AddRestaurantComponent implements AfterViewInit {
     }
   }
 
+  validateSellingPriceVsNetPrice(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const sellingPrice = control.get('sellingPrice')?.value;
+      const netPrice = this.addRestaurantForm.get('netPrice')?.value;
+      if (sellingPrice !== null && netPrice !== null && sellingPrice < netPrice) {
+        return { sellingPriceTooLow: true };
+      }
+      return null;
+    };
+  }
+
   initializeForm() {
     this.addRestaurantForm = this.fb.group({
-      selectedDay: [this.days.length > 0 ? this.days[0] : 1],
-      selectedLocation: [null],
-      selectedProvider: [null],
-      selectedRestaurant: [null],
-      netPrice: [{ value: 0, disabled: true }],
-      paxPrices: this.fb.array([])
+      selectedDay: [null, Validators.required],
+      selectedRestaurant: [null, Validators.required],
+      selectedLocation: [null, Validators.required],
+      selectedProvider: [null, Validators.required],
+      netPrice: [null, Validators.required],
+      paxPrices: this.fb.array(this.prices.map(price =>
+        this.fb.group({
+          paxRange: [price.paxRange],
+          paxId: [price.id],
+          sellingPrice: [null, [Validators.required, Validators.min(0)]]
+        }, {
+          validators: this.validateSellingPriceVsNetPrice()
+        })))
+    });
+
+    // Listen to netPrice changes to revalidate paxPrices
+    this.addRestaurantForm.get('netPrice')?.valueChanges.subscribe(() => {
+      this.paxPrices.controls.forEach(control => {
+        control.get('sellingPrice')?.updateValueAndValidity();
+      });
     });
   }
 
@@ -134,7 +160,9 @@ export class AddRestaurantComponent implements AfterViewInit {
         this.fb.group({
           paxId: [pax.id],
           paxRange: [pax.paxRange],
-          sellingPrice: [0]
+          sellingPrice: [0, [Validators.required, Validators.min(0)]]
+        }, {
+          validators: this.validateSellingPriceVsNetPrice()
         })
       );
     });
@@ -212,7 +240,9 @@ export class AddRestaurantComponent implements AfterViewInit {
                 this.fb.group({
                   paxId: [pax.paxId],
                   paxRange: [pax.paxRange],
-                  sellingPrice: [pax.sellingPrice]
+                  sellingPrice: [pax.sellingPrice, [Validators.required, Validators.min(0)]]
+                }, {
+                  validators: this.validateSellingPriceVsNetPrice()
                 })
               );
             });
@@ -257,6 +287,7 @@ export class AddRestaurantComponent implements AfterViewInit {
         control.patchValue({
           sellingPrice: selectedRestaurant.sellingPrice || 0
         });
+        control.get('sellingPrice')?.updateValueAndValidity();
       });
     }
   }
@@ -276,6 +307,11 @@ export class AddRestaurantComponent implements AfterViewInit {
   }
 
   onSubmit() {
+    if (this.addRestaurantForm.invalid) {
+      this.errorMessage = 'Vui lòng điền đầy đủ thông tin trước khi thêm nhà hàng';
+      return;
+    }
+
     if (this.addRestaurantForm.valid) {
       const formValue = this.addRestaurantForm.getRawValue();
 
@@ -287,17 +323,18 @@ export class AddRestaurantComponent implements AfterViewInit {
         this.onCancel();
         return;
       }
+
       const paxPrices = formValue.paxPrices.reduce((acc: { [key: string]: PaxPrice }, pax: any) => {
         acc[pax.paxRange] = {
           paxId: pax.paxId,
           minPax: this.prices.find(p => p.paxRange === pax.paxRange)?.minPax || 0,
           maxPax: this.prices.find(p => p.paxRange === pax.paxRange)?.maxPax || 0,
           paxRange: pax.paxRange,
-          price: 0, // Assuming price is not used here
+          price: 0,
           serviceNettPrice: formValue.netPrice,
           sellingPrice: pax.sellingPrice,
-          fixedCost: 0, // Adjust if needed from data
-          extraHotelCost: 0 // Adjust if needed from data
+          fixedCost: 0,
+          extraHotelCost: 0
         };
         return acc;
       }, {});
@@ -308,7 +345,7 @@ export class AddRestaurantComponent implements AfterViewInit {
         dayNumber: formValue.selectedDay,
         status: 'ACTIVE',
         nettPrice: formValue.netPrice,
-        sellingPrice: 0, // Will be calculated based on paxPrices
+        sellingPrice: 0,
         locationName: this.locations().find(l => l.id === formValue.selectedLocation)?.name || '',
         locationId: formValue.selectedLocation,
         serviceProviderName: this.providers().find(p => p.id === formValue.selectedProvider)?.name || '',
@@ -340,8 +377,6 @@ export class AddRestaurantComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.restaurantAdded.emit({ restaurant: restaurantData, isUpdate: false });
-
-          // Reset toàn bộ form
           this.addRestaurantForm.reset({
             selectedDay: this.days.length > 0 ? this.days[0] : 1,
             selectedLocation: null,
@@ -356,6 +391,8 @@ export class AddRestaurantComponent implements AfterViewInit {
         }
       },
       error: (error: any) => {
+        this.error.emit(error);
+        this.onCancel();
         console.error('Error creating restaurant:', error);
       }
     });
@@ -377,8 +414,6 @@ export class AddRestaurantComponent implements AfterViewInit {
       next: (response: any) => {
         if (response.code === 200) {
           this.restaurantAdded.emit({ restaurant: restaurantData, isUpdate: true });
-
-          // Reset toàn bộ form
           this.addRestaurantForm.reset({
             selectedDay: this.days.length > 0 ? this.days[0] : 1,
             selectedLocation: null,
@@ -386,19 +421,15 @@ export class AddRestaurantComponent implements AfterViewInit {
             selectedRestaurant: null,
             netPrice: 0
           });
-
-          // Reset paxPrices về giá trị mặc định từ this.prices
           this.initPaxPrices();
-
-          // Reset providers và restaurants
           this.providers.set([]);
           this.restaurants.set([]);
-
-          // Ẩn modal
           this.modal?.hide();
         }
       },
       error: (error: any) => {
+        this.error.emit(error);
+        this.onCancel();
         console.error('Error updating restaurant:', error);
       }
     });
@@ -419,6 +450,7 @@ export class AddRestaurantComponent implements AfterViewInit {
       selectedRestaurant: null,
       netPrice: 0
     });
+    this.errorMessage = null;
     this.initPaxPrices();
   }
 }

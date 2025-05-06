@@ -67,17 +67,23 @@
                                 <tr *ngFor="let paxControl of paxPrices.controls; let i = index" [formGroupName]="i"
                                     class="border-b border-gray-300">
                                     <td class="p-2">{{ paxControl.get('paxRange')?.value }} khách</td>
-                                    <td class="p-2 text-left">
+                                    <td class="p-2 text-left" [ngClass]="{'': paxControl.errors?.['sellingPriceTooLow']}">
                                         <input type="number" formControlName="sellingPrice"
-                                            class="w-32 border border-gray-300 rounded-md p-1 text-right">
+                                          class="w-32 border border-gray-300 rounded-md p-1 text-right">
                                         <span class="ml-2 text-sm font-medium text-gray-700">VND</span>
-                                    </td>
+                                        <div *ngIf="paxControl.errors?.['sellingPriceTooLow'] && paxControl.touched" class="text-red-500 text-sm mt-1">
+                                          Giá bán không được nhỏ hơn giá gốc
+                                        </div>
+                                      </td>                                      
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                    <div class="text-red-600" *ngIf="errorMessage">
+                        {{ errorMessage }}
+                    </div>
                     <div class="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                        <button type="submit" data-modal-hide="addHotelModal"
+                        <button type="submit" 
                             class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                             {{ serviceId ? 'Cập nhật' : 'Thêm mới' }}
                         </button>

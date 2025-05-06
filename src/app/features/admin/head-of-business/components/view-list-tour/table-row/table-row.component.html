@@ -54,12 +54,19 @@
             <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
               (click)="openDiscount(tour); isDropdownOpen = false; $event.preventDefault()">Chiết tính</a>
           </li>
-          @if(tour.tourStatus === 'APPROVED' || tour.tourStatus === 'OPENED') {
+          @if(tour.tourStatus === 'APPROVED' && tour.tourType === 'SIC' || tour.tourStatus === 'OPENED' && tour.tourType === 'SIC') {
           <li>
             <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
               (click)="openSaleTour(tour); isDropdownOpen = false; $event.preventDefault()">Mở bán</a>
           </li>
           }
+          @if(tour.tourStatus === 'OPENED' && tour.tourType === 'SIC') {
+            <li>
+              <a href="#" class="block px-4 py-2 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-200"
+                (click)="closeSaleTour(tour); isDropdownOpen = false; $event.preventDefault()">
+                Đóng mở bán</a>
+            </li>
+            }
         </ul>
       </div>
       }

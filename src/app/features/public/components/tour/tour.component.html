@@ -20,18 +20,10 @@
         </div>
     </div>
 
-    <div class="flex justify-between items-center mx-20 mt-10 h-fit">
+    <div class="flex justify-start items-center mx-20 mt-10 h-fit">
         <div class="flex gap-1">
             <p class="font-bold">{{ totalItems }}</p>
             <p>tour du lịch tại {{ getDestinationName() }}</p>
-        </div>
-        <div>
-            <p class="font-bold inline-block mr-2">Sắp xếp theo:</p>
-            <select class="w-40 h-8 bg-gray-100 rounded px-2" (change)="onSort($event)">
-                <option value="">Không</option>
-                <option value="priceAsc">Giá: Thấp đến Cao</option>
-                <option value="priceDesc">Giá: Cao đến Thấp</option>
-            </select>
         </div>
     </div>
 

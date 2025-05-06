@@ -42,7 +42,7 @@
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-center">Ngày</th>
-          <th class="p-2 text-left">Tên khách sạn</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
           <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-left">Địa chỉ</th>
           <th class="p-2 text-center">Giá Net (đôi)</th>
@@ -117,7 +117,7 @@
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-center">Ngày</th>
-          <th class="p-2 text-left">Tên phương tiện</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
           <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-center">Giá Net</th>
           <th class="p-2 text-center">Giá xe</th>
@@ -190,7 +190,7 @@
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-center">Ngày</th>
-          <th class="p-2 text-left">Tên nhà hàng</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
           <th class="p-2 text-left">Nhà cung cấp</th>
           <th class="p-2 text-left">Địa chỉ</th>
           <th class="p-2 text-center">Giá Net</th>
@@ -265,7 +265,7 @@
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-center">Ngày</th>
-          <th class="p-2 text-left min-w-[150px]">Tên hoạt động</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
           <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
           <th class="p-2 text-center min-w-[100px]">Giá Net</th>
           <th class="p-2 text-center min-w-[250px]">Giá vé</th>
@@ -338,7 +338,7 @@
       <thead>
         <tr class="bg-gray-100 border-b border-gray-300">
           <th class="p-2 text-center">Ngày</th>
-          <th class="p-2 text-left min-w-[180px]">Tên hoạt động</th>
+          <th class="p-2 text-left">Tên dịch vụ</th>
           <th class="p-2 text-left min-w-[130px]">Nhà cung cấp</th>
           <th class="p-2 text-center min-w-[100px]">Giá Net</th>
           <th class="p-2 text-center min-w-[250px]">Giá vé</th>
@@ -446,7 +446,7 @@
 <!-- Include the new popup components -->
 <app-config-tour-pax (close)="closeTourPax()" [tourId]="tourId" #tourConfigPaxModal></app-config-tour-pax>
 <app-config-price #addPriceModal [tourId]="tourId" [prices]="prices" [totalSellingPrice]="minsalePrices"
-  [extraHotelCost]="extraHotelCost" [nettPricePerPax]="mintotalNetPrices"
+  [extraHotelCost]="extraHotelCost" [nettPricePerPax]="mintotalNetPrices" (error)="handleError($event)"
   (confirm)="handlePriceConfirm($event)"></app-config-price>
 <!-- <app-config-markup #configMarkupModal [tourId]="tourId" (confirm)="handleMarkupConfirm($event)"></app-config-markup> -->
 <app-add-hotel #addHotelModal [tourId]="tourId" [days]="tourDays" [prices]="prices" [locations]="locations"

@@ -4,6 +4,7 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { Router } from '@angular/router';
 import { TourHOB } from '../../../../../../core/models/tour.model';
 import { CommonModule } from '@angular/common';
+import { TourService } from '../../../services/tour.service';
 
 @Component({
   selector: '[app-table-row]',
@@ -18,7 +19,8 @@ export class TableRowComponent {
 
   constructor(
     private router: Router,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private tourService : TourService,
   ) { }
 
   toggleDropdown(event: MouseEvent): void {
@@ -52,6 +54,16 @@ export class TableRowComponent {
     this.router.navigate(['/head-business/open-sale-tour'], {
       queryParams: { id: tour.id }
     });
+  }
+
+  closeSaleTour(tour: TourHOB): void {
+    this.tourService.closeTour(tour.id).subscribe((response) => {
+      if (response.code === 200) {
+        this.tourUpdated.emit();
+      } else {
+        console.error('Error closing tour:', response.message);
+      }
+    })
   }
 
   getVietnameseStatus(status: string): string {

@@ -37,8 +37,8 @@ export enum TourBookingServiceStatus {
 export enum TourBookingServiceStatusDisplay {
   PENDING = 'Chờ duyệt',
   APPROVED = 'Chấp thuận',
-  REJECTED = 'Chưa giải quyết',
-  CANCELLED = 'Từ chối',
+  REJECTED = 'Bị từ chối',
+  CANCELLED = 'Bị hủy',
   NOT_ORDERED = 'Chưa đặt dịch vụ',
   SUCCESS = 'Đặt thành công',
   NOT_AVAILABLE = 'Không khả dụng',

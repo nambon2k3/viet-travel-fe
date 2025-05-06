@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, AfterViewInit, signal, SimpleCh
 import { Modal } from 'flowbite';
 import { SsrService } from '../../../../../../core/services/ssr.service';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourDiscountService } from '../../../services/discount.service';
 
@@ -93,6 +93,7 @@ export class AddHotelComponent implements AfterViewInit {
   providers = signal<any[]>([]);
   hotels = signal<any[]>([]);
   tourDays: TourDay[] = [];
+  errorMessage: string | null = null;
 
   constructor(
     private ssrService: SsrService,
@@ -111,14 +112,39 @@ export class AddHotelComponent implements AfterViewInit {
     }
   }
 
+  validateSellingPriceVsNetPrice(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const sellingPrice = control.get('sellingPrice')?.value;
+      const netPrice = this.addHotelForm.get('netPrice')?.value;
+      if (sellingPrice !== null && netPrice !== null && sellingPrice < netPrice) {
+        return { sellingPriceTooLow: true };
+      }
+      return null;
+    };
+  }
+
   initializeForm() {
     this.addHotelForm = this.fb.group({
-      selectedDay: [this.days.length > 0 ? this.days[0] : 1],
-      selectedLocation: [null],
-      selectedProvider: [null],
-      selectedHotel: [null],
-      netPrice: [{ value: 0, disabled: true }],
-      paxPrices: this.fb.array([])
+      selectedDay: [null, Validators.required],
+      selectedHotel: [null, Validators.required],
+      selectedLocation: [null, Validators.required],
+      selectedProvider: [null, Validators.required],
+      netPrice: [null, Validators.required],
+      paxPrices: this.fb.array(this.prices.map(price =>
+        this.fb.group({
+          paxRange: [price.paxRange],
+          paxId: [price.id],
+          sellingPrice: [null, [Validators.required, Validators.min(0)]]
+        }, {
+          validators: this.validateSellingPriceVsNetPrice()
+        })))
+    });
+
+    // Listen to netPrice changes to revalidate paxPrices
+    this.addHotelForm.get('netPrice')?.valueChanges.subscribe(() => {
+      this.paxPrices.controls.forEach(control => {
+        control.get('sellingPrice')?.updateValueAndValidity();
+      });
     });
   }
 
@@ -134,7 +160,9 @@ export class AddHotelComponent implements AfterViewInit {
         this.fb.group({
           paxId: [pax.id],
           paxRange: [pax.paxRange],
-          sellingPrice: [0]
+          sellingPrice: [0, [Validators.required, Validators.min(0)]]
+        }, {
+          validators: this.validateSellingPriceVsNetPrice()
         })
       );
     });
@@ -212,7 +240,9 @@ export class AddHotelComponent implements AfterViewInit {
                 this.fb.group({
                   paxId: [pax.paxId],
                   paxRange: [pax.paxRange],
-                  sellingPrice: [pax.sellingPrice]
+                  sellingPrice: [pax.sellingPrice, [Validators.required, Validators.min(0)]]
+                }, {
+                  validators: this.validateSellingPriceVsNetPrice()
                 })
               );
             });
@@ -257,6 +287,7 @@ export class AddHotelComponent implements AfterViewInit {
         control.patchValue({
           sellingPrice: selectedHotel.sellingPrice || 0
         });
+        control.get('sellingPrice')?.updateValueAndValidity();
       });
     }
   }
@@ -276,12 +307,17 @@ export class AddHotelComponent implements AfterViewInit {
   }
 
   onSubmit() {
+    if (this.addHotelForm.invalid) {
+      this.errorMessage = 'Vui lòng điền đầy đủ thông tin trước khi thêm khách sạn';
+      return;
+    }
+
     if (this.addHotelForm.valid) {
       const formValue = this.addHotelForm.getRawValue();
-      
+
       const selectedDay = formValue.selectedDay;
       const tourDay = this.tourDays.find(day => day.dayNumber === Number(selectedDay));
-      
+
       if (!tourDay || !tourDay.serviceCategories.includes('Hotel')) {
         this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ khách sạn`);
         this.onCancel();
@@ -348,7 +384,7 @@ export class AddHotelComponent implements AfterViewInit {
             selectedHotel: null,
             netPrice: 0
           });
-          
+
           this.initPaxPrices();
           this.providers.set([]);
           this.hotels.set([]);
@@ -356,6 +392,8 @@ export class AddHotelComponent implements AfterViewInit {
         }
       },
       error: (error: any) => {
+        this.error.emit(error);
+        this.onCancel();
         console.error('Error creating hotel:', error);
       }
     });
@@ -391,6 +429,8 @@ export class AddHotelComponent implements AfterViewInit {
         }
       },
       error: (error: any) => {
+        this.error.emit(error);
+        this.onCancel();
         console.error('Error updating hotel:', error);
       }
     });
@@ -411,6 +451,7 @@ export class AddHotelComponent implements AfterViewInit {
       selectedHotel: null,
       netPrice: 0
     });
+    this.errorMessage = null;
     this.initPaxPrices();
   }
 }

@@ -34,13 +34,14 @@ export class ConfigPriceComponent {
       return {
         ...p,
         fixedCostFormatted: p.fixedCost?.toLocaleString('vi-VN'),
-        sellingPriceFormatted: (netPrice + (p.fixedCost / this.getMinPax(p.paxRange)))?.toLocaleString('vi-VN')
+        sellingPriceFormatted: Math.round((netPrice + (p.fixedCost / this.getMinPax(p.paxRange))))?.toLocaleString('vi-VN')
       };
     });
   }
 
   @Output() confirm = new EventEmitter<PaxOption[]>();
   @Output() cancel = new EventEmitter<void>();
+  @Output() error = new EventEmitter<string>();
   @Input() totalSellingPrice: PriceRange = {};
   @Input() extraHotelCost: PriceRange = {};
   @Input() nettPricePerPax: PriceRange = {};
@@ -63,12 +64,12 @@ export class ConfigPriceComponent {
         this.startDate = response.data.priceConfigurations[0].validFrom.split('T')[0];
         this.endDate = response.data.priceConfigurations[0].validTo.split('T')[0];
         this._prices = response.data.priceConfigurations.map((p: any) => {
-          const netPrice = this.totalSellingPrice[p.paxRange] ;
+          const netPrice = this.totalSellingPrice[p.paxRange];
           return {
             id: p.id,
             paxRange: p.paxRange,
             fixedCostFormatted: p.fixedCost?.toLocaleString('vi-VN'),
-            sellingPriceFormatted: (netPrice + (p.fixedCost / this.getMinPax(p.paxRange)))?.toLocaleString('vi-VN'),
+            sellingPriceFormatted: Math.round((netPrice + (p.fixedCost / this.getMinPax(p.paxRange))))?.toLocaleString('vi-VN'),
           };
         });
       }
@@ -83,17 +84,34 @@ export class ConfigPriceComponent {
   })();
 
   formatPrice(index: number, field: 'fixedCostFormatted' | 'sellingPriceFormatted'): void {
-    let value = this._prices[index][field].replace(/[^0-9]/g, '');
-    if (value) {
-      this._prices[index][field] = parseInt(value).toLocaleString('vi-VN');
+    let value = this._prices[index][field].replace(/[^0-9\-]/g, '');
+    const numericValue = parseInt(value, 10);
+
+    if (!isNaN(numericValue)) {
+      this._prices[index][field] = numericValue.toLocaleString('vi-VN');
     } else {
       this._prices[index][field] = '';
     }
 
+    const fixedCost = parseInt(this._prices[index].fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0;
+    const netPrice = this.totalSellingPrice[this._prices[index].paxRange];
+    const minPax = this.getMinPax(this._prices[index].paxRange);
+    const sellingPrice = Math.round(netPrice + fixedCost / minPax);
+
+    this.priceErrors[this._prices[index].paxRange] = sellingPrice < this.nettPricePerPax[this._prices[index].paxRange];
+    console.log('priceErrors', this.priceErrors);
+    console.log('priceErrors', sellingPrice);
+    console.log('priceErrors', this.nettPricePerPax[this._prices[index].paxRange]);
+
     if (field === 'fixedCostFormatted') {
       const fixedCost = parseInt(this._prices[index].fixedCostFormatted.replace(/[^0-9]/g, ''), 10) || 0;
       const netPrice = this.totalSellingPrice[this._prices[index].paxRange];
-      this._prices[index].sellingPriceFormatted = (netPrice + fixedCost / this.getMinPax(this._prices[index].paxRange)).toLocaleString('vi-VN');
+      const minPax = this.getMinPax(this._prices[index].paxRange);
+      const sellingPrice = Math.round(netPrice + fixedCost / minPax);
+      this._prices[index].sellingPriceFormatted = sellingPrice.toLocaleString('vi-VN');
+
+      this.costErrors[this._prices[index].paxRange] = fixedCost < 1;
+      console.log('costErrors', this.costErrors);
     }
   }
 
@@ -105,7 +123,20 @@ export class ConfigPriceComponent {
     return parseInt(range.split('-')[1], 10);
   }
 
+  costErrors: { [key: string]: boolean } = {};
+  priceErrors: { [key: string]: boolean } = {};
+
   onConfirm(): void {
+    const priceError = Object.values(this.priceErrors).some(err => err === true);
+    if (priceError) {
+      return;
+    }
+
+    const costError = Object.values(this.costErrors).some(err => err === true);
+    if (costError) {
+      return;
+    }
+
     const parsedPrices: PaxOption[] = this._prices.map((p) => ({
       id: p.id,
       minPax: this.getMinPax(p.paxRange),
@@ -123,11 +154,15 @@ export class ConfigPriceComponent {
     parsedPrices.forEach(price => {
       this.discountService.updatePrice(this.tourId, price)
         .subscribe({
-          next: () => console.log(`Updated price for paxId: ${price.id}`),
-          error: (err: any) => console.error(`Failed to update paxId: ${price.id}`, err)
+          next: () => {
+            console.log(`Updated price for paxId: ${price.id}`);
+            this.confirm.emit(parsedPrices);
+          },
+          error: (err: any) => {
+            console.error(`Failed to update paxId: ${price.id}`, err);
+            this.error.emit(err);
+          }
         });
     });
-
-    this.confirm.emit(parsedPrices);
   }
 }

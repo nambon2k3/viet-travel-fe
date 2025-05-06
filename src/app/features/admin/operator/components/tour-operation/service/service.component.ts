@@ -268,7 +268,6 @@ export class ServiceComponent {
       'AVAILABLE': 'Có sẵn',
       'CHECKING': 'Đang kiểm tra',
       'PAID': 'Đã thanh toán',
-      'UNPAID': 'Chưa thanh toán',
       'REJECTED_BY_OPERATOR': 'Điều hành từ chối',
       'CANCEL_REQUEST': 'Yêu cầu hủy',
       'PARTIALLY_PAID': 'Thanh toán một phần'

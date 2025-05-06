@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, AfterViewInit, signal, SimpleCh
 import { Modal } from 'flowbite';
 import { SsrService } from '../../../../../../core/services/ssr.service';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { TourDiscountService } from '../../../services/discount.service';
 
@@ -93,6 +93,7 @@ export class AddActivityComponent implements AfterViewInit {
   providers = signal<any[]>([]);
   activitys = signal<any[]>([]);
   tourDays: TourDay[] = [];
+  errorMessage: string | null = null;
 
   constructor(
     private ssrService: SsrService,
@@ -111,14 +112,32 @@ export class AddActivityComponent implements AfterViewInit {
     }
   }
 
+  validateSellingPriceVsNetPrice(netPrice: number): ValidatorFn {
+    console.log('netPrice', netPrice);
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const sellingPrice = control.get('sellingPrice')?.value;
+      if (sellingPrice !== null && sellingPrice < netPrice) {
+        return { sellingPriceTooLow: true };
+      }
+      return null;
+    };
+  }
+
   initializeForm() {
     this.addActivityForm = this.fb.group({
-      selectedDay: [this.days.length > 0 ? this.days[0] : 1],
-      selectedLocation: [null],
-      selectedProvider: [null],
-      selectedActivity: [null],
-      netPrice: [{ value: 0, disabled: true }],
-      paxPrices: this.fb.array([])
+      selectedDay: [null, Validators.required],
+      selectedActivity: [null, Validators.required],
+      selectedLocation: [null, Validators.required],
+      selectedProvider: [null, Validators.required],
+      netPrice: [null, Validators.required],
+      paxPrices: this.fb.array(this.prices.map(price =>
+        this.fb.group({
+          paxRange: [price.paxRange],
+          paxId: [price.id],
+          sellingPrice: [null, Validators.required]
+        }, {
+          validators: this.validateSellingPriceVsNetPrice(this.addActivityForm.get('netPrice')?.value) // net giá theo từng dòng
+        })))
     });
   }
 
@@ -231,14 +250,14 @@ export class AddActivityComponent implements AfterViewInit {
   }
 
   onLocationChange() {
-    this.addActivityForm.patchValue({ selectedProvider: null, selectedActivity: null, netPrice: 0  });
+    this.addActivityForm.patchValue({ selectedProvider: null, selectedActivity: null, netPrice: 0 });
     this.providers.set([]);
     this.activitys.set([]);
     this.fetchServiceProviders();
   }
 
   onProviderChange() {
-    this.addActivityForm.patchValue({ selectedActivity: null, netPrice: 0  });
+    this.addActivityForm.patchValue({ selectedActivity: null, netPrice: 0 });
     this.activitys.set([]);
     this.fetchActivitys();
   }
@@ -276,12 +295,17 @@ export class AddActivityComponent implements AfterViewInit {
   }
 
   onSubmit() {
+    if (this.addActivityForm.invalid) {
+      this.errorMessage = 'Vui lòng điền đầy đủ thông tin trước khi thêm hoạt động';
+      return;
+    }
+
     if (this.addActivityForm.valid) {
       const formValue = this.addActivityForm.getRawValue();
-      
+
       const selectedDay = formValue.selectedDay;
       const tourDay = this.tourDays.find(day => day.dayNumber === Number(selectedDay));
-      
+
       if (!tourDay || !tourDay.serviceCategories.includes('Activity')) {
         this.error.emit(`Trong ngày ${selectedDay} không có dịch vụ hoạt động`);
         this.onCancel();
@@ -293,11 +317,11 @@ export class AddActivityComponent implements AfterViewInit {
           minPax: this.prices.find(p => p.paxRange === pax.paxRange)?.minPax || 0,
           maxPax: this.prices.find(p => p.paxRange === pax.paxRange)?.maxPax || 0,
           paxRange: pax.paxRange,
-          price: 0, // Assuming price is not used here
+          price: 0, 
           serviceNettPrice: formValue.netPrice,
           sellingPrice: pax.sellingPrice,
-          fixedCost: 0, // Adjust if needed from data
-          extraHotelCost: 0 // Adjust if needed from data
+          fixedCost: 0, 
+          extraHotelCost: 0 
         };
         return acc;
       }, {});
@@ -354,6 +378,8 @@ export class AddActivityComponent implements AfterViewInit {
         }
       },
       error: (error: any) => {
+        this.error.emit(error);
+        this.onCancel();
         console.error('Error creating activity:', error);
       }
     });
@@ -397,6 +423,8 @@ export class AddActivityComponent implements AfterViewInit {
         }
       },
       error: (error: any) => {
+        this.error.emit(error);
+        this.onCancel();
         console.error('Error updating activity:', error);
       }
     });
@@ -417,6 +445,7 @@ export class AddActivityComponent implements AfterViewInit {
       selectedActivity: null,
       netPrice: 0
     });
+    this.errorMessage = null;
     this.initPaxPrices();
   }
 }
