@@ -99,6 +99,7 @@ export class ListRefundComponent implements AfterViewInit {
         }
       });
 
+
   }
 
   ngOnInit(): void {
@@ -155,6 +156,9 @@ export class ListRefundComponent implements AfterViewInit {
 
   openModal(): void {
     this.createRefundModal?.show();
+    if(this.costAccounts.length === 0) {
+      this.addCostAccount();
+    }
   }
 
 

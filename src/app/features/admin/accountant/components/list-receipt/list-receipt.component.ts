@@ -158,6 +158,9 @@ export class ListReceiptComponent implements AfterViewInit {
 
   openModal(): void {
     this.createReceiptModal?.show();
+    if(this.costAccounts.length === 0) {
+      this.addCostAccount();
+    }
   }
 
 

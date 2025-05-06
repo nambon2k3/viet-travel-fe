@@ -73,6 +73,8 @@ export class BookingSettlementComponent implements AfterViewInit {
       costAccounts: this.fb.array([]), // Initialize FormArray,
     });
 
+    
+
     this.paymentForm = this.fb.group({
       bookingCode: ['', Validators.required],
       receivedBy: ['', Validators.required],
@@ -389,6 +391,9 @@ export class BookingSettlementComponent implements AfterViewInit {
 
   openPaymentModal() {
     this.createPaymentModal?.show();
+    if (this.costPaymentAccounts.length === 0) {
+      this.addCostPaymentAccount();
+    }
   }
 
 
@@ -502,6 +507,9 @@ export class BookingSettlementComponent implements AfterViewInit {
 
   openReceiptModal(): void {
     this.createReceiptModal?.show();
+    if (this.costReceiptAccounts.length === 0) {
+      this.addReceiptCostAccount();
+    }
   }
 
   getCurrentDate() {
@@ -701,6 +709,11 @@ export class BookingSettlementComponent implements AfterViewInit {
 
   openRefundModal() {
     this.createRefundModal?.show();
+
+    if(this.costRefundAccounts.length === 0) {
+      this.addRefundCostAccount();
+
+    }
   }
 
 

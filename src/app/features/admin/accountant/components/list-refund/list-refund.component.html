@@ -179,7 +179,7 @@
                     </tr>
                   </thead>
                   <tbody formArrayName="costAccounts">
-                    <tr class="border" *ngFor="let row of costAccounts.controls; let i = index" [formGroupName]="i">
+                    <tr class="border" *ngFor="let row of costAccounts.controls; let i = index; let first = first" [formGroupName]="i">
                       <td class="p-2 text-center">{{ i + 1 }}</td>
                       <td class="p-2">
                         <input type="text" formControlName="content" placeholder="Nhập nội dung"
@@ -194,14 +194,32 @@
                       <td class="p-2 text-right">
                         <input type="number" formControlName="amount" placeholder="0" min="0"
                           class="w-full px-2 py-1 border rounded text-right">
+                          <p *ngIf="
+                              costAccounts.at(i).get('amount')?.invalid &&
+                              costAccounts.at(i).get('amount')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                        Không hợp lệ
+                      </p>
                       </td>
                       <td class="p-2 text-right">
                         <input type="number" formControlName="quantity" placeholder="0" min="0" max="100"
                           class="w-full px-2 py-1 border rounded text-right">
+                          <p *ngIf="
+                              costAccounts.at(i).get('quantity')?.invalid &&
+                              costAccounts.at(i).get('quantity')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                        Không hợp lệ
+                      </p>
                       </td>
                       <td class="p-2 text-right">
                         <input type="number" formControlName="discount" placeholder="0" min="0" max="100"
                           class="w-full px-2 py-1 border rounded text-right">
+                          <p *ngIf="
+                              costAccounts.at(i).get('discount')?.invalid &&
+                              costAccounts.at(i).get('discount')?.touched
+                            " class="text-red-500 w-full text-left text-sm">
+                        Không hợp lệ
+                      </p>
                       </td>
                       <td class="p-2 text-right">
                         <input type="number" formControlName="finalAmount" placeholder="0" min="0"
@@ -214,7 +232,7 @@
                         </select>
                       </td>
                       <td class="p-2 text-center">
-                        @if(row.get('status')?.value !== 'PAID' || costAccounts.at(i).get('id')?.value === null) {
+                        @if((row.get('status')?.value !== 'PAID' || costAccounts.at(i).get('id')?.value === null) && !first) {
                         <button type="button" (click)="deleteCostAccount(i)"
                           class="text-red-600 hover:text-red-800">❌</button>
   

@@ -88,6 +88,13 @@ export class CreatePublicBookingComponent implements AfterViewInit{
     private route: ActivatedRoute,
     private userService : UserStorageService
   ) {
+
+
+    const today = new Date();
+
+    const twoHoursLater = new Date(today.getTime() + 2 * 60 * 60 * 1000);
+    this.twoHoursLater = twoHoursLater.toISOString().split('T')[0];
+
     this.createBookingForm = this.fb.group({
       customers: this.fb.array([], this.minLengthArray(1)),
       paymentMethod: ['CASH', Validators.required],
@@ -95,7 +102,7 @@ export class CreatePublicBookingComponent implements AfterViewInit{
       address: [null],
       email: [null, [Validators.required, Validators.email]],
       phone: [null, Validators.required],
-      expiredAt: [null, Validators.required],
+      expiredAt: [twoHoursLater, Validators.required],
       tourId: [null, Validators.required],
       scheduleId: [null, Validators.required],
       note: [null],
@@ -226,6 +233,7 @@ export class CreatePublicBookingComponent implements AfterViewInit{
   }
 
   maxDateOfBirth: string = '';
+  twoHoursLater: string = '';
 
 
   ngOnInit(): void {
@@ -252,6 +260,9 @@ export class CreatePublicBookingComponent implements AfterViewInit{
       today.getMonth(),
       today.getDate()
     );
+
+    const twoHoursLater = new Date(today.getTime() + 2 * 60 * 60 * 1000);
+    this.twoHoursLater = twoHoursLater.toISOString().split('T')[0];
 
     this.maxDateOfBirth = twelveYearsAgo.toISOString().split('T')[0];
   }

@@ -93,6 +93,8 @@ export class ListPaymentComponent implements AfterViewInit {
         }
       });
 
+      
+
   }
 
   loadProviders(bookingId: number) {
@@ -216,6 +218,12 @@ export class ListPaymentComponent implements AfterViewInit {
 
   openModal(): void {
     this.createPaymentModal?.show();
+
+
+    if(this.costAccounts.length === 0) {
+      this.addCostAccount();
+    }
+
   }
 
 
