@@ -60,7 +60,7 @@ export class CreateTourPrivateContentComponent implements AfterViewInit {
       title: ['', Validators.required],
       dayNumber: ['', Validators.required],
       content: ['', Validators.required],
-      meals: ['', Validators.required],
+      meals: ['3 bữa (sáng, trưa, tối)', Validators.required],
       serviceCategory: this.fb.group({
         restaurant: [false],
         hotel: [false],
