@@ -219,7 +219,7 @@
                     <div class="mt-4">
                         <label class="font-semibold">Điếm đến *:</label>
                         <select class="w-full border border-gray-300 rounded px-2 py-2" formControlName="locationId">
-                            <option value="" disabled selected>Chọn địa điểm khởi hành</option>
+                            <option value="" disabled selected>Chọn địa điểm đến</option>
                             <option *ngFor="let location of tourData?.locations" [value]="location.id">
                                 {{ location.name }}
                             </option>
@@ -227,7 +227,7 @@
 
                         <p *ngIf="editTourDayForm.get('locationId')?.invalid && editTourDayForm.get('locationId')?.touched"
                             class="text-red-500 text-sm">
-                            Vui lòng chọn địa điểm khởi hành.
+                            Vui lòng chọn địa điểm đến.
                         </p>
                     </div>
 

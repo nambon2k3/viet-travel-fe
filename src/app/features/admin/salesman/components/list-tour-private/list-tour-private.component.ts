@@ -37,7 +37,7 @@ import { AdminService } from '../../../admin.service';
 export class ListTourPrivateComponent implements AfterViewInit {
   totalItems = 0;
   page = 0;
-  size = 20;
+  size = 10;
   totalPages = signal(0)
   isLoading: boolean = false;
 

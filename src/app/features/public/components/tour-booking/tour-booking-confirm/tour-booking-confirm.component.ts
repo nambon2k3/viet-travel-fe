@@ -45,7 +45,7 @@ export class TourBookingConfirmComponent {
       this.successMessage = 'Thanh toán thành công';
       this.triggerSuccess()
     } else if(this.paymentStatus === 'fail') {
-      this.successMessage = 'Thanh toán thất bại';
+      this.errorMessage = 'Thanh toán thất bại';
       this.triggerError()
     }
 
@@ -150,7 +150,7 @@ export class TourBookingConfirmComponent {
   showError: boolean = false;
 
 
-  successMessage: string = 'Thay Đổi thành công';
+  successMessage: string = 'Thay đổi thành công';
   errorMessage: string = 'Thay đổi thất bại';
 
   triggerSuccess() {
@@ -168,6 +168,7 @@ export class TourBookingConfirmComponent {
     // Hide warning after 3 seconds
     setTimeout(() => {
       this.showError = false;
+      this.errorMessage = 'Thay đổi thất bại';
     }, 4000);
   }
 

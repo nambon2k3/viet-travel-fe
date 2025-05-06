@@ -56,7 +56,7 @@
                     <div>
                         <label class="block font-semibold">Điện thoại *</label>
                         <input type="text" class="w-full border p-2 rounded mt-1" formControlName="phone"
-                            placeholder="Enter phone number">
+                            placeholder="Nhập số điện thoại">
                         <p *ngIf="
                             bookingForm.get('phone')?.invalid &&
                             bookingForm.get('phone')?.touched
@@ -67,7 +67,7 @@
                     <div>
                         <label class="block font-semibold">Email *</label>
                         <input type="email" class="w-full border p-2 rounded mt-1" formControlName="email"
-                            placeholder="Enter email">
+                            placeholder="Nhập email">
                             <p *ngIf="
                             bookingForm.get('email')?.invalid &&
                             bookingForm.get('email')?.touched
@@ -78,7 +78,7 @@
                     <div>
                         <label class="block font-semibold">Địa chỉ</label>
                         <input type="text" class="w-full border p-2 rounded mt-1" formControlName="address"
-                            placeholder="Enter address">
+                            placeholder="Nhập địa chỉ">
                     </div>
                 </div>
 
@@ -118,7 +118,7 @@
                         <div>
                             <label class="block font-semibold">Họ và tên *</label>
                             <input type="text" formControlName="fullName" class="w-full border p-2 rounded mt-1"
-                                placeholder="Enter fullname">
+                                placeholder="Họ và tên ">
 
 
                             <p *ngIf="
@@ -178,7 +178,7 @@
                         <div>
                             <label class="block font-semibold">Họ và tên *</label>
                             <input type="text" formControlName="fullName" class="w-full border p-2 rounded mt-1"
-                                placeholder="Enter fullname">
+                                placeholder="Họ và tên">
                             <p *ngIf="
                                 childrenFormArray.at($index).get('fullName')?.invalid &&
                                 childrenFormArray.at($index).get('fullName')?.touched
