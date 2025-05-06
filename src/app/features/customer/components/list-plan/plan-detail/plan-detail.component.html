@@ -420,14 +420,15 @@
                         <div class="flex hover:bg-gray-100 cursor-pointer" *ngFor="let activity of filteredActivities"
                             (click)="onSelectActivity(activity)">
                             <img [src]="activity?.imageUrl" alt="image"
-                                class="w-24 h-20 object-cover rounded-md mr-4" />
+                                class="!w-24 
+                                !h-20 object-cover rounded-md mr-4" />
                             <div>
                                 <h3 class="text-md font-bold">
                                     {{activity?.title}}
                                 </h3>
                                 <p class="text-sm text-gray-600">🏖️ {{activity?.category}} · {{activity?.duration}}
                                 </p>
-                                <p class="max-w-[80%]">
+                                <p class="w-76">
                                     <span class="text-sm text-gray-500 italic">{{activity?.content}}</span>
                                 </p>
                             </div>

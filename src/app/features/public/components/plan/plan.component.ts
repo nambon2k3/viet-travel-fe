@@ -310,7 +310,7 @@ export class PlanComponent implements AfterViewInit {
   }
 
   isSelected(interest: string): boolean {
-    return this.selectedInterests.includes(interest);
+    return this.selectedInterests.includes(interest) || this.otherInterest != '';
   }
 
 
